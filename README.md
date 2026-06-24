@@ -6,6 +6,7 @@
 
 I turn complex workflows into practical systems, reusable AI tools, and clear digital experiences.
 
+[![Meta Ads AI Kit](https://img.shields.io/badge/Meta_Ads-AI_Automation_Kit-2563EB?style=for-the-badge&logo=meta&logoColor=white)](https://github.com/emaddawood1991-tech/emaddawood1991-tech/tree/main/meta-ads-ai-automation-starter-kit)
 [![Claude Skills](https://img.shields.io/badge/Explore-Claude_AI_Skills-18181B?style=for-the-badge&logo=anthropic&logoColor=white)](https://github.com/emaddawood1991-tech/claude-ai-skills)
 [![Portfolio](https://img.shields.io/badge/View-Portfolio_Hub-0F766E?style=for-the-badge&logo=github&logoColor=white)](https://github.com/emaddawood1991-tech/emad-portfolio-management-hr-design)
 [![Email](https://img.shields.io/badge/Contact-Email-B91C1C?style=for-the-badge&logo=gmail&logoColor=white)](mailto:emaddawood1991@gmail.com)
@@ -21,6 +22,18 @@ I turn complex workflows into practical systems, reusable AI tools, and clear di
 - **Reusable skills and prompt systems** that help teams work faster without sacrificing quality or control
 
 ## Featured Work
+
+### [Meta Ads AI Automation Starter Kit](https://github.com/emaddawood1991-tech/emaddawood1991-tech/tree/main/meta-ads-ai-automation-starter-kit)
+
+A public learning package that teaches how to connect Meta Ads, n8n, and AI analysis with an approval-first workflow.
+
+- **Meta setup guide** for Business Manager, Marketing API, and ad account preparation
+- **n8n workflow template** for Meta Insights, rules analysis, AI reporting, and email summaries
+- **Security and approval system** to keep ad spend protected before live automation
+- **Brand profile and prompts** for better AI media buying decisions
+- **Teaching guide** for turning the workflow into content, tutorials, or client education
+
+> Built as a reusable starter kit so people can download the files and learn practical ad automation.
 
 ### [Claude AI Skills](https://github.com/emaddawood1991-tech/claude-ai-skills)
 
