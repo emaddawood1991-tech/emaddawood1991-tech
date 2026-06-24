@@ -1,0 +1,41 @@
+{
+  "mode": "report_only",
+  "currency": "USD",
+  "time_range": "yesterday",
+  "minimum_spend_before_decision": 20,
+  "pause_rules": [
+    {
+      "name": "Pause ads with spend and zero leads",
+      "level": "ad",
+      "condition": {
+        "spend_greater_than_or_equal": 20,
+        "leads_equal": 0
+      },
+      "recommended_action": "pause",
+      "requires_human_approval": true
+    },
+    {
+      "name": "Flag expensive CPC",
+      "level": "ad",
+      "condition": {
+        "cpc_greater_than": 2.5,
+        "clicks_greater_than_or_equal": 10
+      },
+      "recommended_action": "review_creative",
+      "requires_human_approval": true
+    }
+  ],
+  "scale_rules": [
+    {
+      "name": "Scale profitable ad sets",
+      "level": "adset",
+      "condition": {
+        "roas_greater_than_or_equal": 3,
+        "spend_greater_than_or_equal": 50
+      },
+      "recommended_action": "increase_budget_by_percent",
+      "budget_increase_percent": 20,
+      "requires_human_approval": true
+    }
+  ]
+}
