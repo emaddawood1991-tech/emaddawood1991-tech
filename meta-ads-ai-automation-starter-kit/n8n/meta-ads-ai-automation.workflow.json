@@ -1,0 +1,261 @@
+{
+  "name": "Meta Ads AI Automation - Approval First",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        220,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "mode",
+              "value": "report_only"
+            },
+            {
+              "name": "meta_api_version",
+              "value": "v21.0"
+            },
+            {
+              "name": "ad_account_id",
+              "value": "act_REPLACE_WITH_AD_ACCOUNT_ID"
+            },
+            {
+              "name": "time_range",
+              "value": "yesterday"
+            }
+          ],
+          "number": [
+            {
+              "name": "minimum_spend_before_decision",
+              "value": 20
+            },
+            {
+              "name": "max_cpc",
+              "value": 2.5
+            },
+            {
+              "name": "scale_roas",
+              "value": 3
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-config",
+      "name": "Set Workflow Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        480,
+        280
+      ],
+      "notes": "Replace ad_account_id. Store the Meta token in n8n credentials or env vars, not here."
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/{{$json.meta_api_version}}/{{$json.ad_account_id}}/insights",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "level",
+              "value": "ad"
+            },
+            {
+              "name": "date_preset",
+              "value": "={{$json.time_range}}"
+            },
+            {
+              "name": "fields",
+              "value": "campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,spend,impressions,clicks,cpc,cpm,ctr,actions,action_values,purchase_roas"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "get-meta-insights",
+      "name": "Get Meta Ad Insights",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        740,
+        280
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_IN_N8N",
+          "name": "Meta Marketing API Token"
+        }
+      },
+      "notes": "Create HTTP Header Auth credential in n8n: Authorization = Bearer YOUR_META_ACCESS_TOKEN"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $json.data || [];\nconst minimumSpend = Number($node['Set Workflow Config'].json.minimum_spend_before_decision || 20);\nconst maxCpc = Number($node['Set Workflow Config'].json.max_cpc || 2.5);\nconst scaleRoas = Number($node['Set Workflow Config'].json.scale_roas || 3);\n\nfunction getActionCount(row, actionType) {\n  const actions = row.actions || [];\n  const hit = actions.find(a => a.action_type === actionType);\n  return hit ? Number(hit.value || 0) : 0;\n}\n\nfunction getRoas(row) {\n  const roas = row.purchase_roas || [];\n  if (!Array.isArray(roas) || roas.length === 0) return 0;\n  return Number(roas[0].value || 0);\n}\n\nconst analyzed = rows.map(row => {\n  const spend = Number(row.spend || 0);\n  const leads = getActionCount(row, 'lead');\n  const purchases = getActionCount(row, 'purchase');\n  const cpc = Number(row.cpc || 0);\n  const roas = getRoas(row);\n  const recommendations = [];\n\n  if (spend >= minimumSpend && leads === 0 && purchases === 0) {\n    recommendations.push({ action: 'pause_ad', reason: `Spend ${spend} with zero leads and zero purchases`, risk: 'low' });\n  }\n\n  if (cpc > maxCpc && Number(row.clicks || 0) >= 10) {\n    recommendations.push({ action: 'review_creative', reason: `CPC ${cpc} is above max CPC ${maxCpc}`, risk: 'medium' });\n  }\n\n  if (roas >= scaleRoas && spend >= 50) {\n    recommendations.push({ action: 'increase_budget_review', reason: `ROAS ${roas} is above scale threshold ${scaleRoas}`, risk: 'medium' });\n  }\n\n  return { ...row, spend, leads, purchases, cpc, roas, recommendations };\n});\n\nconst totals = analyzed.reduce((acc, row) => {\n  acc.spend += row.spend || 0;\n  acc.clicks += Number(row.clicks || 0);\n  acc.leads += row.leads || 0;\n  acc.purchases += row.purchases || 0;\n  return acc;\n}, { spend: 0, clicks: 0, leads: 0, purchases: 0 });\n\nconst flagged = analyzed.filter(row => row.recommendations.length > 0);\n\nreturn [{\n  json: {\n    mode: $node['Set Workflow Config'].json.mode,\n    totals,\n    flagged,\n    analyzed,\n    ai_prompt: `Analyze this Meta Ads data as a senior media buyer. Give executive summary, winners, losers, risks, and approval-required actions. Data: ${JSON.stringify({ totals, flagged, analyzed }).slice(0, 12000)}`\n  }\n}];"
+      },
+      "id": "analyze-rules",
+      "name": "Analyze Rules",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4.1-mini\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a senior Meta Ads media buyer. Analyze data conservatively. Never approve live execution. Always require human approval for actions.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": $json.ai_prompt\n    }\n  ],\n  \"temperature\": 0.2\n}",
+        "options": {}
+      },
+      "id": "ai-analysis",
+      "name": "AI Performance Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1260,
+        280
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_IN_N8N",
+          "name": "OpenAI API Key"
+        }
+      },
+      "notes": "Create HTTP Header Auth credential in n8n: Authorization = Bearer YOUR_OPENAI_API_KEY. You can replace this with Claude API if preferred."
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $json.choices?.[0]?.message?.content || 'No AI report returned.';\nreturn [{ json: { report: content, generated_at: new Date().toISOString() } }];"
+      },
+      "id": "format-report",
+      "name": "Format Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@example.com",
+        "toEmail": "owner@example.com",
+        "subject": "Meta Ads AI Daily Report",
+        "text": "={{$json.report}}",
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Send Approval Report Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        280
+      ],
+      "notes": "Replace sender and recipient. Configure SMTP credentials in n8n."
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Workflow Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Workflow Config": {
+      "main": [
+        [
+          {
+            "node": "Get Meta Ad Insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Meta Ad Insights": {
+      "main": [
+        [
+          {
+            "node": "Analyze Rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Rules": {
+      "main": [
+        [
+          {
+            "node": "AI Performance Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Performance Analysis": {
+      "main": [
+        [
+          {
+            "node": "Format Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Report": {
+      "main": [
+        [
+          {
+            "node": "Send Approval Report Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "meta-ads-ai-automation-v1",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2026-06-24T00:00:00.000Z",
+      "updatedAt": "2026-06-24T00:00:00.000Z",
+      "id": "meta-ads-ai",
+      "name": "Meta Ads AI"
+    }
+  ]
+}
