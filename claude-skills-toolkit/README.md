@@ -3,6 +3,9 @@
 This toolkit installs five complementary Claude Code enhancements from their
 official sources:
 
+The machine-readable configuration is available in
+`claude-skills.yaml`.
+
 | Tool | Type | Purpose |
 | --- | --- | --- |
 | Find Skills | Agent skill | Finds and installs additional skills from the open skills ecosystem. |
