@@ -1,0 +1,173 @@
+import z from "zod";
+import * as fs from "fs";
+import Anthropic from "@anthropic-ai/sdk";
+import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
+import { CharacterAlignmentResponseModel } from "@elevenlabs/elevenlabs-js/api";
+import { IMAGE_HEIGHT, IMAGE_WIDTH } from "../src/lib/constants";
+
+let claudeClient: Anthropic | null = null;
+let openaiApiKey: string | null = null;
+
+export const setClaudeApiKey = (key: string) => {
+  claudeClient = new Anthropic({ apiKey: key });
+};
+
+export const setOpenAiApiKey = (key: string) => {
+  openaiApiKey = key;
+};
+
+// Use Claude for all text/structured generation
+export const claudeStructuredCompletion = async <T>(
+  prompt: string,
+  schema: z.ZodType<T>,
+): Promise<T> => {
+  if (!claudeClient) throw new Error("Claude API key not set");
+
+  const jsonSchema = z.toJSONSchema(schema);
+
+  const message = await claudeClient.messages.create({
+    model: "claude-sonnet-5-20251101",
+    max_tokens: 4096,
+    tools: [
+      {
+        name: "structured_output",
+        description: "Return structured data matching the given schema",
+        input_schema: {
+          type: "object" as const,
+          properties: (jsonSchema as Record<string, unknown>).properties as Record<string, unknown>,
+          required: (jsonSchema as Record<string, unknown>).required as string[],
+          additionalProperties: false,
+        },
+      },
+    ],
+    tool_choice: { type: "tool", name: "structured_output" },
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  const toolUse = message.content.find((b) => b.type === "tool_use");
+  if (!toolUse || toolUse.type !== "tool_use") {
+    throw new Error("Claude did not return structured tool output");
+  }
+
+  return schema.parse(toolUse.input);
+};
+
+function saveUint8ArrayToPng(uint8Array: Uint8Array, filePath: string) {
+  const buffer = Buffer.from(uint8Array);
+  fs.writeFileSync(filePath, buffer as Uint8Array);
+}
+
+export const generateAiImage = async ({
+  prompt,
+  path,
+  onRetry,
+}: {
+  prompt: string;
+  path: string;
+  onRetry: (attempt: number) => void;
+}) => {
+  const maxRetries = 3;
+  let attempt = 0;
+  let lastError: Error | null = null;
+
+  while (attempt < maxRetries) {
+    const res = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${openaiApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "dall-e-3",
+        prompt,
+        size: `${IMAGE_WIDTH}x${IMAGE_HEIGHT}`,
+        response_format: "b64_json",
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const buffer = Buffer.from(data.data[0].b64_json, "base64");
+      const uint8Array = new Uint8Array(buffer);
+
+      saveUint8ArrayToPng(uint8Array, path);
+      return;
+    } else {
+      lastError = new Error(
+        `OpenAI error (attempt ${attempt + 1}): ${await res.text()}`,
+      );
+      attempt++;
+      if (attempt < maxRetries) {
+        // Wait 1 second before retrying
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      onRetry(attempt);
+    }
+  }
+
+  // Ran out of retries, throw the last error
+  throw lastError!;
+};
+
+export const getGenerateStoryPrompt = (title: string, topic: string) => {
+  const prompt = `Write a short story with title [${title}] (its topic is [${topic}]).
+   You must follow best practices for great storytelling. 
+   The script must be 8-10 sentences long. 
+   Story events can be from anywhere in the world, but text must be translated into English language. 
+   Result result without any formatting and title, as one continuous text. 
+   Skip new lines.`;
+
+  return prompt;
+};
+
+export const getGenerateImageDescriptionPrompt = (storyText: string) => {
+  const prompt = `You are given story text.
+  Generate (in English) 5-8 very detailed image descriptions  for this story. 
+  Return their description as json array with story sentences matched to images. 
+  Story sentences must be in the same order as in the story and their content must be preserved.
+  Each image must match 1-2 sentence from the story.
+  Images must show story content in a way that is visually appealing and engaging, not just characters.
+  Give output in json format:
+
+  [
+    {
+      "text": "....",
+      "imageDescription": "..."
+    }
+  ]
+
+  <story>
+  ${storyText}
+  </story>`;
+
+  return prompt;
+};
+
+const saveBase64ToMp3 = (data: string, path: string) => {
+  const buffer = Buffer.from(data, "base64");
+  fs.writeFileSync(path, buffer as Uint8Array);
+};
+
+export const generateVoice = async (
+  text: string,
+  apiKey: string,
+  path: string,
+): Promise<CharacterAlignmentResponseModel> => {
+  const client = new ElevenLabsClient({
+    environment: "https://api.elevenlabs.io",
+    apiKey,
+  });
+
+  const voiceId = "21m00Tcm4TlvDq8ikWAM";
+
+  const data = await client.textToSpeech.convertWithTimestamps(voiceId, {
+    text,
+  });
+
+  if (!data.alignment || !data.alignment.characterEndTimesSeconds.length) {
+    throw new Error("ElevenLabs response missing timestamps");
+  }
+
+  saveBase64ToMp3(data.audioBase64, path);
+  return data.alignment;
+};
