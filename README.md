@@ -2,7 +2,7 @@
 
 # Emad Dawoud
 
-**AI Automation Builder · Product-Minded Designer · Operations Specialist**
+**AI Automation Builder Â· Product-Minded Designer Â· Operations Specialist**
 
 I turn complex workflows into practical systems, reusable AI tools, and clear digital experiences.
 
@@ -43,10 +43,11 @@ A growing collection of ready-to-use Claude skills and research toolkits:
 - **MCP Web Creative Toolkit**: Playwright, Firecrawl, Clipia, and Chrome MCP workflows
 - **System Prompt Researcher**: safely study and compare real AI product prompt architectures
 - **Frontend Design, Impeccable, and UI UX Pro Max**: professional interface design resources
+- **Five-tool Claude Toolkit**: Find Skills, Superpowers, Claude Mem, Impeccable, and Task Observer, with a [Windows installer](claude-skills-toolkit/README.md)
 
 > Visit the repository to download Claude-compatible ZIP packages.
 
-### [Portfolio · Management · HR · Design](https://github.com/emaddawood1991-tech/emad-portfolio-management-hr-design)
+### [Portfolio Â· Management Â· HR Â· Design](https://github.com/emaddawood1991-tech/emad-portfolio-management-hr-design)
 
 A central portfolio for design, HR and operations systems, automation concepts, and product-focused project documentation.
 
@@ -93,8 +94,9 @@ operations, automation, and real business outcomes.
 
 </div>
 
-## Let’s Connect
+## Letâ€™s Connect
 
-I’m interested in practical AI products, automation partnerships, operational systems, creative technology, and tools that solve real business problems.
+Iâ€™m interested in practical AI products, automation partnerships, operational systems, creative technology, and tools that solve real business problems.
 
 **Email:** [emaddawood1991@gmail.com](mailto:emaddawood1991@gmail.com)
+
