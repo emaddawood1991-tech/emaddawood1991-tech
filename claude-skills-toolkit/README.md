@@ -6,6 +6,13 @@ official sources:
 The machine-readable configuration is available in
 `claude-skills.yaml`.
 
+## Upload directly to Claude
+
+Upload `Claude-Toolkit-Manager-Skill.zip` in **Settings â†’ Capabilities â†’
+Skills**. Do not upload `claude-skills.yaml`; that file is a machine-readable
+manifest, not a skill. The upload ZIP contains `SKILL.md` at its root with the
+required YAML frontmatter.
+
 | Tool | Type | Purpose |
 | --- | --- | --- |
 | Find Skills | Agent skill | Finds and installs additional skills from the open skills ecosystem. |
