@@ -8,6 +8,7 @@ import { PromotionalVideo,totalFrames as promoFrames      } from "./templates/Pr
 import { CartoonABC,      totalFrames as abcFrames        } from "./templates/CartoonABC";
 import { CartoonNumbers,  totalFrames as numbersFrames    } from "./templates/CartoonNumbers";
 import { CartoonColors,   totalFrames as colorsFrames     } from "./templates/CartoonColors";
+import { BarChart,        totalFrames as barChartFrames   } from "./templates/BarChart";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -23,6 +24,9 @@ export const RemotionRoot: React.FC = () => {
       <Composition id="CartoonABC"       component={CartoonABC}       durationInFrames={abcFrames}        fps={30} width={1920} height={1080} />
       <Composition id="CartoonNumbers"   component={CartoonNumbers}   durationInFrames={numbersFrames}    fps={30} width={1920} height={1080} />
       <Composition id="CartoonColors"    component={CartoonColors}    durationInFrames={colorsFrames}     fps={30} width={1920} height={1080} />
+
+      {/* ── Data visualisation ── */}
+      <Composition id="BarChart"         component={BarChart}         durationInFrames={barChartFrames}   fps={30} width={1920} height={1080} />
     </>
   );
 };
