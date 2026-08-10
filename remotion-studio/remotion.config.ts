@@ -12,3 +12,8 @@ Config.setRspack(true);
 Config.setVideoImageFormat("jpeg");
 Config.setOverwriteOutput(true);
 Config.overrideWebpackConfig(enableTailwind);
+
+// Use pre-installed Chromium in the remote environment (avoids network download)
+if (process.env.REMOTION_USE_LOCAL_CHROME === "1") {
+  Config.setBrowserExecutable("/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell");
+}
