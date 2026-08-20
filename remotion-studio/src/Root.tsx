@@ -9,6 +9,7 @@ import { CartoonABC,      totalFrames as abcFrames        } from "./templates/Ca
 import { CartoonNumbers,  totalFrames as numbersFrames    } from "./templates/CartoonNumbers";
 import { CartoonColors,   totalFrames as colorsFrames     } from "./templates/CartoonColors";
 import { BarChart,        totalFrames as barChartFrames   } from "./templates/BarChart";
+import { FMCMontage,      totalFrames as fmcFrames         } from "./templates/FMCMontage";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -27,6 +28,9 @@ export const RemotionRoot: React.FC = () => {
 
       {/* ── Data visualisation ── */}
       <Composition id="BarChart"         component={BarChart}         durationInFrames={barChartFrames}   fps={30} width={1920} height={1080} />
+
+      {/* ── FMC client montages ── */}
+      <Composition id="FMCMontage"       component={FMCMontage}       durationInFrames={fmcFrames}        fps={30} width={1920} height={1080} />
     </>
   );
 };
