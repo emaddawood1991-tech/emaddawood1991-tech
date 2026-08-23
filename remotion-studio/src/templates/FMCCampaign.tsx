@@ -63,41 +63,134 @@ const OUTRO_START    = LAST_CLIP_END - s(4);   // outro overlaps last 4 s of cli
 const OUTRO_DURATION = AUDIO - OUTRO_START;
 
 // ── SVG Heart Logo ────────────────────────────────────────────────────────────
-const FMCLogo: React.FC<{ size?: number }> = ({ size = 180 }) => (
-  <svg width={size} height={size * 1.22} viewBox="0 0 200 244" fill="none">
-    {/* Left blue swoosh */}
-    <path
-      d="M 92 48 C 58 26, 14 56, 18 100 C 22 144, 68 176, 92 194"
-      stroke={C.blue}
-      strokeWidth="30"
-      strokeLinecap="round"
-    />
-    {/* Inner silver layer (right side) */}
-    <path
-      d="M 106 36 C 122 18, 158 42, 160 82 C 162 124, 128 162, 106 194"
-      stroke={C.silver}
-      strokeWidth="19"
-      strokeLinecap="round"
-    />
-    {/* Outer red swoosh (right side) */}
-    <path
-      d="M 119 18 C 146 4, 188 34, 184 82 C 180 132, 138 168, 106 194"
-      stroke={C.red}
-      strokeWidth="30"
-      strokeLinecap="round"
-    />
-    {/* FMC letters */}
-    <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="58">
-      <tspan x="8"  y="230" fill={C.blue}>{`F`}</tspan>
-      <tspan fill={C.silver}>{`M`}</tspan>
-      <tspan fill={C.red}>{`C`}</tspan>
-    </text>
-    {/* Ideal Care tagline */}
-    <text x="10" y="246" fontFamily="Arial, sans-serif" fontSize="19" fill={C.idealBlue} letterSpacing="2">
-      Ideal Care
-    </text>
-  </svg>
-);
+const FMCLogo: React.FC<{ size?: number }> = ({ size = 180 }) => {
+  const h = Math.round(size * 1.205); // viewBox 220×265 aspect
+  return (
+    <svg width={size} height={h} viewBox="0 0 220 265" fill="none">
+      <defs>
+        {/* Blue crescent — lighter outer face, darker inner edge */}
+        <linearGradient id="fmcBG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stopColor="#2A52B5" />
+          <stop offset="55%"  stopColor="#1C3F8F" />
+          <stop offset="100%" stopColor="#091830" />
+        </linearGradient>
+        {/* Red swoosh */}
+        <radialGradient id="fmcRG" cx="38%" cy="28%" r="72%">
+          <stop offset="0%"   stopColor="#FF3535" />
+          <stop offset="100%" stopColor="#BB1515" />
+        </radialGradient>
+        {/* Silver/white swoosh */}
+        <radialGradient id="fmcSG" cx="30%" cy="22%" r="78%">
+          <stop offset="0%"   stopColor="#F4F9FF" />
+          <stop offset="55%"  stopColor="#C8DCF0" />
+          <stop offset="100%" stopColor="#8AAFC8" />
+        </radialGradient>
+        {/* Dark charcoal swoosh */}
+        <linearGradient id="fmcDG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stopColor="#58687A" />
+          <stop offset="100%" stopColor="#1A2535" />
+        </linearGradient>
+        {/* F — deep blue */}
+        <linearGradient id="fmcFT" x1="20%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%"   stopColor="#3565CC" />
+          <stop offset="100%" stopColor="#152E7A" />
+        </linearGradient>
+        {/* M — silver */}
+        <linearGradient id="fmcMT" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stopColor="#D8EEFF" />
+          <stop offset="48%"  stopColor="#9DC0DC" />
+          <stop offset="100%" stopColor="#6090B5" />
+        </linearGradient>
+        {/* C — red */}
+        <linearGradient id="fmcCT" x1="20%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%"   stopColor="#FF3838" />
+          <stop offset="100%" stopColor="#B31818" />
+        </linearGradient>
+      </defs>
+
+      {/* ── LEFT BLUE CRESCENT (filled bezier, not a stroke) ── */}
+      {/* Main blue body — outer face */}
+      <path
+        d="M 100,33
+           C 82,18 62,7 44,10
+           C 20,14 5,40 5,70
+           C 5,100 17,126 41,145
+           C 59,158 73,165 82,165
+           C 67,149 55,130 53,110
+           C 49,82 60,54 80,40
+           C 87,36 94,34 100,33 Z"
+        fill="url(#fmcBG)"
+      />
+      {/* Dark inner shadow — right concave face of the crescent */}
+      <path
+        d="M 100,33
+           C 94,34 87,36 80,40
+           C 60,54 49,82 53,110
+           C 55,130 67,149 82,165
+           C 70,157 61,140 58,118
+           C 53,90 65,60 86,46
+           C 91,42 96,38 100,33 Z"
+        fill="#06101E"
+        opacity={0.65}
+      />
+
+      {/* ── RIGHT: RED outer swoosh ── */}
+      <path
+        d="M 108,20
+           C 132,4 166,0 184,12
+           C 206,26 212,56 207,86
+           C 202,115 185,138 162,154
+           C 140,168 118,172 99,167
+           C 117,152 131,130 135,106
+           C 140,76 126,40 108,20 Z"
+        fill="url(#fmcRG)"
+      />
+
+      {/* ── RIGHT: SILVER middle swoosh ── */}
+      <path
+        d="M 106,28
+           C 127,10 156,5 174,17
+           C 192,29 196,56 191,83
+           C 186,109 170,130 148,146
+           C 127,161 111,168 99,167
+           C 115,153 126,133 130,109
+           C 135,79 120,46 106,28 Z"
+        fill="url(#fmcSG)"
+      />
+
+      {/* ── RIGHT: DARK charcoal inner swoosh ── */}
+      <path
+        d="M 104,36
+           C 122,17 150,10 165,20
+           C 181,30 185,55 181,79
+           C 177,103 163,123 145,139
+           C 128,154 113,163 99,167
+           C 113,153 120,137 123,115
+           C 127,88 116,54 104,36 Z"
+        fill="url(#fmcDG)"
+      />
+
+      {/* ── FMC LETTERS ── */}
+      <text fontFamily="'Arial Black', Impact, sans-serif" fontWeight="900" fontSize="70">
+        <tspan x="12"  y="237" fill="url(#fmcFT)">F</tspan>
+        <tspan x="73"  y="237" fill="url(#fmcMT)">M</tspan>
+        <tspan x="152" y="237" fill="url(#fmcCT)">C</tspan>
+      </text>
+
+      {/* ── Ideal Care tagline ── */}
+      <text
+        x="110" y="258"
+        textAnchor="middle"
+        fontFamily="Arial, sans-serif"
+        fontSize="20"
+        fill="#5A8DB0"
+        letterSpacing="3"
+      >
+        Ideal Care
+      </text>
+    </svg>
+  );
+};
 
 // ── Animated FMC logo wrapper ─────────────────────────────────────────────────
 const AnimLogo: React.FC<{ size?: number; delay?: number }> = ({ size = 180, delay = 0 }) => {
