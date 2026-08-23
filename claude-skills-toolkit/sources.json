@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-08-04",
+  "tools": [
+    {
+      "name": "Find Skills",
+      "kind": "agent-skill",
+      "source": "https://github.com/vercel-labs/skills/tree/main/skills/find-skills",
+      "vendoredPath": ".agents/skills/find-skills"
+    },
+    {
+      "name": "Superpowers",
+      "kind": "claude-code-plugin",
+      "source": "https://github.com/obra/superpowers",
+      "install": "claude plugin install superpowers@claude-plugins-official --scope user"
+    },
+    {
+      "name": "Claude Mem",
+      "kind": "claude-code-plugin-and-local-service",
+      "source": "https://github.com/thedotmack/claude-mem",
+      "install": "npx -y claude-mem install"
+    },
+    {
+      "name": "Impeccable",
+      "kind": "agent-skill-and-hook",
+      "source": "https://github.com/pbakaus/impeccable",
+      "install": "npx -y impeccable install --providers=claude --scope=global"
+    },
+    {
+      "name": "Task Observer",
+      "kind": "agent-skill",
+      "source": "https://github.com/rebelytics/one-skill-to-rule-them-all",
+      "vendoredPath": ".agents/skills/task-observer",
+      "license": "CC-BY-4.0",
+      "attribution": "Eoghan Henn / rebelytics"
+    }
+  ]
+}
+

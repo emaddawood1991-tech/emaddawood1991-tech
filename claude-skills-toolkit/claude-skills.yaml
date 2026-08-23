@@ -1,0 +1,68 @@
+schema_version: 1
+name: claude-skills-toolkit
+display_name: Five Essential Claude Skills Toolkit
+updated: "2026-08-04"
+target: claude-code
+scope: user
+
+requirements:
+  node: ">=20"
+  claude_code: latest
+  operating_systems:
+    - windows
+
+privacy:
+  confirmation_required: true
+  excluded_data:
+    - credentials
+    - patient_information
+    - employee_records
+    - confidential_client_data
+
+tools:
+  - id: find-skills
+    name: Find Skills
+    type: agent-skill
+    source: https://github.com/vercel-labs/skills/tree/main/skills/find-skills
+    vendored_path: .agents/skills/find-skills
+    install_command: >-
+      npx -y skills add vercel-labs/skills --skill find-skills
+      --agent claude-code --global --yes --copy
+
+  - id: superpowers
+    name: Superpowers
+    type: claude-code-plugin
+    source: https://github.com/obra/superpowers
+    install_command: >-
+      claude plugin install superpowers@claude-plugins-official --scope user
+
+  - id: claude-mem
+    name: Claude Mem
+    type: claude-code-plugin-and-local-service
+    source: https://github.com/thedotmack/claude-mem
+    install_command: npx -y claude-mem install
+
+  - id: impeccable
+    name: Impeccable
+    type: agent-skill-and-design-hook
+    source: https://github.com/pbakaus/impeccable
+    install_command: >-
+      npx -y impeccable install --providers=claude --scope=global
+    first_run_command: /impeccable init
+
+  - id: task-observer
+    name: Task Observer
+    type: agent-skill
+    source: https://github.com/rebelytics/one-skill-to-rule-them-all
+    vendored_path: .agents/skills/task-observer
+    license: CC-BY-4.0
+    attribution: Eoghan Henn / rebelytics
+    install_command: >-
+      npx -y skills add rebelytics/one-skill-to-rule-them-all
+      --skill task-observer --agent claude-code --global --yes --copy
+
+entrypoints:
+  windows: install-claude-toolkit.cmd
+  powershell: install-claude-toolkit.ps1
+  documentation: README.md
+

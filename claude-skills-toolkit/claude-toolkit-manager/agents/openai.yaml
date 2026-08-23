@@ -1,0 +1,5 @@
+interface:
+  display_name: "Claude Toolkit Manager"
+  short_description: "Install and coordinate five Claude tools"
+  default_prompt: "Use $claude-toolkit-manager to set up or manage my five-tool Claude workflow."
+
