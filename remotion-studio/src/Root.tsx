@@ -11,6 +11,7 @@ import { CartoonColors,   totalFrames as colorsFrames     } from "./templates/Ca
 import { BarChart,        totalFrames as barChartFrames   } from "./templates/BarChart";
 import { FMCMontage,      totalFrames as fmcFrames         } from "./templates/FMCMontage";
 import { FMCPortrait, FMCLandscape, totalFrames as fmcCampaignFrames } from "./templates/FMCCampaign";
+import { OlderPersonsPortrait, OlderPersonsLandscape, totalFrames as olderPersonsFrames } from "./templates/OlderPersonsDay";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -36,6 +37,10 @@ export const RemotionRoot: React.FC = () => {
       {/* ── FMC Campaign v2 (dual format) ── */}
       <Composition id="FMCPortrait"      component={FMCPortrait}      durationInFrames={fmcCampaignFrames} fps={30} width={1080}  height={1920} />
       <Composition id="FMCLandscape"     component={FMCLandscape}     durationInFrames={fmcCampaignFrames} fps={30} width={1920}  height={1080} />
+
+      {/* ── Older Persons Day – Oct 1 (dual format) ── */}
+      <Composition id="OlderPersonsPortrait"  component={OlderPersonsPortrait}  durationInFrames={olderPersonsFrames} fps={30} width={1080}  height={1920} />
+      <Composition id="OlderPersonsLandscape" component={OlderPersonsLandscape} durationInFrames={olderPersonsFrames} fps={30} width={1920}  height={1080} />
     </>
   );
 };
