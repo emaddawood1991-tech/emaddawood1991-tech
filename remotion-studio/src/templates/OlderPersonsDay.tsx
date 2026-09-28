@@ -33,7 +33,7 @@ const C = {
 
 // ─── Assets ───────────────────────────────────────────────────────────────
 const VIDEO = staticFile("videos/older-persons-clip.mp4");
-const LOGO  = staticFile("images/older-persons-logo.webp");
+const LOGO  = staticFile("images/fmc-ideal-care-logo.webp");
 const NARR  = staticFile("audio/older-persons-narration.wav");
 const MUSIC = staticFile("audio/older-persons-music.mp3");
 
