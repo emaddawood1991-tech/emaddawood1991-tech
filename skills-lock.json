@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "skills": {
+    "cadence-planner": {
+      "source": "agentreacher/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cadence-planner/SKILL.md",
+      "computedHash": "0a70265686415423ccbbd544049a06bd5590d01d7764afd59562614877f2c8fb"
+    },
+    "calendar-builder": {
+      "source": "agentreacher/skills",
+      "sourceType": "github",
+      "skillPath": "skills/calendar-builder/SKILL.md",
+      "computedHash": "922b15861431781efb626bf95c3d8e28ffd52f887c97ddb1486dbc7a331f50ce"
+    },
+    "content-pillars": {
+      "source": "agentreacher/skills",
+      "sourceType": "github",
+      "skillPath": "skills/content-pillars/SKILL.md",
+      "computedHash": "06bc34d8eebaeba18b01f87111b5be308bfa5a79c8f92a63f9b9ff632a934f42"
+    },
+    "positioning": {
+      "source": "agentreacher/skills",
+      "sourceType": "github",
+      "skillPath": "skills/positioning/SKILL.md",
+      "computedHash": "22a3d6ea2ffb07b5b80c551042eca5b2452e9bf6d39511edead799196637f6fd"
+    },
+    "post-packager": {
+      "source": "agentreacher/skills",
+      "sourceType": "github",
+      "skillPath": "skills/post-packager/SKILL.md",
+      "computedHash": "c1906ae9ae47ebd8c4ec7c3710ca958f5aa0132ef414a28b6429fec7dd0086db"
+    },
+    "repurpose": {
+      "source": "agentreacher/skills",
+      "sourceType": "github",
+      "skillPath": "skills/repurpose/SKILL.md",
+      "computedHash": "bed7ef17a5e1e859918be7b1ded0fd1df7307dea61eba4947c1d211addb44ca5"
+    },
+    "viral-hooks": {
+      "source": "agentreacher/skills",
+      "sourceType": "github",
+      "skillPath": "skills/viral-hooks/SKILL.md",
+      "computedHash": "2a1c776ebd26e76760f60a2907ddad0d847bc7164b56bde98e88f8b8bf69024a"
+    }
+  }
+}
