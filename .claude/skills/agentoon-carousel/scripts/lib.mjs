@@ -168,10 +168,10 @@ export const layouts = {
       <p class="lede" style="margin-top:26px;font-size:36px">${fmt(s.lede)}</p>
       <div class="label" style="margin-top:30px">${esc(s.label || "Know the difference: four kinds of slash command")}</div>
       <div class="stack" style="gap:14px;margin-top:16px">
-        ${s.rows.map((r) => `<div class="card row" style="gap:22px;padding:20px 24px;border-radius:22px;align-items:center;${r.hot ? "background:var(--card-2);border:3px solid var(--accent);" : ""}">
+        ${s.rows.map((r) => `<div class="card row" style="gap:22px;padding:${s.rowPad || 20}px 24px;border-radius:22px;align-items:center;${r.hot ? "background:var(--card-2);border:3px solid var(--accent);" : ""}">
           <div style="width:324px;flex:none;display:flex;flex-direction:column;gap:10px;align-items:flex-start"><span class="badge ${r.hot ? "hot" : r.ghost ? "ghost" : ""}">${esc(r.badge)}</span><span class="mono" style="font-size:30px;font-weight:700;color:var(--accent-t)">${esc(r.ex)}</span></div>
           <div style="font:500 32px/1.3 var(--sans)">${fmt(r.text)}</div></div>`).join("")}
-      </div>`);
+      </div>${s.banner ? `<div class="grow"></div><div class="banner">${fmt(s.banner)}</div>` : ""}`);
   },
 
   /* ---- 3–7 one skill per slide ---- */

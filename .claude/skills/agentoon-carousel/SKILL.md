@@ -47,11 +47,11 @@ Brand stays fixed: palette, Fraunces/Inter/JetBrains Mono, footer, mascot, 72px 
 |---|---|
 | `hook` | kicker, title, rows[{cmd,verb}], bubble, swipe, save — terminal-style hook |
 | `statement` | kicker, title, sub, chips[], swipe, save, mood, mascotSize — big-claim hook / problem / myth |
-| `concept` | kicker, title, label, lede, rows[{badge,ex,text,hot?,ghost?}] — kinds / categories |
+| `concept` | kicker, title, label, lede, rows[{badge,ex,text,hot?,ghost?}], banner?, rowPad? (roomier rows) — kinds / categories |
 | `diagram` | kicker, title, text, mood, diagram, points[], watch — full-slide illustration |
 | `steps` | kicker, title, mood, steps[{title,text,code?}] (3–4), watch |
 | `codefocus` | kicker, title, text, code[], notes[], watch — big code or prompt with numbered notes |
-| `compare` | kicker, title, left{label,items[]}, right{label,items[]}, verdict — before/after, myth/fact, do/don't |
+| `compare` | kicker, title, left{label,items[]}, right{label,items[]}, tag?, watch?, verdict — before/after, myth/fact, do/don't |
 | `checklist` | kicker, title, items[{t,d,ok?}], note — mistakes (ok:false), tips, requirements |
 | `stat` | kicker, title, value, label, text, source — one sourced number |
 | `skill` | n, cmd, badge, mood, title, text, diagram, code[], tag, watch — one command/tool per slide |

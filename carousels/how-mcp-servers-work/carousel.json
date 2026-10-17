@@ -1,0 +1,256 @@
+{
+  "slug": "how-mcp-servers-work",
+  "title": "How MCP servers work",
+  "handle": "@agentoon.ai",
+  "recipe": "explainer",
+  "slides": [
+    {
+      "layout": "statement",
+      "theme": "dark",
+      "kicker": "MCP · Explained",
+      "title": "How MCP *servers* actually work",
+      "sub": "Three roles. Three primitives. Two transports.",
+      "chips": [
+        "tools",
+        "resources",
+        "prompts"
+      ],
+      "swipe": "Swipe to see how",
+      "save": "Save for later",
+      "mood": "think"
+    },
+    {
+      "layout": "diagram",
+      "theme": "paper",
+      "kicker": "The roles",
+      "title": "One host, *many* clients.",
+      "text": "Each client connects to exactly one server.",
+      "mood": "happy",
+      "diagram": "hostClients",
+      "points": [
+        "Stdio servers run locally. HTTP servers are remote."
+      ]
+    },
+    {
+      "layout": "concept",
+      "theme": "mint",
+      "kicker": "What a server offers",
+      "title": "Three *primitives.*",
+      "label": "Who controls each one",
+      "lede": "A server exposes tools, resources and prompts.",
+      "rows": [
+        {
+          "badge": "Tools",
+          "ex": "model-controlled",
+          "hot": true,
+          "text": "Functions the LLM can call to take actions."
+        },
+        {
+          "badge": "Resources",
+          "ex": "app-controlled",
+          "ghost": true,
+          "text": "Context the client attaches, like file contents."
+        },
+        {
+          "badge": "Prompts",
+          "ex": "user-controlled",
+          "ghost": true,
+          "text": "Templates you pick, like slash commands."
+        }
+      ],
+      "banner": "Tools can take actions, so keep a human in the loop.",
+      "rowPad": 44
+    },
+    {
+      "layout": "codefocus",
+      "theme": "dark",
+      "kicker": "Calling a tool",
+      "title": "Two methods *do the work.*",
+      "mood": "focus",
+      "badge": "Simplified JSON-RPC",
+      "code": [
+        "{",
+        "  {{k:\"method\"}}: {{s:\"tools/call\"}},",
+        "  {{k:\"params\"}}: {",
+        "    {{k:\"name\"}}: {{s:\"get_weather\"}},",
+        "    {{k:\"arguments\"}}: {",
+        "      {{k:\"location\"}}: {{s:\"New York\"}}",
+        "    }",
+        "  }",
+        "}"
+      ],
+      "notes": [
+        "`tools/list` finds each tool's name and schema",
+        "`tools/call` runs one tool with arguments"
+      ],
+      "tag": "Human in loop",
+      "watch": "A human should be able to deny tool calls.",
+      "codeSize": 32
+    },
+    {
+      "layout": "diagram",
+      "theme": "paper",
+      "kicker": "The flow",
+      "title": "From question to *result.*",
+      "text": "In modern revisions, no setup call is required.",
+      "mood": "wow",
+      "diagram": {
+        "type": "flow",
+        "nodes": [
+          {
+            "label": "server/|discover",
+            "sub": "optional"
+          },
+          {
+            "label": "tools/|list",
+            "sub": "find tools"
+          },
+          {
+            "label": "tools/|call",
+            "sub": "run one"
+          },
+          {
+            "label": "result",
+            "sub": "answer"
+          }
+        ],
+        "caption": "Modern revisions: 2026-07-28 and later",
+        "h": 320
+      },
+      "points": [
+        "Discovery is optional. Clients may call it first."
+      ],
+      "tag": "Cache hint",
+      "watch": "Lists can carry a `ttlMs` freshness hint."
+    },
+    {
+      "layout": "diagram",
+      "theme": "mint",
+      "kicker": "Transports",
+      "title": "Two ways to *connect.*",
+      "text": "Pick how messages travel.",
+      "mood": "think",
+      "diagram": {
+        "type": "versus",
+        "left": {
+          "label": "stdio",
+          "items": [
+            "Local subprocess",
+            "Client launches it",
+            "Messages over stdio"
+          ]
+        },
+        "right": {
+          "label": "Streamable HTTP",
+          "items": [
+            "One MCP endpoint",
+            "Each message is a POST",
+            "JSON or SSE reply"
+          ]
+        }
+      },
+      "points": [
+        "The old HTTP+SSE transport is deprecated.",
+        "Claude Code recommends HTTP for remote servers."
+      ],
+      "tag": "Claude Code",
+      "watch": "Add one with `--transport http`."
+    },
+    {
+      "layout": "compare",
+      "theme": "dark",
+      "kicker": "What changed",
+      "title": "The *handshake* is gone.",
+      "mood": "dizzy",
+      "left": {
+        "label": "Legacy",
+        "items": [
+          "Revisions 2025-11-25 and earlier",
+          "An `initialize` handshake comes first",
+          "HTTP used `Mcp-Session-Id` sessions"
+        ]
+      },
+      "right": {
+        "label": "Modern",
+        "items": [
+          "Revisions 2026-07-28 and later",
+          "No handshake. Each request stands alone",
+          "Version and capabilities travel in `_meta`"
+        ]
+      },
+      "verdict": "Check which spec revision your tools speak.",
+      "tag": "Same",
+      "watch": "`tools/list` and `tools/call` still apply."
+    },
+    {
+      "layout": "checklist",
+      "theme": "paper",
+      "kicker": "Before you connect",
+      "title": "Use servers *safely.*",
+      "mood": "proud",
+      "items": [
+        {
+          "t": "Trust the server first",
+          "d": "Fetched content can carry prompt injection."
+        },
+        {
+          "t": "Keep a human in the loop",
+          "d": "Be able to deny tool calls."
+        },
+        {
+          "t": "Add it in Claude Code",
+          "d": "Run `claude mcp add`."
+        },
+        {
+          "t": "Know the spec revision",
+          "d": "Older and newer revisions differ."
+        },
+        {
+          "t": "Check its status",
+          "d": "Run `claude mcp list` or `/mcp`."
+        }
+      ],
+      "note": "Official sources: MCP spec and Claude Code docs."
+    },
+    {
+      "layout": "cta",
+      "theme": "coral",
+      "kicker": "Your turn",
+      "titleLines": [
+        "Save it.",
+        "*Share* it."
+      ],
+      "followLabel": "Follow",
+      "handle": "@agentoon.ai",
+      "followSub": "Claude Code, MCP and AI agent tutorials",
+      "followBtn": "Follow @agentoon.ai",
+      "actions": [
+        {
+          "icon": "bookmark",
+          "t": "Save",
+          "d": "For your next MCP build"
+        },
+        {
+          "icon": "send",
+          "t": "Share",
+          "d": "Send it to a dev friend"
+        }
+      ],
+      "ask": "Which MCP server do you want explained next?"
+    }
+  ],
+  "spellAllow": [
+    "subprocess",
+    "stdin",
+    "stdout",
+    "jsonrpc",
+    "newline",
+    "delimited",
+    "stdio",
+    "discover",
+    "attaches",
+    "app",
+    "streamable",
+    "ttlms"
+  ]
+}

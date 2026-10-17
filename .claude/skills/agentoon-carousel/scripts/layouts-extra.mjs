@@ -29,6 +29,7 @@ Object.assign(layouts, {
         ${c.items.map((it) => `<div style="font:600 34px/1.3 var(--sans);${good ? "" : "color:var(--muted)"}">${fmt(it)}</div>`).join("")}</div>`;
     return shell(ctx, s, `${head(s, { mood: s.mood })}
       <div class="row gap16" style="margin-top:34px;align-items:stretch">${col(s.left, false)}${col(s.right, true)}</div>
+      ${s.watch ? `<div class="watch" style="margin-top:22px"><span class="tag">${esc(s.tag || "Same")}</span><span>${fmt(s.watch)}</span></div>` : ""}
       <div class="grow"></div>
       ${s.verdict ? `<div class="banner">${fmt(s.verdict)}</div>` : ""}`);
   },
