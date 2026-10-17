@@ -1,0 +1,171 @@
+{
+ "title": "How MCP servers work (quality test)",
+ "voice": "am_michael",
+ "speed": 1.1,
+ "total": 14.0,
+ "phrases": [
+  {
+   "id": "p0",
+   "speak": "MCP lets Claude use real tools.",
+   "show": "MCP lets Claude use real tools."
+  },
+  {
+   "id": "p1",
+   "speak": "Your AI app is the host, and each server gets its own client.",
+   "show": "Your AI app is the host, and each server gets its own client."
+  },
+  {
+   "id": "p2",
+   "speak": "Servers offer tools, resources, and prompts.",
+   "show": "Servers offer tools, resources, and prompts."
+  },
+  {
+   "id": "p3",
+   "speak": "Connect one, and Claude can act.",
+   "show": "Connect one, and Claude can act."
+  },
+  {
+   "id": "p4",
+   "speak": "Follow Agentoon dot A I.",
+   "show": "Follow Agentoon.ai",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai",
+     "Agentoon dot A I"
+    ]
+   ]
+  }
+ ],
+ "music": [
+  {
+   "t0": 0.0,
+   "t1": 2.65,
+   "mood": "hook"
+  },
+  {
+   "t0": 2.65,
+   "t1": 6.7,
+   "mood": "disc"
+  },
+  {
+   "t0": 6.7,
+   "t1": 11.4,
+   "mood": "demo"
+  },
+  {
+   "t0": 11.4,
+   "t1": 14.0,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "type",
+   "t": 0.25,
+   "dur": 1.55,
+   "cps": 70,
+   "gain": 0.3
+  },
+  {
+   "name": "step",
+   "t": 0.55,
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "t": 1.95,
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "t": 2.0,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 3.0,
+   "gain": 0.5
+  },
+  {
+   "name": "step",
+   "t": 3.35,
+   "gain": 0.35
+  },
+  {
+   "name": "step",
+   "t": 3.7,
+   "gain": 0.35
+  },
+  {
+   "name": "step",
+   "t": 4.05,
+   "gain": 0.35
+  },
+  {
+   "name": "pop",
+   "t": 4.46,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 4.6,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 4.83,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 4.97,
+   "gain": 0.4
+  },
+  {
+   "name": "whoosh",
+   "t": 6.45,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 7.52,
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "t": 7.95,
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "t": 8.88,
+   "gain": 0.5
+  },
+  {
+   "name": "type",
+   "t": 9.74,
+   "dur": 0.8,
+   "cps": 40,
+   "gain": 0.3
+  },
+  {
+   "name": "whoosh",
+   "t": 11.2,
+   "gain": 0.3
+  },
+  {
+   "name": "sparkle",
+   "t": 11.95,
+   "gain": 0.5
+  },
+  {
+   "name": "ding",
+   "t": 12.5,
+   "gain": 0.5
+  }
+ ]
+}

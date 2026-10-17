@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon quality test: How MCP servers work</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Paper Switchboard": cream collage paper and ink-dark terminals, coral accent, stop-motion pops. */
+  :root { --ink: #0C1020; --paper: #F5F0E6; --coral: #FF6A3D; --mint: #2FE3B2; --sky: #6FA8FF; --sun: #FFC83D; }
+  .kicker { position: absolute; left: 60px; top: 214px; padding: 14px 26px 16px; border-radius: 999px; font: 700 32px/1 var(--mono); letter-spacing: .04em; }
+  .k-dark { background: rgba(47,227,178,.14); color: var(--mint); border: 3px solid rgba(47,227,178,.5); }
+  .k-light { background: #FFFDF7; color: var(--ink); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); }
+  .hlbox { position: absolute; border: 7px solid var(--coral); border-radius: 18px; box-shadow: 0 0 0 4px rgba(255,106,61,.18); }
+  .sub { position: absolute; left: 0; right: 0; bottom: 12px; padding: 6px 0; text-align: center; font: 600 32px/1.6 var(--mono); }
+  #s1bg { background: var(--ink); background-image: linear-gradient(rgba(96,205,255,.06) 2px, transparent 2px), linear-gradient(90deg, rgba(96,205,255,.06) 2px, transparent 2px); background-size: 72px 72px; }
+  #s2bg { background-color: var(--paper); background-image: radial-gradient(rgba(12,16,32,.09) 22%, transparent 24%); background-size: 18px 18px; }
+  #s3bg { background-color: #0A0E1C; background-image: radial-gradient(rgba(47,227,178,.16) 22%, transparent 24%); background-size: 22px 22px; }
+  #fx, #capLayer { position: absolute; inset: 0; pointer-events: none; }
+  #fx { z-index: 50; } #capLayer { z-index: 60; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/collage.js"></script>
+<script src="kit/term.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="14">
+
+  <section id="s1" class="clip scene" data-start="0" data-duration="3.1">
+    <div id="s1i" class="inner"><div id="s1bg" class="bg-fill"></div><div id="s1w" class="inner"></div></div>
+  </section>
+  <section id="s2" class="clip scene" data-start="2.9" data-duration="4.2">
+    <div id="s2i" class="inner"><div id="s2bg" class="bg-fill"></div><div id="s2w" class="inner"></div></div>
+  </section>
+  <section id="s3" class="clip scene" data-start="6.4" data-duration="5.55">
+    <div id="s3i" class="inner"><div id="s3bg" class="bg-fill"></div><div id="s3w" class="inner"></div></div>
+  </section>
+  <section id="s4" class="clip scene" data-start="11.2" data-duration="2.8">
+    <div id="s4i" class="inner"></div>
+  </section>
+
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="14" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, $ = id => document.getElementById(id);
+  const W = (txt, n) => { let c = 0; for (const w of E.words) { if (w.w.replace(/[.,]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + txt); };
+  const div = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const hl = (host, id, x, y, w, h) => div(host, id, "hlbox", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px");
+  const drawHL = (el, at) => tl.fromTo(el, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.28, ease: "power3.out" }, at);
+  const s1w = $("s1w"), s2w = $("s2w"), s3w = $("s3w"), s4i = $("s4i");
+
+  /* ---------- SCENE 1 (dark): real command output, robot reacts ---------- */
+  div(s1w, "k1", "kicker k-dark", "", "REAL OUTPUT · CLAUDE CODE");
+  tl.from("#k1", { opacity: 0, x: -30, duration: 0.3, ease: "power2.out" }, 0.05);
+  const t1 = Term.card(s1w, { id: "t1", x: 60, y: 520, w: 960, title: "Claude Code 2.1.302", font: 46, lines: [
+    { t: "$ claude mcp add --help", c: "prompt" }, { t: "# Add HTTP server:", c: "cmt" },
+    { t: "claude mcp add --transport \\" }, { t: "  http sentry \\", c: "hl" }, { t: "  https://mcp.sentry.dev/mcp", c: "url" } ] });
+  tl.from(t1, { opacity: 0, y: 40, duration: 0.3, ease: "power3.out" }, 0);
+  Term.type(tl, t1, 0.25, 90);
+  const h1 = hl(s1w, "h1", 78, 764, 924, 228); drawHL(h1, 1.9);
+  const bot1 = Robot.create(s1w, { id: "bot1", w: 230, x: 1180, y: 207 });
+  bot1.face(tl, 0, -1, 0.01);
+  tl.to(bot1.P.wrap, { x: 740, duration: 0.6, ease: "power1.out" }, 0.1);
+  bot1.hop(tl, 0.1, 70, 0.42); bot1.face(tl, 0.72, 1, 0.12); bot1.look(tl, 0.95, -4, 4, 0.2);
+  bot1.blinks(tl, 1.0, 2.9, 1.3); bot1.react(tl, 1.9, "wow");
+  const st1 = Collage.paper(s1w, { id: "st1", x: 300, y: 1130, w: 480, h: 170, fill: "#F5F0E6", dots: "rgba(255,106,61,.35)", rot: -4, label: "ONE COMMAND", labelSize: 58, seed: 11 });
+  Collage.stopIn(tl, st1, 2.0, { dy: 90, rot: -8, steps: 4, dur: 0.34 });
+  tl.fromTo(s1w, { scale: 1 }, { scale: 1.05, duration: 2.5, ease: "sine.inOut", transformOrigin: "540px 760px" }, 0);
+
+  /* ---------- SCENE 2 (light): host / client / server, robot walks and points ---------- */
+  div(s2w, "k2", "kicker k-light", "", "HOW IT FITS");
+  tl.from("#k2", { opacity: 0, y: -24, duration: 0.3 }, 3.0);
+  const host = Collage.paper(s2w, { id: "host", x: 140, y: 290, w: 800, h: 190, fill: "#2FE3B2", dots: "rgba(12,16,32,.18)", rot: -1.5, label: "AI app = host", labelSize: 64, seed: 3 });
+  const cA = Collage.paper(s2w, { id: "cliA", x: 100, y: 560, w: 400, h: 140, fill: "#FFC83D", rot: 2, label: "client", labelSize: 58, seed: 5 });
+  const cB = Collage.paper(s2w, { id: "cliB", x: 580, y: 560, w: 400, h: 140, fill: "#FFC83D", rot: -2, label: "client", labelSize: 58, seed: 6 });
+  const sA = Collage.paper(s2w, { id: "srvA", x: 100, y: 800, w: 400, h: 160, fill: "#6FA8FF", dots: "rgba(255,255,255,.35)", rot: -1.5, label: "server", labelSize: 58, seed: 8 });
+  const sB = Collage.paper(s2w, { id: "srvB", x: 580, y: 800, w: 400, h: 160, fill: "#6FA8FF", dots: "rgba(255,255,255,.35)", rot: 1.5, label: "server", labelSize: 58, seed: 9 });
+  const a1 = Collage.arrow(s2w, { id: "a1", x: 240, y: 475, len: 120, color: "#FF6A3D", rot: 90 });
+  const a2 = Collage.arrow(s2w, { id: "a2", x: 720, y: 475, len: 120, color: "#FF6A3D", rot: 90 });
+  const a3 = Collage.arrow(s2w, { id: "a3", x: 240, y: 712, len: 100, color: "#FF6A3D", rot: 90 });
+  const a4 = Collage.arrow(s2w, { id: "a4", x: 720, y: 712, len: 100, color: "#FF6A3D", rot: 90 });
+  Collage.stopIn(tl, host, 3.0, { dy: -120, rot: 5, steps: 5, dur: 0.4 });
+  Collage.stopIn(tl, cA, W("each") - 0.1, { dx: -260, dy: 0, rot: -6, steps: 4, dur: 0.34 });
+  Collage.stopIn(tl, cB, W("each") + 0.04, { dx: 260, dy: 0, rot: 6, steps: 4, dur: 0.34 });
+  [a1, a2].forEach((a, i) => Collage.stopIn(tl, a, 4.78 + i * 0.06, { dy: -30, rot: 0, steps: 3, dur: 0.22 }));
+  Collage.stopIn(tl, sA, W("server") - 0.05, { dx: -260, dy: 0, rot: -6, steps: 4, dur: 0.34 });
+  Collage.stopIn(tl, sB, W("server") + 0.09, { dx: 260, dy: 0, rot: 6, steps: 4, dur: 0.34 });
+  [a3, a4].forEach((a, i) => Collage.stopIn(tl, a, 5.35 + i * 0.06, { dy: -30, rot: 0, steps: 3, dur: 0.22 }));
+  const hH = hl(s2w, "hH", 120, 270, 840, 230); drawHL(hH, W("host") - 0.05);
+  tl.to(hH, { opacity: 0, duration: 0.2 }, W("host") + 0.9);
+  const hC1 = hl(s2w, "hC1", 84, 544, 432, 172), hC2 = hl(s2w, "hC2", 564, 544, 432, 172);
+  drawHL(hC1, W("client") - 0.05); drawHL(hC2, W("client") + 0.08);
+  const bot2 = Robot.create(s2w, { id: "bot2", w: 230, x: -300, y: 1018 });
+  bot2.blinks(tl, 3.0, 7.0, 1.2);
+  const w2 = bot2.walk(tl, 2.5, 0.9, 300, { fromX: -300, steps: 3 });
+  bot2.aimPoint(tl, W("host") - 0.32, { x: 300, y: 1018, scale: 1, target: [540, 400], hold: 0.7 });
+  bot2.aimPoint(tl, W("client") - 0.2, { x: 300, y: 1018, scale: 1, target: [300, 640], hand: "L", hold: 0.6 });
+
+  /* ---------- SCENE 3 (dark): tools / resources / prompts, then "connect one" ---------- */
+  div(s3w, "k3", "kicker k-dark", "", "WHAT A SERVER OFFERS");
+  tl.from("#k3", { opacity: 0, x: -30, duration: 0.3 }, 6.6);
+  const mk = (id, y, fill, big, small, from, seed, at) => {
+    const p = Collage.paper(s3w, { id, x: 90, y, w: 900, h: 200, fill, dots: "rgba(12,16,32,.16)", rot: seed % 2 ? 1.2 : -1.2, label: big, labelSize: 76, seed });
+    p.querySelector(".lbl").style.paddingBottom = "44px";
+    const s = document.createElement("div"); s.className = "sub"; s.style.color = "#0C1020"; s.textContent = small; p.appendChild(s);
+    Collage.stopIn(tl, p, at, { dx: from, dy: 0, rot: from > 0 ? 5 : -5, steps: 5, dur: 0.38 });
+  };
+  mk("cTools", 310, "#FF6A3D", "TOOLS", "actions the model can call", -300, 21, W("tools", 1) - 0.1);
+  mk("cRes", 550, "#FFC83D", "RESOURCES", "data it can read", 300, 22, W("resources") - 0.1);
+  mk("cPrm", 790, "#6FA8FF", "PROMPTS", "reusable templates", -300, 23, W("prompts") - 0.1);
+  const t3 = Term.card(s3w, { id: "t3", x: 60, y: 1070, w: 660, title: "connect a server", font: 40, lines: [{ t: "$ claude mcp add \\", c: "prompt" }, { t: "  --transport http …", c: "hl" }] });
+  tl.from(t3, { opacity: 0, scale: 0.85, y: 30, duration: 0.3, ease: "back.out(2)" }, W("Connect") - 0.1);
+  Term.type(tl, t3, W("Connect") + 0.1, 60);
+  const bot3 = Robot.create(s3w, { id: "bot3", w: 230, x: 800, y: 1018 });
+  bot3.blinks(tl, 6.8, 11.0, 1.1);
+  bot3.look(tl, W("tools", 1), -3, -4, 0.2); bot3.look(tl, W("prompts") + 0.3, -3, 4, 0.2);
+  bot3.aimPoint(tl, W("Connect") + 0.05, { x: 800, y: 1018, scale: 1, target: [380, 1150], hand: "L", hold: 0.5 });
+  bot3.react(tl, W("act") - 0.2, "celebrate");
+  tl.fromTo(s3w, { scale: 1.0 }, { scale: 1.04, duration: 4.5, ease: "sine.inOut", transformOrigin: "540px 700px" }, 6.6);
+
+  /* ---------- Transitions (original continuous-camera presets) ---------- */
+  tl.set(st1, { opacity: 0 }, 2.4);
+  Cam.cardGrow(tl, $("fx"), 2.4, 0.55, { id: "carrier1", x: 300, y: 1130, w: 480, h: 170, r: 26, color: "#F5F0E6", from: "#s1i", label: "ONE COMMAND", labelSize: 58, rot: -4 });
+  Cam.whip(tl, 6.45, 0.6, { out: "#s2i", inn: "#s3i", dir: 1, blur: 24 });
+  Cam.push(tl, 11.2, 0.5, { out: "#s3i", inn: "#s4i", ox: 540, oy: 700, scale: 4 });
+
+  /* ---------- SCENE 4: signature ending ---------- */
+  const bot4 = Robot.create(s4i, { id: "bot4", w: 300, x: -400, y: 470 });
+  Outro.build(tl, s4i, 11.35, { bot: bot4, cx: 390, y: 470, fromX: -400 });
+
+  /* ---------- Subtitles (word-timed, tag style, kept below all code/UI) ---------- */
+  Captions.build(tl, $("capLayer"), E.words, { style: "tag", bottom: 350, active: "#D93F12", maxWords: 4, maxChars: 22 });
+
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

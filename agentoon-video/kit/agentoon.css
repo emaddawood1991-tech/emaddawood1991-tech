@@ -1,0 +1,68 @@
+/* Agentoon.ai kit: tokens, fonts, base components. Episodes override :root tokens per look. */
+@font-face { font-family: "Fraunces"; src: url("fonts/Fraunces-normal.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
+@font-face { font-family: "Fraunces"; src: url("fonts/Fraunces-italic.woff2") format("woff2"); font-weight: 100 900; font-style: italic; }
+@font-face { font-family: "Inter"; src: url("fonts/Inter-normal.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
+@font-face { font-family: "JetBrains Mono"; src: url("fonts/JetBrainsMono-normal.woff2") format("woff2"); font-weight: 100 800; font-style: normal; }
+
+:root {
+  /* brand (fixed) */
+  --ag-cyan: #60CDFF;
+  --ag-navy: #0B1630;
+  --ag-teal: #19B5A5;
+  --ag-red: #E5484D;
+  /* look tokens (episode overrides) */
+  --ink: #0C1020;
+  --paper: #F5F0E6;
+  --coral: #FF6A3D;
+  --mint: #2FE3B2;
+  --sky: #6FA8FF;
+  --sun: #FFC83D;
+  --display: "Fraunces", Georgia, serif;
+  --body: "Inter", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html, body { margin: 0; padding: 0; background: #000; }
+body { font-family: var(--body); -webkit-font-smoothing: antialiased; }
+#root { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.scene { position: absolute; inset: 0; overflow: hidden; }
+.scene .inner { position: absolute; inset: 0; }
+.bg-fill { position: absolute; inset: 0; }
+
+/* paper grain overlay (static noise, deterministic seed) */
+.grain { position: absolute; inset: 0; pointer-events: none; opacity: .16; mix-blend-mode: multiply; }
+
+/* terminal / code card */
+.term {
+  position: absolute; border-radius: 34px; overflow: hidden;
+  background: #0E1424; color: #E8EEF9; border: 3px solid #1E2A47;
+  box-shadow: 0 40px 80px rgba(0,0,0,.45);
+}
+.term .bar { height: 76px; display: flex; align-items: center; gap: 14px; padding: 0 28px; background: #162038; }
+.term .bar i { width: 22px; height: 22px; border-radius: 50%; display: block; }
+.term .bar b { margin-left: 18px; font: 600 28px var(--mono); color: #8EA0C8; }
+.term .body { padding: 34px 36px; font: 500 38px/1.5 var(--mono); }
+.term .ln { white-space: pre; overflow: hidden; }
+.term .prompt { color: var(--mint); }
+.term .cmt { color: #7C8BB0; }
+.term .hl { color: var(--sun); }
+.term .url { color: var(--cyan, #60CDFF); }
+
+/* subtitles */
+.cap-band { position: absolute; left: 60px; right: 120px; display: flex; justify-content: center; }
+.cap-chunk { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 24px; opacity: 0; }
+.cap-word { display: inline-block; font: 800 64px/1.15 var(--body); letter-spacing: -.01em; }
+.cap-style-tag .cap-chunk { padding: 20px 34px 24px; border-radius: 28px; background: var(--cap-bg, #FFFDF7); border: 4px solid var(--cap-stroke, #0C1020); box-shadow: 8px 8px 0 var(--cap-shadow, #0C1020); }
+.cap-style-tag .cap-word { color: var(--cap-idle, #0C1020); }
+.cap-style-bar .cap-chunk { padding: 18px 32px 22px; border-radius: 22px; background: var(--cap-bg, rgba(9,14,28,.82)); }
+.cap-style-bar .cap-word { color: var(--cap-idle, #DCE6FA); }
+.cap-style-plain .cap-word { color: var(--cap-idle, #fff); text-shadow: 0 4px 18px rgba(0,0,0,.55); }
+
+/* paper collage pieces */
+.paper { position: absolute; }
+.paper .face { position: absolute; inset: 0; }
+.paper .lbl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; font: 800 54px/1.05 var(--display); }
+
+/* robot wrapper */
+.ag-bot { position: absolute; left: 0; top: 0; transform-origin: 50% 100%; }
+.ag-bot svg { display: block; overflow: visible; }

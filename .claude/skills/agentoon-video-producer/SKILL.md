@@ -65,7 +65,7 @@ When the user provides Instagram/TikTok numbers, analyse retention drop points m
 | gbro-collage-broll | Paper-collage B-roll idea | MIT, but needs paid Gemini API | **Skip the workflow.** Build the collage effect locally. |
 | Local TTS | Narration | Kokoro (free, on-device) or edge-tts | Confirm availability first; no paid TTS. |
 
-If the user's own kit exists (`robot.js`, `captions.js`, `camera.js`, `track.js`, `termplayer.js`, `collage.js`, `agentoon.css`, `looks.json`, `new-episode.sh`, `engine/hf.sh`), use it. If a file is missing in this checkout, say so and build or restore it; never pretend it exists.
+**Kit in this repo:** `agentoon-video/kit/` (`robot.js`, `outro.js`, `captions.js`, `camera.js`, `collage.js`, `term.js`, `agentoon.css`, `py/build_audio.py`; docs in `kit/README.md`, licences in `kit/LICENSES.md`). Scaffold a new episode with `agentoon-video/new-episode.sh <NN-slug>`; `episodes/00-quality-test/` is the reference build (rendered, validated). Never reuse its look for a real episode. Render with `npx hyperframes check` then `render --quality delivery --fps 30` inside the episode folder. If the user's own kit (`track.js`, `termplayer.js`, `looks.json`, `engine/hf.sh`) is also present, use it; if a file is missing, say so and build it; never pretend it exists.
 
 ## References
 
