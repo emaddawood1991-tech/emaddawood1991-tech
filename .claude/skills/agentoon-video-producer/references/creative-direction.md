@@ -2,6 +2,9 @@
 
 **SAME BRAND. DIFFERENT VISUAL EXPERIENCE. EVERY VIDEO.**
 
+## Fresh direction per episode (reference-informed)
+Before choosing a look, pick **one hero technique, one carrier, one transition family and one environment arc** from the technique↔topic table in `reference-analysis.md`. The set must differ from the previous episode's. The look (palette, type, texture) then follows from that set and the topic's physical metaphor. Take grammar from Lemo Opuscar styles; never imitate another creator's branding, and keep the robot, wordmark and single-CTA ending.
+
 ## Procedure (do this before any code)
 
 1. **Read the style ledger below.** The new episode must differ from the previous one in background, typography treatment, motion language and camera grammar, not only in colour.
@@ -46,6 +49,8 @@ Built with HTML, CSS, SVG, canvas and GSAP: flat colour paper fields, halftone-d
 | FreeLLMAPI (approved, do not modify) | Cream editorial paper plus one blue routing cable the camera follows | light cream, navy ending | editorial headline + mono | continuous track along cable, 3D tilt into ending | per-episode paper style | done |
 | 00-quality-test (tooling test, not published) | "Paper Switchboard": ink terminal hook, cream collage paper diagram, cut-paper tool cards | ink / cream / ink / navy | Fraunces display + JetBrains Mono | cardGrow, whip, push; stop-motion pops; slow push-ins | white paper tag, coral active word | 2026-10-17 |
 | 01 How MCP servers work | "The Blueprint Sheet": drawing that draws itself; one continuous camera down four figures; ink terminals for the real demo; one red stamp | ink / cyanotype blue / white sheet / ink / white / navy | Fraunces italic notes + JetBrains Mono | whip, sheet drop, push-through, card grow; camera flies between figures | double-rule drawing notes on navy | 2026-10-17 |
+| Engine Test02 "HTML → MP4" (reference, do not modify) | Phone collage → iris → code card → whip → terminal → tilted GitHub tour with drawn highlights → iris | dark stage / cream / dark / teal-purple gradient / navy | ghost hero word, mono terminal | iris match-cut, whip with chroma streak, zoom-to-detail | karaoke pill, blue word block | reference |
+| Engine Test01 "New engine" (reference, do not modify) | GitHub scroll → terminal → perspective collapse into yellow paper collage → iris | cream / dark / yellow / navy | bold sans titles | scroll dolly, 3D collapse, stop-motion assembly | karaoke pill | reference (old LIKE·FOLLOW·SHARE ending, retired) |
 | _next episode_ | | | | | | |
 
 ## Anti-patterns

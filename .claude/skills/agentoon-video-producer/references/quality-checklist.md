@@ -17,6 +17,7 @@ Permanent principle: **SAME BRAND. DIFFERENT VISUAL EXPERIENCE. EVERY VIDEO.**
 - [ ] **Readable mobile interfaces:** commands, GitHub pages and results large enough for a phone.
 - [ ] **Correct Agentoon.ai branding:** original robot, logo, wordmark.
 - [ ] **A concise signature ending:** one clear follow CTA.
+- [ ] **Alive, not attractive-only:** diagrams build progressively, nothing appears fully formed; no dead holds; a burst of motion about every 3 s (see section 12).
 - [ ] `npx hyperframes lint` and `check` are clean (or the project's equivalent).
 
 ## 1. Pre-production research and story planning
@@ -82,11 +83,23 @@ Permanent principle: **SAME BRAND. DIFFERENT VISUAL EXPERIENCE. EVERY VIDEO.**
 - [ ] When the user provides Instagram or TikTok metrics: analyse retention, average watch time, completion rate, saves and shares; map drop points to scenes; propose concrete changes for future videos.
 - [ ] Do not invent analytics. If no metrics were provided, say so.
 
+## 12. Motion and liveliness (from `reference-analysis.md`)
+- [ ] **Fresh direction:** one hero technique, one carrier, one transition family and one environment arc chosen for this topic; not the previous episode's combination.
+- [ ] **Progressive build:** every diagram, list, wire and collage assembles piece by piece, each piece timed to its narrated word (±0.1 s).
+- [ ] **Real UI at readable size:** crops of real pages, sessions or logs, zoomed to the narrated detail, with a drawn-on highlight, held ≥ 1 s, then released. No whole-desktop shots.
+- [ ] **Camera has intent:** continuous moves carried by something on screen (cable, scroll, zoom-through, growing shape); motion blur on fast moves; slow push-in or parallax drift during holds.
+- [ ] **Layered frame:** environment, UI card with depth (tilt or shadow), robot and chips, hero type; no large empty zone next to small content; light and dark environments alternate.
+- [ ] **Hero typography moment** in the hook or the key claim (giant number or word that moves, is struck, swaps or sits behind the subject).
+- [ ] **Authenticity chips** on every real capture; trimmed or sped-up footage labelled.
+- [ ] **Robot works on the interface** in every scene (perch, peek, press, pull, climb, point, react), not only beside it.
+- [ ] **Motion profile passes** (`scripts/motion-profile.sh`): mean energy ≥ 4, alive time ≥ 55 %, no static stretch ≥ 2.5 s before the last 3 s, no gap between motion bursts longer than about 3 s. Compare with the reference bar in `reference-analysis.md`.
+- [ ] **Subtitles:** word-block karaoke mechanic (active word in a filled block or equivalent), below all UI and code.
+
 ## Delivery note template
 ```
 Video: <path>   (1080x1920, <fps> fps, <duration>)
 Concept: <one line>   Takeaway: <one line>
-Checks: wpm <n>, loudness <LUFS>, true peak <dBTP>, longest silence <s>
+Checks: wpm <n>, loudness <LUFS>, true peak <dBTP>, longest silence <s>, motion mean <n>, longest burst gap <s>
 Sources: <links>
 Unverified / simulated: <list or "none">
 ```

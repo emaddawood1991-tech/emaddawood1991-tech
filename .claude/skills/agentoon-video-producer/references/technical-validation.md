@@ -27,6 +27,12 @@ ffmpeg -nostats -i video.mp4 -af silencedetect=noise=-35dB:d=1.0 -f null - 2>&1 
 ```
 No silent gap longer than about **1 s** (a deliberate beat before the ending is the only exception). Narration speed: `words ÷ (speaking_seconds ÷ 60)` must be about **155–170 wpm**. Count words from the script, and use the voice duration (audio length minus leading/trailing silence).
 
+## Motion profile (liveliness gate)
+```bash
+bash ${CLAUDE_SKILL_DIR}/scripts/motion-profile.sh video.mp4
+```
+Read-only. Prints hard cuts, motion energy per 0.5 s, mean energy, alive-time share, bursts per minute, static stretches and the longest gap between bursts. Bar from the approved references: mean energy 4.4–6.3, alive time 57–83 %, 20–36 bursts per minute, longest gap 2.5–4 s. Targets for new episodes: mean ≥ 4, alive ≥ 55 %, no static stretch ≥ 2.5 s before the last 3 s, gap ≤ ~3 s. Long episodes may sit slightly below the per-minute burst rate, but never above a ~4 s gap. Fix a failure by adding a camera move, parallax drift, a hero-type or transition beat, or an interface interaction; never by adding meaningless motion.
+
 ## Phone-size review
 ```bash
 mkdir -p video-review
@@ -37,7 +43,8 @@ Look at frames at about 390 px wide. Check:
 - Commands, URLs and GitHub text are readable at that size (if not, zoom into the detail).
 - Subtitles do not cover code, buttons or results.
 - Contrast holds on both bright and dark backgrounds.
-- No overcrowded scenes; one focal point per beat.
+- No overcrowded scenes; one focal point per beat, and no large empty zone beside small content (layer environment, UI card, robot, chips, hero type).
+- Real UI crops are zoomed until their text is readable at this width; hold each at least 1 s.
 
 ## Safe areas (1080×1920)
 Keep important text and UI inside:

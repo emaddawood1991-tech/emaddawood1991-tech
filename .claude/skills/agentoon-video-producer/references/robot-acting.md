@@ -27,6 +27,16 @@ Stays clear of: <code / text it must not cover>
 - **nod / shrug / wag** — small beats for agreement, uncertainty, friendliness.
 - **outro** — the signature ending: glow, wave, centre, single follow CTA.
 
+### Interface interactions (from the reference videos; do these, not only looks and poses)
+- **perch:** stands on a card, window or page edge and is carried by the camera with it (feet locked to the edge).
+- **peek:** rises behind or over a card, looks at the content, then reacts or ducks.
+- **press:** taps a key cap (ENTER), a button or a toggle; the UI responds on contact, not before.
+- **climb / ride:** climbs the page edge or rides a scrolling page while looking at the highlighted detail.
+- **pull / carry:** holds the cable end, a plug or a card; the carrier line follows the hand.
+- **look-at:** eyes and head turn to the exact detail the highlight is drawing around, a beat before the outline appears (the viewer follows the robot's gaze).
+- **react to state:** worried at ✗ red, cheering at ✓ green, squint while the progress bar fills, wow at the final number.
+A scene must contain at least **one interface interaction** plus one expression change. Standing still next to content is not acting.
+
 ## Principles (from character-animation practice; ClaudeAnimationBase, MIT)
 - **Anticipation:** a small opposite move before a big one (crouch before hop, lean before point).
 - **Slow in, slow out:** ease every move; no constant-speed motion.
@@ -55,6 +65,7 @@ Stays clear of: <code / text it must not cover>
 | Takeaway / ending | warm wave, glow |
 
 ## Review questions
+- Does the robot touch the interface (perch, peek, press, climb, pull) at least once per scene?
 - Does the robot react to what just happened on screen?
 - Is it looking at the right thing in each shot?
 - Did any acting beat get too short to read, or too long?

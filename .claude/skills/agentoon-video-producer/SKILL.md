@@ -28,7 +28,7 @@ Apply this standard automatically. Do not ask production questions it already an
 1. Research the tool from primary sources (repo, docs, pricing/support pages). Verify every claim; record the source of each. Copy GitHub links and install commands from the real repo and test them.
 2. Write the story: PROBLEM → DISCOVERY → SOLUTION → REAL DEMO → RESULT → TAKEAWAY. The viewer must know why the tool matters before any install command. One-sentence takeaway. No list of disconnected features.
 3. Beat sheet using `references/retention-editing.md`: hook in 0–2 s, a new discovery/demo/surprise every 5–8 s, a camera or reveal change every 2–4 s. Length 60–90 s (max 1:50); short tests 10–15 s.
-4. Pick a NEW visual concept (`references/creative-direction.md`) and log it in the style ledger there.
+4. Pick a NEW visual direction for this topic: choose one hero technique, one carrier, one transition family and one environment arc from the technique↔topic table in `references/reference-analysis.md` (never the previous episode's combination), then log it in the style ledger in `references/creative-direction.md`. Add an **energy line** to the beat sheet: a burst (transition, camera move, transform, big reveal) about every 3 s, and a named motion for every hold.
 5. Write the robot acting plan per scene (`references/robot-acting.md`): feeling / looking at / doing / reaction to the software result.
 6. Show the plan (logline, beats, concept, acting) to the user only if they asked for approval gates; otherwise proceed.
 
@@ -41,12 +41,14 @@ Confident, energetic tech-creator voice, measured **155–170 wpm**, natural rhy
 ### 4. Build
 Primary engine: **HyperFrames** (Apache-2.0), local render only. Compose one continuous world (interface → explanation graphic → real result) joined by a visual device, using layered depth, masked reveals, camera moves, kinetic subtitles and original paper-collage B-roll built in HTML/CSS/SVG/GSAP. Keep reusable components in a shared kit and each episode in its own folder.
 
+**Liveliness rules (from the reference analysis, `references/reference-analysis.md`):** diagrams and lists build progressively on their words, never fully formed; real interfaces are cropped to the readable detail, zoomed to on the narrated word with a drawn-on highlight, then released; transitions are carried by something on screen (cable, scroll, zoom-through, shape that grows into the next scene) with motion blur on fast moves; the frame is layered (environment, tilted UI card with shadow, robot and chips, hero type) with no large empty zones; every hold keeps moving (slow push-in, parallax drift, typing, wire drawing, robot action); the robot works on the interface in every scene.
+
 ### 5. Subtitles and sound
 Word-timed kinetic subtitles, style chosen per episode, never over code or key UI, inside platform safe areas. Voice clearly above music; music 18–24 dB under with ducking and subtle changes between discovery, demo and result; small SFX only on meaningful actions; whooshes/glitches/impacts sparingly. About −15 LUFS, true peak ≤ −1 dBTP, no clipping.
 
 ### 6. Validate, review, deliver
 1. Run the pre-render list in `references/quality-checklist.md`.
-2. Render the MP4, then run `bash ${CLAUDE_SKILL_DIR}/scripts/validate-render.sh <video.mp4> [word_count]` (details in `references/technical-validation.md`).
+2. Render the MP4, then run `bash ${CLAUDE_SKILL_DIR}/scripts/validate-render.sh <video.mp4> [word_count]` and `bash ${CLAUDE_SKILL_DIR}/scripts/motion-profile.sh <video.mp4>` (details in `references/technical-validation.md`). Fix dead holds and a motion gap longer than ~3 s before delivery.
 3. Review the actual MP4: contact sheets at every scene and seam, the phone-size sheet, audio, timing, spelling, robot acting, branding. Fix significant problems, re-render to a new filename, re-check.
 4. Deliver the file path, a short summary, sources, and anything unverified or version-dependent.
 
@@ -75,4 +77,6 @@ When the user provides Instagram/TikTok numbers, analyse retention drop points m
 - `references/technical-validation.md` — ffprobe, audio, safe areas, mobile readability
 - `references/robot-acting.md` — expressive mascot performance
 - `references/retention-editing.md` — hooks, pacing, storytelling, narration
+- `references/reference-analysis.md` — techniques from the approved reference videos, measured benchmarks, technique↔topic table, kit backlog
 - `scripts/validate-render.sh` — automated post-render checks and phone-size contact sheet
+- `scripts/motion-profile.sh` — motion energy, hard cuts, static stretches, longest gap between motion bursts (read-only)

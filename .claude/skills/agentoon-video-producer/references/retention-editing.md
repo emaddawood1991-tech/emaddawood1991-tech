@@ -34,11 +34,14 @@ The viewer must understand **why the tool matters before any installation comman
 - Zoom into the line, row or badge being discussed instead of showing a whole desktop.
 - Do not hold a static frame longer than the viewer needs to read it.
 
+## Rhythm: burst, busy hold, burst (from the references)
+The approved references run at one motion burst (transition, camera move, transform, big reveal) about every 2–3 s, with 1.5–2.5 s holds between. Holds are never dead: a slow push-in, parallax drift, typing, a wire drawing, a robot action or a highlight sweep keeps them alive. Put the burst on the narrated word or sentence boundary so picture and voice land together. Hook patterns that work in this style: a giant number or word struck through, a real session rising from the bottom, the real result already on screen.
+
 ## Beat sheet template
 ```
 Logline: <tool> lets you <result>, but <problem>, so <solution>.
 Takeaway: <one sentence>
-# | Time | Narration (words) | Visual / camera | Real footage? | Robot | New info?
+# | Time | Narration (words) | Visual / camera | Real footage? | Robot (interaction) | New info? | Energy (burst / busy hold: what moves)
 ```
 Mark every row where something new appears. Gaps over 8 s without a new thing are a defect.
 
@@ -52,7 +55,7 @@ Mark every row where something new appears. Gaps over 8 s without a new thing ar
 - Word budget: 60 s ≈ 155–170 words, 75 s ≈ 195–215, 90 s ≈ 235–255.
 
 ## Subtitles as part of retention
-- Word-timed, kinetic, readable at phone size, style matched to the episode look.
+- Word-timed, kinetic, readable at phone size, style matched to the episode look. Keep the word-block mechanic from the references: the active word sits in a filled block that hops word to word (colour, shape and font vary per episode).
 - Break at sentence ends; merge spoken spellings into the real name ("dot A I" → `.ai`).
 - Never cover code, URLs, buttons or results; reposition per scene if needed.
 

@@ -17,5 +17,6 @@ Always:
 - Sound: voice above music, subtle music changes, meaningful SFX, sparing whooshes/glitches; about −15 LUFS, true peak ≤ −1 dBTP, no clipping.
 - Verify every technical claim and use real demos and real GitHub links/commands. Never fabricate results or analytics. Never show keys, codes, passwords or the user's email.
 - Free, local tools only (HyperFrames primary). No paid services, APIs, credits or subscriptions without explicit approval; check licences first. OneTake is noncommercial: ideas only. Skip the paid Gemini collage workflow.
-- After rendering, review the actual MP4 (`scripts/validate-render.sh`, phone-size sheet, seams) and fix significant problems before delivery.
+- Motion (from the reference analysis, `references/reference-analysis.md`): pick a fresh hero technique + carrier + transition family + environment arc per episode; diagrams and lists build progressively on their words; real UI is cropped, zoomed to the narrated detail with a drawn-on highlight; transitions are carried by something on screen with motion blur; every hold keeps moving; the robot works on the interface (perch, peek, press, climb, pull); a motion burst about every 3 s. Never imitate another creator's branding; keep the single "+ Follow Agentoon.ai" ending.
+- After rendering, review the actual MP4 (`scripts/validate-render.sh`, `scripts/motion-profile.sh`, phone-size sheet, seams) and fix significant problems before delivery.
 - Analyse Instagram/TikTok metrics only when the user provides them.
