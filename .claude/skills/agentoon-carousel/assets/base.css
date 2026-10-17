@@ -10,10 +10,12 @@
   --coral:#FF6A3D; --mint:#2FE3B2; --sky:#6FA8FF; --sun:#FFC83D;
   --serif:"Fraunces",Georgia,serif; --sans:"Inter","Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   --pad:72px;
-  /* Instagram safe area: essential content stays >=120px from top/bottom and >=70px from left/right (editor/grid crops) */
-  --safe-top:120px; --safe-bottom:120px; --safe-x:72px;
-  --pad-top:126px;    /* safe-top + 6px: glyph boxes of 26px labels extend ~4px beyond the line box */
-  --pad-bottom:224px; /* safe-bottom + footer (~76) + 28px gap */
+  /* Instagram safe area (conservative): essential content stays inside top 100 / bottom 180 / left+right 70 px.
+     The footer, slide number, mascot and every important graphic sit ABOVE the bottom boundary (y = 1170). */
+  --safe-top:100px; --safe-bottom:180px; --safe-x:70px;
+  --mascot-top:138px; /* header mascots start below the 1:1 centre-crop line (135px) so they survive a 1:1 crop */
+  --pad-top:106px;    /* safe-top + 6px: glyph boxes of 26px labels extend ~4px beyond the line box */
+  --pad-bottom:284px; /* safe-bottom + footer (~76) + 28px gap  -> content area is ~960px tall */
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#05070f}
@@ -87,3 +89,4 @@ code.mono{background:var(--card-2);padding:.02em .28em;border-radius:10px;font-w
 .badge{display:inline-flex;align-items:center;gap:10px;font:700 26px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:11px 16px;border-radius:12px;background:var(--fg);color:var(--bg);white-space:nowrap}
 .badge.hot{background:var(--accent);color:var(--on-accent)}
 .badge.ghost{background:transparent;color:var(--fg);border:2px solid var(--line)}
+mark.ph{background:var(--accent);color:var(--on-accent);padding:0 8px;border-radius:8px;font-weight:700}

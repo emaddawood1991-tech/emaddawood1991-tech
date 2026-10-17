@@ -4,7 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { layouts, diagrams, esc } from "./lib.mjs";
+import { layouts, diagrams, ills, esc } from "./lib.mjs";
 import "./diagrams-generic.mjs";
 import "./layouts-extra.mjs";
 
@@ -26,6 +26,7 @@ if (fs.existsSync(extrasPath)) {
   const kit = await import("./kit.mjs");
   const r = typeof ex.default === "function" ? await ex.default(kit) : ex; // default export receives the kit: no import paths needed
   Object.assign(diagrams, r.diagrams || {});
+  Object.assign(ills, r.ills || {});
   Object.assign(layouts, r.layouts || {});
   extraCss = r.css || "";
 }
@@ -45,7 +46,7 @@ const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=1080">
 <title>${esc(cfg.title)} — Agentoon.ai carousel</title>
-<link rel="stylesheet" href="assets/base.css">${cfg.legacyMargins ? "\n<style>:root{--safe-top:72px;--safe-bottom:48px;--pad-top:72px;--pad-bottom:150px}</style>" : ""}${extraCss ? '\n<link rel="stylesheet" href="assets/extra.css">' : ""}
+<link rel="stylesheet" href="assets/base.css">${cfg.legacyMargins ? "\n<style>:root{--safe-top:72px;--safe-bottom:48px;--safe-x:72px;--pad-top:72px;--mascot-top:50px;--pad-bottom:150px}</style>" : ""}${extraCss ? '\n<link rel="stylesheet" href="assets/extra.css">' : ""}
 </head><body>
 ${sprite}
 <main class="deck">

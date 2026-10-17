@@ -3,11 +3,11 @@
 | Check | Rule |
 |---|---|
 | Canvas | Every PNG exactly 1080 × 1350 (checked from the PNG header) |
-| Instagram safe area | Text, cards, pills, code boxes, callouts, diagrams, mascot and footer ≥ 120px from top/bottom and ≥ 70px from left/right. `safe-area-check.png` shades the unsafe zones red |
+| Instagram safe area | Text, cards, pills, code boxes, callouts, diagrams, mascot, footer and slide number: top ≥ 100px, bottom ≥ 180px (above y = 1170), left/right ≥ 70px. `safe-area-check.png` shades the unsafe zones red; `preview-1x1-crop.png` simulates a 1:1 centre crop (informational: margins cannot fix a wrong aspect ratio) |
 | Text size (px @1080) | labels/kicker/footer ≥ 26 · body & explanations ≥ 30 · code ≥ 32 · diagram text ≥ 28 |
 | Phone test | `mobile-preview.png` = every slide at 390 px wide (1×). 30px ≈ 10.8pt, 32px ≈ 11.6pt on a 390pt phone. Read it, not just the full-size PNGs |
 | Contrast | WCAG ≥ 4.5:1 (≥ 3:1 for text ≥ 40px), measured against the colour really painted behind each text node (HTML + SVG) |
-| Grid | content blocks start at x = 72px; content area ≈ 1000px tall |
+| Grid | content blocks start at x = 72px; content area ≈ 960px tall |
 | Alignment | every stacked block starts at x = 72px and ends ≤ 1008px |
 | Footer | ≥ 24px between the last block and the footer rule |
 | Overflow | no content wider/taller than its card, pill, code box or callout; no child spilling out of its container |
@@ -20,7 +20,7 @@ Output: `qa-report.md` (smallest font, phone pt size, lowest contrast per slide)
 
 ## Manual review (the gate cannot judge these)
 
-1. Open every `png/slide-NN.png`, `mobile-preview.png` and `safe-area-check.png` (nothing important may touch the red zones).
+1. Open every `png/slide-NN.png`, `mobile-preview.png`, `safe-area-check.png` (nothing important may touch the red zones) and `preview-1x1-crop.png` (titles, prompts, diagrams, CTA and footer must survive).
 2. Headline line breaks (no one-word orphans), awkward wraps in callouts, unbalanced empty space.
 3. Layout variety: different diagram, theme, and block order on neighbouring slides, same type/colour/footer system.
 4. Mascot mood fits the slide (hook = wow, review = focus, plan = think, loop = dizzy, error = oops, CTA = cheer).

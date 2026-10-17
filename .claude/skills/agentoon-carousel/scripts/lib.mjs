@@ -39,8 +39,11 @@ export const line = (x1, y1, x2, y2, o = {}) =>
 export const MUTED = "var(--muted)", ACC = "var(--accent-t)", ONA = "var(--on-accent)";
 /** Generic, JSON-driven diagram types register here (see diagrams-generic.mjs): {type:"flow"|"fanout"|…, …} */
 export const genericDiagrams = {};
+/** Named HTML/SVG illustration builders registered by a carousel's extras.mjs ({ ills: { name: () => html } }). */
+export const ills = {};
 export const renderDiagram = (d) => {
   if (typeof d === "function") return d();
+  if (typeof d === "string" && ills[d]) return ills[d]();
   if (typeof d === "string") { if (!diagrams[d]) throw new Error(`Unknown diagram "${d}"`); return diagrams[d](); }
   if (!genericDiagrams[d.type]) throw new Error(`Unknown diagram type "${d.type}"`);
   return genericDiagrams[d.type](d);
@@ -141,7 +144,7 @@ export const layouts = {
   hook(s, ctx) {
     return shell(ctx, s, `
       <div class="kicker"><span class="bar"></span>${esc(s.kicker)}</div>
-      <h1 class="h1" style="margin-top:28px;font-size:120px">${fmt(s.title)}</h1>
+      <h1 class="h1" style="margin-top:24px;font-size:116px">${fmt(s.title)}</h1>
       <div class="row" style="margin-top:28px;gap:20px;align-items:flex-end">
         <div class="code" style="width:650px;flex:none;padding:26px 32px 30px;white-space:normal">
           <div class="dots"><i></i><i></i><i></i></div>
@@ -168,7 +171,7 @@ export const layouts = {
       <p class="lede" style="margin-top:20px;font-size:34px">${fmt(s.lede)}</p>
       <div class="label" style="margin-top:22px">${esc(s.label || "Know the difference: four kinds of slash command")}</div>
       <div class="stack" style="gap:12px;margin-top:14px">
-        ${s.rows.map((r) => `<div class="card row" style="gap:22px;padding:${s.rowPad || 14}px 24px;border-radius:22px;align-items:center;${r.hot ? "background:var(--card-2);border:3px solid var(--accent);" : ""}">
+        ${s.rows.map((r) => `<div class="card row" style="gap:22px;padding:${s.rowPad || 10}px 24px;border-radius:22px;align-items:center;${r.hot ? "background:var(--card-2);border:3px solid var(--accent);" : ""}">
           <div style="width:324px;flex:none;display:flex;flex-direction:column;gap:10px;align-items:flex-start"><span class="badge ${r.hot ? "hot" : r.ghost ? "ghost" : ""}">${esc(r.badge)}</span><span class="mono" style="font-size:30px;font-weight:700;color:var(--accent-t)">${esc(r.ex)}</span></div>
           <div style="font:500 32px/1.3 var(--sans)">${fmt(r.text)}</div></div>`).join("")}
       </div>${s.banner ? `<div class="grow"></div><div class="banner">${fmt(s.banner)}</div>` : ""}`);
@@ -177,7 +180,7 @@ export const layouts = {
   /* ---- 3–7 one skill per slide ---- */
   skill(s, ctx) {
     return shell(ctx, s, `
-      ${mascot(112, s.mood || "happy", "position:absolute;right:var(--safe-x);top:var(--pad-top)")}
+      ${mascot(112, s.mood || "happy", "position:absolute;right:var(--safe-x);top:var(--mascot-top)")}
       <div class="row center gap16" style="min-height:40px">
         <div class="kicker"><span class="bar"></span>Skill ${String(s.n).padStart(2, "0")} / 05</div>
       </div>
@@ -193,12 +196,12 @@ export const layouts = {
   /* ---- 8 cheat sheet ---- */
   cheatsheet(s, ctx) {
     return shell(ctx, s, `
-      ${mascot(112, "proud", "position:absolute;right:var(--safe-x);top:var(--pad-top)")}
+      ${mascot(112, "proud", "position:absolute;right:var(--safe-x);top:var(--mascot-top)")}
       <div class="kicker"><span class="bar"></span>${esc(s.kicker)}</div>
       <h2 class="h2" style="margin-top:20px">${fmt(s.title)}</h2>
       <div class="row center gap16" style="margin-top:18px"><span class="badge hot">${esc(s.badge)}</span><span style="font:600 30px/1.2 var(--sans)">${esc(s.badgeNote)}</span></div>
-      <div class="stack" style="margin-top:18px;gap:10px">
-        ${s.rows.map((r) => `<div class="card row" style="padding:14px 24px;gap:24px;border-radius:22px;align-items:center">
+      <div class="stack" style="margin-top:14px;gap:8px">
+        ${s.rows.map((r) => `<div class="card row" style="padding:9px 22px;gap:24px;border-radius:22px;align-items:center">
             <div class="mono" style="width:250px;flex:none;font-size:32px;font-weight:700;color:var(--accent-t)">${esc(r.cmd)}</div>
             <div class="stack" style="gap:4px;min-width:0">
               <div style="font:700 32px/1.2 var(--sans)">${fmt(r.use)}</div>
@@ -206,7 +209,7 @@ export const layouts = {
             </div></div>`).join("")}
       </div>
       <div class="grow"></div>
-      <div class="watch" style="padding:14px 24px;font-size:30px;flex-direction:column;gap:8px;align-items:flex-start"><span class="tag">${esc(s.legendTag)}</span><div class="stack" style="gap:4px">${s.legend.map((l) => `<div>${fmt(l)}</div>`).join("")}</div></div>`);
+      <div class="watch" style="padding:12px 22px;font-size:30px;flex-direction:column;gap:6px;align-items:flex-start"><span class="tag">${esc(s.legendTag)}</span><div class="stack" style="gap:4px">${s.legend.map((l) => `<div>${fmt(l)}</div>`).join("")}</div></div>`);
   },
 
   /* ---- 9 CTA (Follow is the hero) ---- */
@@ -215,7 +218,7 @@ export const layouts = {
         <div class="row center gap16"><span style="width:56px;height:56px;border-radius:16px;background:var(--ink);color:#F4F1EA;display:flex;align-items:center;justify-content:center;font-size:32px">${icon(ic)}</span><span style="font:800 42px/1 var(--serif)">${esc(t)}</span></div>
         <div style="font:500 32px/1.3 var(--sans);color:var(--muted)">${esc(d)}</div></div>`;
     return shell(ctx, s, `
-      ${mascot(300, "cheer", "position:absolute;right:var(--safe-x);top:var(--pad-top)")}
+      ${mascot(300, "cheer", "position:absolute;right:var(--safe-x);top:var(--mascot-top)")}
       <div class="kicker" style="color:var(--ink)"><span class="bar"></span>${esc(s.kicker)}</div>
       <h1 class="h1" style="margin-top:24px;font-size:100px">${s.titleLines.map(fmt).join("<br>")}</h1>
       <div class="stack" style="margin-top:28px;gap:16px;background:var(--ink);color:#F4F1EA;border-radius:34px;padding:30px 36px 32px;box-shadow:0 12px 0 rgba(12,16,32,.28)">

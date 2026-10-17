@@ -13,4 +13,4 @@ Accent text must use `--accent-t` (contrast-safe); text on accent fills uses `--
 
 **Composition rules** — alternate dark/paper/accent backgrounds; vary diagram shape (fan-out, staircase, flow + grid, cycle, timeline); keep a 24px gap above the footer; never fill a slide edge to edge, and keep everything essential inside the safe area.
 
-**Instagram** — 1080×1350 (4:5). Export PNG at scale 1. Safe area: 120px top/bottom, 70px sides (`--safe-top/--safe-bottom/--safe-x`); the footer lives at the safe bottom; header mascots sit at `right:var(--safe-x);top:var(--pad-top)`. Reflow content to fit; never scale the slide down.
+**Instagram** — 1080×1350 (4:5). Export PNG at scale 1. Safe area: top 100, bottom 180, sides 70 (`--safe-top/--safe-bottom/--safe-x`); the footer sits on the bottom boundary (y = 1170); header mascots at `right:var(--safe-x);top:var(--mascot-top)` (138px). Reflow content to fit; never scale the slide down.

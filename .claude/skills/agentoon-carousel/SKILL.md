@@ -17,12 +17,12 @@ Output goes to `./carousels/<slug>/` in the current project. Never overwrite or 
 
 ## Always deliver (all of it, every time)
 
-`png/slide-NN.png` (1080×1350, 7–9 slides, identical size) · `contact-sheet.png` · `mobile-preview.png` · `safe-area-check.png` · `source/` + `carousel.json` (+ `extras.mjs` if bespoke) · `qa-report.md` · `caption.md` · `<slug>.zip`. `render.mjs --zip` refuses to package without a valid `caption.md`.
+`png/slide-NN.png` (1080×1350, 7–9 slides, identical size) · `contact-sheet.png` · `mobile-preview.png` · `safe-area-check.png` (4:5) · `preview-1x1-crop.png` · `sources.md` (fact-check log) · `source/` + `carousel.json` (+ `extras.mjs` if bespoke) · `qa-report.md` · `caption.md` · `<slug>.zip`. `render.mjs --zip` refuses to package without a valid `caption.md`.
 
 ## Workflow
 
 0. `bash SKILL/scripts/setup.sh` — checks Node, Playwright, zip, pyspellchecker (installs the last one). If it prints NOT READY, fix what it says (usually `npm i -g playwright && npx playwright install chromium`).
-1. **Research** the topic in official docs/sources (WebFetch/WebSearch). Quote exact commands, names, limits. Never invent features, numbers, versions, or outputs; cut or label anything unverified. For Claude Code topics also read `SKILL/reference/verified-claude-code-commands.md` and re-check it against current docs.
+1. **Research** the topic in official docs/sources. For third-party products (connectors, plugins, tools) read *their* current docs and the host platform's docs; record every claim, its basis and status in `carousels/<slug>/sources.md`. If an official site cannot be fetched, say so, use only what you can verify, qualify the rest on the slide ("depends on your plan", "available metrics"), and never invent menus, plans, metrics or prices. Mark mock-up numbers "Demo data". Never promise results (growth, revenue) and never imply access to data without an authorized connection. Use WebFetch/WebSearch. Quote exact commands, names, limits. Never invent features, numbers, versions, or outputs; cut or label anything unverified. For Claude Code topics also read `SKILL/reference/verified-claude-code-commands.md` and re-check it against current docs.
 2. **Classify and caveat**: say what each tool/command *is* (built-in, bundled, custom, plugin, MCP, paid, beta) and what extra setup it needs. Put that on the slide.
 3. **Scaffold** `node SKILL/scripts/new.mjs "<topic>"` → `carousels/<slug>/carousel.json` from a layout recipe that differs from your earlier carousels (`how-to`, `explainer`, `toolkit`, `workflow`; override with `--recipe`).
 4. **Write the content**: replace every `TODO`. Short headlines, one idea per slide, beginner-friendly but exact. Hook = one clear promise + visual proof. Slide order: hook → problem/opportunity → concept → 3 practical slides (steps / code / prompts) → result or takeaway → bonus/limits/mistakes → CTA (Save, Share, Follow @agentoon.ai).
@@ -33,14 +33,17 @@ Output goes to `./carousels/<slug>/` in the current project. Never overwrite or 
 9. **Write `caption.md`** (format below).
 10. **Package** `node SKILL/scripts/render.mjs carousels/<slug> --zip`, then give the user: the contact sheet, the phone preview, the ZIP path, the caption, and a short note on anything unverified or version-dependent.
 
-## Instagram safe area (automatic, enforced)
+## Instagram safe area + crop checks (automatic, enforced)
 
-Instagram's editor and grid crop the top and bottom of 4:5 posts. Every slide keeps essential content (text, logos, mascot, diagrams, cards, CTA, footer) inside: **≥ 120px from top and bottom, ≥ 70px from left and right**. The canvas stays exactly 1080×1350.
-- `assets/base.css` defines it: `--safe-top 120`, `--safe-bottom 120`, `--safe-x 72`, content starts at `--pad-top 126`, content ends at `--pad-bottom 224` (footer sits at the safe bottom). Content height is therefore ~1000px (not 1128): plan copy, diagram heights and prompt cards for that.
-- If a slide overflows, **reflow, don't shrink the canvas**: tighten paddings/gaps, drop a title size by 4–8px, use a per-slide size override (`titleSize`, `promptSize`, `watchSize`, `rowPad`, `codeSize`), shorten diagram geometry, or switch layout. Never go below the minimum font sizes and don't delete required content.
-- Bespoke layouts must position mascots with `right:var(--safe-x);top:var(--pad-top)` and never use negative margins that leave the safe area.
-- `render.mjs` fails on any text, card, pill, code box, callout, diagram, mascot or footer that leaves the safe area, and on any PNG that is not 1080×1350. `safe-area-check.png` shades the unsafe zones red for a visual check.
-- Older carousels built before this rule can be reproduced exactly with `"legacyMargins": true` in `carousel.json`; never use it for new posts.
+Instagram's editor and grid can cover or crop the edges of a 4:5 image. Every slide keeps essential content (text, logos, mascot, diagrams, cards, CTA, **footer and slide number**) inside a conservative safe area: **top ≥ 100px, bottom ≥ 180px (everything sits above y = 1170), left/right ≥ 70px**. The canvas stays exactly 1080×1350 (4:5) on every slide.
+- `assets/base.css` defines it: `--safe-top 100`, `--safe-bottom 180`, `--safe-x 70`; content starts at `--pad-top 106`, ends at `--pad-bottom 284`, the footer sits on the bottom boundary. **Content height is ~960px**: plan copy, diagram heights and prompt cards for that, not for 1350.
+- Header mascots use `right:var(--safe-x);top:var(--mascot-top)` (138px, below the 1:1 crop line). Bespoke layouts must do the same and never use negative margins that leave the safe area.
+- If a slide overflows, **reflow, don't shrink the canvas or scale the slide**: tighten paddings/gaps, drop a title size by 4–8px, use per-slide overrides (`titleSize`, `promptSize`, `watchSize`, `watchPad`, `rowPad`, `codeSize`, `illMargin`), shorten diagram geometry, or change layout. Never go below the minimum font sizes; don't delete required content.
+- `render.mjs` fails on any text, card, pill, code box, callout, diagram, mascot or footer outside the safe area, and on any PNG that is not exactly 1080×1350 (read from the PNG header; all slides must match).
+- **Previews:** `safe-area-check.png` (4:5, unsafe zones shaded red) · `preview-1x1-crop.png` (simulated 1:1 centre crop: top and bottom 135px removed) · `mobile-preview.png` (390px phone scale) · `contact-sheet.png`. Look at all of them.
+- **1:1 crop report:** the gate lists what a 1:1 centre crop would clip (advisory `ℹ` lines + a section in `qa-report.md`). With a 100px top margin the small kicker label sits inside that 135px band by design; titles, prompts, diagrams, CTA and footer must survive it.
+- **Never claim margins fix a wrong aspect ratio.** They only reduce clipping risk. If Instagram's editor offers a crop control, tell the user to keep the original 4:5 (not 1:1). Say this in the hand-off when showing the crop preview.
+- Older carousels built before these rules can be reproduced with `"legacyMargins": true` in `carousel.json`; never use it for new posts.
 
 ## Variation rules (same brand, different look every time)
 
@@ -57,7 +60,8 @@ Brand stays fixed: palette, Fraunces/Inter/JetBrains Mono, footer, mascot, 72px 
 | `hook` | kicker, title, rows[{cmd,verb}], bubble, swipe, save — terminal-style hook |
 | `statement` | kicker, title, sub, chips[], swipe, save, mood, mascotSize — big-claim hook / problem / myth |
 | `concept` | kicker, title, label, lede, rows[{badge,ex,text,hot?,ghost?}], banner?, rowPad? (roomier rows) — kinds / categories |
-| `diagram` | kicker, title, text, mood, diagram, points[], watch — full-slide illustration |
+| `diagram` | kicker, title, titleSize?, text, mood, diagram (name \| spec), points[], tag?, watch — full-slide illustration |
+| `prompt` | kicker \| n+of, title, why?, prompt (with `[placeholders]`), promptStyle terminal\|note\|chat, chatWith?, ill (name \| spec), order?, tag?/watch?, banner?, titleSize/promptSize/watchSize/watchPad — copy-paste prompt + illustration |
 | `steps` | kicker, title, mood, steps[{title,text,code?}] (3–4), watch |
 | `codefocus` | kicker, title, text, code[], notes[], watch — big code or prompt with numbered notes |
 | `compare` | kicker, title, left{label,items[]}, right{label,items[]}, tag?, watch?, verdict — before/after, myth/fact, do/don't |
@@ -74,7 +78,7 @@ Every layout accepts `theme` (`dark|paper|coral|mint`). Markup: `*accent italic*
 
 Generic, JSON-driven (`"diagram": {"type": …}`): `flow` · `fanout` · `ladder` · `cycle` · `timeline` · `stack` · `grid` · `bars` · `versus` (see `scripts/diagrams-generic.mjs`; `|` = line break in labels). Named diagrams from the Claude Code example: `simplify`, `review`, `batch`, `loop`, `debug`.
 
-Bespoke: create `carousels/<slug>/extras.mjs` (the build passes you the kit, so no import paths):
+Bespoke: create `carousels/<slug>/extras.mjs` (the build passes you the kit, so no import paths). It may export `diagrams` (SVG), `ills` (named HTML/SVG illustrations usable as `diagram`/`ill`), `layouts` (whole custom slide layouts built with `shell`, `mascot`, `icon`…) and `css`:
 
 ```js
 export default ({ T, line, arrowhead, MUTED, ACC, ONA }) => ({
@@ -84,12 +88,14 @@ export default ({ T, line, arrowhead, MUTED, ACC, ONA }) => ({
 ```
 Then use `"diagram": "myMechanism"`. SVG rules: 936px wide, text ≥ 28px, theme vars only (`var(--fg) --muted --accent --accent-t --on-accent --card --line`), kit helpers `T(x,y,text,{s,w,c,a,f})`, `line(x1,y1,x2,y2)`, `arrowhead`, plus `icon`, `mascot`, `esc`, `fmt`.
 
+Brand marks (Instagram, ChatGPT, …): draw clearly simplified glyphs, label them in the hand-off, and let users drop official SVGs into `carousels/<slug>/brand/` (an extras helper can inline them). Never imply endorsement.
+
 Mascot: `mascot(width, mood)`; icons: `icon("bolt")` (see `assets/sprite.svg`: arrow bookmark send plus check x branch refresh bug spark shield layers folder file follow star clock code bolt).
 
 ## Design + quality (details in `reference/design-system.md`, `reference/quality-checklist.md`)
 
-- 1080×1350 · Instagram safe area (120px top/bottom, 70px sides) · footer inside it. Min sizes: label 26, body 30, code 32, diagram text 28, headlines ≥ 56 (px). Contrast ≥ 4.5:1 using `--accent-t` for accent text and `--on-accent` on accent fills.
-- Gate (automatic, exit 1 on failure): safe area, canvas size, sizes, contrast, margins, alignment, overflow, overlap, footer gap, mascot clearance, TODO leftovers, spelling (add legit product/tech words to `"spellAllow": [...]` in carousel.json), fonts. Then eyes on every image.
+- 1080×1350 · Instagram safe area (100px top, 180px bottom, 70px sides) · footer inside it. Min sizes: label 26, body 30, code 32, diagram text 28, headlines ≥ 56 (px). Contrast ≥ 4.5:1 using `--accent-t` for accent text and `--on-accent` on accent fills.
+- Gate (automatic, exit 1 on failure; 1:1 crop notes are informational): safe area, canvas size, sizes, contrast, margins, alignment, overflow, overlap, footer gap, mascot clearance, TODO leftovers, spelling (add legit product/tech words to `"spellAllow": [...]` in carousel.json), fonts. Then eyes on every image.
 - Never copy another creator's artwork or layouts. Original robot mascot only.
 
 ## caption.md format

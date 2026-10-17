@@ -23,7 +23,7 @@ fs.mkdirSync(png, { recursive: true });
 
 /** Quality thresholds (px at 1080 wide). A 390pt phone shows slides at 0.361×: 26px → 9.4pt, 30px → 10.8pt, 32px → 11.6pt. */
 const legacy = !!cfg.legacyMargins;
-const TH = { safeTop: legacy ? 40 : 120, safeBottom: legacy ? 40 : 120, safeX: legacy ? 40 : 70, label: 26, body: 30, code: 32, svg: 28, contrast: 4.5, contrastLarge: 3, largePx: 40, margin: 40, pad: 72, footerGap: 24, emptyWarn: 240 };
+const TH = { safeTop: legacy ? 40 : 100, safeBottom: legacy ? 40 : 180, safeX: legacy ? 40 : 70, crop11: true, label: 26, body: 30, code: 32, svg: 28, contrast: 4.5, contrastLarge: 3, largePx: 40, margin: 40, pad: legacy ? 72 : 70, footerGap: 24, emptyWarn: 240 };
 
 let browser;
 try { browser = await chromium.launch(); }
@@ -154,6 +154,14 @@ const qa = ({ n, TH }) => {
     }
   }
 
+  // ---- 3d) simulated Instagram 1:1 centre crop of a 4:5 image: the top/bottom (h-w)/2 px are lost. Advisory only.
+  const band = (sr.height - sr.width) / 2, cut = [];
+  const noteCut = (what, r) => { const top = sr.top + band - r.top, bot = r.bottom - (sr.bottom - band); if (top > 0.5 || bot > 0.5) cut.push(`${what} (${Math.round(Math.max(top, bot))}px)`); };
+  { const w3 = document.createTreeWalker(slide, NodeFilter.SHOW_TEXT); let u;
+    while ((u = w3.nextNode())) { if (!u.textContent.trim() || decor(u.parentElement)) continue; const rg = document.createRange(); rg.selectNodeContents(u); const r = rg.getBoundingClientRect(); if (r.width) noteCut(`"${u.textContent.trim().slice(0, 22)}"`, r); } }
+  for (const el of slide.querySelectorAll("[data-mascot]:not(.footer *),.card,.pill,.code,.banner,.watch,svg:not(.ic)")) { if (el.closest(".footer")) continue; if (el.tagName.toLowerCase() === "svg" && el.parentElement.closest("svg")) continue; noteCut(el.hasAttribute("data-mascot") ? "mascot" : `<${String(el.className.baseVal ?? el.className).split(" ")[0] || el.tagName.toLowerCase()}>`, el.getBoundingClientRect()); }
+  if (cut.length) out.push({ n, level: "crop", msg: `a 1:1 centre crop would clip: ${[...new Set(cut)].slice(0, 5).join(", ")}${cut.length > 5 ? ` … +${cut.length - 5}` : ""}` });
+
   // ---- 4) SVG text stays inside its own viewBox
   for (const tx of slide.querySelectorAll("svg text")) {
     const r = tx.getBoundingClientRect(), p = tx.ownerSVGElement.getBoundingClientRect();
@@ -206,12 +214,12 @@ for (const f of fs.readdirSync(png).filter((x) => x.endsWith(".png"))) {
 
 /* ------------------------------------------------------------------ contact sheet + phone-scale preview */
 const imgs = fs.readdirSync(png).filter((f) => f.endsWith(".png")).sort();
-async function sheet(name, w, cols, caption, pad = 40, gap = 28, guides = false) {
-  const h = Math.round((w * 1350) / 1080);
+async function sheet(name, w, cols, caption, pad = 40, gap = 28, guides = false, crop = false) {
+  const h = Math.round((w * 1350) / 1080), fh = crop ? w : h, shift = crop ? Math.round((h - w) / 2) : 0;
   const html = `<!doctype html><body style="margin:0;background:#05070f;font-family:Inter,sans-serif">
 <div style="padding:${pad}px ${pad}px 20px;color:#F4F1EA;display:flex;justify-content:space-between;align-items:baseline;gap:20px"><b style="font-size:${w > 380 ? 30 : 34}px">${cfg.title}</b><span style="color:#A9B0C9;font-size:${w > 380 ? 22 : 26}px">${caption}</span></div>
 <div style="display:grid;grid-template-columns:repeat(${cols},${w}px);gap:${gap}px;padding:20px ${pad}px ${pad}px">
-${imgs.map((f, i) => `<figure style="margin:0"><div style="position:relative;width:${w}px;height:${h}px"><img src="${pathToFileURL(path.join(png, f)).href}" width="${w}" height="${h}" style="border-radius:${w > 380 ? 22 : 14}px;display:block;box-shadow:0 0 0 2px rgba(255,255,255,.12)">${guides ? `<div style="position:absolute;left:0;right:0;top:0;height:${TH.safeTop * w / 1080}px;background:rgba(255,40,70,.38);border-bottom:2px dashed #ff2846"></div><div style="position:absolute;left:0;right:0;bottom:0;height:${TH.safeBottom * w / 1080}px;background:rgba(255,40,70,.38);border-top:2px dashed #ff2846"></div><div style="position:absolute;top:${TH.safeTop * w / 1080}px;bottom:${TH.safeBottom * w / 1080}px;left:0;width:${TH.safeX * w / 1080}px;background:rgba(255,40,70,.22);border-right:2px dashed #ff2846"></div><div style="position:absolute;top:${TH.safeTop * w / 1080}px;bottom:${TH.safeBottom * w / 1080}px;right:0;width:${TH.safeX * w / 1080}px;background:rgba(255,40,70,.22);border-left:2px dashed #ff2846"></div>` : ""}</div><figcaption style="color:#A9B0C9;font:600 22px 'JetBrains Mono',monospace;margin-top:10px">${String(i + 1).padStart(2, "0")}</figcaption></figure>`).join("")}
+${imgs.map((f, i) => `<figure style="margin:0"><div style="position:relative;width:${w}px;height:${fh}px;overflow:hidden;border-radius:${w > 380 ? 22 : 14}px"><img src="${pathToFileURL(path.join(png, f)).href}" width="${w}" height="${h}" style="margin-top:-${shift}px;display:block;box-shadow:0 0 0 2px rgba(255,255,255,.12)">${guides ? `<div style="position:absolute;left:0;right:0;top:0;height:${TH.safeTop * w / 1080}px;background:rgba(255,40,70,.38);border-bottom:2px dashed #ff2846"></div><div style="position:absolute;left:0;right:0;bottom:0;height:${TH.safeBottom * w / 1080}px;background:rgba(255,40,70,.38);border-top:2px dashed #ff2846"></div><div style="position:absolute;top:${TH.safeTop * w / 1080}px;bottom:${TH.safeBottom * w / 1080}px;left:0;width:${TH.safeX * w / 1080}px;background:rgba(255,40,70,.22);border-right:2px dashed #ff2846"></div><div style="position:absolute;top:${TH.safeTop * w / 1080}px;bottom:${TH.safeBottom * w / 1080}px;right:0;width:${TH.safeX * w / 1080}px;background:rgba(255,40,70,.22);border-left:2px dashed #ff2846"></div>` : ""}</div><figcaption style="color:#A9B0C9;font:600 22px 'JetBrains Mono',monospace;margin-top:10px">${String(i + 1).padStart(2, "0")}</figcaption></figure>`).join("")}
 </div></body>`;
   const tmp = path.join(dir, `.${name}.html`);
   fs.writeFileSync(tmp, html);
@@ -223,27 +231,32 @@ ${imgs.map((f, i) => `<figure style="margin:0"><div style="position:relative;wid
 }
 await sheet("contact-sheet", 360, 3, `agentoon.ai · ${imgs.length} slides · 1080×1350`);
 await sheet("mobile-preview", 390, 3, "true phone scale: 390 px wide per slide (1×)", 24, 24);
-await sheet("safe-area-check", 360, 3, `red = outside the safe area (${TH.safeTop}px top/bottom, ${TH.safeX}px sides): nothing important may sit there`, 40, 28, true);
+await sheet("safe-area-check", 360, 3, `red = outside the safe area (${TH.safeTop}px top, ${TH.safeBottom}px bottom, ${TH.safeX}px sides): nothing important may sit there`, 40, 28, true);
+await sheet("preview-1x1-crop", 360, 3, "simulated Instagram 1:1 centre crop: the top and bottom 135px of each 4:5 slide are cut", 40, 28, false, true);
 await browser.close();
 
 /* ------------------------------------------------------------------ spelling + report */
 const sp = spawnSync("python3", [path.join(here, "spellcheck.py"), path.join(dir, ".texts.json"), (cfg.spellAllow || []).join(",")], { encoding: "utf8" });
 fs.rmSync(path.join(dir, ".texts.json"));
 const spellBad = sp.status === 1;
+const cropNotes = issues.filter((i) => i.level === "crop");
 const errs = issues.filter((i) => i.level === "error");
 const pt = (px) => (px * 390 / 1080).toFixed(1);
-console.log(`rendered ${imgs.length} slides → ${path.relative(process.cwd(), png)}/ + contact-sheet.png + mobile-preview.png`);
+console.log(`rendered ${imgs.length} slides → ${path.relative(process.cwd(), png)}/ + contact-sheet.png + mobile-preview.png + safe-area-check.png (4:5) + preview-1x1-crop.png`);
 console.log(missing.length ? `✗ fonts missing: ${missing.join(", ")}` : "✓ brand fonts loaded (Fraunces, Inter, JetBrains Mono)");
 for (const i of errs) console.log(`✗ slide ${i.n}: ${i.msg}`);
 for (const i of issues.filter((x) => x.level === "warn")) console.log(`! slide ${i.n}: ${i.msg}`);
+for (const i of cropNotes) console.log(`ℹ slide ${i.n}: ${i.msg}`);
+if (cropNotes.length) console.log("ℹ 1:1 crop notes are informational: margins cannot fix a wrong aspect ratio. In Instagram's editor keep the original 4:5 (do not pick 1:1).");
 process.stdout.write(sp.stdout || "");
 for (const d of dimErrors) console.log(`✗ ${d}`);
 if (!dimErrors.length) console.log(`✓ all ${imgs.length} PNGs are exactly 1080×1350`);
-if (!errs.length && !missing.length) console.log(`✓ QA passed: safe area (${TH.safeX}px sides, ${TH.safeTop}px top/bottom), margins, overflow, overlap, alignment, footer gap, mascot clearance, contrast ≥ ${TH.contrast}:1, min sizes (label ${TH.label} / body ${TH.body} / code ${TH.code} / diagram ${TH.svg}px)`);
+if (!errs.length && !missing.length) console.log(`✓ QA passed: safe area (${TH.safeX}px sides, ${TH.safeTop}px top, ${TH.safeBottom}px bottom), margins, overflow, overlap, alignment, footer gap, mascot clearance, contrast ≥ ${TH.contrast}:1, min sizes (label ${TH.label} / body ${TH.body} / code ${TH.code} / diagram ${TH.svg}px)`);
 
 const report = [`# QA report — ${cfg.title}`, "", `Safe area: ${TH.safeX}px left/right, ${TH.safeTop}px top, ${TH.safeBottom}px bottom. Thresholds (px @1080): label ≥ ${TH.label}, body ≥ ${TH.body}, code ≥ ${TH.code}, diagram text ≥ ${TH.svg}; contrast ≥ ${TH.contrast}:1 (${TH.contrastLarge}:1 for text ≥ ${TH.largePx}px); safe margin ${TH.margin}px; content padding ${TH.pad}px; footer gap ${TH.footerGap}px.`, "At 390 pt phone width: label 26px = " + pt(26) + "pt, body 30px = " + pt(30) + "pt, code 32px = " + pt(32) + "pt.", "",
   "| Slide | Smallest text | On phone | Lowest contrast | Errors |", "|---|---|---|---|---|",
   ...stats.map((s) => `| ${String(s.n).padStart(2, "0")} | ${s.minFont}px | ${pt(s.minFont)}pt | ${s.minContrast.toFixed(2)}:1 | ${errs.filter((e) => e.n === s.n).length} |`), "",
+  "## Simulated 1:1 centre crop (informational)", "", "Instagram can crop a 4:5 image to 1:1, which removes the top and bottom 135px. Safe-area margins reduce clipping from UI overlays and grid crops; they cannot fix a wrongly selected aspect ratio. Keep 4:5 selected when uploading.", "", ...(cropNotes.length ? cropNotes.map((c) => `- slide ${c.n}: ${c.msg}`) : ["- nothing important is clipped in a 1:1 centre crop"]), "",
   missing.length || errs.length || spellBad ? "**Status: FAILED**" : "**Status: PASSED** (automated). Visual review of every PNG is still required.", ""];
 fs.writeFileSync(path.join(dir, "qa-report.md"), report.join("\n"));
 
@@ -261,7 +274,7 @@ if (doZip) {
   const slug = cfg.slug || path.basename(dir);
   const zip = path.join(dir, `${slug}.zip`);
   fs.rmSync(zip, { force: true });
-  const inc = ["png", "source", "carousel.json", "extras.mjs", "contact-sheet.png", "mobile-preview.png", "safe-area-check.png", "qa-report.md", "caption.md"].filter((p) => fs.existsSync(path.join(dir, p)));
+  const inc = ["png", "source", "carousel.json", "extras.mjs", "contact-sheet.png", "mobile-preview.png", "safe-area-check.png", "preview-1x1-crop.png", "qa-report.md", "sources.md", "caption.md"].filter((p) => fs.existsSync(path.join(dir, p)));
   execFileSync("zip", ["-qr", zip, ...inc], { cwd: dir });
   console.log("✓ zip →", path.relative(process.cwd(), zip));
 }

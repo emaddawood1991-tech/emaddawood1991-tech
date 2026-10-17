@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>Connect Instagram to ChatGPT: Analyze Your Account with AI — Agentoon.ai carousel</title>
+<link rel="stylesheet" href="assets/base.css">
+</head><body>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0" aria-hidden="true">
+  <!-- Agentoon robot mascot. Colours come from CSS vars: --m-head --m-screen --m-eye --m-body --m-ear --accent
+       Moods: happy · wow · think · wink · focus · cheer · dizzy · oops · proud  (use mascot(width, mood)) -->
+  <defs>
+    <g id="m-base">
+      <line x1="100" y1="22" x2="100" y2="50" stroke="var(--m-head)" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="100" cy="16" r="10" fill="var(--accent)"/>
+      <rect x="14" y="88" width="20" height="40" rx="10" fill="var(--m-ear)"/>
+      <rect x="166" y="88" width="20" height="40" rx="10" fill="var(--m-ear)"/>
+      <rect x="28" y="48" width="144" height="116" rx="38" fill="var(--m-head)"/>
+      <rect x="46" y="68" width="108" height="76" rx="26" fill="var(--m-screen)"/>
+      <rect x="58" y="170" width="84" height="50" rx="20" fill="var(--m-body)"/>
+      <rect x="86" y="184" width="28" height="22" rx="8" fill="var(--accent)"/>
+    </g>
+    <g id="m-eyes-happy"><rect x="70" y="88" width="16" height="26" rx="8" fill="var(--m-eye)"/><rect x="114" y="88" width="16" height="26" rx="8" fill="var(--m-eye)"/></g>
+    <g id="m-eyes-arc" fill="none" stroke="var(--m-eye)" stroke-width="7" stroke-linecap="round"><path d="M66 108 Q78 90 90 108"/><path d="M110 108 Q122 90 134 108"/></g>
+  </defs>
+
+  <symbol id="mascot-happy" viewBox="0 0 200 230"><use href="#m-base"/><use href="#m-eyes-happy"/>
+    <path d="M82 126 Q100 140 118 126" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+  <symbol id="mascot" viewBox="0 0 200 230"><use href="#mascot-happy"/></symbol>
+
+  <symbol id="mascot-wow" viewBox="0 0 200 230"><use href="#m-base"/>
+    <ellipse cx="78" cy="98" rx="12" ry="19" fill="var(--m-eye)"/><ellipse cx="122" cy="98" rx="12" ry="19" fill="var(--m-eye)"/>
+    <circle cx="82" cy="91" r="4.5" fill="var(--m-screen)"/><circle cx="126" cy="91" r="4.5" fill="var(--m-screen)"/>
+    <ellipse cx="100" cy="130" rx="13" ry="10" fill="var(--m-eye)"/>
+    <g stroke="var(--accent)" stroke-width="5" stroke-linecap="round"><path d="M178 28v18M169 37h18"/><path d="M22 36v14M15 43h14"/><path d="M164 6v10M159 11h10"/></g></symbol>
+
+  <symbol id="mascot-think" viewBox="0 0 200 230"><use href="#m-base"/>
+    <circle cx="82" cy="96" r="12" fill="var(--m-eye)"/><circle cx="126" cy="96" r="12" fill="var(--m-eye)"/>
+    <circle cx="86" cy="92" r="5" fill="var(--m-screen)"/><circle cx="130" cy="92" r="5" fill="var(--m-screen)"/>
+    <path d="M112 78 L140 72" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M84 130 H112" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="176" cy="30" r="6" fill="var(--accent)"/><circle cx="190" cy="12" r="4" fill="var(--accent)"/></symbol>
+
+  <symbol id="mascot-wink" viewBox="0 0 200 230"><use href="#m-base"/>
+    <rect x="70" y="88" width="16" height="26" rx="8" fill="var(--m-eye)"/>
+    <path d="M110 102 H134" stroke="var(--m-eye)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M78 122 Q100 148 122 122 Z" fill="var(--m-eye)"/>
+    <g stroke="var(--accent)" stroke-width="5" stroke-linecap="round"><path d="M178 30v16M170 38h16"/></g></symbol>
+
+  <symbol id="mascot-focus" viewBox="0 0 200 230"><use href="#m-base"/>
+    <rect x="68" y="96" width="20" height="10" rx="5" fill="var(--m-eye)"/>
+    <circle cx="124" cy="100" r="16" fill="none" stroke="var(--m-eye)" stroke-width="6"/><circle cx="124" cy="100" r="6" fill="var(--m-eye)"/>
+    <path d="M136 112 L150 126" stroke="var(--m-eye)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M86 130 H110" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+
+  <symbol id="mascot-cheer" viewBox="0 0 200 230"><use href="#m-base"/>
+    <g stroke="var(--m-ear)" stroke-width="16" stroke-linecap="round" fill="none"><path d="M62 186 L22 142"/><path d="M138 186 L178 142"/></g>
+    <circle cx="20" cy="138" r="11" fill="var(--m-ear)"/><circle cx="180" cy="138" r="11" fill="var(--m-ear)"/>
+    <use href="#m-eyes-arc"/>
+    <path d="M78 120 Q100 150 122 120 Z" fill="var(--m-eye)"/>
+    <circle cx="62" cy="124" r="6" fill="var(--accent)" opacity=".7"/><circle cx="138" cy="124" r="6" fill="var(--accent)" opacity=".7"/></symbol>
+
+  <symbol id="mascot-dizzy" viewBox="0 0 200 230"><use href="#m-base"/>
+    <g fill="none" stroke="var(--m-eye)" stroke-width="5" stroke-linecap="round"><circle cx="78" cy="100" r="15"/><circle cx="78" cy="100" r="6"/><circle cx="122" cy="100" r="15"/><circle cx="122" cy="100" r="6"/></g>
+    <path d="M84 130 Q92 122 100 130 T116 130" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+
+  <symbol id="mascot-oops" viewBox="0 0 200 230"><use href="#m-base"/>
+    <circle cx="78" cy="98" r="10" fill="var(--m-eye)"/><circle cx="122" cy="98" r="10" fill="var(--m-eye)"/>
+    <path d="M66 80 L88 86 M134 80 L112 86" stroke="var(--m-eye)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M82 134 Q100 122 118 134" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M168 56 q8 14 0 22 q-8 -8 0 -22z" fill="var(--accent)"/></symbol>
+
+  <symbol id="mascot-proud" viewBox="0 0 200 230"><use href="#m-base"/>
+    <path d="M138 186 L176 150" stroke="var(--m-ear)" stroke-width="16" stroke-linecap="round" fill="none"/><circle cx="178" cy="146" r="12" fill="var(--m-ear)"/>
+    <use href="#m-eyes-arc"/>
+    <path d="M82 126 Q100 142 118 126" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="8" r="2.2"/><path d="M6 7.2v9.6M18 10.2c0 4-6 3-11 7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-4M4 4v4h4M4 13a8 8 0 0 0 14 4M20 20v-4h-4"/></symbol>
+  <symbol id="i-bug" viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="12" rx="4"/><path d="M9 8a3 3 0 0 1 6 0M3 12h5M16 12h5M4 19l4-2M20 19l-4-2M4 5l4 3M20 5l-4 3"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5zM3 13l9 5 9-5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></symbol>
+  <symbol id="i-follow" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5S14.900 16.400 15.500 20M19 8v6M16 11h6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.200 9.500l6.100-.9z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v4h4"/></symbol>
+</svg>
+
+<main class="deck">
+<section class="slide dark" id="slide-01" data-slide="1">
+        <div class="kicker"><span class="bar"></span>Instagram × ChatGPT</div>
+        <h1 class="h1" style="margin-top:20px;font-size:104px">Connect Instagram <em>to ChatGPT.</em></h1>
+        <p class="lede" style="margin-top:16px;font-size:34px;color:var(--muted)">Turn your Instagram data into smarter content decisions.</p>
+        <div class="grow stack" style="justify-content:center;min-height:0"><svg viewBox="0 0 940 372" width="940" height="372"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FEDA75"/><stop offset=".25" stop-color="#FA7E1E"/><stop offset=".5" stop-color="#D62976"/><stop offset=".75" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs>
+    <rect x="0" y="20" width="220" height="220" rx="59.400000000000006" fill="url(#igg)"/>
+    <rect x="55" y="75" width="110" height="110" rx="30.800000000000004" fill="none" stroke="#fff" stroke-width="12.1"/>
+    <circle cx="110" cy="130" r="26.4" fill="none" stroke="#fff" stroke-width="12.1"/><circle cx="145.20000000000002" cy="94.80000000000001" r="7.04" fill="#fff"/><text x="110" y="292" font-family="var(--sans)" font-size="34" font-weight="800" fill="var(--fg)" text-anchor="middle">Instagram</text>
+        <rect x="720" y="20" width="220" height="220" rx="59.400000000000006" fill="#10A37F"/>
+    <g transform="translate(830 130)" fill="none" stroke="#fff" stroke-width="8.8" stroke-linejoin="round"><rect x="-22" y="-79.2" width="44" height="110" rx="22" transform="rotate(0)"/><rect x="-22" y="-79.2" width="44" height="110" rx="22" transform="rotate(60)"/><rect x="-22" y="-79.2" width="44" height="110" rx="22" transform="rotate(120)"/><rect x="-22" y="-79.2" width="44" height="110" rx="22" transform="rotate(180)"/><rect x="-22" y="-79.2" width="44" height="110" rx="22" transform="rotate(240)"/><rect x="-22" y="-79.2" width="44" height="110" rx="22" transform="rotate(300)"/></g><text x="830" y="292" font-family="var(--sans)" font-size="34" font-weight="800" fill="var(--fg)" text-anchor="middle">ChatGPT</text>
+        <g transform="translate(246 84)"><rect width="58" height="38" rx="12" fill="var(--accent)"/><rect x="12" y="20" width="8" height="10" rx="2" fill="var(--on-accent)"/><rect x="25" y="12" width="8" height="18" rx="2" fill="var(--on-accent)"/><rect x="38" y="16" width="8" height="14" rx="2" fill="var(--on-accent)"/></g><g transform="translate(308 84)"><rect width="58" height="38" rx="12" fill="var(--accent)"/><circle cx="29" cy="19" r="9" fill="none" stroke="var(--on-accent)" stroke-width="4"/></g><g transform="translate(582 84)"><rect width="58" height="38" rx="12" fill="var(--accent)"/><path d="M12 28 L24 14 L33 22 L46 10" fill="none" stroke="var(--on-accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g><g transform="translate(644 84)"><rect width="58" height="38" rx="12" fill="var(--accent)"/><rect x="12" y="20" width="8" height="10" rx="2" fill="var(--on-accent)"/><rect x="25" y="12" width="8" height="18" rx="2" fill="var(--on-accent)"/><rect x="38" y="16" width="8" height="14" rx="2" fill="var(--on-accent)"/></g>
+        <path d="M236 150 L372 150" stroke="var(--accent-t)" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 14" fill="none" marker-end="url(#ah)"/><path d="M568 150 L704 150" stroke="var(--accent-t)" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 14" fill="none" marker-end="url(#ah)"/>
+        <use href="#mascot-wow" x="384" y="-6" width="172" height="198"/>
+        <rect x="378" y="206" width="184" height="62" rx="31" fill="var(--accent)"/><text x="470" y="248" font-family="var(--mono)" font-size="28" font-weight="700" fill="var(--on-accent)" text-anchor="middle">via Ootto</text>
+        <text x="470" y="336" font-family="var(--mono)" font-size="28" font-weight="600" fill="var(--muted)" text-anchor="middle">your data flows only where you authorize it</text></svg></div>
+        <div class="row gap16 center"><span class="pill solid" style="font-size:34px;padding:18px 32px">Swipe for the setup →</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>01</i> / 08</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide paper" id="slide-02" data-slide="2">
+  <svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-think"/></svg>
+  <div class="kicker"><span class="bar"></span>Why connect them?</div>
+  
+  <h2 class="h2" style="margin-top:26px;font-size:64px;max-width:780px">Stop Guessing. <em>Start Analyzing.</em></h2>
+      <p class="body" style="margin-top:14px;color:var(--muted)">AI can help you interpret the metrics your connection makes available.</p>
+      <div class="grow stack" style="justify-content:center;min-height:0;margin:20px 0"><div class="card stack" style="gap:14px;padding:20px 22px;border-radius:26px">
+        <div class="row between center"><div class="row center gap16"><span style="display:flex;gap:8px"><i style="width:16px;height:16px;border-radius:50%;background:#FF6A6A"></i><i style="width:16px;height:16px;border-radius:50%;background:#FFC83D"></i><i style="width:16px;height:16px;border-radius:50%;background:#2FE3B2"></i></span><span class="label">Account overview</span></div><span class="badge hot">Demo data</span></div>
+        <div class="row gap16"><div class="card" style="flex:1;padding:14px 18px;border-radius:20px;min-width:0"><div class="label" style="font-size:26px">Engagement</div><div style="font:800 50px/1.05 var(--serif);margin-top:4px">4.8%</div></div><div class="card" style="flex:1;padding:14px 18px;border-radius:20px;min-width:0"><div class="label" style="font-size:26px">Views</div><div style="font:800 50px/1.05 var(--serif);margin-top:4px">12.4K</div></div><div class="card" style="flex:1;padding:14px 18px;border-radius:20px;min-width:0"><div class="label" style="font-size:26px">Comments</div><div style="font:800 50px/1.05 var(--serif);margin-top:4px">186</div></div></div>
+        <div class="card" style="padding:14px 18px;border-radius:20px"><div class="row between"><span class="label" style="font-size:26px">Followers · 30 days</span><b style="font:700 32px/1 var(--sans);color:var(--accent-t)">+320</b></div><div style="margin-top:6px"><svg viewBox="0 0 880 96" width="100%" height="96" preserveAspectRatio="none" style="display:block"><polygon points="0,96 0.0,88.0 80.0,81.8 160.0,83.4 240.0,72.6 320.0,74.2 400.0,60.3 480.0,61.8 560.0,48.0 640.0,51.1 720.0,34.2 800.0,26.5 880.0,8.0 880,96" fill="var(--accent-t)" opacity=".16"/><polyline points="0.0,88.0 80.0,81.8 160.0,83.4 240.0,72.6 320.0,74.2 400.0,60.3 480.0,61.8 560.0,48.0 640.0,51.1 720.0,34.2 800.0,26.5 880.0,8.0" fill="none" stroke="var(--accent-t)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg></div></div>
+        <div class="row center gap16" style="background:var(--card-2);border-radius:20px;padding:12px 18px"><span style="font-size:36px;color:var(--accent-t);display:flex"><svg class="ic" ><use href="#i-spark"/></svg></span><span style="font:600 32px/1.25 var(--sans)"><b>AI insight:</b> Reels earned the most views.</span></div></div></div>
+      
+      <div class="watch" style="margin-top:20px"><span class="tag">Demo data</span><span>Every number here is illustrative demo data, not a real account.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>02</i> / 08</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide mint" id="slide-03" data-slide="3">
+        <svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-wink"/></svg>
+        <div class="kicker"><span class="bar"></span>Step 1</div>
+        <h2 class="h2" style="margin-top:16px;font-size:64px;max-width:780px">Connect <em>Instagram.</em></h2>
+        <p class="body" style="margin-top:8px;font-size:32px;color:var(--muted);max-width:770px">Ootto is a third-party connector. Connect only accounts you manage.</p>
+        <div style="margin-top:14px"><svg viewBox="0 0 940 196" width="940" height="196"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <rect x="0" y="10" width="220" height="164" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><use href="#mascot-happy" x="66" y="20" width="88" height="101"/><text x="110" y="158" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--fg)" text-anchor="middle">You</text>
+        <path d="M230 92 L330 92" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/>
+        <rect x="340" y="10" width="260" height="164" rx="22" fill="var(--accent)" stroke="none" stroke-width="2"/><text x="470" y="96" font-family="var(--sans)" font-size="36" font-weight="800" fill="var(--on-accent)" text-anchor="middle">ootto.ai</text><text x="470" y="136" font-family="var(--mono)" font-size="28" font-weight="600" fill="var(--on-accent)" text-anchor="middle">connector</text>
+        <path d="M610 92 L710 92" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/>
+        <rect x="720" y="10" width="220" height="164" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><defs><linearGradient id="igs" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FEDA75"/><stop offset=".25" stop-color="#FA7E1E"/><stop offset=".5" stop-color="#D62976"/><stop offset=".75" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs>
+    <rect x="780" y="24" width="100" height="100" rx="27" fill="url(#igs)"/>
+    <rect x="805" y="49" width="50" height="50" rx="14.000000000000002" fill="none" stroke="#fff" stroke-width="5.5"/>
+    <circle cx="830" cy="74" r="12" fill="none" stroke="#fff" stroke-width="5.5"/><circle cx="846" cy="58" r="3.2" fill="#fff"/><text x="830" y="158" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--fg)" text-anchor="middle">Instagram</text></svg></div>
+        <div class="stack" style="margin-top:14px;gap:12px"><div class="card row" style="gap:20px;padding:16px 22px;border-radius:24px;align-items:center"><span style="flex:none;width:58px;height:58px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 34px/58px var(--serif);text-align:center">1</span><div class="stack" style="gap:2px;min-width:0"><div style="font:800 34px/1.15 var(--sans)">Visit <code class="mono">ootto.ai</code></div></div></div><div class="card row" style="gap:20px;padding:16px 22px;border-radius:24px;align-items:center"><span style="flex:none;width:58px;height:58px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 34px/58px var(--serif);text-align:center">2</span><div class="stack" style="gap:2px;min-width:0"><div style="font:800 34px/1.15 var(--sans)">Create an account</div></div></div><div class="card row" style="gap:20px;padding:16px 22px;border-radius:24px;align-items:center"><span style="flex:none;width:58px;height:58px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 34px/58px var(--serif);text-align:center">3</span><div class="stack" style="gap:2px;min-width:0"><div style="font:800 34px/1.15 var(--sans)">Connect an eligible Instagram account</div><div style="font:500 30px/1.25 var(--sans);color:var(--muted)">Business or Creator, through Instagram’s own authorization screen</div></div></div></div>
+        <div class="grow"></div>
+        <div class="src" style="margin-bottom:10px">Source: ootto.ai (connector, third party)</div>
+        <div class="watch" style="padding:16px 24px;font-size:30px"><span class="tag">Permissions</span><span>Review the permissions on Instagram’s screen before you approve.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>03</i> / 08</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide dark" id="slide-04" data-slide="4">
+        <svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-focus"/></svg>
+        <div class="kicker"><span class="bar"></span>Step 2</div>
+        <h2 class="h2" style="margin-top:16px;font-size:64px;max-width:780px">Connect <em>Ootto to ChatGPT.</em></h2>
+        <div style="margin-top:12px"><svg viewBox="0 0 940 150" width="940" height="150"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <rect x="0" y="10" width="130" height="130" rx="35.1" fill="#10A37F"/>
+    <g transform="translate(65 75)" fill="none" stroke="#fff" stroke-width="5.2" stroke-linejoin="round"><rect x="-13" y="-46.8" width="26" height="65" rx="13" transform="rotate(0)"/><rect x="-13" y="-46.8" width="26" height="65" rx="13" transform="rotate(60)"/><rect x="-13" y="-46.8" width="26" height="65" rx="13" transform="rotate(120)"/><rect x="-13" y="-46.8" width="26" height="65" rx="13" transform="rotate(180)"/><rect x="-13" y="-46.8" width="26" height="65" rx="13" transform="rotate(240)"/><rect x="-13" y="-46.8" width="26" height="65" rx="13" transform="rotate(300)"/></g><text x="150" y="66" font-family="var(--sans)" font-size="32" font-weight="800" fill="var(--fg)" text-anchor="start">ChatGPT</text><text x="150" y="106" font-family="var(--mono)" font-size="28" font-weight="600" fill="var(--muted)" text-anchor="start">custom MCP server</text>
+        <path d="M400 76 L528 76" stroke="var(--accent-t)" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 14" fill="none" marker-end="url(#ah)"/><rect x="406" y="22" width="116" height="44" rx="22" fill="var(--accent)"/><text x="464" y="53" font-family="var(--mono)" font-size="28" font-weight="700" fill="var(--on-accent)" text-anchor="middle">OAuth</text>
+        <rect x="540" y="10" width="130" height="130" rx="35.1" fill="var(--card)" stroke="var(--line)" stroke-width="3"/><text x="605" y="90.6" font-family="var(--serif)" font-size="80.6" font-weight="800" fill="var(--accent-t)" text-anchor="middle">o</text><text x="690" y="66" font-family="var(--sans)" font-size="32" font-weight="800" fill="var(--fg)" text-anchor="start">Ootto</text><text x="690" y="106" font-family="var(--mono)" font-size="28" font-weight="600" fill="var(--muted)" text-anchor="start">MCP endpoint</text></svg></div>
+        <div class="code" style="margin-top:8px;white-space:normal;padding:20px 28px 24px;border-color:rgba(47,227,178,.5)"><div class="label" style="color:#2FE3B2;margin-bottom:8px">MCP server URL</div><div style="font:700 36px/1.2 var(--mono);color:#FFFFFF;word-break:break-all">https://mcp.ootto.ai/mcp</div></div>
+        <div class="stack" style="margin-top:14px;gap:10px"><div class="row center gap16" style="font:600 32px/1.2 var(--sans)"><span style="flex:none;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/46px var(--serif);text-align:center">1</span><span>In ChatGPT, open the custom MCP setup</span></div><div class="row center gap16" style="font:600 32px/1.2 var(--sans)"><span style="flex:none;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/46px var(--serif);text-align:center">2</span><span>Choose “Add custom MCP server”</span></div><div class="row center gap16" style="font:600 32px/1.2 var(--sans)"><span style="flex:none;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/46px var(--serif);text-align:center">3</span><span>Paste the URL as the Server URL</span></div><div class="row center gap16" style="font:600 32px/1.2 var(--sans)"><span style="flex:none;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/46px var(--serif);text-align:center">4</span><span>Keep OAuth, then sign in to Ootto</span></div></div>
+        <div class="grow"></div>
+        <div class="src" style="margin-bottom:10px">Source: Ootto setup guide · OpenAI help center</div>
+        <div class="watch" style="padding:16px 24px;font-size:30px"><span class="tag">Check first</span><span>Custom MCP needs a supported ChatGPT plan, and menus change. See OpenAI’s help page.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>04</i> / 08</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide paper" id="slide-05" data-slide="5">
+      <svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-happy"/></svg>
+      <div class="kicker"><span class="bar"></span>Step 3</div>
+      <h2 class="h2" style="margin-top:16px;font-size:60px;max-width:780px">Ask ChatGPT to <em>analyze your account.</em></h2>
+      
+      <div style="margin-top:14px"><div class="card" style="border-left:10px solid var(--accent);border-radius:12px 26px 26px 12px;padding:22px 28px"><div class="label" style="margin-bottom:10px;color:var(--accent-t)">Copy-paste prompt</div><div style="font:500 32px/1.4 var(--sans)">Analyze the Instagram metrics available through my connected account. Identify my best-performing posts, engagement patterns, and content opportunities. Use real data only and clearly identify missing metrics.</div></div></div>
+      <div class="grow stack" style="justify-content:center;min-height:0;margin:12px 0"><div class="row gap16" style="align-items:stretch">
+        <div class="card stack" style="flex:1.25;gap:10px;padding:18px 20px;border-radius:24px;min-width:0">
+          <div class="row center gap16"><svg viewBox="0 0 60 60" width="44" height="44"><rect x="0" y="0" width="60" height="60" rx="16.200000000000003" fill="#10A37F"/>
+    <g transform="translate(30 30)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"><rect x="-6" y="-21.599999999999998" width="12" height="30" rx="6" transform="rotate(0)"/><rect x="-6" y="-21.599999999999998" width="12" height="30" rx="6" transform="rotate(60)"/><rect x="-6" y="-21.599999999999998" width="12" height="30" rx="6" transform="rotate(120)"/><rect x="-6" y="-21.599999999999998" width="12" height="30" rx="6" transform="rotate(180)"/><rect x="-6" y="-21.599999999999998" width="12" height="30" rx="6" transform="rotate(240)"/><rect x="-6" y="-21.599999999999998" width="12" height="30" rx="6" transform="rotate(300)"/></g></svg><span class="label">ChatGPT</span></div>
+          <div style="font:600 32px/1.25 var(--sans);background:var(--card-2);border-radius:18px;padding:10px 16px">Here is what your data shows:</div>
+          <div class="row center gap16" style="font:700 32px/1.2 var(--sans)"><span style="flex:none;width:42px;height:42px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/42px var(--serif);text-align:center">1</span>Top posts</div><div class="row center gap16" style="font:700 32px/1.2 var(--sans)"><span style="flex:none;width:42px;height:42px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/42px var(--serif);text-align:center">2</span>Engagement patterns</div><div class="row center gap16" style="font:700 32px/1.2 var(--sans)"><span style="flex:none;width:42px;height:42px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/42px var(--serif);text-align:center">3</span>Content opportunities</div><div class="row center gap16" style="font:700 32px/1.2 var(--sans)"><span style="flex:none;width:42px;height:42px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/42px var(--serif);text-align:center">4</span>Missing metrics</div></div>
+        <div class="card stack" style="flex:1;gap:10px;padding:18px 20px;border-radius:24px;min-width:0">
+          <div class="row between center"><span class="label">Dashboard</span><span class="badge hot">Demo data</span></div>
+          <div class="row gap16"><div class="card" style="flex:1;padding:14px 18px;border-radius:20px;min-width:0"><div class="label" style="font-size:26px">Views</div><div style="font:800 50px/1.05 var(--serif);margin-top:4px">12.4K</div></div></div>
+          <div><svg viewBox="0 0 400 120" width="100%" height="120" preserveAspectRatio="none" style="display:block"><rect x="6" y="60" width="62" height="60" rx="10" fill="var(--line)"/><rect x="88" y="12" width="62" height="108" rx="10" fill="var(--accent)"/><rect x="170" y="48" width="62" height="72" rx="10" fill="var(--line)"/><rect x="252" y="78" width="62" height="42" rx="10" fill="var(--line)"/><rect x="334" y="36" width="62" height="84" rx="10" fill="var(--line)"/></svg></div>
+          <div class="label" style="font-size:26px">Posts, ranked</div></div></div></div>
+      
+      
+      <div class="watch" style="margin-top:16px;font-size:30px;padding:14px 24px"><span class="tag">Tip</span><span>Ask it to name any metric it cannot see.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>05</i> / 08</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide mint" id="slide-06" data-slide="6">
+  <svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-proud"/></svg>
+  <div class="kicker"><span class="bar"></span>Discover what works</div>
+  
+  <h2 class="h2" style="margin-top:26px;font-size:64px;max-width:780px">Find Your <em>Winning Content.</em></h2>
+      <p class="body" style="margin-top:14px;color:var(--muted)">Questions your available analytics can help answer:</p>
+      <div class="grow stack" style="justify-content:center;min-height:0;margin:20px 0"><div class="label" style="margin-bottom:10px">Illustrative charts · demo data</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div class="card stack" style="gap:12px;padding:20px 22px;border-radius:26px;justify-content:space-between;border:3px solid var(--accent);">
+        <div class="row gap16" style="align-items:flex-start"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">1</span><div style="font:800 36px/1.12 var(--serif)">Which posts performed best?</div></div>
+        <div><svg viewBox="0 0 400 64" width="100%" height="64" preserveAspectRatio="none" style="display:block"><rect x="6" y="38.4" width="62" height="25.6" rx="10" fill="var(--line)"/><rect x="88" y="3.200000000000003" width="62" height="60.8" rx="10" fill="var(--accent)"/><rect x="170" y="28.799999999999997" width="62" height="35.2" rx="10" fill="var(--line)"/><rect x="252" y="19.200000000000003" width="62" height="44.8" rx="10" fill="var(--line)"/><rect x="334" y="44.8" width="62" height="19.2" rx="10" fill="var(--line)"/></svg></div></div><div class="card stack" style="gap:12px;padding:20px 22px;border-radius:26px;justify-content:space-between;">
+        <div class="row gap16" style="align-items:flex-start"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">2</span><div style="font:800 36px/1.12 var(--serif)">Which topics earned engagement?</div></div>
+        <div><svg viewBox="0 0 400 64" width="100%" height="64" preserveAspectRatio="none" style="display:block"><rect x="6" y="19.200000000000003" width="62" height="44.8" rx="10" fill="var(--line)"/><rect x="88" y="35.2" width="62" height="28.8" rx="10" fill="var(--accent)"/><rect x="170" y="6.399999999999999" width="62" height="57.6" rx="10" fill="var(--line)"/><rect x="252" y="41.6" width="62" height="22.4" rx="10" fill="var(--line)"/><rect x="334" y="25.6" width="62" height="38.4" rx="10" fill="var(--line)"/></svg></div></div><div class="card stack" style="gap:12px;padding:20px 22px;border-radius:26px;justify-content:space-between;">
+        <div class="row gap16" style="align-items:flex-start"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">3</span><div style="font:800 36px/1.12 var(--serif)">What formats should I test?</div></div>
+        <div><svg viewBox="0 0 400 64" width="100%" height="64" preserveAspectRatio="none" style="display:block"><rect x="6" y="28.799999999999997" width="62" height="35.2" rx="10" fill="var(--line)"/><rect x="88" y="12.799999999999997" width="62" height="51.2" rx="10" fill="var(--accent)"/><rect x="170" y="44.8" width="62" height="19.2" rx="10" fill="var(--line)"/><rect x="252" y="22.4" width="62" height="41.6" rx="10" fill="var(--line)"/><rect x="334" y="35.2" width="62" height="28.8" rx="10" fill="var(--line)"/></svg></div></div><div class="card stack" style="gap:12px;padding:20px 22px;border-radius:26px;justify-content:space-between;">
+        <div class="row gap16" style="align-items:flex-start"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">4</span><div style="font:800 36px/1.12 var(--serif)">What changed over time?</div></div>
+        <div><svg viewBox="0 0 400 64" width="100%" height="64" preserveAspectRatio="none" style="display:block"><polygon points="0,64 0.0,56.0 50.0,52.0 100.0,53.0 150.0,41.0 200.0,44.0 250.0,31.0 300.0,16.0 350.0,20.0 400.0,8.0 400,64" fill="var(--accent-t)" opacity=".16"/><polyline points="0.0,56.0 50.0,52.0 100.0,53.0 150.0,41.0 200.0,44.0 250.0,31.0 300.0,16.0 350.0,20.0 400.0,8.0" fill="none" stroke="var(--accent-t)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg></div></div></div></div>
+      
+      <div class="watch" style="margin-top:20px"><span class="tag">Qualifier</span><span>Answers depend on the metrics your connection exposes. Ask ChatGPT what is missing.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>06</i> / 08</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide dark" id="slide-07" data-slide="7">
+      <svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-oops"/></svg>
+      <div class="kicker"><span class="bar"></span>Step 4</div>
+      <h2 class="h2" style="margin-top:16px;font-size:62px;max-width:780px">From Data to <em>Better Content.</em></h2>
+      
+      <div style="margin-top:14px"><div class="stack" style="gap:8px;align-items:flex-end"><span class="badge">You to ChatGPT</span><div style="width:100%;background:var(--card-2);border:2px solid var(--line);border-radius:30px 30px 8px 30px;padding:22px 28px"><div style="font:500 32px/1.4 var(--sans)">Based on my available Instagram analytics, create a 14-day content plan. Recommend topics, hooks, formats, and measurable goals. Explain the evidence behind each recommendation.</div></div></div></div>
+      <div class="grow stack" style="justify-content:center;min-height:0;margin:12px 0"><svg viewBox="0 0 940 340" width="940" height="340"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="0" y="30" width="270" height="250" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2"/>
+      <g transform="translate(135 150)"><rect x="-80" y="-14" width="30" height="64" rx="8" fill="var(--accent)"/><rect x="-35" y="-54" width="30" height="104" rx="8" fill="var(--accent)" opacity=".7"/><rect x="10" y="-30" width="30" height="80" rx="8" fill="var(--accent)" opacity=".5"/><rect x="55" y="-70" width="30" height="120" rx="8" fill="var(--accent)"/></g>
+      <text x="135" y="262" font-family="var(--sans)" font-size="32" font-weight="800" fill="var(--fg)" text-anchor="middle">Analytics</text>
+      <path d="M280 155 L336 155" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/>
+      <rect x="336" y="30" width="270" height="250" rx="22" fill="var(--accent)" stroke="none" stroke-width="2"/>
+      <use href="#mascot-think" x="396" y="52" width="150" height="172" style="--m-head:#0C1020;--m-screen:#FFF3EC;--m-eye:#FF6A3D;--m-body:#0C1020;--m-ear:#FFF3EC;--accent:#0C1020"/>
+      <text x="471" y="262" font-family="var(--sans)" font-size="32" font-weight="800" fill="var(--on-accent)" text-anchor="middle">AI insights</text>
+      <path d="M616 155 L672 155" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/>
+      <rect x="672" y="30" width="268" height="250" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2"/>
+      <rect x="690" y="58" width="28" height="38" rx="7" fill="var(--accent)"/><rect x="724" y="58" width="28" height="38" rx="7" fill="#2FE3B2"/><rect x="758" y="58" width="28" height="38" rx="7" fill="#FFC83D"/><rect x="792" y="58" width="28" height="38" rx="7" fill="#6FA8FF"/><rect x="826" y="58" width="28" height="38" rx="7" fill="var(--accent)"/><rect x="860" y="58" width="28" height="38" rx="7" fill="#2FE3B2"/><rect x="894" y="58" width="28" height="38" rx="7" fill="#FFC83D"/><rect x="690" y="106" width="28" height="38" rx="7" fill="#6FA8FF"/><rect x="724" y="106" width="28" height="38" rx="7" fill="var(--accent)"/><rect x="758" y="106" width="28" height="38" rx="7" fill="#2FE3B2"/><rect x="792" y="106" width="28" height="38" rx="7" fill="#FFC83D"/><rect x="826" y="106" width="28" height="38" rx="7" fill="#6FA8FF"/><rect x="860" y="106" width="28" height="38" rx="7" fill="var(--accent)"/><rect x="894" y="106" width="28" height="38" rx="7" fill="#2FE3B2"/>
+      <rect x="690" y="156" width="232" height="8" rx="4" fill="var(--line)"/><text x="806" y="262" font-family="var(--sans)" font-size="32" font-weight="800" fill="var(--fg)" text-anchor="middle">14-day plan</text>
+      <text x="470" y="328" font-family="var(--mono)" font-size="28" font-weight="600" fill="var(--muted)" text-anchor="middle">evidence first, then ideas</text></svg></div>
+      
+      
+      <div class="watch" style="margin-top:16px;font-size:32px;padding:20px 26px"><span class="tag">Reality check</span><span>No tool guarantees growth. Treat every plan as a test.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>07</i> / 08</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide coral" id="slide-08" data-slide="8">
+        <div class="kicker" style="color:var(--ink)"><span class="bar"></span>Cheat sheet</div>
+        <h2 class="h2" style="margin-top:16px;font-size:66px">Your Instagram. <em>Smarter Decisions.</em></h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px"><div class="card row" style="gap:16px;padding:14px 18px;border-radius:22px;align-items:center"><span style="flex:none;width:52px;height:52px;border-radius:50%;background:var(--ink);color:#F4F1EA;font:800 30px/52px var(--serif);text-align:center">1</span><div style="font:800 32px/1.15 var(--sans)">Connect Instagram.</div></div><div class="card row" style="gap:16px;padding:14px 18px;border-radius:22px;align-items:center"><span style="flex:none;width:52px;height:52px;border-radius:50%;background:var(--ink);color:#F4F1EA;font:800 30px/52px var(--serif);text-align:center">2</span><div style="font:800 32px/1.15 var(--sans)">Connect Ootto to ChatGPT.</div></div><div class="card row" style="gap:16px;padding:14px 18px;border-radius:22px;align-items:center"><span style="flex:none;width:52px;height:52px;border-radius:50%;background:var(--ink);color:#F4F1EA;font:800 30px/52px var(--serif);text-align:center">3</span><div style="font:800 32px/1.15 var(--sans)">Analyze available metrics.</div></div><div class="card row" style="gap:16px;padding:14px 18px;border-radius:22px;align-items:center"><span style="flex:none;width:52px;height:52px;border-radius:50%;background:var(--ink);color:#F4F1EA;font:800 30px/52px var(--serif);text-align:center">4</span><div style="font:800 32px/1.15 var(--sans)">Build a data-informed content plan.</div></div></div>
+        <div class="grow"></div>
+        <div class="row" style="background:var(--ink);color:#F4F1EA;border-radius:30px;padding:22px 30px;gap:12px;align-items:center;box-shadow:0 10px 0 rgba(12,16,32,.28)">
+          <div class="stack grow" style="gap:12px;min-width:0">
+            <span class="label" style="font-size:28px;letter-spacing:.14em;color:#2FE3B2"><svg class="ic" ><use href="#i-follow"/></svg> Follow</span>
+            <div style="font:800 72px/1 var(--serif);color:#FFFFFF">@agentoon.ai</div>
+            <span class="pill" style="align-self:flex-start;background:#FF6A3D;color:#0C1020;border:none;font:800 34px/1 var(--sans);padding:16px 28px"><svg class="ic" ><use href="#i-plus"/></svg> Follow @agentoon.ai.</span>
+          </div>
+          <div style="flex:none"><svg class="mascot" viewBox="0 0 200 230" width="210" height="242" style="--m-head:#F4F1EA;--m-screen:#0C1020;--m-eye:#2FE3B2;--m-body:#F4F1EA;--m-ear:#FF6A3D" data-decor data-mascot><use href="#mascot-cheer"/></svg></div>
+        </div>
+        <div class="row gap16" style="margin-top:14px"><div class="card row center" style="flex:1;gap:14px;padding:16px 20px;border-radius:22px"><span style="flex:none;width:50px;height:50px;border-radius:14px;background:var(--ink);color:#F4F1EA;display:flex;align-items:center;justify-content:center;font-size:30px"><svg class="ic" ><use href="#i-bookmark"/></svg></span><div style="font:800 34px/1.15 var(--serif)">Save this guide.</div></div><div class="card row center" style="flex:1;gap:14px;padding:16px 20px;border-radius:22px"><span style="flex:none;width:50px;height:50px;border-radius:14px;background:var(--ink);color:#F4F1EA;display:flex;align-items:center;justify-content:center;font-size:30px"><svg class="ic" ><use href="#i-send"/></svg></span><div style="font:800 34px/1.15 var(--serif)">Share with a creator.</div></div></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>08</i> / 08</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+</main></body></html>

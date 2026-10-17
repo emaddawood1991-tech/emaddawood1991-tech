@@ -1,0 +1,144 @@
+{
+  "slug": "connect-instagram-chatgpt",
+  "title": "Connect Instagram to ChatGPT: Analyze Your Account with AI",
+  "handle": "@agentoon.ai",
+  "recipe": "workflow",
+  "slides": [
+    {
+      "layout": "hookConnect",
+      "theme": "dark",
+      "kicker": "Instagram × ChatGPT",
+      "title": "Connect Instagram *to ChatGPT.*",
+      "sub": "Turn your Instagram data into smarter content decisions.",
+      "swipe": "Swipe for the setup →"
+    },
+    {
+      "layout": "diagram",
+      "theme": "paper",
+      "kicker": "Why connect them?",
+      "title": "Stop Guessing. *Start Analyzing.*",
+      "titleSize": 64,
+      "text": "AI can help you interpret the metrics your connection makes available.",
+      "mood": "think",
+      "diagram": "dashboard",
+      "tag": "Demo data",
+      "watch": "Every number here is illustrative demo data, not a real account."
+    },
+    {
+      "layout": "steps3",
+      "theme": "mint",
+      "kicker": "Step 1",
+      "title": "Connect *Instagram.*",
+      "mood": "wink",
+      "lede": "Ootto is a third-party connector. Connect only accounts you manage.",
+      "steps": [
+        {
+          "t": "Visit `ootto.ai`"
+        },
+        {
+          "t": "Create an account"
+        },
+        {
+          "t": "Connect an eligible Instagram account",
+          "d": "Business or Creator, through Instagram’s own authorization screen"
+        }
+      ],
+      "tag": "Permissions",
+      "watch": "Review the permissions on Instagram’s screen before you approve.",
+      "src": "Source: ootto.ai (connector, third party)"
+    },
+    {
+      "layout": "setupMcp",
+      "theme": "dark",
+      "kicker": "Step 2",
+      "title": "Connect *Ootto to ChatGPT.*",
+      "mood": "focus",
+      "endpoint": "https://mcp.ootto.ai/mcp",
+      "steps": [
+        "In ChatGPT, open the custom MCP setup",
+        "Choose “Add custom MCP server”",
+        "Paste the URL as the Server URL",
+        "Keep OAuth, then sign in to Ootto"
+      ],
+      "tag": "Check first",
+      "watch": "Custom MCP needs a supported ChatGPT plan, and menus change. See OpenAI’s help page.",
+      "src": "Source: Ootto setup guide · OpenAI help center"
+    },
+    {
+      "layout": "prompt",
+      "theme": "paper",
+      "kicker": "Step 3",
+      "title": "Ask ChatGPT to *analyze your account.*",
+      "titleSize": 60,
+      "mood": "happy",
+      "promptStyle": "note",
+      "prompt": "Analyze the Instagram metrics available through my connected account. Identify my best-performing posts, engagement patterns, and content opportunities. Use real data only and clearly identify missing metrics.",
+      "ill": "chatDash",
+      "tag": "Tip",
+      "watch": "Ask it to name any metric it cannot see.",
+      "watchSize": 30,
+      "watchPad": "14px 24px"
+    },
+    {
+      "layout": "diagram",
+      "theme": "mint",
+      "kicker": "Discover what works",
+      "title": "Find Your *Winning Content.*",
+      "titleSize": 64,
+      "text": "Questions your available analytics can help answer:",
+      "mood": "proud",
+      "diagram": "questions",
+      "tag": "Qualifier",
+      "watch": "Answers depend on the metrics your connection exposes. Ask ChatGPT what is missing."
+    },
+    {
+      "layout": "prompt",
+      "theme": "dark",
+      "kicker": "Step 4",
+      "title": "From Data to *Better Content.*",
+      "titleSize": 62,
+      "mood": "oops",
+      "promptStyle": "chat",
+      "chatWith": "ChatGPT",
+      "prompt": "Based on my available Instagram analytics, create a 14-day content plan. Recommend topics, hooks, formats, and measurable goals. Explain the evidence behind each recommendation.",
+      "ill": "flow3",
+      "tag": "Reality check",
+      "watch": "No tool guarantees growth. Treat every plan as a test."
+    },
+    {
+      "layout": "finale",
+      "theme": "coral",
+      "kicker": "Cheat sheet",
+      "title": "Your Instagram. *Smarter Decisions.*",
+      "steps": [
+        "Connect Instagram.",
+        "Connect Ootto to ChatGPT.",
+        "Analyze available metrics.",
+        "Build a data-informed content plan."
+      ],
+      "handle": "@agentoon.ai",
+      "followBtn": "Follow @agentoon.ai.",
+      "actions": [
+        {
+          "icon": "bookmark",
+          "t": "Save this guide."
+        },
+        {
+          "icon": "send",
+          "t": "Share with a creator."
+        }
+      ]
+    }
+  ],
+  "spellAllow": [
+    "ootto",
+    "chatgpt",
+    "openai",
+    "oauth",
+    "instagram",
+    "creators",
+    "insights",
+    "analytics",
+    "analyze"
+  ]
+}

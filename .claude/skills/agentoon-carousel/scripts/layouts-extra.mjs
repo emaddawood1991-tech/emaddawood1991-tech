@@ -2,12 +2,37 @@
 import { layouts, shell, codeBlock, renderDiagram, esc, fmt, icon, mascot } from "./lib.mjs";
 
 const head = (s, { mood, maxW = 780 } = {}) => `
-  ${mood ? mascot(112, mood, "position:absolute;right:var(--safe-x);top:var(--pad-top)") : ""}
+  ${mood ? mascot(112, mood, "position:absolute;right:var(--safe-x);top:var(--mascot-top)") : ""}
   <div class="kicker"><span class="bar"></span>${esc(s.kicker || "")}</div>
   ${s.badge ? `<div style="margin-top:20px"><span class="badge hot">${esc(s.badge)}</span></div>` : ""}
   <h2 class="h2" style="margin-top:${s.badge ? 18 : 26}px;font-size:${s.titleSize || 76}px;max-width:${maxW}px">${fmt(s.title)}</h2>`;
 
+const ph = (t) => esc(t).replace(/\[([^\]]+)\]/g, '<mark class="ph">[$1]</mark>');
+const promptCard = (s) => {
+  const fz = s.promptSize || 32;
+  const body = `<div style="font:500 ${fz}px/1.4 var(--sans)">${ph(s.prompt)}</div>`;
+  if (s.promptStyle === "note") return `<div class="card" style="border-left:10px solid var(--accent);border-radius:12px 26px 26px 12px;padding:22px 28px"><div class="label" style="margin-bottom:10px;color:var(--accent-t)">Copy-paste prompt</div>${body}</div>`;
+  if (s.promptStyle === "chat") return `<div class="stack" style="gap:8px;align-items:flex-end"><span class="badge">You to ${esc(s.chatWith || "AI")}</span><div style="width:100%;background:var(--card-2);border:2px solid var(--line);border-radius:30px 30px 8px 30px;padding:22px 28px">${body}</div></div>`;
+  return `<div class="code" style="white-space:normal;padding:22px 30px 26px"><div class="label" style="color:#2FE3B2;margin-bottom:10px">Copy-paste prompt</div><div style="font:500 32px/1.4 var(--sans);color:#EEF1FA">${ph(s.prompt)}</div></div>`;
+};
+
 Object.assign(layouts, {
+  /** Copy-paste prompt + illustration. prompt (with [placeholders]), promptStyle terminal|note|chat, order "ill-first", ill (name | diagram spec), n, of, why, watch/tag, banner, titleSize/promptSize/watchSize */
+  prompt(s, ctx) {
+    const card = promptCard(s);
+    const ill = s.ill ? `<div class="grow stack" style="justify-content:center;min-height:0;margin:${s.illMargin || "12px 0"}">${renderDiagram(s.ill)}</div>` : '<div class="grow"></div>';
+    return shell(ctx, s, `
+      ${mascot(112, s.mood || "happy", "position:absolute;right:var(--safe-x);top:var(--mascot-top)")}
+      <div class="kicker"><span class="bar"></span>${s.n ? `Prompt ${String(s.n).padStart(2, "0")} / ${String(s.of || 7).padStart(2, "0")}` : esc(s.kicker || "")}</div>
+      <h2 class="h2" style="margin-top:16px;font-size:${s.titleSize || 64}px;max-width:780px">${fmt(s.title)}</h2>
+      ${s.why ? `<p class="body" style="margin-top:8px;font-size:32px;color:var(--muted)">${fmt(s.why)}</p>` : ""}
+      <div style="margin-top:14px">${s.order === "ill-first" ? "" : card}</div>
+      ${ill}
+      ${s.order === "ill-first" ? card : ""}
+      ${s.banner ? `<div class="banner" style="margin-top:16px;font-size:32px">${fmt(s.banner)}</div>` : ""}
+      ${s.watch ? `<div class="watch" style="margin-top:${s.watchGap || 16}px;font-size:${s.watchSize || 32}px;padding:${s.watchPad || "20px 26px"}"><span class="tag">${esc(s.tag || "Tip")}</span><span>${fmt(s.watch)}</span></div>` : ""}`);
+  },
+
   /** Numbered steps (3–4). steps[{title,text,code?}] */
   steps(s, ctx) {
     return shell(ctx, s, `${head(s, { mood: s.mood })}
