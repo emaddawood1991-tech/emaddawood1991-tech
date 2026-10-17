@@ -1,0 +1,105 @@
+{
+  "slug": "5-claude-code-skills",
+  "title": "5 Claude Code Skills That Save You Hours",
+  "handle": "@agentoon.ai",
+  "slides": [
+    {
+      "layout": "hook", "theme": "dark",
+      "kicker": "Claude Code · Bundled skills",
+      "title": "5 Claude Code *skills* that save you *hours*",
+      "rows": [
+        { "cmd": "/simplify", "verb": "clean up" },
+        { "cmd": "/code-review", "verb": "find bugs" },
+        { "cmd": "/batch", "verb": "go parallel" },
+        { "cmd": "/loop", "verb": "repeat a prompt" },
+        { "cmd": "/debug", "verb": "read the logs" }
+      ],
+      "bubble": "Wait, these are built in?!",
+      "swipe": "Swipe for all 5", "save": "Save for later"
+    },
+    {
+      "layout": "concept", "theme": "paper",
+      "kicker": "The idea",
+      "title": "Stop retyping the same *prompts.*",
+      "lede": "A *skill* is a saved playbook: type `/name` and Claude follows it.",
+      "rows": [
+        { "badge": "Built-in command", "ex": "/compact", "text": "Fixed logic in the CLI. Not a skill." },
+        { "badge": "Bundled skill", "ex": "/simplify", "hot": true, "text": "Ships with Claude Code. *All 5 in this post.*" },
+        { "badge": "Custom skill", "ex": "/fix-issue", "ghost": true, "text": "You write it in a `SKILL.md` file." },
+        { "badge": "Plugin skill", "ex": "/plugin:skill", "ghost": true, "text": "Comes from a plugin you install." }
+      ]
+    },
+    {
+      "layout": "skill", "theme": "dark", "n": 1, "mood": "wink",
+      "cmd": "/simplify",
+      "title": "Tidy your changes *before* review.",
+      "text": "Four agents check your changed code, then apply the cleanup.",
+      "diagram": "simplify",
+      "code": ["{{p:>}} {{c:/simplify}}", "{{p:>}} {{c:/simplify}} {{k:src/api}}"],
+      "tag": "No bug hunt", "watch": "It doesn't look for bugs. Use `/code-review` for that."
+    },
+    {
+      "layout": "skill", "theme": "paper", "n": 2, "mood": "focus", "flip": true,
+      "cmd": "/code-review",
+      "title": "A second pair of *eyes,* on demand.",
+      "text": "Reviews a branch, PR or path for bugs. Alias: `/review`.",
+      "diagram": "review",
+      "code": ["{{p:>}} {{c:/code-review}} {{f:high}} {{f:--fix}}", "{{p:>}} {{c:/code-review}} {{k:1234}} {{f:--comment}}"],
+      "tag": "Gotcha", "watch": "No level typed? It reuses your last one."
+    },
+    {
+      "layout": "skill", "theme": "mint", "n": 3, "mood": "think",
+      "cmd": "/batch",
+      "title": "One instruction. *Many* parallel agents.",
+      "text": "Splits a big change into independent units, then works on them in parallel.",
+      "diagram": "batch",
+      "code": ["{{p:>}} {{c:/batch}} migrate src/ from", "     JavaScript to TypeScript"],
+      "tag": "Needs git", "watch": "Needs a git repo. You approve the plan."
+    },
+    {
+      "layout": "skill", "theme": "dark", "n": 4, "mood": "dizzy", "flip": true,
+      "cmd": "/loop",
+      "title": "Let Claude *babysit* it for you.",
+      "text": "Re-runs a prompt on an interval. Skip the interval and Claude paces itself.",
+      "diagram": "loop",
+      "code": ["{{p:>}} {{c:/loop}} {{f:5m}} check the deploy"],
+      "tag": "Limits", "watch": "Needs an open session. Ends after 7 days."
+    },
+    {
+      "layout": "skill", "theme": "paper", "n": 5, "mood": "oops",
+      "cmd": "/debug",
+      "title": "Ask Claude to read its *own logs.*",
+      "text": "Turns on debug logging for this session, then troubleshoots from the log.",
+      "diagram": "debug",
+      "code": ["{{p:>}} {{c:/debug}} build hangs on save"],
+      "tag": "Timing", "watch": "Off unless you start with `claude --debug`. It logs from now on."
+    },
+    {
+      "layout": "cheatsheet", "theme": "dark",
+      "kicker": "Save this", "title": "Your *cheat sheet.*",
+      "badge": "Bundled skills", "badgeNote": "All 5 ship with Claude Code",
+      "rows": [
+        { "cmd": "/simplify", "use": "Clean up after a feature works", "note": "Cleanup only. No bug hunt." },
+        { "cmd": "/code-review", "use": "Review a branch, PR or path", "note": "`ultra` needs a claude.ai login" },
+        { "cmd": "/batch", "use": "Big, repeatable changes", "note": "Needs git (or a `WorktreeCreate` hook)" },
+        { "cmd": "/loop", "use": "Poll or babysit something", "note": "Session stays open. 7-day expiry." },
+        { "cmd": "/debug", "use": "Odd session behavior", "note": "Logs only from the moment you run it" }
+      ],
+      "legendTag": "Not skills",
+      "legend": ["Built-in commands: `/init`, `/compact`,", "`/security-review`. They run fixed logic."]
+    },
+    {
+      "layout": "cta", "theme": "coral",
+      "kicker": "Your turn",
+      "titleLines": ["Save it.", "*Share* it."],
+      "followLabel": "Follow", "handle": "@agentoon.ai",
+      "followSub": "Claude Code, MCP and AI agent tutorials",
+      "followBtn": "Follow @agentoon.ai",
+      "actions": [
+        { "icon": "bookmark", "t": "Save", "d": "For your next refactor" },
+        { "icon": "send", "t": "Share", "d": "Send it to a dev friend" }
+      ],
+      "ask": "Which skill will you try first? Tell me below."
+    }
+  ]
+}
