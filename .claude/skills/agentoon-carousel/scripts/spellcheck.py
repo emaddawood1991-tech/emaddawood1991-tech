@@ -12,7 +12,7 @@ sp = SpellChecker(); sp.word_frequency.load_words(allow)
 bad = []
 for item in json.load(open(sys.argv[1])):
     text = re.sub(r"[/`@#$<>\-\.]\S+|\S*[/_\\]\S*|\d+\S*", " ", item["text"])  # skip commands, paths, flags, handles, numbers
-    words = [w.lower().strip("'’") for w in re.findall(r"[A-Za-z][A-Za-z'’]*", text)]
+    words = [re.sub(r"'s$", "", w.lower().replace("’", "'").strip("'")) for w in re.findall(r"[A-Za-z][A-Za-z'’]*", text)]
     for w in sp.unknown([w for w in words if len(w) > 1 and w not in allow]):
         bad.append((item["slide"], w, sorted(sp.candidates(w) or [])[:3]))
 for s, w, c in bad: print(f"✗ slide {s}: possible typo “{w}” → {', '.join(c) or '?'}")

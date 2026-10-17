@@ -1,0 +1,182 @@
+{
+  "slug": "claude-instagram-prompts",
+  "title": "Run Your Instagram Content with Claude: 7 Copy-and-Paste Prompts",
+  "handle": "@agentoon.ai",
+  "recipe": "explainer",
+  "slides": [
+    {
+      "layout": "igHook",
+      "theme": "dark",
+      "kicker": "Claude × Instagram",
+      "title": "Run Your *Instagram* with Claude.",
+      "sub": "7 AI prompts that make content creation easier.",
+      "swipe": "Swipe to steal the prompts →"
+    },
+    {
+      "layout": "prompt",
+      "theme": "paper",
+      "n": 1,
+      "mood": "think",
+      "title": "Give Claude your *brand brain.*",
+      "why": "Claude can’t guess your business. Give it context first.",
+      "prompt": "Act as my Instagram content strategist. My niche is [niche]. My audience is [audience]. My brand voice is [3 words]. My goal is [growth/leads/sales]. Use this context when creating content in this conversation.",
+      "ill": "brain",
+      "promptStyle": "terminal",
+      "tag": "Tip",
+      "watch": "Save it in a Claude Project’s instructions."
+    },
+    {
+      "layout": "prompt",
+      "theme": "mint",
+      "n": 2,
+      "mood": "wink",
+      "title": "Hooks that *stop the scroll.*",
+      "why": "Specific beats vague. Ask for 10, then pick the best.",
+      "prompt": "Write 10 Instagram hooks about [topic] for [audience]. Make them specific, curiosity-driven, and under 12 words. Avoid clickbait.",
+      "ill": "hooks",
+      "promptStyle": "note"
+    },
+    {
+      "layout": "prompt",
+      "theme": "dark",
+      "n": 3,
+      "mood": "focus",
+      "title": "Create *Reel scripts.*",
+      "why": "Hook, points, visuals and CTA in one request.",
+      "prompt": "Write a 30-second Instagram Reel script about [topic]. Include a strong hook, 3 useful points, visual directions, and a natural CTA.",
+      "ill": {
+        "type": "timeline",
+        "milestones": [
+          {
+            "t": "0–3s",
+            "label": "Hook"
+          },
+          {
+            "t": "3–20s",
+            "label": "Value"
+          },
+          {
+            "t": "20–26s",
+            "label": "Result"
+          },
+          {
+            "t": "26–30s",
+            "label": "CTA"
+          }
+        ],
+        "caption": "A suggested split for 30 seconds"
+      },
+      "promptStyle": "chat",
+      "order": "ill-first"
+    },
+    {
+      "layout": "prompt",
+      "theme": "paper",
+      "n": 4,
+      "mood": "happy",
+      "title": "Create Instagram *carousels.*",
+      "why": "Headline, copy and visual direction for every slide.",
+      "prompt": "Create an 8-slide Instagram carousel about [topic]. Give each slide a headline, concise educational copy, and visual direction. End with a useful takeaway and CTA.",
+      "ill": "carousel",
+      "promptStyle": "note",
+      "order": "ill-first"
+    },
+    {
+      "layout": "prompt",
+      "theme": "mint",
+      "n": 5,
+      "mood": "oops",
+      "title": "Captions people *actually read.*",
+      "why": "Open strong. Give value. Ask for one action.",
+      "prompt": "Write an engaging Instagram caption about [topic] for [audience]. Use a strong opening, practical value, natural keywords, a clear CTA, and 3–5 relevant hashtags.",
+      "ill": "captions",
+      "promptStyle": "terminal"
+    },
+    {
+      "layout": "prompt",
+      "theme": "dark",
+      "n": 6,
+      "mood": "dizzy",
+      "title": "Plan *30 days* of content.",
+      "why": "",
+      "prompt": "Create a 30-day Instagram content calendar for [niche]. Include topic, format, hook, audience benefit, and CTA. Balance tutorials, tips, examples, and community posts.",
+      "ill": "calendar",
+      "promptStyle": "chat"
+    },
+    {
+      "layout": "prompt",
+      "theme": "paper",
+      "n": 7,
+      "mood": "proud",
+      "title": "Reply to comments *professionally.*",
+      "why": "",
+      "prompt": "Draft friendly, natural replies to these Instagram comments: [paste comments]. Match my brand voice. Keep replies concise, helpful, and personalized. Flag anything sensitive for manual review.",
+      "ill": "comments",
+      "promptStyle": "note",
+      "tag": "Important",
+      "watch": "Claude drafts replies. It can’t access or post your Instagram comments without an integration you set up.",
+      "illMargin": "26px 0 22px"
+    },
+    {
+      "layout": "toolkit",
+      "theme": "coral",
+      "kicker": "Save this",
+      "title": "Your Instagram *AI toolkit.*",
+      "items": [
+        [
+          "Brand brain",
+          "Set the context"
+        ],
+        [
+          "Hooks",
+          "10 scroll-stoppers"
+        ],
+        [
+          "Reel script",
+          "30 seconds, scripted"
+        ],
+        [
+          "Carousel",
+          "8 slides, planned"
+        ],
+        [
+          "Caption",
+          "Hook, value, CTA"
+        ],
+        [
+          "30-day plan",
+          "A month of posts"
+        ],
+        [
+          "Comment replies",
+          "Drafts you review"
+        ]
+      ],
+      "handle": "@agentoon.ai",
+      "followSub": "Follow @agentoon.ai for more AI workflows.",
+      "actions": [
+        {
+          "icon": "bookmark",
+          "t": "Save this carousel."
+        },
+        {
+          "icon": "send",
+          "t": "Share it with a creator."
+        }
+      ]
+    }
+  ],
+  "spellAllow": [
+    "reel",
+    "reels",
+    "cta",
+    "hashtag",
+    "hashtags",
+    "instagram",
+    "creator",
+    "creators",
+    "carousels",
+    "openers",
+    "chatbot"
+  ]
+}

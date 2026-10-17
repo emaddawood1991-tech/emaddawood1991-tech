@@ -152,6 +152,11 @@ const qa = ({ n, TH }) => {
   for (const m of slide.querySelectorAll("[data-mascot]")) {
     if (m.closest(".footer")) continue;
     const mr = m.getBoundingClientRect();
+    // the mascot's head must stand out from whatever is painted behind it
+    const hv = getComputedStyle(m).getPropertyValue("--m-head").trim();
+    const hx = hv.match(/^#([0-9a-f]{6})$/i);
+    const hc = hx ? { r: parseInt(hx[1].slice(0, 2), 16), g: parseInt(hx[1].slice(2, 4), 16), b: parseInt(hx[1].slice(4), 16), a: 1 } : parse(hv);
+    if (hc) { const bgc = backdrop(m, mr.left + mr.width * 0.5, mr.top + mr.height * 0.3); const rr = ratio(hc, bgc); if (rr < 1.6) out.push({ n, level: "error", msg: `mascot head blends into its background (${rr.toFixed(2)}:1): give it an explicit light/dark palette via mascot(w, mood, "--m-head:…")` }); }
     if (mr.left < sr.left || mr.right > sr.right || mr.top < sr.top || mr.bottom > sr.bottom - 0) out.push({ n, level: "error", msg: "mascot leaves the slide" });
     const w2 = document.createTreeWalker(slide, NodeFilter.SHOW_TEXT); let u;
     while ((u = w2.nextNode())) {
