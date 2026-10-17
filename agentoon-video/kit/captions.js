@@ -1,7 +1,7 @@
 /* Kinetic word-timed subtitles. Seekable GSAP, no randomness.
    Captions.build(tl, host, words, opts)
      words: [{ w: "Servers", s: 8.1, e: 8.5 }, ...]   (display text, seconds on the root timeline)
-     opts:  { style: "tag"|"bar"|"plain", bottom: 400, active: "#FF6A3D", maxWords: 4, maxChars: 24 }
+     opts:  { style: "tag"|"bar"|"plain"|"note", bottom: 400, active: "#FF6A3D", maxWords: 4, maxChars: 24 }
    Subtitles live in a band you position; keep that band clear of code/UI (the episode decides). */
 (function () {
   function chunk(words, o) {

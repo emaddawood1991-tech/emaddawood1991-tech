@@ -1,0 +1,1231 @@
+{
+ "voice": "am_michael",
+ "speed": 1.1,
+ "wpm": 162,
+ "total": 77.113,
+ "phrases": [
+  {
+   "id": "p0",
+   "start": 0.15,
+   "end": 5.076,
+   "show": "A tiny server just counted the lines in a real file. That is MCP at work.",
+   "speak": "A tiny server just counted the lines in a real file. That is MCP at work.",
+   "map": null
+  },
+  {
+   "id": "p1",
+   "start": 5.196,
+   "end": 11.846,
+   "show": "Without MCP, every AI app needs custom code for every tool, file, and database it touches.",
+   "speak": "Without MCP, every AI app needs custom code for every tool, file, and database it touches.",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "start": 11.966,
+   "end": 15.805,
+   "show": "Four apps and four tools mean sixteen custom integrations.",
+   "speak": "Four apps and four tools mean sixteen custom integrations.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "start": 15.925,
+   "end": 21.125,
+   "show": "MCP, the Model Context Protocol, is an open standard that fixes that.",
+   "speak": "MCP, the Model Context Protocol, is an open standard that fixes that.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "start": 21.245,
+   "end": 26.117,
+   "show": "Your AI app is the host, and it runs one client for each server it connects to.",
+   "speak": "Your AI app is the host, and it runs one client for each server it connects to.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "start": 26.237,
+   "end": 32.908,
+   "show": "A server offers three things: tools the model can call, resources it can read, and prompts you can reuse.",
+   "speak": "A server offers three things: tools the model can call, resources it can read, and prompts you can reuse.",
+   "map": null
+  },
+  {
+   "id": "p6",
+   "start": 33.028,
+   "end": 41.245,
+   "show": "Messages are JSON-RPC, sent over standard input and output locally, or over HTTP for remote servers.",
+   "speak": "Messages are JSON-RPC, sent over standard input and output locally, or over HTTP for remote servers.",
+   "map": null
+  },
+  {
+   "id": "p7",
+   "start": 41.365,
+   "end": 48.101,
+   "show": "Let's watch it happen with a real server. It is twenty-four lines, built with the official TypeScript SDK.",
+   "speak": "Let's watch it happen with a real server. It is twenty-four lines, built with the official TypeScript SDK.",
+   "map": null
+  },
+  {
+   "id": "p8",
+   "start": 48.221,
+   "end": 52.125,
+   "show": "The client starts by asking who the server is and what it supports.",
+   "speak": "The client starts by asking who the server is and what it supports.",
+   "map": null
+  },
+  {
+   "id": "p9",
+   "start": 52.245,
+   "end": 55.971,
+   "show": "Then it asks for the tools. The server lists one: count lines.",
+   "speak": "Then it asks for the tools. The server lists one: count lines.",
+   "map": null
+  },
+  {
+   "id": "p10",
+   "start": 56.091,
+   "end": 62.847,
+   "show": "Now the call. Count the lines in notes.txt. The server reads the file, and answers: eleven lines.",
+   "speak": "Now the call. Count the lines in notes dot text. The server reads the file, and answers: eleven lines.",
+   "map": [
+    [
+     "Now",
+     "Now"
+    ],
+    [
+     "the",
+     "the"
+    ],
+    [
+     "call.",
+     "call."
+    ],
+    [
+     "Count",
+     "Count"
+    ],
+    [
+     "the",
+     "the"
+    ],
+    [
+     "lines",
+     "lines"
+    ],
+    [
+     "in",
+     "in"
+    ],
+    [
+     "notes.txt.",
+     "notes dot text."
+    ],
+    [
+     "The",
+     "The"
+    ],
+    [
+     "server",
+     "server"
+    ],
+    [
+     "reads",
+     "reads"
+    ],
+    [
+     "the",
+     "the"
+    ],
+    [
+     "file,",
+     "file,"
+    ],
+    [
+     "and",
+     "and"
+    ],
+    [
+     "answers:",
+     "answers:"
+    ],
+    [
+     "eleven",
+     "eleven"
+    ],
+    [
+     "lines.",
+     "lines."
+    ]
+   ]
+  },
+  {
+   "id": "p11",
+   "start": 62.967,
+   "end": 65.689,
+   "show": "That same pattern works for any MCP server.",
+   "speak": "That same pattern works for any MCP server.",
+   "map": null
+  },
+  {
+   "id": "p12",
+   "start": 65.809,
+   "end": 68.634,
+   "show": "To use it in Claude Code, add it with one command.",
+   "speak": "To use it in Claude Code, add it with one command.",
+   "map": null
+  },
+  {
+   "id": "p13",
+   "start": 68.754,
+   "end": 71.282,
+   "show": "Claude Code checks the connection: connected.",
+   "speak": "Claude Code checks the connection: connected.",
+   "map": null
+  },
+  {
+   "id": "p14",
+   "start": 71.402,
+   "end": 75.139,
+   "show": "MCP is the standard plug between AI apps and your tools.",
+   "speak": "MCP is the standard plug between AI apps and your tools.",
+   "map": null
+  },
+  {
+   "id": "p15",
+   "start": 75.259,
+   "end": 76.993,
+   "show": "Follow Agentoon.ai",
+   "speak": "Follow Agentoon dot A I.",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai",
+     "Agentoon dot A I"
+    ]
+   ]
+  }
+ ],
+ "words": [
+  {
+   "w": "A",
+   "s": 0.15,
+   "e": 0.314
+  },
+  {
+   "w": "tiny",
+   "s": 0.314,
+   "e": 0.643
+  },
+  {
+   "w": "server",
+   "s": 0.643,
+   "e": 1.08
+  },
+  {
+   "w": "just",
+   "s": 1.08,
+   "e": 1.409
+  },
+  {
+   "w": "counted",
+   "s": 1.409,
+   "e": 1.901
+  },
+  {
+   "w": "the",
+   "s": 1.901,
+   "e": 2.175
+  },
+  {
+   "w": "lines",
+   "s": 2.175,
+   "e": 2.558
+  },
+  {
+   "w": "in",
+   "s": 2.558,
+   "e": 2.777
+  },
+  {
+   "w": "a",
+   "s": 2.777,
+   "e": 2.941
+  },
+  {
+   "w": "real",
+   "s": 2.941,
+   "e": 3.27
+  },
+  {
+   "w": "file.",
+   "s": 3.27,
+   "e": 3.653
+  },
+  {
+   "w": "That",
+   "s": 3.653,
+   "e": 3.981
+  },
+  {
+   "w": "is",
+   "s": 3.981,
+   "e": 4.2
+  },
+  {
+   "w": "MCP",
+   "s": 4.2,
+   "e": 4.474
+  },
+  {
+   "w": "at",
+   "s": 4.474,
+   "e": 4.693
+  },
+  {
+   "w": "work.",
+   "s": 4.693,
+   "e": 5.076
+  },
+  {
+   "w": "Without",
+   "s": 5.196,
+   "e": 5.755
+  },
+  {
+   "w": "MCP,",
+   "s": 5.755,
+   "e": 6.128
+  },
+  {
+   "w": "every",
+   "s": 6.128,
+   "e": 6.563
+  },
+  {
+   "w": "AI",
+   "s": 6.563,
+   "e": 6.812
+  },
+  {
+   "w": "app",
+   "s": 6.812,
+   "e": 7.123
+  },
+  {
+   "w": "needs",
+   "s": 7.123,
+   "e": 7.558
+  },
+  {
+   "w": "custom",
+   "s": 7.558,
+   "e": 8.055
+  },
+  {
+   "w": "code",
+   "s": 8.055,
+   "e": 8.428
+  },
+  {
+   "w": "for",
+   "s": 8.428,
+   "e": 8.739
+  },
+  {
+   "w": "every",
+   "s": 8.739,
+   "e": 9.174
+  },
+  {
+   "w": "tool,",
+   "s": 9.174,
+   "e": 9.609
+  },
+  {
+   "w": "file,",
+   "s": 9.609,
+   "e": 10.044
+  },
+  {
+   "w": "and",
+   "s": 10.044,
+   "e": 10.354
+  },
+  {
+   "w": "database",
+   "s": 10.354,
+   "e": 10.976
+  },
+  {
+   "w": "it",
+   "s": 10.976,
+   "e": 11.225
+  },
+  {
+   "w": "touches.",
+   "s": 11.225,
+   "e": 11.846
+  },
+  {
+   "w": "Four",
+   "s": 11.966,
+   "e": 12.305
+  },
+  {
+   "w": "apps",
+   "s": 12.305,
+   "e": 12.643
+  },
+  {
+   "w": "and",
+   "s": 12.643,
+   "e": 12.926
+  },
+  {
+   "w": "four",
+   "s": 12.926,
+   "e": 13.264
+  },
+  {
+   "w": "tools",
+   "s": 13.264,
+   "e": 13.66
+  },
+  {
+   "w": "mean",
+   "s": 13.66,
+   "e": 13.998
+  },
+  {
+   "w": "sixteen",
+   "s": 13.998,
+   "e": 14.507
+  },
+  {
+   "w": "custom",
+   "s": 14.507,
+   "e": 14.958
+  },
+  {
+   "w": "integrations.",
+   "s": 14.958,
+   "e": 15.805
+  },
+  {
+   "w": "MCP,",
+   "s": 15.925,
+   "e": 16.305
+  },
+  {
+   "w": "the",
+   "s": 16.305,
+   "e": 16.623
+  },
+  {
+   "w": "Model",
+   "s": 16.623,
+   "e": 17.066
+  },
+  {
+   "w": "Context",
+   "s": 17.066,
+   "e": 17.637
+  },
+  {
+   "w": "Protocol,",
+   "s": 17.637,
+   "e": 18.335
+  },
+  {
+   "w": "is",
+   "s": 18.335,
+   "e": 18.588
+  },
+  {
+   "w": "an",
+   "s": 18.588,
+   "e": 18.842
+  },
+  {
+   "w": "open",
+   "s": 18.842,
+   "e": 19.223
+  },
+  {
+   "w": "standard",
+   "s": 19.223,
+   "e": 19.857
+  },
+  {
+   "w": "that",
+   "s": 19.857,
+   "e": 20.237
+  },
+  {
+   "w": "fixes",
+   "s": 20.237,
+   "e": 20.681
+  },
+  {
+   "w": "that.",
+   "s": 20.681,
+   "e": 21.125
+  },
+  {
+   "w": "Your",
+   "s": 21.245,
+   "e": 21.546
+  },
+  {
+   "w": "AI",
+   "s": 21.546,
+   "e": 21.747
+  },
+  {
+   "w": "app",
+   "s": 21.747,
+   "e": 21.998
+  },
+  {
+   "w": "is",
+   "s": 21.998,
+   "e": 22.199
+  },
+  {
+   "w": "the",
+   "s": 22.199,
+   "e": 22.45
+  },
+  {
+   "w": "host,",
+   "s": 22.45,
+   "e": 22.802
+  },
+  {
+   "w": "and",
+   "s": 22.802,
+   "e": 23.053
+  },
+  {
+   "w": "it",
+   "s": 23.053,
+   "e": 23.254
+  },
+  {
+   "w": "runs",
+   "s": 23.254,
+   "e": 23.555
+  },
+  {
+   "w": "one",
+   "s": 23.555,
+   "e": 23.807
+  },
+  {
+   "w": "client",
+   "s": 23.807,
+   "e": 24.208
+  },
+  {
+   "w": "for",
+   "s": 24.208,
+   "e": 24.46
+  },
+  {
+   "w": "each",
+   "s": 24.46,
+   "e": 24.761
+  },
+  {
+   "w": "server",
+   "s": 24.761,
+   "e": 25.163
+  },
+  {
+   "w": "it",
+   "s": 25.163,
+   "e": 25.364
+  },
+  {
+   "w": "connects",
+   "s": 25.364,
+   "e": 25.866
+  },
+  {
+   "w": "to.",
+   "s": 25.866,
+   "e": 26.117
+  },
+  {
+   "w": "A",
+   "s": 26.237,
+   "e": 26.397
+  },
+  {
+   "w": "server",
+   "s": 26.397,
+   "e": 26.824
+  },
+  {
+   "w": "offers",
+   "s": 26.824,
+   "e": 27.251
+  },
+  {
+   "w": "three",
+   "s": 27.251,
+   "e": 27.625
+  },
+  {
+   "w": "things:",
+   "s": 27.625,
+   "e": 28.105
+  },
+  {
+   "w": "tools",
+   "s": 28.105,
+   "e": 28.478
+  },
+  {
+   "w": "the",
+   "s": 28.478,
+   "e": 28.745
+  },
+  {
+   "w": "model",
+   "s": 28.745,
+   "e": 29.119
+  },
+  {
+   "w": "can",
+   "s": 29.119,
+   "e": 29.386
+  },
+  {
+   "w": "call,",
+   "s": 29.386,
+   "e": 29.759
+  },
+  {
+   "w": "resources",
+   "s": 29.759,
+   "e": 30.346
+  },
+  {
+   "w": "it",
+   "s": 30.346,
+   "e": 30.56
+  },
+  {
+   "w": "can",
+   "s": 30.56,
+   "e": 30.827
+  },
+  {
+   "w": "read,",
+   "s": 30.827,
+   "e": 31.2
+  },
+  {
+   "w": "and",
+   "s": 31.2,
+   "e": 31.467
+  },
+  {
+   "w": "prompts",
+   "s": 31.467,
+   "e": 31.947
+  },
+  {
+   "w": "you",
+   "s": 31.947,
+   "e": 32.214
+  },
+  {
+   "w": "can",
+   "s": 32.214,
+   "e": 32.481
+  },
+  {
+   "w": "reuse.",
+   "s": 32.481,
+   "e": 32.908
+  },
+  {
+   "w": "Messages",
+   "s": 33.028,
+   "e": 33.73
+  },
+  {
+   "w": "are",
+   "s": 33.73,
+   "e": 34.081
+  },
+  {
+   "w": "JSON-RPC,",
+   "s": 34.081,
+   "e": 34.854
+  },
+  {
+   "w": "sent",
+   "s": 34.854,
+   "e": 35.275
+  },
+  {
+   "w": "over",
+   "s": 35.275,
+   "e": 35.697
+  },
+  {
+   "w": "standard",
+   "s": 35.697,
+   "e": 36.399
+  },
+  {
+   "w": "input",
+   "s": 36.399,
+   "e": 36.891
+  },
+  {
+   "w": "and",
+   "s": 36.891,
+   "e": 37.242
+  },
+  {
+   "w": "output",
+   "s": 37.242,
+   "e": 37.804
+  },
+  {
+   "w": "locally,",
+   "s": 37.804,
+   "e": 38.506
+  },
+  {
+   "w": "or",
+   "s": 38.506,
+   "e": 38.787
+  },
+  {
+   "w": "over",
+   "s": 38.787,
+   "e": 39.208
+  },
+  {
+   "w": "HTTP",
+   "s": 39.208,
+   "e": 39.63
+  },
+  {
+   "w": "for",
+   "s": 39.63,
+   "e": 39.981
+  },
+  {
+   "w": "remote",
+   "s": 39.981,
+   "e": 40.543
+  },
+  {
+   "w": "servers.",
+   "s": 40.543,
+   "e": 41.245
+  },
+  {
+   "w": "Let's",
+   "s": 41.365,
+   "e": 41.742
+  },
+  {
+   "w": "watch",
+   "s": 41.742,
+   "e": 42.119
+  },
+  {
+   "w": "it",
+   "s": 42.119,
+   "e": 42.335
+  },
+  {
+   "w": "happen",
+   "s": 42.335,
+   "e": 42.766
+  },
+  {
+   "w": "with",
+   "s": 42.766,
+   "e": 43.089
+  },
+  {
+   "w": "a",
+   "s": 43.089,
+   "e": 43.251
+  },
+  {
+   "w": "real",
+   "s": 43.251,
+   "e": 43.574
+  },
+  {
+   "w": "server.",
+   "s": 43.574,
+   "e": 44.059
+  },
+  {
+   "w": "It",
+   "s": 44.059,
+   "e": 44.275
+  },
+  {
+   "w": "is",
+   "s": 44.275,
+   "e": 44.491
+  },
+  {
+   "w": "twenty-four",
+   "s": 44.491,
+   "e": 45.191
+  },
+  {
+   "w": "lines,",
+   "s": 45.191,
+   "e": 45.622
+  },
+  {
+   "w": "built",
+   "s": 45.622,
+   "e": 45.999
+  },
+  {
+   "w": "with",
+   "s": 45.999,
+   "e": 46.323
+  },
+  {
+   "w": "the",
+   "s": 46.323,
+   "e": 46.592
+  },
+  {
+   "w": "official",
+   "s": 46.592,
+   "e": 47.131
+  },
+  {
+   "w": "TypeScript",
+   "s": 47.131,
+   "e": 47.778
+  },
+  {
+   "w": "SDK.",
+   "s": 47.778,
+   "e": 48.101
+  },
+  {
+   "w": "The",
+   "s": 48.221,
+   "e": 48.462
+  },
+  {
+   "w": "client",
+   "s": 48.462,
+   "e": 48.848
+  },
+  {
+   "w": "starts",
+   "s": 48.848,
+   "e": 49.233
+  },
+  {
+   "w": "by",
+   "s": 49.233,
+   "e": 49.426
+  },
+  {
+   "w": "asking",
+   "s": 49.426,
+   "e": 49.812
+  },
+  {
+   "w": "who",
+   "s": 49.812,
+   "e": 50.053
+  },
+  {
+   "w": "the",
+   "s": 50.053,
+   "e": 50.293
+  },
+  {
+   "w": "server",
+   "s": 50.293,
+   "e": 50.679
+  },
+  {
+   "w": "is",
+   "s": 50.679,
+   "e": 50.872
+  },
+  {
+   "w": "and",
+   "s": 50.872,
+   "e": 51.113
+  },
+  {
+   "w": "what",
+   "s": 51.113,
+   "e": 51.402
+  },
+  {
+   "w": "it",
+   "s": 51.402,
+   "e": 51.595
+  },
+  {
+   "w": "supports.",
+   "s": 51.595,
+   "e": 52.125
+  },
+  {
+   "w": "Then",
+   "s": 52.245,
+   "e": 52.543
+  },
+  {
+   "w": "it",
+   "s": 52.543,
+   "e": 52.742
+  },
+  {
+   "w": "asks",
+   "s": 52.742,
+   "e": 53.04
+  },
+  {
+   "w": "for",
+   "s": 53.04,
+   "e": 53.288
+  },
+  {
+   "w": "the",
+   "s": 53.288,
+   "e": 53.537
+  },
+  {
+   "w": "tools.",
+   "s": 53.537,
+   "e": 53.934
+  },
+  {
+   "w": "The",
+   "s": 53.934,
+   "e": 54.183
+  },
+  {
+   "w": "server",
+   "s": 54.183,
+   "e": 54.58
+  },
+  {
+   "w": "lists",
+   "s": 54.58,
+   "e": 54.928
+  },
+  {
+   "w": "one:",
+   "s": 54.928,
+   "e": 55.226
+  },
+  {
+   "w": "count",
+   "s": 55.226,
+   "e": 55.574
+  },
+  {
+   "w": "lines.",
+   "s": 55.574,
+   "e": 55.971
+  },
+  {
+   "w": "Now",
+   "s": 56.091,
+   "e": 56.373
+  },
+  {
+   "w": "the",
+   "s": 56.373,
+   "e": 56.654
+  },
+  {
+   "w": "call.",
+   "s": 56.654,
+   "e": 57.048
+  },
+  {
+   "w": "Count",
+   "s": 57.048,
+   "e": 57.442
+  },
+  {
+   "w": "the",
+   "s": 57.442,
+   "e": 57.724
+  },
+  {
+   "w": "lines",
+   "s": 57.724,
+   "e": 58.118
+  },
+  {
+   "w": "in",
+   "s": 58.118,
+   "e": 58.343
+  },
+  {
+   "w": "notes.txt.",
+   "s": 58.343,
+   "e": 59.3
+  },
+  {
+   "w": "The",
+   "s": 59.3,
+   "e": 59.582
+  },
+  {
+   "w": "server",
+   "s": 59.582,
+   "e": 60.032
+  },
+  {
+   "w": "reads",
+   "s": 60.032,
+   "e": 60.426
+  },
+  {
+   "w": "the",
+   "s": 60.426,
+   "e": 60.708
+  },
+  {
+   "w": "file,",
+   "s": 60.708,
+   "e": 61.102
+  },
+  {
+   "w": "and",
+   "s": 61.102,
+   "e": 61.383
+  },
+  {
+   "w": "answers:",
+   "s": 61.383,
+   "e": 61.946
+  },
+  {
+   "w": "eleven",
+   "s": 61.946,
+   "e": 62.397
+  },
+  {
+   "w": "lines.",
+   "s": 62.397,
+   "e": 62.847
+  },
+  {
+   "w": "That",
+   "s": 62.967,
+   "e": 63.281
+  },
+  {
+   "w": "same",
+   "s": 63.281,
+   "e": 63.595
+  },
+  {
+   "w": "pattern",
+   "s": 63.595,
+   "e": 64.066
+  },
+  {
+   "w": "works",
+   "s": 64.066,
+   "e": 64.433
+  },
+  {
+   "w": "for",
+   "s": 64.433,
+   "e": 64.694
+  },
+  {
+   "w": "any",
+   "s": 64.694,
+   "e": 64.956
+  },
+  {
+   "w": "MCP",
+   "s": 64.956,
+   "e": 65.218
+  },
+  {
+   "w": "server.",
+   "s": 65.218,
+   "e": 65.689
+  },
+  {
+   "w": "To",
+   "s": 65.809,
+   "e": 65.991
+  },
+  {
+   "w": "use",
+   "s": 65.991,
+   "e": 66.219
+  },
+  {
+   "w": "it",
+   "s": 66.219,
+   "e": 66.401
+  },
+  {
+   "w": "in",
+   "s": 66.401,
+   "e": 66.584
+  },
+  {
+   "w": "Claude",
+   "s": 66.584,
+   "e": 66.948
+  },
+  {
+   "w": "Code,",
+   "s": 66.948,
+   "e": 67.267
+  },
+  {
+   "w": "add",
+   "s": 67.267,
+   "e": 67.495
+  },
+  {
+   "w": "it",
+   "s": 67.495,
+   "e": 67.677
+  },
+  {
+   "w": "with",
+   "s": 67.677,
+   "e": 67.951
+  },
+  {
+   "w": "one",
+   "s": 67.951,
+   "e": 68.178
+  },
+  {
+   "w": "command.",
+   "s": 68.178,
+   "e": 68.634
+  },
+  {
+   "w": "Claude",
+   "s": 68.754,
+   "e": 69.143
+  },
+  {
+   "w": "Code",
+   "s": 69.143,
+   "e": 69.435
+  },
+  {
+   "w": "checks",
+   "s": 69.435,
+   "e": 69.824
+  },
+  {
+   "w": "the",
+   "s": 69.824,
+   "e": 70.067
+  },
+  {
+   "w": "connection:",
+   "s": 70.067,
+   "e": 70.699
+  },
+  {
+   "w": "connected.",
+   "s": 70.699,
+   "e": 71.282
+  },
+  {
+   "w": "MCP",
+   "s": 71.402,
+   "e": 71.677
+  },
+  {
+   "w": "is",
+   "s": 71.677,
+   "e": 71.897
+  },
+  {
+   "w": "the",
+   "s": 71.897,
+   "e": 72.171
+  },
+  {
+   "w": "standard",
+   "s": 72.171,
+   "e": 72.721
+  },
+  {
+   "w": "plug",
+   "s": 72.721,
+   "e": 73.051
+  },
+  {
+   "w": "between",
+   "s": 73.051,
+   "e": 73.545
+  },
+  {
+   "w": "AI",
+   "s": 73.545,
+   "e": 73.765
+  },
+  {
+   "w": "apps",
+   "s": 73.765,
+   "e": 74.095
+  },
+  {
+   "w": "and",
+   "s": 74.095,
+   "e": 74.37
+  },
+  {
+   "w": "your",
+   "s": 74.37,
+   "e": 74.699
+  },
+  {
+   "w": "tools.",
+   "s": 74.699,
+   "e": 75.139
+  },
+  {
+   "w": "Follow",
+   "s": 75.259,
+   "e": 75.793
+  },
+  {
+   "w": "Agentoon.ai",
+   "s": 75.793,
+   "e": 76.993
+  }
+ ]
+}

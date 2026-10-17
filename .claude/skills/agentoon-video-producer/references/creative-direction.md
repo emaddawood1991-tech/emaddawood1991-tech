@@ -45,6 +45,7 @@ Built with HTML, CSS, SVG, canvas and GSAP: flat colour paper fields, halftone-d
 |---|---|---|---|---|---|---|
 | FreeLLMAPI (approved, do not modify) | Cream editorial paper plus one blue routing cable the camera follows | light cream, navy ending | editorial headline + mono | continuous track along cable, 3D tilt into ending | per-episode paper style | done |
 | 00-quality-test (tooling test, not published) | "Paper Switchboard": ink terminal hook, cream collage paper diagram, cut-paper tool cards | ink / cream / ink / navy | Fraunces display + JetBrains Mono | cardGrow, whip, push; stop-motion pops; slow push-ins | white paper tag, coral active word | 2026-10-17 |
+| 01 How MCP servers work | "The Blueprint Sheet": drawing that draws itself; one continuous camera down four figures; ink terminals for the real demo; one red stamp | ink / cyanotype blue / white sheet / ink / white / navy | Fraunces italic notes + JetBrains Mono | whip, sheet drop, push-through, card grow; camera flies between figures | double-rule drawing notes on navy | 2026-10-17 |
 | _next episode_ | | | | | | |
 
 ## Anti-patterns

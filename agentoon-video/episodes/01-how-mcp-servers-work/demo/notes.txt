@@ -1,0 +1,11 @@
+Agentoon notes
+1. Show the result first
+2. Explain why it matters
+3. Then show how
+4. Keep one idea per scene
+5. Let the robot react
+6. Verify every claim
+7. Zoom into the code
+8. Keep subtitles clear
+9. Check it on a phone
+10. One follow call to action

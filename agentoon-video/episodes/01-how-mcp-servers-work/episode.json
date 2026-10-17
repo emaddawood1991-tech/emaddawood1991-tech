@@ -1,0 +1,429 @@
+{
+ "title": "How MCP servers work",
+ "voice": "am_michael",
+ "speed": 1.1,
+ "total": 79.0,
+ "phrases": [
+  {
+   "id": "p0",
+   "speak": "A tiny server just counted the lines in a real file. That is MCP at work.",
+   "show": "A tiny server just counted the lines in a real file. That is MCP at work."
+  },
+  {
+   "id": "p1",
+   "speak": "Without MCP, every AI app needs custom code for every tool, file, and database it touches.",
+   "show": "Without MCP, every AI app needs custom code for every tool, file, and database it touches."
+  },
+  {
+   "id": "p2",
+   "speak": "Four apps and four tools mean sixteen custom integrations.",
+   "show": "Four apps and four tools mean sixteen custom integrations."
+  },
+  {
+   "id": "p3",
+   "speak": "MCP, the Model Context Protocol, is an open standard that fixes that.",
+   "show": "MCP, the Model Context Protocol, is an open standard that fixes that."
+  },
+  {
+   "id": "p4",
+   "speak": "Your AI app is the host, and it runs one client for each server it connects to.",
+   "show": "Your AI app is the host, and it runs one client for each server it connects to."
+  },
+  {
+   "id": "p5",
+   "speak": "A server offers three things: tools the model can call, resources it can read, and prompts you can reuse.",
+   "show": "A server offers three things: tools the model can call, resources it can read, and prompts you can reuse."
+  },
+  {
+   "id": "p6",
+   "speak": "Messages are JSON-RPC, sent over standard input and output locally, or over HTTP for remote servers.",
+   "show": "Messages are JSON-RPC, sent over standard input and output locally, or over HTTP for remote servers."
+  },
+  {
+   "id": "p7",
+   "speak": "Let's watch it happen with a real server. It is twenty-four lines, built with the official TypeScript SDK.",
+   "show": "Let's watch it happen with a real server. It is twenty-four lines, built with the official TypeScript SDK."
+  },
+  {
+   "id": "p8",
+   "speak": "The client starts by asking who the server is and what it supports.",
+   "show": "The client starts by asking who the server is and what it supports."
+  },
+  {
+   "id": "p9",
+   "speak": "Then it asks for the tools. The server lists one: count lines.",
+   "show": "Then it asks for the tools. The server lists one: count lines."
+  },
+  {
+   "id": "p10",
+   "speak": "Now the call. Count the lines in notes dot text. The server reads the file, and answers: eleven lines.",
+   "show": "Now the call. Count the lines in notes.txt. The server reads the file, and answers: eleven lines.",
+   "map": [
+    [
+     "Now",
+     "Now"
+    ],
+    [
+     "the",
+     "the"
+    ],
+    [
+     "call.",
+     "call."
+    ],
+    [
+     "Count",
+     "Count"
+    ],
+    [
+     "the",
+     "the"
+    ],
+    [
+     "lines",
+     "lines"
+    ],
+    [
+     "in",
+     "in"
+    ],
+    [
+     "notes.txt.",
+     "notes dot text."
+    ],
+    [
+     "The",
+     "The"
+    ],
+    [
+     "server",
+     "server"
+    ],
+    [
+     "reads",
+     "reads"
+    ],
+    [
+     "the",
+     "the"
+    ],
+    [
+     "file,",
+     "file,"
+    ],
+    [
+     "and",
+     "and"
+    ],
+    [
+     "answers:",
+     "answers:"
+    ],
+    [
+     "eleven",
+     "eleven"
+    ],
+    [
+     "lines.",
+     "lines."
+    ]
+   ]
+  },
+  {
+   "id": "p11",
+   "speak": "That same pattern works for any MCP server.",
+   "show": "That same pattern works for any MCP server."
+  },
+  {
+   "id": "p12",
+   "speak": "To use it in Claude Code, add it with one command.",
+   "show": "To use it in Claude Code, add it with one command."
+  },
+  {
+   "id": "p13",
+   "speak": "Claude Code checks the connection: connected.",
+   "show": "Claude Code checks the connection: connected."
+  },
+  {
+   "id": "p14",
+   "speak": "MCP is the standard plug between AI apps and your tools.",
+   "show": "MCP is the standard plug between AI apps and your tools."
+  },
+  {
+   "id": "p15",
+   "speak": "Follow Agentoon dot A I.",
+   "show": "Follow Agentoon.ai",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai",
+     "Agentoon dot A I"
+    ]
+   ]
+  }
+ ],
+ "music": [
+  {
+   "t0": 0,
+   "t1": 15.8,
+   "mood": "hook"
+  },
+  {
+   "t0": 15.8,
+   "t1": 41.2,
+   "mood": "disc"
+  },
+  {
+   "t0": 41.2,
+   "t1": 62.9,
+   "mood": "demo"
+  },
+  {
+   "t0": 62.9,
+   "t1": 79.0,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "type",
+   "t": 0.2,
+   "dur": 1.2,
+   "cps": 80,
+   "gain": 0.3
+  },
+  {
+   "name": "step",
+   "t": 0.55,
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "t": 1.55,
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "t": 1.95,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "t": 4.95,
+   "gain": 0.3
+  },
+  {
+   "name": "pop",
+   "t": 5.45,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 6.3,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "t": 7.1,
+   "dur": 3.4,
+   "cps": 5,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 8.9,
+   "gain": 0.35
+  },
+  {
+   "name": "step",
+   "t": 15.95,
+   "gain": 0.9
+  },
+  {
+   "name": "pop",
+   "t": 16.45,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 18.9,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 21.75,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 23.45,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 23.96,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 24.61,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 24.86,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 27.81,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 29.46,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 31.17,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 35.5,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 39.1,
+   "gain": 0.4
+  },
+  {
+   "name": "whoosh",
+   "t": 41.1,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 41.9,
+   "dur": 2.4,
+   "cps": 55,
+   "gain": 0.28
+  },
+  {
+   "name": "ding",
+   "t": 61.95,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "t": 62.85,
+   "gain": 0.3
+  },
+  {
+   "name": "pop",
+   "t": 63.3,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 63.6,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 72.67,
+   "gain": 0.6
+  },
+  {
+   "name": "sparkle",
+   "t": 72.8,
+   "gain": 0.5
+  },
+  {
+   "name": "sparkle",
+   "t": 76.0,
+   "gain": 0.5
+  },
+  {
+   "name": "ding",
+   "t": 76.6,
+   "gain": 0.5
+  },
+  {
+   "name": "type",
+   "t": 48.72,
+   "dur": 1.6,
+   "cps": 62,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 49.7,
+   "dur": 2.5,
+   "cps": 62,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 52.65,
+   "dur": 0.5,
+   "cps": 62,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 53.8,
+   "dur": 2.3,
+   "cps": 62,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 56.54,
+   "dur": 1.4,
+   "cps": 62,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 59.8,
+   "dur": 2.1,
+   "cps": 40,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 66.15,
+   "dur": 1.7,
+   "cps": 40,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 69.19,
+   "dur": 1.1,
+   "cps": 40,
+   "gain": 0.28
+  },
+  {
+   "name": "step",
+   "t": 70.52,
+   "gain": 0.9
+  },
+  {
+   "name": "ding",
+   "t": 70.62,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 71.35,
+   "gain": 0.4
+  }
+ ]
+}

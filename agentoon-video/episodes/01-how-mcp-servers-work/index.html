@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: How MCP servers work</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "The Blueprint Sheet". Engineering drawing that draws itself: cyanotype blue, whiteprint paper, ink-blue terminals.
+     Blue + white line work only; ONE red element (the CONNECTED stamp). Hand-lettered italic notes, double-rule subtitles. */
+  .world { position: absolute; left: 0; top: 0; width: 1080px; will-change: transform; }
+  .w-blue  { --bp-line: #E7F0F9; --bp-text: #EEF4FB; --bp-fill: rgba(231,240,249,.10); }
+  .w-white { --bp-line: #14306B; --bp-text: #14306B; --bp-fill: #E3EBF8; }
+  .w-ink   { --bp-line: #60CDFF; --bp-text: #DDEBFA; --bp-fill: rgba(96,205,255,.10); }
+  .kick { position: absolute; left: 60px; padding: 12px 26px 14px; border-radius: 8px; font: 700 36px/1 var(--mono); letter-spacing: .04em; border: 3px solid var(--bp-line); color: var(--bp-text); }
+  .w-white .kick { background: #fff; }
+  .term { background: #0B1738; border: 3px solid #E7F0F9; border-radius: 22px; box-shadow: 0 30px 60px rgba(0,0,0,.4); }
+  .term .bar { background: #142456; } .term .bar b { color: #AFC4E8; }
+  .term .prompt { color: #9FD3FF; } .term .cmt { color: #8CA9D1; } .term .hl { color: #fff; font-weight: 800; } .term .url { color: #60CDFF; }
+  .hlbox { position: absolute; border: 6px solid var(--bp-line, #E7F0F9); border-radius: 12px; box-shadow: 0 0 0 5px rgba(96,205,255,.22); }
+  .pkt { position: absolute; width: 96px; height: 58px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font: 800 34px var(--mono); background: #14306B; color: #fff; opacity: 0; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/blueprint.js"></script>
+<script src="kit/term.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="79">
+  <section id="s0" class="clip scene" data-start="0"    data-duration="5.5"><div id="s0i" class="inner"></div></section>
+  <section id="s1" class="clip scene" data-start="4.95" data-duration="11.4"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="15.7" data-duration="26.1"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="41.1" data-duration="22.3"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="62.85" data-duration="9.15"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="71.75" data-duration="4.0"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="75.15" data-duration="3.85"><div id="s6i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="79" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, $ = id => document.getElementById(id);
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + pid + " " + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const world = (inner, id, kind, h) => { const w = el(inner, id, "world w-" + kind, "height:" + h + "px"); BP.sheet(w, { id: id + "-sheet", kind }); return w; };
+  const kick = (host, id, text, y) => el(host, id, "kick", "top:" + y + "px", text);
+  const hlb = (host, id, x, y, w, h) => el(host, id, "hlbox", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px");
+  const drawHL = (e, at) => { tl.fromTo(e, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.3, ease: "power3.out" }, at); };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 230, x, y });
+  const fadeIn = (e, at, d) => tl.from(e, { opacity: 0, y: 30, duration: d || 0.3, ease: "power3.out" }, at);
+  const packets = (host, id, x, y, dx, t0, t1, per) => { const k = el(host, id, "pkt", "left:" + x + "px;top:" + y + "px", "{ }"); for (let t = t0, i = 0; t < t1; t += per, i++) { tl.fromTo(k, { x: 0, opacity: 0 }, { x: dx, opacity: 1, duration: per * 0.8, ease: "none" }, t); tl.to(k, { opacity: 0, duration: 0.12 }, t + per * 0.8 - 0.1); } return k; };
+
+  /* =========================================================== S0  HOOK (dark): the real result first */
+  const s0i = $("s0i"), w0 = world(s0i, "w0", "ink", 1920);
+  kick(w0, "k0", "REAL OUTPUT · MCP SDK 1.32.1", 214); tl.from("#k0", { opacity: 0, x: -30, duration: 0.3 }, 0.05);
+  const t0 = Term.card(w0, { id: "t0", x: 60, y: 560, w: 960, title: "tools/call · stdio", font: 46, lines: [
+    { t: "-> tools/call count_lines", c: "prompt" }, { t: '   {"path":"notes.txt"}', c: "cmt" }, { t: "<- notes.txt has 11 lines", c: "hl" } ] });
+  fadeIn(t0, 0, 0.25); Term.type(tl, t0, 0.2, 80);
+  const h0 = hlb(w0, "h0", 78, 808, 924, 76); drawHL(h0, 1.5);
+  const big = el(w0, "big11", "", "left:0;width:1080px;top:960px;height:300px;text-align:center;font:italic 800 300px/300px var(--display);color:#60CDFF;opacity:0", "11");
+  tl.fromTo(big, { opacity: 0, scale: 0.4, transformOrigin: "50% 60%" }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.2)" }, 1.95);
+  const n0 = BP.note(w0, { id: "n0", x: 60, y: 1265, w: 960, text: "lines counted by a real server", size: 46, align: "center" }); n0.write(tl, 2.6, 0.9);
+  const bot0 = botAt(w0, "bot0", 1180, 247);
+  bot0.face(tl, 0, -1, 0.01); tl.to(bot0.P.wrap, { x: 740, duration: 0.6, ease: "power1.out" }, 0.1); bot0.hop(tl, 0.1, 70, 0.42);
+  bot0.face(tl, 0.72, 1, 0.12); bot0.look(tl, 0.95, -4, 4, 0.2); bot0.blinks(tl, 1.0, 5.2, 1.3);
+  bot0.react(tl, 1.55, "wow"); bot0.wave(tl, 3.65, "R");
+  tl.fromTo(w0, { scale: 1 }, { scale: 1.07, transformOrigin: "540px 560px", duration: 4.6, ease: "sine.inOut" }, 0.4);
+
+  /* =========================================================== S1  PROBLEM (blueprint blue): N x M tangle */
+  const s1i = $("s1i"), w1 = world(s1i, "w1", "blue", 1920);
+  kick(w1, "k1", "FIG. 1 · THE PROBLEM", 214); tl.from("#k1", { opacity: 0, x: -30, duration: 0.3 }, 5.3);
+  const xs = [55, 305, 555, 805], cx = i => xs[i] + 110, apps = [], tools = [];
+  for (let i = 0; i < 4; i++) { apps.push(BP.box(w1, { id: "app" + i, x: xs[i], y: 330, w: 220, h: 120, label: "AI app", labelSize: 40 })); apps[i].draw(tl, 5.45 + i * 0.14, 0.4); }
+  ["files", "database", "search", "API"].forEach((t, i) => { tools.push(BP.box(w1, { id: "tool" + i, x: xs[i], y: 900, w: 220, h: 120, label: t, labelSize: 40 })); tools[i].draw(tl, 6.3 + i * 0.14, 0.4); });
+  let li = 0;
+  for (let a = 0; a < 4; a++) for (let b = 0; b < 4; b++, li++) { const ln = BP.line(w1, { id: "mesh" + li, pts: [[cx(a), 450], [cx(b), 900]], width: 4 }); ln.draw(tl, 7.1 + li * 0.2, 0.4); }
+  const n1 = BP.note(w1, { id: "n1", x: 60, y: 1070, w: 660, text: "4 apps × 4 tools = 16 custom integrations", size: 46 }); n1.write(tl, PW("p2", "four") - 0.05, 1.7);
+  const bot1 = botAt(w1, "bot1", 1180, 1040);
+  tl.to(bot1.P.wrap, { x: 790, duration: 0.5, ease: "power1.out" }, 5.4); bot1.hop(tl, 5.4, 60, 0.4); bot1.look(tl, 6.1, -6, -4, 0.2);
+  bot1.blinks(tl, 6.2, 16, 1.2); bot1.react(tl, 8.9, "worried"); bot1.react(tl, 13.6, "think");
+  tl.fromTo(w1, { scale: 1 }, { scale: 1.06, transformOrigin: "540px 700px", duration: 10.5, ease: "sine.inOut" }, 5.3);
+
+  /* =========================================================== S2  EXPLAIN (whiteprint, light): continuous camera over 4 figures */
+  const s2i = $("s2i"), w2 = world(s2i, "w2", "white", 9000);
+  const Y = [0, 2200, 4400, 6600]; Cam.frame(w2, 540, 960, 1);
+  const cam2 = (k, at) => Cam.fly(tl, w2, at, 0.9, { cx: 540, cy: Y[k] + 960, s: 1 });
+  // Fig 2.1: MCP in one word (p3)
+  kick(w2, "k21", "FIG. 2 · THE STANDARD", 214); tl.from("#k21", { opacity: 0, x: -30, duration: 0.3 }, 16.4);
+  const badge = BP.box(w2, { id: "badge", x: 330, y: 400, w: 420, h: 420, r: 210, label: "MCP", sub: "open standard", labelSize: 120, subSize: 36 }); badge.draw(tl, 16.45, 0.7);
+  const n21 = BP.note(w2, { id: "n21", x: 140, y: 870, w: 800, text: "Model Context Protocol", size: 56, align: "center" }); n21.write(tl, PW("p3", "Model") - 0.1, 1.5);
+  const bL = BP.box(w2, { id: "bL", x: 40, y: 540, w: 250, h: 140, label: "AI apps", labelSize: 44 }), bR = BP.box(w2, { id: "bR", x: 790, y: 540, w: 250, h: 140, label: "tools", labelSize: 44 });
+  bL.draw(tl, PW("p3", "open") - 0.3, 0.5); bR.draw(tl, PW("p3", "open") - 0.15, 0.5);
+  BP.line(w2, { id: "lL", pts: [[290, 610], [330, 610]], width: 6, arrow: true }).draw(tl, PW("p3", "standard"), 0.3);
+  BP.line(w2, { id: "lR", pts: [[790, 610], [750, 610]], width: 6, arrow: true }).draw(tl, PW("p3", "standard") + 0.1, 0.3);
+  const bot21 = botAt(w2, "bot21", -300, 1030);
+  bot21.introduce(tl, 16.6, { fromX: -300, toX: 70, y: 1030, hops: 2 }); bot21.blinks(tl, 18.5, 21, 1.2); bot21.react(tl, PW("p3", "fixes") - 0.2, "wow");
+
+  // Fig 2.2: host / client / server (p4)
+  const y2 = Y[1]; cam2(1, P("p4").start - 0.3);
+  kick(w2, "k22", "FIG. 3 · HOST, CLIENT, SERVER", y2 + 214);
+  const host = BP.box(w2, { id: "host", x: 60, y: y2 + 270, w: 960, h: 300, label: "", r: 24, width: 7 }); host.draw(tl, P("p4").start + 0.5, 0.7);
+  BP.note(w2, { id: "n22a", x: 60, y: y2 + 288, w: 960, text: "AI APP = HOST", size: 52, align: "center" }).write(tl, PW("p4", "app") + 0.0, 0.9);
+  BP.note(w2, { id: "n22b", x: 60, y: y2 + 352, w: 960, text: "e.g. Claude Code", size: 40, align: "center" }).write(tl, PW("p4", "host") + 0.2, 0.8);
+  const c1 = BP.box(w2, { id: "c1", x: 120, y: y2 + 420, w: 360, h: 120, label: "client 1", labelSize: 44 }), c2 = BP.box(w2, { id: "c2", x: 600, y: y2 + 420, w: 360, h: 120, label: "client 2", labelSize: 44 });
+  c1.draw(tl, PW("p4", "one") - 0.1, 0.5); c2.draw(tl, PW("p4", "client") + 0.15, 0.5);
+  BP.line(w2, { id: "l1", pts: [[300, y2 + 540], [300, y2 + 760]], width: 6, arrow: true }).draw(tl, PW("p4", "each") - 0.1, 0.5);
+  BP.line(w2, { id: "l2", pts: [[780, y2 + 540], [780, y2 + 760]], width: 6, arrow: true }).draw(tl, PW("p4", "each") + 0.2, 0.5);
+  BP.box(w2, { id: "sA", x: 60, y: y2 + 760, w: 480, h: 170, label: "server A", sub: "local · stdio", labelSize: 50 }).draw(tl, PW("p4", "server") - 0.15, 0.5);
+  BP.box(w2, { id: "sB", x: 540, y: y2 + 760, w: 480, h: 170, label: "server B", sub: "remote · HTTP", labelSize: 50 }).draw(tl, PW("p4", "server") + 0.1, 0.5);
+  const bot22 = botAt(w2, "bot22", 425, y2 + 970);
+  bot22.blinks(tl, P("p4").start, P("p4").end, 1.2);
+  bot22.aimPoint(tl, PW("p4", "host") - 0.3, { x: 425, y: y2 + 970, scale: 1, target: [540, y2 + 420], hold: 0.7 });
+  bot22.aimPoint(tl, PW("p4", "client") - 0.25, { x: 425, y: y2 + 970, scale: 1, target: [300, y2 + 480], hand: "L", hold: 0.6 });
+  bot22.aimPoint(tl, PW("p4", "server") - 0.05, { x: 425, y: y2 + 970, scale: 1, target: [780, y2 + 850], hand: "R", hold: 0.6 });
+
+  // Fig 2.3: three primitives (p5)
+  const y3 = Y[2]; cam2(2, P("p5").start - 0.3);
+  kick(w2, "k23", "FIG. 4 · WHAT A SERVER OFFERS", y3 + 214);
+  const prim = (id, y, big, small, at, la) => BP.box(w2, { id, x: 90, y: y3 + y, w: 900, h: 190, label: big, sub: small, labelSize: 76 }).draw(tl, at, 0.6, la);
+  prim("pTools", 300, "tools", "actions the model can call", P("p5").start + 0.5, PW("p5", "tools") - 0.1);
+  prim("pRes", 530, "resources", "data it can read", P("p5").start + 0.8, PW("p5", "resources") - 0.1);
+  prim("pPrm", 760, "prompts", "reusable templates", P("p5").start + 1.1, PW("p5", "prompts") - 0.1);
+  const bot23 = botAt(w2, "bot23", 770, y3 + 985);
+  bot23.blinks(tl, P("p5").start, P("p5").end, 1.2);
+  bot23.aimPoint(tl, PW("p5", "tools") - 0.1, { x: 770, y: y3 + 985, scale: 1, target: [540, y3 + 395], hand: "L", hold: 0.6 });
+  bot23.aimPoint(tl, PW("p5", "resources") - 0.1, { x: 770, y: y3 + 985, scale: 1, target: [540, y3 + 625], hand: "L", hold: 0.6 });
+  bot23.aimPoint(tl, PW("p5", "prompts") - 0.1, { x: 770, y: y3 + 985, scale: 1, target: [540, y3 + 855], hand: "L", hold: 0.6 });
+
+  // Fig 2.4: transports (p6)
+  const y4 = Y[3]; cam2(3, P("p6").start - 0.3);
+  kick(w2, "k24", "FIG. 5 · HOW MESSAGES TRAVEL", y4 + 214);
+  BP.note(w2, { id: "n24", x: 330, y: y4 + 1040, w: 700, text: "JSON-RPC 2.0", size: 64 }).write(tl, PW("p6", "JSON-RPC") - 0.1, 0.9);
+  BP.note(w2, { id: "n24a", x: 60, y: y4 + 340, w: 960, text: "local · standard input / output", size: 40 }).write(tl, PW("p6", "standard") - 0.3, 1.0);
+  BP.box(w2, { id: "cl1", x: 60, y: y4 + 410, w: 300, h: 140, label: "client", labelSize: 46 }).draw(tl, P("p6").start + 0.5, 0.4, PW("p6", "standard") - 0.2);
+  BP.box(w2, { id: "sv1", x: 720, y: y4 + 410, w: 300, h: 140, label: "server", labelSize: 46 }).draw(tl, P("p6").start + 0.7, 0.4, PW("p6", "standard") - 0.05);
+  BP.line(w2, { id: "pp1", pts: [[360, y4 + 480], [720, y4 + 480]], width: 6, arrow: true }).draw(tl, PW("p6", "input"), 0.5);
+  packets(w2, "pk1", 400, y4 + 451, 240, PW("p6", "input") + 0.4, PW("p6", "HTTP") - 0.2, 1.2);
+  BP.note(w2, { id: "n24b", x: 60, y: y4 + 690, w: 960, text: "remote · HTTP", size: 40 }).write(tl, PW("p6", "HTTP") - 0.4, 0.8);
+  BP.box(w2, { id: "cl2", x: 60, y: y4 + 760, w: 300, h: 140, label: "client", labelSize: 46 }).draw(tl, PW("p6", "output") + 0.8, 0.4, PW("p6", "HTTP") - 0.3);
+  BP.box(w2, { id: "sv2", x: 720, y: y4 + 760, w: 300, h: 140, label: "server", sub: "remote", labelSize: 46, subSize: 30 }).draw(tl, PW("p6", "output") + 1.0, 0.4, PW("p6", "HTTP") - 0.15);
+  BP.line(w2, { id: "pp2", pts: [[360, y4 + 830], [720, y4 + 830]], width: 6, arrow: true }).draw(tl, PW("p6", "HTTP") + 0.1, 0.5);
+  packets(w2, "pk2", 400, y4 + 801, 240, PW("p6", "HTTP") + 0.6, 41.3, 1.2);
+  const bot24 = botAt(w2, "bot24", 60, y4 + 985);
+  bot24.blinks(tl, P("p6").start, P("p6").end, 1.2); bot24.look(tl, PW("p6", "locally"), 5, -3, 0.2); bot24.look(tl, PW("p6", "remote"), 5, 3, 0.2); bot24.react(tl, PW("p6", "servers") - 0.1, "think");
+
+  /* =========================================================== S3  REAL DEMO (dark): real code, real wire messages */
+  const s3i = $("s3i"), w3 = world(s3i, "w3", "ink", 9000); Cam.frame(w3, 540, 960, 1);
+  const Z = [0, 2200, 4400, 6600], cam3 = (k, at, s) => Cam.fly(tl, w3, at, 0.9, { cx: 540, cy: Z[k] + 960, s: s || 1 });
+  kick(w3, "k3", "THE SERVER · server.mjs", 214); tl.from("#k3", { opacity: 0, x: -30, duration: 0.3 }, 41.4);
+  const tc = Term.card(w3, { id: "tc", x: 40, y: 330, w: 1000, title: "server.mjs · 24 lines", font: 42, lines: [
+    { t: "server.tool(", c: "prompt" }, { t: '  "count_lines",', c: "hl" }, { t: '  "Count the lines in a text file",' },
+    { t: "  { path: z.string() }," }, { t: "  async ({ path }) => {" }, { t: "    …", c: "cmt" }, { t: "  }" }, { t: ");", c: "prompt" } ] });
+  fadeIn(tc, 41.3, 0.3); Term.type(tl, tc, 41.9, 55);
+  BP.note(w3, { id: "n3a", x: 60, y: 1000, w: 640, text: "excerpt · real code", size: 40 }).write(tl, 44.9, 0.8);
+  const bot3a = botAt(w3, "bot3a", 1180, 1010);
+  bot3a.introduce(tl, 41.5, { fromX: 1180, toX: 770, y: 1010, hops: 1 }); bot3a.blinks(tl, 44, 48, 1.2); bot3a.look(tl, 45.0, -5, 3, 0.2);
+  const wire = (z, req, res, tReq, tRes, resAt) => {      // mini sequence diagram under each message card
+    BP.box(w3, { id: "wc" + z, x: 60, y: z + 1040, w: 210, h: 90, label: "client", labelSize: 36 }).draw(tl, tReq - 0.4, 0.4);
+    BP.box(w3, { id: "ws" + z, x: 470, y: z + 1040, w: 210, h: 90, label: "server", labelSize: 36 }).draw(tl, tReq - 0.25, 0.4);
+    BP.note(w3, { id: "wq" + z, x: 270, y: z + 996, w: 200, text: req, size: 32, align: "center" }).write(tl, tReq, 0.5);
+    BP.line(w3, { id: "wl" + z, pts: [[270, z + 1070], [470, z + 1070]], width: 6, arrow: true }).draw(tl, tReq, 0.35);
+    BP.line(w3, { id: "wr" + z, pts: [[470, z + 1110], [270, z + 1110]], width: 6, arrow: true }).draw(tl, tRes, 0.35);
+    BP.note(w3, { id: "wa" + z, x: 270, y: z + 1128, w: 200, text: res, size: 32, align: "center" }).write(tl, resAt == null ? tRes : resAt, 0.5);
+  };
+  // card A: discovery handshake
+  const zA = Z[1]; cam3(1, P("p8").start - 0.3);
+  const cA = Term.card(w3, { id: "cA", x: 40, y: zA + 330, w: 1000, title: "client / server · real messages", font: 42, lines: [
+    { t: '-> {"method":"initialize",', c: "prompt" }, { t: '  "params":{"protocolVersion":', c: "prompt" }, { t: '    "2025-06-18", …}}', c: "prompt" },
+    { t: '<- {"result":{"protocolVersion":', c: "url" }, { t: '    "2025-06-18",', c: "url" }, { t: '    "capabilities":{"tools":…},', c: "url" },
+    { t: '    "serverInfo":{"name":', c: "url" }, { t: '      "count-lines", …}}}', c: "hl" } ] });
+  fadeIn(cA, P("p8").start - 0.1, 0.3);
+  Term.type(tl, cA, P("p8").start + 0.5, 62, 0, 3); Term.type(tl, cA, PW("p8", "who") - 0.1, 62, 3, 8);
+  wire(zA, "initialize", "serverInfo", P("p8").start + 0.9, PW("p8", "who") + 0.5);
+  BP.note(w3, { id: "n3b", x: 60, y: zA + 1200, w: 640, text: "client = a script I wrote, not an AI", size: 36 }).write(tl, P("p8").start + 0.8, 1.0);
+  const bot3b = botAt(w3, "bot3b", 770, zA + 1010); bot3b.blinks(tl, P("p8").start, P("p8").end, 1.2); bot3b.react(tl, P("p8").start + 0.4, "think");
+  // card B: what can you do?
+  const zB = Z[2]; cam3(2, P("p9").start - 0.3);
+  const cB = Term.card(w3, { id: "cB", x: 40, y: zB + 330, w: 1000, title: "tools/list · real messages", font: 42, lines: [
+    { t: '-> {"method":"tools/list"}', c: "prompt" }, { t: '<- {"result":{"tools":[{', c: "url" }, { t: '  "name":"count_lines",', c: "hl" },
+    { t: '  "description":', c: "url" }, { t: '  "Count the lines in a text file",', c: "url" }, { t: '  "inputSchema":{…}}]}}', c: "url" } ] });
+  fadeIn(cB, P("p9").start - 0.1, 0.3);
+  Term.type(tl, cB, P("p9").start + 0.4, 62, 0, 1); Term.type(tl, cB, PW("p9", "server") - 0.1, 62, 1, 6);
+  wire(zB, "tools/list", "count_lines", P("p9").start + 0.7, PW("p9", "server") + 0.6);
+  const hB = hlb(w3, "hB", 58, zB + 330 + 3 + 76 + 34 + 2 * 63 - 1, 964, 62); drawHL(hB, PW("p9", "count") - 0.35);
+  const bot3c = botAt(w3, "bot3c", 770, zB + 1010); bot3c.blinks(tl, P("p9").start, P("p9").end, 1.2);
+  bot3c.aimPoint(tl, PW("p9", "count") - 0.45, { x: 770, y: zB + 1010, scale: 1, target: [400, zB + 560], hand: "L", hold: 0.7 });
+  // card C: the call and the answer
+  const zC = Z[3]; cam3(3, P("p10").start - 0.3);
+  const cC = Term.card(w3, { id: "cC", x: 40, y: zC + 330, w: 1000, title: "tools/call · real messages", font: 42, lines: [
+    { t: '-> {"method":"tools/call",', c: "prompt" }, { t: '  "params":{"name":"count_lines",', c: "prompt" }, { t: '  "arguments":{"path":"notes.txt"}}}', c: "prompt" },
+    { t: '<- {"result":{"content":[{', c: "url" }, { t: '  "type":"text",', c: "url" }, { t: '  "text":"notes.txt has 11 lines"', c: "hl" }, { t: "  }]}}", c: "url" } ] });
+  fadeIn(cC, P("p10").start - 0.1, 0.3);
+  Term.type(tl, cC, P("p10").start + 0.45, 62, 0, 3); Term.type(tl, cC, PW("p10", "reads") - 0.2, 40, 3, 7);
+  wire(zC, "tools/call", "11 lines", P("p10").start + 0.8, PW("p10", "reads") + 0.9, PW("p10", "eleven") - 0.1);
+  const hC = hlb(w3, "hC", 58, zC + 330 + 3 + 76 + 34 + 5 * 63 - 1, 964, 62); drawHL(hC, PW("p10", "eleven") - 0.1);
+  const bot3d = botAt(w3, "bot3d", 770, zC + 1010); bot3d.blinks(tl, P("p10").start, PW("p10", "eleven"), 1.2);
+  bot3d.look(tl, PW("p10", "reads"), -5, -3, 0.2); bot3d.react(tl, PW("p10", "eleven") - 0.05, "celebrate");
+  Cam.fly(tl, w3, PW("p10", "eleven") - 0.35, 0.7, { cx: 540, cy: zC + 850, s: 1.06 });
+
+  /* =========================================================== S4  RESULT (whiteprint, light): same pattern, real connect */
+  const s4i = $("s4i"), w4 = world(s4i, "w4", "white", 1920);
+  kick(w4, "k4", "FIG. 6 · CONNECT IT", 214); tl.from("#k4", { opacity: 0, x: -30, duration: 0.3 }, 63.2);
+  BP.box(w4, { id: "cc", x: 290, y: 300, w: 220, h: 110, label: "client", labelSize: 42 }).draw(tl, P("p11").start + 0.3, 0.4);
+  [["files", 40], ["database", 290], ["search", 540]].forEach(([t, x], i) => {
+    BP.box(w4, { id: "sv" + i, x, y: 520, w: 220, h: 110, label: t, labelSize: 40 }).draw(tl, P("p11").start + 0.6 + i * 0.25, 0.4);
+    BP.line(w4, { id: "lv" + i, pts: [[400, 410], [x + 110, 520]], width: 5, arrow: true }).draw(tl, P("p11").start + 0.8 + i * 0.25, 0.4);
+  });
+  BP.note(w4, { id: "n4", x: 40, y: 680, w: 740, text: "same pattern · any server", size: 44 }).write(tl, PW("p11", "pattern"), 1.0);
+  const t4 = Term.card(w4, { id: "t4", x: 60, y: 790, w: 960, title: "claude mcp", font: 40, lines: [
+    { t: "$ claude mcp add count-lines -- \\", c: "prompt" }, { t: "    node server.mjs", c: "hl" },
+    { t: "count-lines: node server.mjs -", c: "url" }, { t: "✓ Connected", c: "hl" } ] });
+  fadeIn(t4, P("p12").start - 0.1, 0.3); Term.type(tl, t4, P("p12").start + 0.35, 40, 0, 2);
+  const h4 = hlb(w4, "h4", 78, 899, 924, 128); drawHL(h4, PW("p12", "command") - 0.2);
+  Term.type(tl, t4, PW("p13", "checks") - 0.25, 40, 2, 4);
+  const h4b = hlb(w4, "h4b", 78, 1019, 924, 128); drawHL(h4b, PW("p13", "checks") + 0.3);
+  const st = BP.stamp(w4, { id: "stamp", x: 470, y: 1190, text: "CONNECTED", rot: -7, size: 74 }); st.slam(tl, PW("p13", "connection") + 0.45);
+  const bot4 = botAt(w4, "bot4", 810, 525, 180);
+  bot4.blinks(tl, 63, 71, 1.2); bot4.react(tl, PW("p11", "any") - 0.1, "wow"); bot4.aimPoint(tl, PW("p12", "one") - 0.1, { x: 810, y: 525, scale: 1, target: [450, 880], hand: "L", hold: 0.6 });
+  bot4.react(tl, PW("p13", "connection") + 0.5, "celebrate");
+
+  /* =========================================================== S5  TAKEAWAY (ink): the standard plug */
+  const s5i = $("s5i"), w5 = world(s5i, "w5", "ink", 1920);
+  kick(w5, "k5", "FIG. 7 · THE STANDARD PLUG", 214); tl.from("#k5", { opacity: 0, x: -30, duration: 0.3 }, 71.7);
+  BP.box(w5, { id: "pa", x: 40, y: 430, w: 300, h: 170, label: "AI app", labelSize: 50 }).draw(tl, 71.8, 0.4);
+  BP.box(w5, { id: "pt", x: 740, y: 430, w: 300, h: 170, label: "your tools", labelSize: 46 }).draw(tl, 72.0, 0.4);
+  BP.line(w5, { id: "cab", pts: [[340, 515], [440, 515]], width: 9 }).draw(tl, 72.2, 0.3);
+  BP.line(w5, { id: "sk", pts: [[740, 515], [700, 515]], width: 9 }).draw(tl, 72.3, 0.3);
+  BP.box(w5, { id: "sock", x: 590, y: 450, w: 110, h: 130, r: 22, label: "", width: 8 }).draw(tl, 72.2, 0.4);
+  const plug = el(w5, "plug", "", "left:440px;top:465px;width:120px;height:100px;border-radius:20px;background:#60CDFF");
+  el(plug, "pr1", "", "position:absolute;left:120px;top:20px;width:40px;height:14px;border-radius:6px;background:#E7F0F9");
+  el(plug, "pr2", "", "position:absolute;left:120px;top:66px;width:40px;height:14px;border-radius:6px;background:#E7F0F9");
+  tl.from(plug, { opacity: 0, x: -40, duration: 0.35, ease: "power2.out" }, 72.2);
+  tl.to(plug, { x: 48, duration: 0.18, ease: "power3.in" }, PW("p14", "plug") - 0.05);
+  const ring = el(w5, "ring", "", "left:590px;top:455px;width:120px;height:120px;border-radius:50%;border:8px solid #60CDFF;opacity:0");
+  tl.fromTo(ring, { opacity: 0.9, scale: 0.4 }, { opacity: 0, scale: 2.4, duration: 0.5, ease: "power2.out" }, PW("p14", "plug") + 0.12);
+  BP.note(w5, { id: "n5", x: 40, y: 720, w: 1000, text: "one standard plug", size: 92, align: "center" }).write(tl, PW("p14", "standard") - 0.1, 1.1);
+  const bot5 = botAt(w5, "bot5", 425, 1000);
+  bot5.blinks(tl, 71.6, 75.2, 1.1); bot5.aimPoint(tl, PW("p14", "plug") - 0.55, { x: 425, y: 1000, scale: 1, target: [520, 520], hold: 0.55 });
+  bot5.react(tl, PW("p14", "plug") + 0.2, "celebrate");
+
+  /* =========================================================== S6  SIGNATURE ENDING */
+  const s6i = $("s6i"), bot6 = botAt(s6i, "bot6", -400, 470, 300);
+  Outro.build(tl, s6i, 75.25, { bot: bot6, cx: 390, y: 470, fromX: -400 });
+
+  /* ---------- Transitions: whip, sheet drop, push-through, whip, card grow, push-through ---------- */
+  Cam.whip(tl, 4.95, 0.55, { out: "#s0i", inn: "#s1i", dir: 1, blur: 24 });
+  Cam.sheetDrop(tl, 15.7, 0.7, { out: "#s1i", inn: "#s2i" });
+  Cam.push(tl, 41.1, 0.5, { out: "#s2i", inn: "#s3i", ox: 540, oy: 700, scale: 4 });
+  Cam.whip(tl, 62.85, 0.55, { out: "#s3i", inn: "#s4i", dir: -1, blur: 24 });
+  Cam.cardGrow(tl, $("fx"), 71.35, 0.45, { id: "carrier5", x: 60, y: 790, w: 960, h: 384, r: 22, color: "#0A1330", from: "#s4i" });
+  Cam.push(tl, 75.15, 0.5, { out: "#s5i", inn: "#s6i", ox: 540, oy: 720, scale: 4 });
+
+  /* ---------- Subtitles: double-rule drawing notes, below all code and UI ---------- */
+  Captions.build(tl, $("capLayer"), E.words, { style: "note", bottom: 340, active: "#60CDFF", maxWords: 4, maxChars: 24 });
+
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

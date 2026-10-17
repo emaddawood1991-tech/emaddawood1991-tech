@@ -1,6 +1,6 @@
 /* Terminal/code card with typed reveal. Real output only: pass lines captured from the real tool.
      Term.card(host, {id,x,y,w,title,lines:[{t:"claude mcp add ...", c:"prompt|cmt|hl|url|"}], font})
-     Term.type(tl, card, at, cps)  reveals lines in order at `cps` characters per second (stepped, monospace-exact)
+     Term.type(tl, card, at, cps, from?, to?)  reveals lines in order (optionally only lines [from,to)) at `cps` chars/second (stepped, monospace-exact)
    Reveal uses clip-path with steps(): seekable, no JS timers. Returns {end, lineTimes[]}. */
 (function () {
   function card(host, o) {
@@ -12,14 +12,15 @@
     const body = document.createElement("div"); body.className = "body"; if (o.font) body.style.fontSize = o.font + "px";
     o.lines.forEach((l, i) => {
       const d = document.createElement("div"); d.className = "ln " + (l.c || ""); d.id = o.id + "-l" + i;
-      d.textContent = l.t || " "; d.dataset.chars = (l.t || "").length; body.appendChild(d);
+      d.textContent = l.t || " "; d.dataset.chars = (l.t || "").length; d.style.clipPath = "inset(0 100% 0 0)"; body.appendChild(d);
     });
     c.appendChild(body); host.appendChild(c); return c;
   }
 
-  function type(tl, c, at, cps) {
+  function type(tl, c, at, cps, from, to) {
     let t = at; const times = [];
-    c.querySelectorAll(".ln").forEach(d => {
+    const all = Array.from(c.querySelectorAll(".ln")), sel = all.slice(from || 0, to == null ? all.length : to);
+    sel.forEach(d => {
       const n = +d.dataset.chars; times.push(t);
       if (!n) { return; }
       const dur = Math.max(0.12, n / cps);

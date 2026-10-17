@@ -1,0 +1,7 @@
+{"dir":"->","msg":{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"agentoon-demo","version":"1.0.0"}}}}
+{"dir":"<-","msg":{"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"count-lines","version":"1.0.0"}},"jsonrpc":"2.0","id":1}}
+{"dir":"->","msg":{"jsonrpc":"2.0","method":"notifications/initialized"}}
+{"dir":"->","msg":{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}}
+{"dir":"<-","msg":{"result":{"tools":[{"name":"count_lines","description":"Count the lines in a text file","inputSchema":{"type":"object","properties":{"path":{"type":"string"}},"required":["path"],"additionalProperties":false,"$schema":"http://json-schema.org/draft-07/schema#"},"execution":{"taskSupport":"forbidden"}}]},"jsonrpc":"2.0","id":2}}
+{"dir":"->","msg":{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"count_lines","arguments":{"path":"notes.txt"}}}}
+{"dir":"<-","msg":{"result":{"content":[{"type":"text","text":"notes.txt has 11 lines"}]},"jsonrpc":"2.0","id":3}}
