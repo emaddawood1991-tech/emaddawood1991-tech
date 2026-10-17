@@ -12,14 +12,15 @@ Static images only. Never post or schedule anything — the user reviews first.
 
 ## Workflow
 
-1. **Research.** Use official docs (WebFetch/WebSearch). Quote exact commands, flags, and limits. Never invent commands, features, versions, numbers, or outputs. If a claim cannot be verified, cut it or label it as an example.
-2. **Plan 7–9 slides** (see structure). Short headlines, beginner-friendly, technically exact.
-3. **Create** `carousels/<slug>/carousel.json` (start from `templates/carousel.example.json`).
-4. **Build** `node .claude/skills/agentoon-carousel/scripts/build.mjs carousels/<slug>` → `source/index.html` (+ copies `base.css` and fonts so the folder is self-contained and editable).
-5. **Render + QA** `node .claude/skills/agentoon-carousel/scripts/render.mjs carousels/<slug>` → `png/slide-NN.png`, `contact-sheet.png`. Exit code 1 means a QA error.
-6. **Look at every PNG** (Read the images). QA cannot judge composition, awkward line breaks, empty space, or whether a diagram is accurate. Fix, rebuild, re-render until clean.
-7. **Write `caption.md`**: SEO-friendly caption (hook line, 3–5 short value lines, CTA to save/share/follow @agentoon.ai) + 15–20 relevant hashtags.
-8. **Package** `render.mjs <dir> --zip` → `<slug>.zip` (png, source, carousel.json, contact sheet, caption).
+1. **Research.** Fetch the *current* official docs (WebFetch/WebSearch) for every command, flag, and limit. Compare with `reference/verified-claude-code-commands.md` (dated). Never invent commands, features, versions, numbers, or outputs; never call wording "official" unless it is copied from the docs. Cut or label anything unverified.
+2. **Classify every command** as built-in command, bundled skill, custom skill, plugin skill, or MCP prompt, and note anything that needs extra setup (git, login, CLI, plugin install). Show the type on the slide (badge) and on the cheat sheet.
+3. **Plan 7–9 slides** (see structure). Short headlines, beginner-friendly, technically exact. Write the hook as one clear promise plus a visual proof (e.g. a terminal with the real commands).
+4. **Create** `carousels/<slug>/carousel.json` (start from `templates/carousel.example.json`).
+5. **Build** `node .claude/skills/agentoon-carousel/scripts/build.mjs carousels/<slug>` → `source/index.html` (+ copies `base.css` and fonts so the folder is self-contained and editable).
+6. **Render + quality gate** `node .claude/skills/agentoon-carousel/scripts/render.mjs carousels/<slug>` → `png/slide-NN.png`, `contact-sheet.png`, `mobile-preview.png` (390px phone scale), `qa-report.md`. Exit 1 = failed gate; fix and re-run until it passes. Needs `pip install pyspellchecker` for the spelling step.
+7. **Look at every PNG and `mobile-preview.png`** (Read the images) and complete the manual list in `reference/quality-checklist.md`. The gate cannot judge composition, wraps, empty space, or whether a diagram is accurate.
+8. **Write `caption.md`**: SEO caption (hook line, 3–5 value lines, accurate caveats, CTA to save/share/follow @agentoon.ai), 15–20 hashtags, alt text, sources.
+9. **Package** `render.mjs <dir> --zip` → `<slug>.zip` (png, source, carousel.json, contact sheet, mobile preview, QA report, caption).
 
 Playwright: resolved via Node (`require("playwright")`). Chromium falls back to `/opt/pw-browsers/chromium`.
 
@@ -32,26 +33,28 @@ Every slide must be worth saving. Add a "watch-out" line wherever a feature has 
 
 | layout | fields |
 |---|---|
-| `hook` | kicker, big, title, sub, chips[] |
-| `concept` | kicker, title, chips[], lede, code[] |
-| `skill` | n, cmd, title, text, diagram, code[], tag, watch, flip, theme |
-| `cheatsheet` | kicker, title, rows[{cmd,use,note}], source |
-| `cta` | kicker, titleLines[], actions[{icon,t,d}], ask |
+| `hook` | kicker, title, rows[{cmd,verb}], bubble, swipe, save |
+| `concept` | kicker, title, lede, rows[{badge,ex,text,hot?,ghost?}] (the kinds of slash command) |
+| `skill` | n, cmd, badge?, mood, title, text, diagram, code[], tag, watch, flip, theme |
+| `cheatsheet` | kicker, title, badge, badgeNote, rows[{cmd,use,note}], legendTag, legend[] |
+| `cta` | kicker, titleLines[], followLabel, handle, followSub, followBtn, actions[{icon,t,d}], ask |
 | `custom` | html (your own markup inside the slide shell) |
 
 `theme`: `dark`, `paper`, `coral`, `mint`. Alternate themes for rhythm.
 Text markup: `*accent italic*`, `` `inline mono` ``. Code markup: `{{c:/cmd}}` `{{f:--flag}}` `{{k:key/path}}` `{{s:string}}` `{{m:# comment}}` `{{p:>}}`.
-Diagrams (`skill.diagram`) are SVG functions in `lib.mjs → diagrams` (`simplify`, `review`, `batch`, `loop`, `debug`). For a new topic add a new diagram function that shows the real mechanism — don't reuse unrelated ones. Need a one-off composition? Use `custom`.
-Icons/mascot live in `assets/sprite.svg` (`#mascot`, `#i-*`). Reuse via `icon("name")` / `mascot(width)`.
+Diagrams (`skill.diagram`) are SVG functions in `lib.mjs → diagrams` (`simplify`, `review`, `batch`, `loop`, `debug`). For a new topic add a diagram that shows the real mechanism, with diagram text ≥ 28px. Need a one-off composition? Use `custom`.
+Mascot: `mascot(width, mood)` — moods `happy wow think wink focus cheer dizzy oops proud` in `assets/sprite.svg`. Pick the mood that matches the slide; keep it ≥ 110px so the expression reads on a phone. Icons: `icon("name")`.
 
 ## Design rules (see `reference/design-system.md`)
 
-- Canvas 1080×1350. Margins 72px; footer reserved at the bottom (brand · page · @agentoon.ai).
-- Fraunces (bold + italic accent word) for headlines, Inter for body, JetBrains Mono for code/labels. All text stays real text.
-- Minimum font size 24px (labels/footer only); body ≥ 28px; headlines ≥ 56px.
-- Vary composition: different diagram, theme, and block order per slide. No identical templates.
-- One idea per slide. Generous whitespace. Original robot mascot only — never copy another creator's artwork or layouts.
+- Canvas 1080×1350. Content padding 72px; footer reserved at the bottom (brand · page · @agentoon.ai).
+- Fraunces (bold + one italic accent word) for headlines, Inter for body, JetBrains Mono for code/labels. All text stays real text.
+- Minimum sizes: label 26px · body 30px · code 32px · diagram text 28px · headlines ≥ 56px. Test at phone scale.
+- Accent *text* uses `--accent-t` (never raw coral on paper). Text on accent fills uses `--on-accent`. Contrast ≥ 4.5:1.
+- Vary composition: different diagram, theme, and block order per slide, but keep type, badges, footer, and grid identical.
+- One idea per slide. Generous whitespace. Original robot mascot only. Never copy another creator's artwork or layouts.
+- The last slide makes **Follow @agentoon.ai** the largest element; Save/Share are secondary.
 
-## QA checklist (automated in `render.mjs`, then verify by eye)
+## Quality gate
 
-No text outside safe margins · no text touching the footer · no clipped/overflowing code, cards, pills · stacked blocks don't overlap · SVG text inside its viewBox · fonts loaded · nothing under 24px. By eye: phone-size legibility (view `contact-sheet.png`), headline line breaks, balance of empty space, facts match sources.
+Automated in `render.mjs` (see `reference/quality-checklist.md`): sizes, contrast, margins, alignment, overflow, overlap, footer gap, mascot clearance, spelling, fonts. Then review every image by eye, including `mobile-preview.png`. Do not deliver while the gate fails.
