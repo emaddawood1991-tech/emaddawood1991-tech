@@ -1,0 +1,800 @@
+{
+ "recipes": {
+  "how-to": {
+   "description": "Step-by-step tutorial: hook, problem flow, steps, two code/prompt slides, before/after, mistakes, CTA",
+   "slides": [
+    {
+     "layout": "statement",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO hook with *one accent* word",
+     "sub": "TODO",
+     "chips": [
+      "TODO",
+      "TODO",
+      "TODO"
+     ],
+     "swipe": "Swipe to see how",
+     "save": "Save for later",
+     "mood": "wow"
+    },
+    {
+     "layout": "diagram",
+     "theme": "paper",
+     "kicker": "TODO",
+     "title": "TODO *problem* or concept",
+     "text": "TODO",
+     "mood": "think",
+     "diagram": {
+      "type": "flow",
+      "nodes": [
+       {
+        "label": "TODO|input"
+       },
+       {
+        "label": "TODO|step"
+       },
+       {
+        "label": "TODO|result"
+       }
+      ],
+      "caption": "TODO"
+     },
+     "points": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "steps",
+     "theme": "mint",
+     "kicker": "TODO",
+     "title": "TODO *how it works*",
+     "mood": "happy",
+     "steps": [
+      {
+       "title": "TODO",
+       "text": "TODO"
+      },
+      {
+       "title": "TODO",
+       "text": "TODO"
+      },
+      {
+       "title": "TODO",
+       "text": "TODO"
+      }
+     ],
+     "tag": "Tip",
+     "watch": "TODO"
+    },
+    {
+     "layout": "codefocus",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *code or prompt*",
+     "text": "TODO",
+     "mood": "focus",
+     "code": [
+      "{{m:# TODO}}",
+      "TODO"
+     ],
+     "notes": [
+      "TODO",
+      "TODO"
+     ],
+     "tag": "Watch out",
+     "watch": "TODO"
+    },
+    {
+     "layout": "codefocus",
+     "theme": "paper",
+     "kicker": "TODO",
+     "title": "TODO *code or prompt*",
+     "text": "TODO",
+     "mood": "wink",
+     "code": [
+      "{{m:# TODO}}",
+      "TODO"
+     ],
+     "notes": [
+      "TODO",
+      "TODO"
+     ],
+     "tag": "Watch out",
+     "watch": "TODO"
+    },
+    {
+     "layout": "compare",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *before* vs after",
+     "mood": "proud",
+     "left": {
+      "label": "Before",
+      "items": [
+       "TODO",
+       "TODO",
+       "TODO"
+      ]
+     },
+     "right": {
+      "label": "After",
+      "items": [
+       "TODO",
+       "TODO",
+       "TODO"
+      ]
+     },
+     "verdict": "TODO"
+    },
+    {
+     "layout": "checklist",
+     "theme": "paper",
+     "kicker": "TODO",
+     "title": "TODO *mistakes* to avoid",
+     "mood": "oops",
+     "items": [
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": false
+      },
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": false
+      },
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": false
+      }
+     ],
+     "note": "TODO"
+    },
+    {
+     "layout": "cta",
+     "theme": "coral",
+     "kicker": "Your turn",
+     "titleLines": [
+      "Save it.",
+      "*Share* it."
+     ],
+     "followLabel": "Follow",
+     "handle": "@agentoon.ai",
+     "followSub": "TODO one line about what you post",
+     "followBtn": "Follow @agentoon.ai",
+     "actions": [
+      {
+       "icon": "bookmark",
+       "t": "Save",
+       "d": "TODO reason to save"
+      },
+      {
+       "icon": "send",
+       "t": "Share",
+       "d": "TODO who to send it to"
+      }
+     ],
+     "ask": "TODO question that invites a comment"
+    }
+   ]
+  },
+  "explainer": {
+   "description": "Concept explainer: hook, myth vs fact, layered architecture, lifecycle, steps, stat, tips, CTA",
+   "slides": [
+    {
+     "layout": "statement",
+     "theme": "paper",
+     "kicker": "TODO",
+     "title": "TODO hook with *one accent* word",
+     "sub": "TODO",
+     "chips": [],
+     "swipe": "Swipe to see how",
+     "save": "Save for later",
+     "mood": "think"
+    },
+    {
+     "layout": "compare",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *before* vs after",
+     "mood": "focus",
+     "left": {
+      "label": "Before",
+      "items": [
+       "TODO",
+       "TODO",
+       "TODO"
+      ]
+     },
+     "right": {
+      "label": "After",
+      "items": [
+       "TODO",
+       "TODO",
+       "TODO"
+      ]
+     },
+     "verdict": "TODO"
+    },
+    {
+     "layout": "diagram",
+     "theme": "mint",
+     "kicker": "TODO",
+     "title": "TODO *title*",
+     "text": "TODO",
+     "mood": "happy",
+     "diagram": {
+      "type": "stack",
+      "layers": [
+       "TODO",
+       "TODO",
+       "TODO",
+       "TODO"
+      ],
+      "hot": 3,
+      "caption": "TODO"
+     },
+     "points": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "diagram",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *title*",
+     "text": "TODO",
+     "mood": "wink",
+     "diagram": {
+      "type": "cycle",
+      "nodes": [
+       "TODO",
+       "TODO",
+       "TODO",
+       "TODO"
+      ],
+      "center": "TODO",
+      "caption": "TODO"
+     },
+     "points": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "steps",
+     "theme": "paper",
+     "kicker": "TODO",
+     "title": "TODO *how it works*",
+     "mood": "think",
+     "steps": [
+      {
+       "title": "TODO",
+       "text": "TODO"
+      },
+      {
+       "title": "TODO",
+       "text": "TODO"
+      },
+      {
+       "title": "TODO",
+       "text": "TODO"
+      }
+     ],
+     "tag": "Tip",
+     "watch": "TODO"
+    },
+    {
+     "layout": "stat",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *sourced* number",
+     "mood": "wow",
+     "value": "TODO",
+     "label": "TODO",
+     "text": "TODO",
+     "source": "Source: TODO"
+    },
+    {
+     "layout": "checklist",
+     "theme": "mint",
+     "kicker": "TODO",
+     "title": "TODO *mistakes* to avoid",
+     "mood": "proud",
+     "items": [
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": true
+      },
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": true
+      },
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": true
+      }
+     ],
+     "note": "TODO"
+    },
+    {
+     "layout": "cta",
+     "theme": "coral",
+     "kicker": "Your turn",
+     "titleLines": [
+      "Save it.",
+      "*Share* it."
+     ],
+     "followLabel": "Follow",
+     "handle": "@agentoon.ai",
+     "followSub": "TODO one line about what you post",
+     "followBtn": "Follow @agentoon.ai",
+     "actions": [
+      {
+       "icon": "bookmark",
+       "t": "Save",
+       "d": "TODO reason to save"
+      },
+      {
+       "icon": "send",
+       "t": "Share",
+       "d": "TODO who to send it to"
+      }
+     ],
+     "ask": "TODO question that invites a comment"
+    }
+   ]
+  },
+  "toolkit": {
+   "description": "Tool roundup: terminal hook, kinds/categories, tiles, levels, fan-out, cheat sheet, tips, CTA",
+   "slides": [
+    {
+     "layout": "hook",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *hook* promise with *payoff*",
+     "rows": [
+      {
+       "cmd": "TODO",
+       "verb": "TODO"
+      },
+      {
+       "cmd": "TODO",
+       "verb": "TODO"
+      },
+      {
+       "cmd": "TODO",
+       "verb": "TODO"
+      },
+      {
+       "cmd": "TODO",
+       "verb": "TODO"
+      },
+      {
+       "cmd": "TODO",
+       "verb": "TODO"
+      }
+     ],
+     "bubble": "TODO reaction",
+     "swipe": "Swipe for all",
+     "save": "Save for later"
+    },
+    {
+     "layout": "concept",
+     "theme": "paper",
+     "kicker": "TODO",
+     "title": "TODO *the lay of the land*",
+     "label": "TODO label",
+     "lede": "TODO",
+     "rows": [
+      {
+       "badge": "TODO",
+       "ex": "TODO",
+       "text": "TODO"
+      },
+      {
+       "badge": "TODO",
+       "ex": "TODO",
+       "hot": true,
+       "text": "TODO"
+      },
+      {
+       "badge": "TODO",
+       "ex": "TODO",
+       "ghost": true,
+       "text": "TODO"
+      }
+     ]
+    },
+    {
+     "layout": "diagram",
+     "theme": "mint",
+     "kicker": "TODO",
+     "title": "TODO *title*",
+     "text": "TODO",
+     "mood": "happy",
+     "diagram": {
+      "type": "grid",
+      "cols": 3,
+      "tiles": [
+       {
+        "icon": "bolt",
+        "label": "TODO"
+       },
+       {
+        "icon": "code",
+        "label": "TODO"
+       },
+       {
+        "icon": "layers",
+        "label": "TODO"
+       },
+       {
+        "icon": "shield",
+        "label": "TODO"
+       },
+       {
+        "icon": "clock",
+        "label": "TODO"
+       },
+       {
+        "icon": "star",
+        "label": "TODO"
+       }
+      ],
+      "caption": "TODO"
+     },
+     "points": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "diagram",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *title*",
+     "text": "TODO",
+     "mood": "focus",
+     "diagram": {
+      "type": "ladder",
+      "steps": [
+       "TODO",
+       "TODO",
+       "TODO",
+       "TODO"
+      ],
+      "caption": "TODO"
+     },
+     "points": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "diagram",
+     "theme": "paper",
+     "kicker": "TODO",
+     "title": "TODO *title*",
+     "text": "TODO",
+     "mood": "think",
+     "diagram": {
+      "type": "fanout",
+      "source": "TODO",
+      "targets": [
+       "TODO",
+       "TODO",
+       "TODO"
+      ],
+      "result": "TODO",
+      "caption": "TODO"
+     },
+     "points": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "cheatsheet",
+     "theme": "dark",
+     "kicker": "Save this",
+     "title": "Your *cheat sheet.*",
+     "badge": "TODO",
+     "badgeNote": "TODO",
+     "rows": [
+      {
+       "cmd": "TODO",
+       "use": "TODO",
+       "note": "TODO"
+      },
+      {
+       "cmd": "TODO",
+       "use": "TODO",
+       "note": "TODO"
+      },
+      {
+       "cmd": "TODO",
+       "use": "TODO",
+       "note": "TODO"
+      },
+      {
+       "cmd": "TODO",
+       "use": "TODO",
+       "note": "TODO"
+      },
+      {
+       "cmd": "TODO",
+       "use": "TODO",
+       "note": "TODO"
+      }
+     ],
+     "legendTag": "TODO",
+     "legend": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "checklist",
+     "theme": "mint",
+     "kicker": "TODO",
+     "title": "TODO *mistakes* to avoid",
+     "mood": "proud",
+     "items": [
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": true
+      },
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": true
+      },
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": true
+      }
+     ],
+     "note": "TODO"
+    },
+    {
+     "layout": "cta",
+     "theme": "coral",
+     "kicker": "Your turn",
+     "titleLines": [
+      "Save it.",
+      "*Share* it."
+     ],
+     "followLabel": "Follow",
+     "handle": "@agentoon.ai",
+     "followSub": "TODO one line about what you post",
+     "followBtn": "Follow @agentoon.ai",
+     "actions": [
+      {
+       "icon": "bookmark",
+       "t": "Save",
+       "d": "TODO reason to save"
+      },
+      {
+       "icon": "send",
+       "t": "Share",
+       "d": "TODO who to send it to"
+      }
+     ],
+     "ask": "TODO question that invites a comment"
+    }
+   ]
+  },
+  "workflow": {
+   "description": "Automation/workflow: hook, timeline, steps, flow, prompt/code, bars or compare, mistakes, CTA",
+   "slides": [
+    {
+     "layout": "statement",
+     "theme": "mint",
+     "kicker": "TODO",
+     "title": "TODO hook with *one accent* word",
+     "sub": "TODO",
+     "chips": [],
+     "swipe": "Swipe to see how",
+     "save": "Save for later",
+     "mood": "cheer"
+    },
+    {
+     "layout": "diagram",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *title*",
+     "text": "TODO",
+     "mood": "think",
+     "diagram": {
+      "type": "timeline",
+      "milestones": [
+       {
+        "t": "TODO",
+        "label": "TODO"
+       },
+       {
+        "t": "TODO",
+        "label": "TODO"
+       },
+       {
+        "t": "TODO",
+        "label": "TODO"
+       },
+       {
+        "t": "TODO",
+        "label": "TODO"
+       }
+      ],
+      "caption": "TODO"
+     },
+     "points": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "steps",
+     "theme": "paper",
+     "kicker": "TODO",
+     "title": "TODO *how it works*",
+     "mood": "happy",
+     "steps": [
+      {
+       "title": "TODO",
+       "text": "TODO"
+      },
+      {
+       "title": "TODO",
+       "text": "TODO"
+      },
+      {
+       "title": "TODO",
+       "text": "TODO"
+      }
+     ],
+     "tag": "Tip",
+     "watch": "TODO"
+    },
+    {
+     "layout": "diagram",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *problem* or concept",
+     "text": "TODO",
+     "mood": "focus",
+     "diagram": {
+      "type": "flow",
+      "nodes": [
+       {
+        "label": "TODO|input"
+       },
+       {
+        "label": "TODO|step"
+       },
+       {
+        "label": "TODO|result"
+       }
+      ],
+      "caption": "TODO"
+     },
+     "points": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "codefocus",
+     "theme": "paper",
+     "kicker": "TODO",
+     "title": "TODO *code or prompt*",
+     "text": "TODO",
+     "mood": "wink",
+     "code": [
+      "{{m:# TODO}}",
+      "TODO"
+     ],
+     "notes": [
+      "TODO",
+      "TODO"
+     ],
+     "tag": "Watch out",
+     "watch": "TODO"
+    },
+    {
+     "layout": "diagram",
+     "theme": "mint",
+     "kicker": "TODO",
+     "title": "TODO *title*",
+     "text": "TODO",
+     "mood": "proud",
+     "diagram": {
+      "type": "bars",
+      "items": [
+       {
+        "label": "TODO",
+        "value": 90,
+        "display": "TODO"
+       },
+       {
+        "label": "TODO",
+        "value": 55,
+        "display": "TODO"
+       },
+       {
+        "label": "TODO",
+        "value": 30,
+        "display": "TODO"
+       }
+      ],
+      "caption": "Source: TODO"
+     },
+     "points": [
+      "TODO",
+      "TODO"
+     ]
+    },
+    {
+     "layout": "checklist",
+     "theme": "dark",
+     "kicker": "TODO",
+     "title": "TODO *mistakes* to avoid",
+     "mood": "oops",
+     "items": [
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": false
+      },
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": false
+      },
+      {
+       "t": "TODO",
+       "d": "TODO",
+       "ok": false
+      }
+     ],
+     "note": "TODO"
+    },
+    {
+     "layout": "cta",
+     "theme": "coral",
+     "kicker": "Your turn",
+     "titleLines": [
+      "Save it.",
+      "*Share* it."
+     ],
+     "followLabel": "Follow",
+     "handle": "@agentoon.ai",
+     "followSub": "TODO one line about what you post",
+     "followBtn": "Follow @agentoon.ai",
+     "actions": [
+      {
+       "icon": "bookmark",
+       "t": "Save",
+       "d": "TODO reason to save"
+      },
+      {
+       "icon": "send",
+       "t": "Share",
+       "d": "TODO who to send it to"
+      }
+     ],
+     "ask": "TODO question that invites a comment"
+    }
+   ]
+  }
+ }
+}

@@ -23,20 +23,28 @@ export function footer(ctx) {
   </div>`;
 }
 
-const shell = (ctx, s, inner) =>
+export const shell = (ctx, s, inner) =>
   `<section class="slide ${s.theme || "dark"}" id="slide-${pad2(ctx.index)}" data-slide="${ctx.index}">${inner}${footer(ctx)}</section>`;
 
-const codeBlock = (lines, { dots = true, style = "" } = {}) =>
+export const codeBlock = (lines, { dots = true, style = "" } = {}) =>
   `<div class="code" style="${style}">${dots ? '<div class="dots"><i></i><i></i><i></i></div>' : ""}${lines.map(code).join("\n")}</div>`;
 
 /* ------------------------------------------------------------------ diagrams */
 // Each diagram is a 936-wide SVG (1:1 scale) so text sizes are real pixel sizes. Minimum SVG text: 28px.
-const T = (x, y, txt, o = {}) =>
-  `<text x="${x}" y="${y}" font-family="var(--${o.f || "mono"})" font-size="${o.s || 28}" font-weight="${o.w || 600}" fill="${o.c || "var(--fg)"}" text-anchor="${o.a || "start"}">${esc(txt)}</text>`;
-const arrowhead = `<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>`;
-const line = (x1, y1, x2, y2, o = {}) =>
+export const T = (x, y, txt, o = {}) =>
+  `<text x="${x}" y="${y}" font-family="var(--${o.f || "mono"})" font-size="${o.s || 28}" font-weight="${o.w || 600}" fill="${o.c || "var(--fg)"}" text-anchor="${o.a || "start"}">${esc(String(txt).replace(/`/g, ""))}</text>`;
+export const arrowhead = `<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>`;
+export const line = (x1, y1, x2, y2, o = {}) =>
   `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${o.c || "var(--accent-t)"}" stroke-width="${o.w || 4}" stroke-linecap="round" fill="none" ${o.head === false ? "" : 'marker-end="url(#ah)"'}/>`;
-const MUTED = "var(--muted)", ACC = "var(--accent-t)", ONA = "var(--on-accent)";
+export const MUTED = "var(--muted)", ACC = "var(--accent-t)", ONA = "var(--on-accent)";
+/** Generic, JSON-driven diagram types register here (see diagrams-generic.mjs): {type:"flow"|"fanout"|…, …} */
+export const genericDiagrams = {};
+export const renderDiagram = (d) => {
+  if (typeof d === "function") return d();
+  if (typeof d === "string") { if (!diagrams[d]) throw new Error(`Unknown diagram "${d}"`); return diagrams[d](); }
+  if (!genericDiagrams[d.type]) throw new Error(`Unknown diagram type "${d.type}"`);
+  return genericDiagrams[d.type](d);
+};
 
 export const diagrams = {
   simplify: () => {
@@ -158,7 +166,7 @@ export const layouts = {
       <div class="kicker"><span class="bar"></span>${esc(s.kicker)}</div>
       <h2 class="h2" style="margin-top:30px">${fmt(s.title)}</h2>
       <p class="lede" style="margin-top:26px;font-size:36px">${fmt(s.lede)}</p>
-      <div class="label" style="margin-top:30px">Know the difference: four kinds of slash command</div>
+      <div class="label" style="margin-top:30px">${esc(s.label || "Know the difference: four kinds of slash command")}</div>
       <div class="stack" style="gap:14px;margin-top:16px">
         ${s.rows.map((r) => `<div class="card row" style="gap:22px;padding:20px 24px;border-radius:22px;align-items:center;${r.hot ? "background:var(--card-2);border:3px solid var(--accent);" : ""}">
           <div style="width:324px;flex:none;display:flex;flex-direction:column;gap:10px;align-items:flex-start"><span class="badge ${r.hot ? "hot" : r.ghost ? "ghost" : ""}">${esc(r.badge)}</span><span class="mono" style="font-size:30px;font-weight:700;color:var(--accent-t)">${esc(r.ex)}</span></div>
@@ -177,7 +185,7 @@ export const layouts = {
       <div class="mono" style="margin-top:16px;font-size:${s.cmdSize || 88}px;font-weight:700;letter-spacing:-.03em;color:var(--accent-t);line-height:1">${esc(s.cmd)}</div>
       <h2 class="h3" style="margin-top:18px;font-size:56px">${fmt(s.title)}</h2>
       <p class="body" style="margin-top:14px;color:var(--muted)">${fmt(s.text)}</p>
-      <div class="grow stack" style="justify-content:${s.flip ? "flex-end" : "center"};min-height:0;margin:22px 0 20px">${diagrams[s.diagram]()}</div>
+      <div class="grow stack" style="justify-content:${s.flip ? "flex-end" : "center"};min-height:0;margin:22px 0 20px">${renderDiagram(s.diagram)}</div>
       ${codeBlock(s.code, { dots: false, style: "padding:22px 30px" })}
       <div class="watch" style="margin-top:20px"><span class="tag">${esc(s.tag || "Watch out")}</span><span>${fmt(s.watch)}</span></div>`);
   },

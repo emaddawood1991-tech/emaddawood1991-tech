@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Spell-check visible carousel text. Usage: spellcheck.py texts.json  (list of {slide, text}).
+"""Spell-check visible carousel text. Usage: spellcheck.py texts.json [extra,allowed,words]  (list of {slide, text}).
 Needs `pip install pyspellchecker`. Allow-list: assets/spell-allow.txt. Exit 1 on suspect words."""
 import json, re, sys, pathlib
 try:
@@ -7,6 +7,7 @@ try:
 except ImportError:
     print("! spelling skipped (pip install pyspellchecker)"); sys.exit(0)
 allow = {w.strip().lower() for w in (pathlib.Path(__file__).parent.parent / "assets" / "spell-allow.txt").read_text().split() if w.strip()}
+if len(sys.argv) > 2: allow |= {w.strip().lower() for w in sys.argv[2].split(",") if w.strip()}
 sp = SpellChecker(); sp.word_frequency.load_words(allow)
 bad = []
 for item in json.load(open(sys.argv[1])):

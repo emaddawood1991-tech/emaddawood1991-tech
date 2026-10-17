@@ -22,7 +22,7 @@ fs.rmSync(png, { recursive: true, force: true });
 fs.mkdirSync(png, { recursive: true });
 
 /** Quality thresholds (px at 1080 wide). A 390pt phone shows slides at 0.361×: 26px → 9.4pt, 30px → 10.8pt, 32px → 11.6pt. */
-const TH = { label: 26, body: 30, code: 32, svg: 28, contrast: 4.5, contrastLarge: 3, largePx: 40, margin: 40, pad: 72, footerGap: 24 };
+const TH = { label: 26, body: 30, code: 32, svg: 28, contrast: 4.5, contrastLarge: 3, largePx: 40, margin: 40, pad: 72, footerGap: 24, emptyWarn: 240 };
 
 let browser;
 try { browser = await chromium.launch(); }
@@ -82,6 +82,7 @@ const qa = ({ n, TH }) => {
     const isLabel = !!el.closest(".kicker,.label,.src,.tag,.badge,.footer,.dots");
     const isCode = !!el.closest(".code");
     const need = isSvg ? TH.svg : isLabel ? TH.label : isCode ? TH.code : TH.body;
+    if (/\bTODO\b/.test(txt)) out.push({ n, level: "error", msg: `unfilled placeholder: "${short}"` });
     stats.minFont = Math.min(stats.minFont, fs);
     stats.texts.push({ txt: short, fs });
     if (fs < need) out.push({ n, level: "error", msg: `font ${fs}px < ${need}px (${isSvg ? "diagram" : isLabel ? "label" : isCode ? "code" : "body"} text): "${short}"` });
@@ -131,6 +132,15 @@ const qa = ({ n, TH }) => {
     if (Math.abs(b.left - (sr.left + TH.pad)) > 2) out.push({ n, level: "error", msg: `misaligned block (left ${Math.round(b.left - sr.left)}px, expected ${TH.pad}px): <${b.el.className.split(" ")[0] || b.el.tagName.toLowerCase()}>` });
     if (b.right > sr.right - TH.pad + 2) out.push({ n, level: "error", msg: `block pushes past right margin by ${Math.round(b.right - (sr.right - TH.pad))}px: <${b.el.className.split(" ")[0] || b.el.tagName.toLowerCase()}>` });
   }
+
+  // ---- 3b) advisory: large dead zones (not an error, but fix by adding content or enlarging the illustration)
+  let free = 0;
+  for (const g of slide.querySelectorAll(":scope > .grow")) {
+    const gr = g.getBoundingClientRect();
+    const ex = g.children.length ? Math.max(...[...g.children].map((x) => x.getBoundingClientRect().bottom)) - Math.min(...[...g.children].map((x) => x.getBoundingClientRect().top)) : 0;
+    free += gr.height - ex;
+  }
+  if (free > TH.emptyWarn) out.push({ n, level: "warn", msg: `${Math.round(free)}px of dead space: add a point/step, enlarge the illustration, or switch layout` });
 
   // ---- 4) SVG text stays inside its own viewBox
   for (const tx of slide.querySelectorAll("svg text")) {
@@ -192,7 +202,7 @@ await sheet("mobile-preview", 390, 3, "true phone scale: 390 px wide per slide (
 await browser.close();
 
 /* ------------------------------------------------------------------ spelling + report */
-const sp = spawnSync("python3", [path.join(here, "spellcheck.py"), path.join(dir, ".texts.json")], { encoding: "utf8" });
+const sp = spawnSync("python3", [path.join(here, "spellcheck.py"), path.join(dir, ".texts.json"), (cfg.spellAllow || []).join(",")], { encoding: "utf8" });
 fs.rmSync(path.join(dir, ".texts.json"));
 const spellBad = sp.status === 1;
 const errs = issues.filter((i) => i.level === "error");
@@ -200,6 +210,7 @@ const pt = (px) => (px * 390 / 1080).toFixed(1);
 console.log(`rendered ${imgs.length} slides → ${path.relative(process.cwd(), png)}/ + contact-sheet.png + mobile-preview.png`);
 console.log(missing.length ? `✗ fonts missing: ${missing.join(", ")}` : "✓ brand fonts loaded (Fraunces, Inter, JetBrains Mono)");
 for (const i of errs) console.log(`✗ slide ${i.n}: ${i.msg}`);
+for (const i of issues.filter((x) => x.level === "warn")) console.log(`! slide ${i.n}: ${i.msg}`);
 process.stdout.write(sp.stdout || "");
 if (!errs.length && !missing.length) console.log(`✓ QA passed: margins, overflow, overlap, alignment, footer gap, mascot clearance, contrast ≥ ${TH.contrast}:1, min sizes (label ${TH.label} / body ${TH.body} / code ${TH.code} / diagram ${TH.svg}px)`);
 
@@ -210,10 +221,20 @@ const report = [`# QA report — ${cfg.title}`, "", `Thresholds (px @1080): labe
 fs.writeFileSync(path.join(dir, "qa-report.md"), report.join("\n"));
 
 if (doZip) {
+  const capFile = path.join(dir, "caption.md");
+  const cap = fs.existsSync(capFile) ? fs.readFileSync(capFile, "utf8") : "";
+  const capProblems = [];
+  if (!cap) capProblems.push("caption.md is missing (write the Instagram caption first)");
+  else {
+    if ((cap.match(/#[A-Za-z0-9_]+/g) || []).length < 10) capProblems.push("caption.md needs ≥ 10 hashtags");
+    if (!/@agentoon\.ai/.test(cap)) capProblems.push("caption.md must mention @agentoon.ai");
+    if (/\bTODO\b/.test(cap)) capProblems.push("caption.md still has TODO");
+  }
+  if (capProblems.length) { for (const p of capProblems) console.log("✗ " + p); process.exit(1); }
   const slug = cfg.slug || path.basename(dir);
   const zip = path.join(dir, `${slug}.zip`);
   fs.rmSync(zip, { force: true });
-  const inc = ["png", "source", "carousel.json", "contact-sheet.png", "mobile-preview.png", "qa-report.md", "caption.md"].filter((p) => fs.existsSync(path.join(dir, p)));
+  const inc = ["png", "source", "carousel.json", "extras.mjs", "contact-sheet.png", "mobile-preview.png", "qa-report.md", "caption.md"].filter((p) => fs.existsSync(path.join(dir, p)));
   execFileSync("zip", ["-qr", zip, ...inc], { cwd: dir });
   console.log("✓ zip →", path.relative(process.cwd(), zip));
 }
