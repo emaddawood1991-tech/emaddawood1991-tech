@@ -17,7 +17,7 @@ Output goes to `./carousels/<slug>/` in the current project. Never overwrite or 
 
 ## Always deliver (all of it, every time)
 
-`png/slide-NN.png` (1080×1350, 7–9 slides) · `contact-sheet.png` · `mobile-preview.png` · `source/` + `carousel.json` (+ `extras.mjs` if bespoke) · `qa-report.md` · `caption.md` · `<slug>.zip`. `render.mjs --zip` refuses to package without a valid `caption.md`.
+`png/slide-NN.png` (1080×1350, 7–9 slides, identical size) · `contact-sheet.png` · `mobile-preview.png` · `safe-area-check.png` · `source/` + `carousel.json` (+ `extras.mjs` if bespoke) · `qa-report.md` · `caption.md` · `<slug>.zip`. `render.mjs --zip` refuses to package without a valid `caption.md`.
 
 ## Workflow
 
@@ -32,6 +32,15 @@ Output goes to `./carousels/<slug>/` in the current project. Never overwrite or 
 8. **Look at every PNG and `mobile-preview.png`** (Read the images) and complete the manual list in `SKILL/reference/quality-checklist.md`. Fix, rebuild, re-render.
 9. **Write `caption.md`** (format below).
 10. **Package** `node SKILL/scripts/render.mjs carousels/<slug> --zip`, then give the user: the contact sheet, the phone preview, the ZIP path, the caption, and a short note on anything unverified or version-dependent.
+
+## Instagram safe area (automatic, enforced)
+
+Instagram's editor and grid crop the top and bottom of 4:5 posts. Every slide keeps essential content (text, logos, mascot, diagrams, cards, CTA, footer) inside: **≥ 120px from top and bottom, ≥ 70px from left and right**. The canvas stays exactly 1080×1350.
+- `assets/base.css` defines it: `--safe-top 120`, `--safe-bottom 120`, `--safe-x 72`, content starts at `--pad-top 126`, content ends at `--pad-bottom 224` (footer sits at the safe bottom). Content height is therefore ~1000px (not 1128): plan copy, diagram heights and prompt cards for that.
+- If a slide overflows, **reflow, don't shrink the canvas**: tighten paddings/gaps, drop a title size by 4–8px, use a per-slide size override (`titleSize`, `promptSize`, `watchSize`, `rowPad`, `codeSize`), shorten diagram geometry, or switch layout. Never go below the minimum font sizes and don't delete required content.
+- Bespoke layouts must position mascots with `right:var(--safe-x);top:var(--pad-top)` and never use negative margins that leave the safe area.
+- `render.mjs` fails on any text, card, pill, code box, callout, diagram, mascot or footer that leaves the safe area, and on any PNG that is not 1080×1350. `safe-area-check.png` shades the unsafe zones red for a visual check.
+- Older carousels built before this rule can be reproduced exactly with `"legacyMargins": true` in `carousel.json`; never use it for new posts.
 
 ## Variation rules (same brand, different look every time)
 
@@ -79,8 +88,8 @@ Mascot: `mascot(width, mood)`; icons: `icon("bolt")` (see `assets/sprite.svg`: a
 
 ## Design + quality (details in `reference/design-system.md`, `reference/quality-checklist.md`)
 
-- 1080×1350 · padding 72 · footer reserved. Min sizes: label 26, body 30, code 32, diagram text 28, headlines ≥ 56 (px). Contrast ≥ 4.5:1 using `--accent-t` for accent text and `--on-accent` on accent fills.
-- Gate (automatic, exit 1 on failure): sizes, contrast, margins, alignment, overflow, overlap, footer gap, mascot clearance, TODO leftovers, spelling (add legit product/tech words to `"spellAllow": [...]` in carousel.json), fonts. Then eyes on every image.
+- 1080×1350 · Instagram safe area (120px top/bottom, 70px sides) · footer inside it. Min sizes: label 26, body 30, code 32, diagram text 28, headlines ≥ 56 (px). Contrast ≥ 4.5:1 using `--accent-t` for accent text and `--on-accent` on accent fills.
+- Gate (automatic, exit 1 on failure): safe area, canvas size, sizes, contrast, margins, alignment, overflow, overlap, footer gap, mascot clearance, TODO leftovers, spelling (add legit product/tech words to `"spellAllow": [...]` in carousel.json), fonts. Then eyes on every image.
 - Never copy another creator's artwork or layouts. Original robot mascot only.
 
 ## caption.md format

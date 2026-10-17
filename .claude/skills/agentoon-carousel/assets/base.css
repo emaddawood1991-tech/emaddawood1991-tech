@@ -10,6 +10,10 @@
   --coral:#FF6A3D; --mint:#2FE3B2; --sky:#6FA8FF; --sun:#FFC83D;
   --serif:"Fraunces",Georgia,serif; --sans:"Inter","Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   --pad:72px;
+  /* Instagram safe area: essential content stays >=120px from top/bottom and >=70px from left/right (editor/grid crops) */
+  --safe-top:120px; --safe-bottom:120px; --safe-x:72px;
+  --pad-top:126px;    /* safe-top + 6px: glyph boxes of 26px labels extend ~4px beyond the line box */
+  --pad-bottom:224px; /* safe-bottom + footer (~76) + 28px gap */
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#05070f}
@@ -17,7 +21,7 @@ body{font-family:var(--sans);-webkit-font-smoothing:antialiased}
 .deck{display:flex;flex-direction:column;gap:40px;align-items:center;padding:40px 0}
 
 /* ---------- slide shell ---------- */
-.slide{position:relative;width:1080px;height:1350px;overflow:hidden;flex:none;padding:var(--pad) var(--pad) 150px;
+.slide{position:relative;width:1080px;height:1350px;overflow:hidden;flex:none;padding:var(--pad-top) var(--safe-x) var(--pad-bottom);
   display:flex;flex-direction:column;background:var(--bg);color:var(--fg)}
 .slide.dark{--bg:var(--ink);--fg:#F4F1EA;--muted:#A9B0C9;--line:rgba(255,255,255,.16);--card:var(--ink-2);--card-2:var(--ink-3);--accent:var(--coral);--accent-t:#FF7A52;--on-accent:var(--ink);--accent-2:var(--mint);--m-head:#F4F1EA;--m-screen:#0C1020;--m-eye:var(--mint);--m-body:#F4F1EA;--m-ear:var(--coral)}
 .slide.paper{--bg:var(--paper);--fg:var(--ink);--muted:#4F546B;--line:rgba(12,16,32,.18);--card:#FFFBF2;--card-2:var(--paper-2);--accent:var(--coral);--accent-t:#A8330A;--on-accent:var(--ink);--accent-2:#0E9F7E;--m-head:var(--ink);--m-screen:#F5F0E6;--m-eye:var(--coral);--m-body:var(--ink);--m-ear:var(--coral)}
@@ -46,7 +50,7 @@ em,.it{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ac
 .src{font:500 26px/1.3 var(--mono);color:var(--muted)}
 
 /* ---------- footer (shared) ---------- */
-.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:48px;display:flex;align-items:center;justify-content:space-between;
+.footer{position:absolute;left:var(--safe-x);right:var(--safe-x);bottom:var(--safe-bottom);display:flex;align-items:center;justify-content:space-between;
   border-top:2px solid var(--line);padding-top:26px;font:600 28px/1 var(--mono);color:var(--muted)}
 .footer .brand{display:flex;align-items:center;gap:14px;color:var(--fg);font-weight:700}
 .footer .brand svg{width:44px;height:48px}

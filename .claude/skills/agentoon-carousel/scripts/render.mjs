@@ -22,7 +22,8 @@ fs.rmSync(png, { recursive: true, force: true });
 fs.mkdirSync(png, { recursive: true });
 
 /** Quality thresholds (px at 1080 wide). A 390pt phone shows slides at 0.361×: 26px → 9.4pt, 30px → 10.8pt, 32px → 11.6pt. */
-const TH = { label: 26, body: 30, code: 32, svg: 28, contrast: 4.5, contrastLarge: 3, largePx: 40, margin: 40, pad: 72, footerGap: 24, emptyWarn: 240 };
+const legacy = !!cfg.legacyMargins;
+const TH = { safeTop: legacy ? 40 : 120, safeBottom: legacy ? 40 : 120, safeX: legacy ? 40 : 70, label: 26, body: 30, code: 32, svg: 28, contrast: 4.5, contrastLarge: 3, largePx: 40, margin: 40, pad: 72, footerGap: 24, emptyWarn: 240 };
 
 let browser;
 try { browser = await chromium.launch(); }
@@ -87,8 +88,7 @@ const qa = ({ n, TH }) => {
     stats.texts.push({ txt: short, fs });
     if (fs < need) out.push({ n, level: "error", msg: `font ${fs}px < ${need}px (${isSvg ? "diagram" : isLabel ? "label" : isCode ? "code" : "body"} text): "${short}"` });
     // safe margins
-    const m = TH.margin;
-    if (r.left < sr.left + m || r.right > sr.right - m || r.top < sr.top + m) out.push({ n, level: "error", msg: `text outside ${m}px safe margin: "${short}"` });
+    if (r.left < sr.left + TH.safeX - 0.5 || r.right > sr.right - TH.safeX + 0.5 || r.top < sr.top + TH.safeTop - 0.5 || r.bottom > sr.bottom - TH.safeBottom + 0.5) out.push({ n, level: "error", msg: `text outside the Instagram safe area (${TH.safeX}px sides, ${TH.safeTop}px top, ${TH.safeBottom}px bottom): "${short}"` });
     if (!inFooter && r.bottom > footer.top - 8) out.push({ n, level: "error", msg: `text collides with footer: "${short}"` });
     // contrast
     const fg0 = parse(isSvg ? cs.fill : cs.color);
@@ -142,6 +142,18 @@ const qa = ({ n, TH }) => {
   }
   if (free > TH.emptyWarn) out.push({ n, level: "warn", msg: `${Math.round(free)}px of dead space: add a point/step, enlarge the illustration, or switch layout` });
 
+  // ---- 3c) every card, pill, code box, callout, diagram, mascot and the footer must sit inside the safe area too
+  const bad = new Set();
+  for (const el of slide.querySelectorAll(".card,.pill,.code,.banner,.watch,.badge,.footer,svg:not(.ic),[data-mascot]")) {
+    if (el.closest("svg") && el.tagName.toLowerCase() === "svg" && el.parentElement.closest("svg")) continue;
+    const r = el.getBoundingClientRect();
+    if (!r.width) continue;
+    if (r.left < sr.left + TH.safeX - 1 || r.right > sr.right - TH.safeX + 1 || r.top < sr.top + TH.safeTop - 1 || r.bottom > sr.bottom - TH.safeBottom + 1) {
+      const key = (el.className && el.className.baseVal === undefined ? String(el.className).split(" ")[0] : el.tagName.toLowerCase());
+      if (!bad.has(key)) { bad.add(key); out.push({ n, level: "error", msg: `<${key}> leaves the safe area (x ${Math.round(r.left - sr.left)}–${Math.round(r.right - sr.left)}, y ${Math.round(r.top - sr.top)}–${Math.round(r.bottom - sr.top)})` }); }
+    }
+  }
+
   // ---- 4) SVG text stays inside its own viewBox
   for (const tx of slide.querySelectorAll("svg text")) {
     const r = tx.getBoundingClientRect(), p = tx.ownerSVGElement.getBoundingClientRect();
@@ -185,14 +197,21 @@ await page.evaluate(() => window.scrollTo(0, 0));
 const slides = await page.$$(".slide");
 for (let i = 0; i < slides.length; i++) await slides[i].screenshot({ path: path.join(png, `slide-${String(i + 1).padStart(2, "0")}.png`) });
 
+/* ------------------------------------------------------------------ canvas size check (all slides identical, 1080x1350) */
+const dimErrors = [];
+for (const f of fs.readdirSync(png).filter((x) => x.endsWith(".png"))) {
+  const b = fs.readFileSync(path.join(png, f)); const w = b.readUInt32BE(16), h = b.readUInt32BE(20);
+  if (w !== 1080 || h !== 1350) dimErrors.push(`${f} is ${w}×${h}, expected 1080×1350`);
+}
+
 /* ------------------------------------------------------------------ contact sheet + phone-scale preview */
 const imgs = fs.readdirSync(png).filter((f) => f.endsWith(".png")).sort();
-async function sheet(name, w, cols, caption, pad = 40, gap = 28) {
+async function sheet(name, w, cols, caption, pad = 40, gap = 28, guides = false) {
   const h = Math.round((w * 1350) / 1080);
   const html = `<!doctype html><body style="margin:0;background:#05070f;font-family:Inter,sans-serif">
 <div style="padding:${pad}px ${pad}px 20px;color:#F4F1EA;display:flex;justify-content:space-between;align-items:baseline;gap:20px"><b style="font-size:${w > 380 ? 30 : 34}px">${cfg.title}</b><span style="color:#A9B0C9;font-size:${w > 380 ? 22 : 26}px">${caption}</span></div>
 <div style="display:grid;grid-template-columns:repeat(${cols},${w}px);gap:${gap}px;padding:20px ${pad}px ${pad}px">
-${imgs.map((f, i) => `<figure style="margin:0"><img src="${pathToFileURL(path.join(png, f)).href}" width="${w}" height="${h}" style="border-radius:${w > 380 ? 22 : 14}px;display:block;box-shadow:0 0 0 2px rgba(255,255,255,.12)"><figcaption style="color:#A9B0C9;font:600 22px 'JetBrains Mono',monospace;margin-top:10px">${String(i + 1).padStart(2, "0")}</figcaption></figure>`).join("")}
+${imgs.map((f, i) => `<figure style="margin:0"><div style="position:relative;width:${w}px;height:${h}px"><img src="${pathToFileURL(path.join(png, f)).href}" width="${w}" height="${h}" style="border-radius:${w > 380 ? 22 : 14}px;display:block;box-shadow:0 0 0 2px rgba(255,255,255,.12)">${guides ? `<div style="position:absolute;left:0;right:0;top:0;height:${TH.safeTop * w / 1080}px;background:rgba(255,40,70,.38);border-bottom:2px dashed #ff2846"></div><div style="position:absolute;left:0;right:0;bottom:0;height:${TH.safeBottom * w / 1080}px;background:rgba(255,40,70,.38);border-top:2px dashed #ff2846"></div><div style="position:absolute;top:${TH.safeTop * w / 1080}px;bottom:${TH.safeBottom * w / 1080}px;left:0;width:${TH.safeX * w / 1080}px;background:rgba(255,40,70,.22);border-right:2px dashed #ff2846"></div><div style="position:absolute;top:${TH.safeTop * w / 1080}px;bottom:${TH.safeBottom * w / 1080}px;right:0;width:${TH.safeX * w / 1080}px;background:rgba(255,40,70,.22);border-left:2px dashed #ff2846"></div>` : ""}</div><figcaption style="color:#A9B0C9;font:600 22px 'JetBrains Mono',monospace;margin-top:10px">${String(i + 1).padStart(2, "0")}</figcaption></figure>`).join("")}
 </div></body>`;
   const tmp = path.join(dir, `.${name}.html`);
   fs.writeFileSync(tmp, html);
@@ -204,6 +223,7 @@ ${imgs.map((f, i) => `<figure style="margin:0"><img src="${pathToFileURL(path.jo
 }
 await sheet("contact-sheet", 360, 3, `agentoon.ai · ${imgs.length} slides · 1080×1350`);
 await sheet("mobile-preview", 390, 3, "true phone scale: 390 px wide per slide (1×)", 24, 24);
+await sheet("safe-area-check", 360, 3, `red = outside the safe area (${TH.safeTop}px top/bottom, ${TH.safeX}px sides): nothing important may sit there`, 40, 28, true);
 await browser.close();
 
 /* ------------------------------------------------------------------ spelling + report */
@@ -217,9 +237,11 @@ console.log(missing.length ? `✗ fonts missing: ${missing.join(", ")}` : "✓ b
 for (const i of errs) console.log(`✗ slide ${i.n}: ${i.msg}`);
 for (const i of issues.filter((x) => x.level === "warn")) console.log(`! slide ${i.n}: ${i.msg}`);
 process.stdout.write(sp.stdout || "");
-if (!errs.length && !missing.length) console.log(`✓ QA passed: margins, overflow, overlap, alignment, footer gap, mascot clearance, contrast ≥ ${TH.contrast}:1, min sizes (label ${TH.label} / body ${TH.body} / code ${TH.code} / diagram ${TH.svg}px)`);
+for (const d of dimErrors) console.log(`✗ ${d}`);
+if (!dimErrors.length) console.log(`✓ all ${imgs.length} PNGs are exactly 1080×1350`);
+if (!errs.length && !missing.length) console.log(`✓ QA passed: safe area (${TH.safeX}px sides, ${TH.safeTop}px top/bottom), margins, overflow, overlap, alignment, footer gap, mascot clearance, contrast ≥ ${TH.contrast}:1, min sizes (label ${TH.label} / body ${TH.body} / code ${TH.code} / diagram ${TH.svg}px)`);
 
-const report = [`# QA report — ${cfg.title}`, "", `Thresholds (px @1080): label ≥ ${TH.label}, body ≥ ${TH.body}, code ≥ ${TH.code}, diagram text ≥ ${TH.svg}; contrast ≥ ${TH.contrast}:1 (${TH.contrastLarge}:1 for text ≥ ${TH.largePx}px); safe margin ${TH.margin}px; content padding ${TH.pad}px; footer gap ${TH.footerGap}px.`, "At 390 pt phone width: label 26px = " + pt(26) + "pt, body 30px = " + pt(30) + "pt, code 32px = " + pt(32) + "pt.", "",
+const report = [`# QA report — ${cfg.title}`, "", `Safe area: ${TH.safeX}px left/right, ${TH.safeTop}px top, ${TH.safeBottom}px bottom. Thresholds (px @1080): label ≥ ${TH.label}, body ≥ ${TH.body}, code ≥ ${TH.code}, diagram text ≥ ${TH.svg}; contrast ≥ ${TH.contrast}:1 (${TH.contrastLarge}:1 for text ≥ ${TH.largePx}px); safe margin ${TH.margin}px; content padding ${TH.pad}px; footer gap ${TH.footerGap}px.`, "At 390 pt phone width: label 26px = " + pt(26) + "pt, body 30px = " + pt(30) + "pt, code 32px = " + pt(32) + "pt.", "",
   "| Slide | Smallest text | On phone | Lowest contrast | Errors |", "|---|---|---|---|---|",
   ...stats.map((s) => `| ${String(s.n).padStart(2, "0")} | ${s.minFont}px | ${pt(s.minFont)}pt | ${s.minContrast.toFixed(2)}:1 | ${errs.filter((e) => e.n === s.n).length} |`), "",
   missing.length || errs.length || spellBad ? "**Status: FAILED**" : "**Status: PASSED** (automated). Visual review of every PNG is still required.", ""];
@@ -239,8 +261,8 @@ if (doZip) {
   const slug = cfg.slug || path.basename(dir);
   const zip = path.join(dir, `${slug}.zip`);
   fs.rmSync(zip, { force: true });
-  const inc = ["png", "source", "carousel.json", "extras.mjs", "contact-sheet.png", "mobile-preview.png", "qa-report.md", "caption.md"].filter((p) => fs.existsSync(path.join(dir, p)));
+  const inc = ["png", "source", "carousel.json", "extras.mjs", "contact-sheet.png", "mobile-preview.png", "safe-area-check.png", "qa-report.md", "caption.md"].filter((p) => fs.existsSync(path.join(dir, p)));
   execFileSync("zip", ["-qr", zip, ...inc], { cwd: dir });
   console.log("✓ zip →", path.relative(process.cwd(), zip));
 }
-process.exit(errs.length || missing.length || spellBad ? 1 : 0);
+process.exit(errs.length || missing.length || spellBad || dimErrors.length ? 1 : 0);

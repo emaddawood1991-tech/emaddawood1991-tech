@@ -141,15 +141,15 @@ export const layouts = {
   hook(s, ctx) {
     return shell(ctx, s, `
       <div class="kicker"><span class="bar"></span>${esc(s.kicker)}</div>
-      <h1 class="h1" style="margin-top:34px;font-size:126px">${fmt(s.title)}</h1>
-      <div class="row" style="margin-top:36px;gap:20px;align-items:flex-end">
+      <h1 class="h1" style="margin-top:28px;font-size:120px">${fmt(s.title)}</h1>
+      <div class="row" style="margin-top:28px;gap:20px;align-items:flex-end">
         <div class="code" style="width:650px;flex:none;padding:26px 32px 30px;white-space:normal">
           <div class="dots"><i></i><i></i><i></i></div>
           <div style="font-size:36px;line-height:1.5"><span class="p">&gt;</span> <span class="c">/</span><span style="display:inline-block;width:18px;height:36px;background:#2FE3B2;vertical-align:-6px;margin-left:4px"></span></div>
           ${s.rows.map((r) => `<div style="font-size:36px;line-height:1.7;display:flex;gap:18px"><span class="c" style="width:272px;flex:none">${esc(r.cmd)}</span><span style="color:#B9C0DA;font-family:var(--sans);font-size:34px">${esc(r.verb)}</span></div>`).join("")}
         </div>
         <div style="position:relative;width:266px;height:400px;flex:none">
-          <div class="pill ink" style="position:absolute;right:-6px;top:-34px;transform:rotate(3deg);font:700 30px/1.15 var(--sans);padding:18px 24px;border-radius:26px 26px 6px 26px;white-space:normal;width:250px;box-shadow:0 8px 0 var(--accent)">${esc(s.bubble)}</div>
+          <div class="pill ink" style="position:absolute;right:0;top:-34px;transform:rotate(3deg);font:700 30px/1.15 var(--sans);padding:18px 24px;border-radius:26px 26px 6px 26px;white-space:normal;width:250px;box-shadow:0 8px 0 var(--accent)">${esc(s.bubble)}</div>
           ${mascot(262, "wow", "position:absolute;left:2px;top:120px")}
         </div>
       </div>
@@ -165,10 +165,10 @@ export const layouts = {
     return shell(ctx, s, `
       <div class="kicker"><span class="bar"></span>${esc(s.kicker)}</div>
       <h2 class="h2" style="margin-top:30px">${fmt(s.title)}</h2>
-      <p class="lede" style="margin-top:26px;font-size:36px">${fmt(s.lede)}</p>
-      <div class="label" style="margin-top:30px">${esc(s.label || "Know the difference: four kinds of slash command")}</div>
-      <div class="stack" style="gap:14px;margin-top:16px">
-        ${s.rows.map((r) => `<div class="card row" style="gap:22px;padding:${s.rowPad || 20}px 24px;border-radius:22px;align-items:center;${r.hot ? "background:var(--card-2);border:3px solid var(--accent);" : ""}">
+      <p class="lede" style="margin-top:20px;font-size:34px">${fmt(s.lede)}</p>
+      <div class="label" style="margin-top:22px">${esc(s.label || "Know the difference: four kinds of slash command")}</div>
+      <div class="stack" style="gap:12px;margin-top:14px">
+        ${s.rows.map((r) => `<div class="card row" style="gap:22px;padding:${s.rowPad || 14}px 24px;border-radius:22px;align-items:center;${r.hot ? "background:var(--card-2);border:3px solid var(--accent);" : ""}">
           <div style="width:324px;flex:none;display:flex;flex-direction:column;gap:10px;align-items:flex-start"><span class="badge ${r.hot ? "hot" : r.ghost ? "ghost" : ""}">${esc(r.badge)}</span><span class="mono" style="font-size:30px;font-weight:700;color:var(--accent-t)">${esc(r.ex)}</span></div>
           <div style="font:500 32px/1.3 var(--sans)">${fmt(r.text)}</div></div>`).join("")}
       </div>${s.banner ? `<div class="grow"></div><div class="banner">${fmt(s.banner)}</div>` : ""}`);
@@ -177,7 +177,7 @@ export const layouts = {
   /* ---- 3–7 one skill per slide ---- */
   skill(s, ctx) {
     return shell(ctx, s, `
-      ${mascot(112, s.mood || "happy", "position:absolute;right:64px;top:50px")}
+      ${mascot(112, s.mood || "happy", "position:absolute;right:var(--safe-x);top:var(--pad-top)")}
       <div class="row center gap16" style="min-height:40px">
         <div class="kicker"><span class="bar"></span>Skill ${String(s.n).padStart(2, "0")} / 05</div>
       </div>
@@ -193,12 +193,12 @@ export const layouts = {
   /* ---- 8 cheat sheet ---- */
   cheatsheet(s, ctx) {
     return shell(ctx, s, `
-      ${mascot(112, "proud", "position:absolute;right:64px;top:50px")}
+      ${mascot(112, "proud", "position:absolute;right:var(--safe-x);top:var(--pad-top)")}
       <div class="kicker"><span class="bar"></span>${esc(s.kicker)}</div>
-      <h2 class="h2" style="margin-top:26px">${fmt(s.title)}</h2>
-      <div class="row center gap16" style="margin-top:24px"><span class="badge hot">${esc(s.badge)}</span><span style="font:600 30px/1.2 var(--sans)">${esc(s.badgeNote)}</span></div>
-      <div class="stack" style="margin-top:24px;gap:12px">
-        ${s.rows.map((r) => `<div class="card row" style="padding:20px 26px;gap:24px;border-radius:22px;align-items:center">
+      <h2 class="h2" style="margin-top:20px">${fmt(s.title)}</h2>
+      <div class="row center gap16" style="margin-top:18px"><span class="badge hot">${esc(s.badge)}</span><span style="font:600 30px/1.2 var(--sans)">${esc(s.badgeNote)}</span></div>
+      <div class="stack" style="margin-top:18px;gap:10px">
+        ${s.rows.map((r) => `<div class="card row" style="padding:14px 24px;gap:24px;border-radius:22px;align-items:center">
             <div class="mono" style="width:250px;flex:none;font-size:32px;font-weight:700;color:var(--accent-t)">${esc(r.cmd)}</div>
             <div class="stack" style="gap:4px;min-width:0">
               <div style="font:700 32px/1.2 var(--sans)">${fmt(r.use)}</div>
@@ -206,27 +206,27 @@ export const layouts = {
             </div></div>`).join("")}
       </div>
       <div class="grow"></div>
-      <div class="watch" style="padding:20px 26px;font-size:30px;flex-direction:column;gap:12px;align-items:flex-start"><span class="tag">${esc(s.legendTag)}</span><div class="stack" style="gap:4px">${s.legend.map((l) => `<div>${fmt(l)}</div>`).join("")}</div></div>`);
+      <div class="watch" style="padding:14px 24px;font-size:30px;flex-direction:column;gap:8px;align-items:flex-start"><span class="tag">${esc(s.legendTag)}</span><div class="stack" style="gap:4px">${s.legend.map((l) => `<div>${fmt(l)}</div>`).join("")}</div></div>`);
   },
 
   /* ---- 9 CTA (Follow is the hero) ---- */
   cta(s, ctx) {
-    const mini = (ic, t, d) => `<div class="card stack" style="flex:1;gap:10px;padding:24px 26px;border-radius:24px">
+    const mini = (ic, t, d) => `<div class="card stack" style="flex:1;gap:8px;padding:18px 24px;border-radius:24px">
         <div class="row center gap16"><span style="width:56px;height:56px;border-radius:16px;background:var(--ink);color:#F4F1EA;display:flex;align-items:center;justify-content:center;font-size:32px">${icon(ic)}</span><span style="font:800 42px/1 var(--serif)">${esc(t)}</span></div>
         <div style="font:500 32px/1.3 var(--sans);color:var(--muted)">${esc(d)}</div></div>`;
     return shell(ctx, s, `
-      ${mascot(300, "cheer", "position:absolute;right:48px;top:96px")}
+      ${mascot(300, "cheer", "position:absolute;right:var(--safe-x);top:var(--pad-top)")}
       <div class="kicker" style="color:var(--ink)"><span class="bar"></span>${esc(s.kicker)}</div>
-      <h1 class="h1" style="margin-top:34px;font-size:108px">${s.titleLines.map(fmt).join("<br>")}</h1>
-      <div class="stack" style="margin-top:38px;gap:22px;background:var(--ink);color:#F4F1EA;border-radius:34px;padding:40px 40px 42px;box-shadow:0 12px 0 rgba(12,16,32,.28)">
+      <h1 class="h1" style="margin-top:24px;font-size:100px">${s.titleLines.map(fmt).join("<br>")}</h1>
+      <div class="stack" style="margin-top:28px;gap:16px;background:var(--ink);color:#F4F1EA;border-radius:34px;padding:30px 36px 32px;box-shadow:0 12px 0 rgba(12,16,32,.28)">
         <div class="row center gap16"><span class="label" style="font-size:28px;letter-spacing:.14em;color:#2FE3B2">${icon("follow")} ${esc(s.followLabel)}</span></div>
         <div style="font:800 96px/1 var(--serif);letter-spacing:-.01em;color:#FFFFFF">${esc(s.handle)}</div>
         <div style="font:500 34px/1.3 var(--sans);color:#C9CFE6">${esc(s.followSub)}</div>
         <div class="row center between" style="margin-top:6px"><span class="pill" style="background:#FF6A3D;color:#0C1020;border:none;font:800 46px/1 var(--sans);padding:26px 46px;font-family:var(--sans)">${icon("plus")} ${esc(s.followBtn)}</span></div>
       </div>
-      <div class="row gap16" style="margin-top:22px">${s.actions.map((a) => mini(a.icon, a.t, a.d)).join("")}</div>
+      <div class="row gap16" style="margin-top:16px">${s.actions.map((a) => mini(a.icon, a.t, a.d)).join("")}</div>
       <div class="grow"></div>
-      <p style="font:700 44px/1.2 var(--sans)">${fmt(s.ask)}</p>`);
+      <p style="font:700 40px/1.2 var(--sans)">${fmt(s.ask)}</p>`);
   },
 
   /* ---- escape hatch: write your own HTML inside the slide shell ---- */

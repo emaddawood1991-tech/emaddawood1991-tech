@@ -2,7 +2,7 @@
 import { layouts, shell, codeBlock, renderDiagram, esc, fmt, icon, mascot } from "./lib.mjs";
 
 const head = (s, { mood, maxW = 780 } = {}) => `
-  ${mood ? mascot(112, mood, "position:absolute;right:64px;top:50px") : ""}
+  ${mood ? mascot(112, mood, "position:absolute;right:var(--safe-x);top:var(--pad-top)") : ""}
   <div class="kicker"><span class="bar"></span>${esc(s.kicker || "")}</div>
   ${s.badge ? `<div style="margin-top:20px"><span class="badge hot">${esc(s.badge)}</span></div>` : ""}
   <h2 class="h2" style="margin-top:${s.badge ? 18 : 26}px;font-size:${s.titleSize || 76}px;max-width:${maxW}px">${fmt(s.title)}</h2>`;
@@ -11,8 +11,8 @@ Object.assign(layouts, {
   /** Numbered steps (3–4). steps[{title,text,code?}] */
   steps(s, ctx) {
     return shell(ctx, s, `${head(s, { mood: s.mood })}
-      <div class="stack" style="margin-top:30px;gap:16px;position:relative">
-        ${s.steps.map((st, i) => `<div class="card row" style="gap:24px;padding:22px 26px;border-radius:24px;align-items:flex-start">
+      <div class="stack" style="margin-top:22px;gap:12px;position:relative">
+        ${s.steps.map((st, i) => `<div class="card row" style="gap:24px;padding:18px 26px;border-radius:24px;align-items:flex-start">
           <div style="flex:none;width:68px;height:68px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 40px/68px var(--serif);text-align:center">${i + 1}</div>
           <div class="stack" style="gap:6px;min-width:0;flex:1"><div style="font:700 36px/1.15 var(--sans)">${fmt(st.title)}</div>
           ${st.text ? `<div style="font:500 32px/1.3 var(--sans);color:var(--muted)">${fmt(st.text)}</div>` : ""}
@@ -24,11 +24,11 @@ Object.assign(layouts, {
 
   /** Two columns: left = before/don't, right = after/do. left/right {label, items[]}; verdict banner. */
   compare(s, ctx) {
-    const col = (c, good) => `<div class="card stack" style="flex:1;gap:18px;padding:30px 26px;border-radius:26px;min-width:0;${good ? "border:3px solid var(--accent);background:var(--card-2);" : ""}">
+    const col = (c, good) => `<div class="card stack" style="flex:1;gap:14px;padding:24px 26px;border-radius:26px;min-width:0;${good ? "border:3px solid var(--accent);background:var(--card-2);" : ""}">
         <span class="badge ${good ? "hot" : "ghost"}">${icon(good ? "check" : "x")} ${esc(c.label)}</span>
         ${c.items.map((it) => `<div style="font:600 34px/1.3 var(--sans);${good ? "" : "color:var(--muted)"}">${fmt(it)}</div>`).join("")}</div>`;
     return shell(ctx, s, `${head(s, { mood: s.mood })}
-      <div class="row gap16" style="margin-top:34px;align-items:stretch">${col(s.left, false)}${col(s.right, true)}</div>
+      <div class="row gap16" style="margin-top:24px;align-items:stretch">${col(s.left, false)}${col(s.right, true)}</div>
       ${s.watch ? `<div class="watch" style="margin-top:22px"><span class="tag">${esc(s.tag || "Same")}</span><span>${fmt(s.watch)}</span></div>` : ""}
       <div class="grow"></div>
       ${s.verdict ? `<div class="banner">${fmt(s.verdict)}</div>` : ""}`);
@@ -38,8 +38,8 @@ Object.assign(layouts, {
   codefocus(s, ctx) {
     return shell(ctx, s, `${head(s, { mood: s.mood })}
       ${s.text ? `<p class="body" style="margin-top:14px;color:var(--muted)">${fmt(s.text)}</p>` : ""}
-      ${codeBlock(s.code, { style: `margin-top:26px;font-size:${s.codeSize || 34}px;line-height:1.5;padding:28px 34px` })}
-      <div class="stack" style="margin-top:22px;gap:12px">${(s.notes || []).map((n, i) => `<div class="row center gap16"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">${i + 1}</span><span style="font:600 32px/1.25 var(--sans)">${fmt(n)}</span></div>`).join("")}</div>
+      ${codeBlock(s.code, { dots: s.code.length <= 7, style: `flex:none;margin-top:18px;font-size:${s.codeSize || 34}px;line-height:${s.code.length > 7 ? 1.38 : 1.45};padding:${s.code.length > 7 ? 20 : 24}px 34px` })}
+      <div class="stack" style="margin-top:18px;gap:10px">${(s.notes || []).map((n, i) => `<div class="row center gap16"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">${i + 1}</span><span style="font:600 32px/1.25 var(--sans)">${fmt(n)}</span></div>`).join("")}</div>
       <div class="grow"></div>
       ${s.watch ? `<div class="watch"><span class="tag">${esc(s.tag || "Watch out")}</span><span>${fmt(s.watch)}</span></div>` : ""}`);
   },
@@ -56,8 +56,8 @@ Object.assign(layouts, {
   /** Checklist / mistakes / bonus tips. items[{t,d?,ok?}] (ok:false → ✗) */
   checklist(s, ctx) {
     return shell(ctx, s, `${head(s, { mood: s.mood })}
-      <div class="stack" style="margin-top:30px;gap:14px">
-        ${s.items.map((it) => { const ok = it.ok !== false; return `<div class="card row" style="gap:24px;padding:28px 28px;border-radius:24px;align-items:center">
+      <div class="stack" style="margin-top:22px;gap:10px">
+        ${s.items.map((it) => { const ok = it.ok !== false; return `<div class="card row" style="gap:24px;padding:18px 26px;border-radius:24px;align-items:center">
           <span style="flex:none;width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:34px;background:${ok ? "var(--accent)" : "var(--ink)"};color:${ok ? "var(--on-accent)" : "#F4F1EA"}">${icon(ok ? "check" : "x")}</span>
           <div class="stack" style="gap:4px;min-width:0"><div style="font:700 36px/1.2 var(--sans)">${fmt(it.t)}</div>${it.d ? `<div style="font:500 32px/1.3 var(--sans);color:var(--muted)">${fmt(it.d)}</div>` : ""}</div></div>`; }).join("")}
       </div>

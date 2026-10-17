@@ -11,6 +11,6 @@ Accent text must use `--accent-t` (contrast-safe); text on accent fills uses `--
 
 **Mascot** — "Agentoon bot": rounded-square head, mint/coral eyes, antenna, ear bolts, small body. Nine moods: happy, wow (hook), think (planning), wink, focus (review), cheer (CTA, arms up), dizzy (loop), oops (debug), proud (summary). Colors follow theme vars (`--m-head --m-screen --m-eye --m-body --m-ear`). Large on hook/CTA (260–300px), 112px in headers (so the expression reads on a phone), 38px in footer.
 
-**Composition rules** — alternate dark/paper/accent backgrounds; vary diagram shape (fan-out, staircase, flow + grid, cycle, timeline); keep a 24px gap above the footer; never fill a slide edge to edge.
+**Composition rules** — alternate dark/paper/accent backgrounds; vary diagram shape (fan-out, staircase, flow + grid, cycle, timeline); keep a 24px gap above the footer; never fill a slide edge to edge, and keep everything essential inside the safe area.
 
-**Instagram** — 1080×1350 (4:5). Export PNG at scale 1.
+**Instagram** — 1080×1350 (4:5). Export PNG at scale 1. Safe area: 120px top/bottom, 70px sides (`--safe-top/--safe-bottom/--safe-x`); the footer lives at the safe bottom; header mascots sit at `right:var(--safe-x);top:var(--pad-top)`. Reflow content to fit; never scale the slide down.

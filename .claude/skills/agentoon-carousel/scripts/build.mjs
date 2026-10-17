@@ -45,7 +45,7 @@ const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=1080">
 <title>${esc(cfg.title)} — Agentoon.ai carousel</title>
-<link rel="stylesheet" href="assets/base.css">${extraCss ? '\n<link rel="stylesheet" href="assets/extra.css">' : ""}
+<link rel="stylesheet" href="assets/base.css">${cfg.legacyMargins ? "\n<style>:root{--safe-top:72px;--safe-bottom:48px;--pad-top:72px;--pad-bottom:150px}</style>" : ""}${extraCss ? '\n<link rel="stylesheet" href="assets/extra.css">' : ""}
 </head><body>
 ${sprite}
 <main class="deck">
