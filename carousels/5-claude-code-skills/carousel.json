@@ -1,0 +1,98 @@
+{
+  "slug": "5-claude-code-skills",
+  "title": "5 Claude Code Skills That Save You Hours",
+  "handle": "@agentoon.ai",
+  "slides": [
+    {
+      "layout": "hook", "theme": "dark",
+      "kicker": "Claude Code · Skills", "big": "5",
+      "title": "5 Claude Code *skills* that save you *hours*",
+      "sub": "Built into Claude Code. One slash command each.",
+      "chips": ["/simplify", "/code-review", "/batch", "/loop", "/debug"]
+    },
+    {
+      "layout": "concept", "theme": "paper",
+      "kicker": "The idea",
+      "title": "Stop retyping the same *prompts.*",
+      "chips": ["review this diff", "why is this failing?", "rename across 40 files", "check the deploy again"],
+      "lede": "A *skill* is a saved playbook. Type `/name` and Claude follows it.",
+      "code": [
+        "---",
+        "{{k:name:}} fix-issue",
+        "{{k:description:}} Fix a GitHub issue",
+        "---",
+        "Fix GitHub issue {{f:$ARGUMENTS}}",
+        "following our coding standards.",
+        "{{p:>}} {{c:/fix-issue}} {{s:123}}"
+      ]
+    },
+    {
+      "layout": "skill", "theme": "dark", "n": 1,
+      "cmd": "/simplify",
+      "title": "Tidy your changes *before* anyone reviews them.",
+      "text": "Reviews your changed code for cleanup opportunities, then applies the fixes.",
+      "diagram": "simplify",
+      "code": ["{{p:>}} {{c:/simplify}}", "{{p:>}} {{c:/simplify}} {{k:src/api}}  {{m:# aim at a path}}"],
+      "tag": "Not a bug hunt", "watch": "`/simplify` does not look for correctness bugs. Use `/code-review` for that."
+    },
+    {
+      "layout": "skill", "theme": "paper", "n": 2, "flip": true,
+      "cmd": "/code-review",
+      "title": "A second pair of eyes, on *demand.*",
+      "text": "Reviews your diff, a PR number, a branch, or a path for correctness bugs.",
+      "diagram": "review",
+      "code": ["{{p:>}} {{c:/code-review}} {{f:high}} {{f:--fix}}", "{{p:>}} {{c:/code-review}} {{k:1234}} {{f:--comment}}"],
+      "tag": "Tip", "watch": "`/review` is an alias. `ultra` runs a deeper review in the cloud."
+    },
+    {
+      "layout": "skill", "theme": "mint", "n": 3,
+      "cmd": "/batch",
+      "title": "One instruction. *Many* parallel agents.",
+      "text": "Splits a large change into independent units and works on them in parallel.",
+      "diagram": "batch",
+      "code": ["{{p:>}} {{c:/batch}} migrate src/ from JavaScript", "     to TypeScript"],
+      "tag": "Needs git", "watch": "Needs a git repository (or a `WorktreeCreate` hook). Review the plan before approving."
+    },
+    {
+      "layout": "skill", "theme": "dark", "n": 4, "flip": true,
+      "cmd": "/loop",
+      "title": "Let Claude *babysit* it for you.",
+      "text": "Runs a prompt again and again on an interval. Skip the interval and Claude paces itself.",
+      "diagram": "loop",
+      "code": ["{{p:>}} {{c:/loop}} {{f:5m}} check if the deploy finished"],
+      "tag": "Stays open", "watch": "It runs only while your session stays open."
+    },
+    {
+      "layout": "skill", "theme": "paper", "n": 5,
+      "cmd": "/debug",
+      "title": "Ask Claude to read its *own logs.*",
+      "text": "Turns on debug logging for this session, then troubleshoots from the log.",
+      "diagram": "debug",
+      "code": ["{{p:>}} {{c:/debug}} the build hangs after I save"],
+      "tag": "Timing", "watch": "Logging is off by default. `/debug` captures from that moment forward, not before."
+    },
+    {
+      "layout": "cheatsheet", "theme": "dark",
+      "kicker": "Save this", "title": "Your *cheat sheet.*",
+      "rows": [
+        { "cmd": "/simplify", "use": "Cleanup after a feature works", "note": "Cleanup only, not bugs" },
+        { "cmd": "/code-review", "use": "Review a diff, PR, branch or path", "note": "Add `--fix` or `--comment`" },
+        { "cmd": "/batch", "use": "Big, repeatable changes", "note": "Parallel agents, git needed" },
+        { "cmd": "/loop", "use": "Check on something repeatedly", "note": "Session must stay open" },
+        { "cmd": "/debug", "use": "Strange session behavior", "note": "Logs start when you run it" }
+      ],
+      "source": "Source: code.claude.com/docs · Commands vary by version"
+    },
+    {
+      "layout": "cta", "theme": "coral",
+      "kicker": "Your turn",
+      "titleLines": ["Save it.", "*Share* it.", "Follow."],
+      "actions": [
+        { "icon": "bookmark", "t": "Save", "d": "For your next refactor" },
+        { "icon": "send", "t": "Share", "d": "Send it to a dev friend" },
+        { "icon": "plus", "t": "Follow @agentoon.ai", "d": "New AI tool tutorials" }
+      ],
+      "ask": "Which skill will you try first?"
+    }
+  ]
+}
