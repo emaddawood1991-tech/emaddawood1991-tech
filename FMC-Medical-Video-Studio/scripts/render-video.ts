@@ -4,6 +4,7 @@
  * Without --final (or while the approval gate is closed) a watermarked, SILENT preview is produced.
  * A FINAL render needs: Arabic QC clean, human approvals + hash lock, real generated narration matching the script hash.
  */
+import {enforceRenderProps} from '../src/lib/audioPolicy';
 import {execFileSync, spawnSync} from 'node:child_process';
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {arg, BROWSER, flag, loadContent, p, scriptHash, ffprobeDuration} from '../lib/common';
@@ -37,16 +38,19 @@ if (wantFinal) {
 const ff = p('assets', 'footage', slug, `footage-${format === 'reel' ? 'portrait' : 'landscape'}.json`);
 const footage = existsSync(ff) ? FootageSchema.parse(JSON.parse(readFileSync(ff, 'utf8'))) : null;
 const props: VideoProps = {
-  content: c, manifest, footage, preview, label, visemes: existsSync(p('assets', 'audio', slug, 'visemes.json')) ? JSON.parse(readFileSync(p('assets', 'audio', slug, 'visemes.json'), 'utf8')) : null,
+  // `label` is intentionally NOT passed to the composition: no production-status banner is ever drawn on screen (status goes to the QC report).
+  content: c, manifest, footage, preview, label: null, visemes: existsSync(p('assets', 'audio', slug, 'visemes.json')) ? JSON.parse(readFileSync(p('assets', 'audio', slug, 'visemes.json'), 'utf8')) : null,
   // music + effects are mixed in the dedicated audio stage (scripts/mix-audio.ts); the render carries narration only
   music: null,
   sfx: null,
 };
+props.music = null; props.sfx = null;
+const enforced = enforceRenderProps(props); // audio policy gate: no music/sfx may enter the Remotion render
 const outDir = p('output', slug);
 mkdirSync(`${outDir}/qc`, {recursive: true});
 const propsFile = p('.tmp', `${slug}-${format}-props.json`);
 mkdirSync(p('.tmp'), {recursive: true});
-writeFileSync(propsFile, JSON.stringify(props));
+writeFileSync(propsFile, JSON.stringify(enforced));
 const out = `${outDir}/${slug}-${format}${preview ? '-PREVIEW-silent' : label ? '-DRAFT-voiced' : ''}.mp4`;
 
 const r = spawnSync('npx', ['remotion', 'render', 'src/index.ts', format === 'reel' ? 'Reel' : 'TV', out, `--props=${propsFile}`, '--codec=h264', '--audio-codec=aac', '--gl=angle', `--browser-executable=${BROWSER}`, '--concurrency=4', '--crf=18'], {cwd: p(), stdio: 'inherit'});

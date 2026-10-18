@@ -1,21 +1,22 @@
 /**
  * AUDIO-ONLY remix. The video stream is copied bit-for-bit (no re-encode), so visuals cannot change.
  *   npm run audio:mix -- --video <mp4> --out <mp4> [--slug lower-back-pain]
- * Chain: per-scene voice levelling → gentle compression → original piano/pad underscore (fade 2s in / 3s out)
- *        → sidechain ducking under narration → faint air swells at scene changes → loudness to -16 LUFS, -1.5 dBTP ceiling.
+ * Chain: per-scene voice levelling → gentle compression → original soft pad underscore (no piano) (fade 2s in / 3s out)
+ *        → sidechain ducking under narration → (NO scene-change effects unless policy + --sfx-approval) → loudness to -16 LUFS, -1.5 dBTP ceiling.
  */
-import {execFileSync} from 'node:child_process';
+import {execFileSync, spawnSync} from 'node:child_process';
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {arg, flag, ffprobeDuration, loadContent, p} from '../lib/common';
 import {loudness} from '../lib/audio-metrics';
 import {computeTimeline, FPS, totalFrames} from '../src/lib/timeline';
 import {ManifestSchema} from '../src/lib/schema';
+import {assertSfxAllowed, FMC_AUDIO_POLICY, FMC_AUDIO_TARGETS} from '../src/lib/audioPolicy';
 
 const slug = arg('slug', 'lower-back-pain')!;
 const video = arg('video', p('output', slug, `${slug}-reel-DRAFT-voiced.mp4`))!;
 const out = arg('out', p('output', 'FMC_Lower_Back_Pain_Final_Audio.mp4'))!;
 const NARR_LUFS = -18, FINAL_LUFS = -16;
-const MUSIC_LUFS = parseFloat(arg('music-lufs', '-22.5')!);
+const MUSIC_LUFS = parseFloat(arg('music-lufs', String(FMC_AUDIO_TARGETS.musicLufs))!);
 const NO_SFX = flag('no-sfx');
 const tmp = p('.tmp', 'mix'); mkdirSync(tmp, {recursive: true});
 const ff = (...a: string[]) => execFileSync('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', ...a], {stdio: ['ignore', 'inherit', 'inherit']});
@@ -46,8 +47,8 @@ const narr = `${tmp}/narr.wav`;
 ff('-i', narrRaw, '-af', 'acompressor=threshold=-22dB:ratio=2:attack=25:release=300:makeup=1.5dB', narr);
 
 // 2) music bed (one continuous track) with 2 s fade-in / 3 s fade-out
-const musicSrc = p(arg('music', 'assets/audio/music/fmc-ambient-piano.wav')!);
-if (!existsSync(musicSrc)) throw new Error('Run: python3 scripts/audio/compose_music.py assets/audio/music/fmc-ambient-piano.wav 86');
+const musicSrc = p(arg('music', 'assets/audio/music/fmc-ambient-pads-v6.wav')!);
+if (!existsSync(musicSrc)) throw new Error('Run: python3 scripts/audio/compose_pads_v6.py assets/audio/music/fmc-ambient-pads-v6.wav');
 const mRaw = `${tmp}/music_raw.wav`;
 ff('-i', musicSrc, '-af', `aresample=48000,atrim=0:${total},asetpts=N/SR/TB`, mRaw);
 const mGain = MUSIC_LUFS - loudness(mRaw).lufs;
@@ -57,6 +58,9 @@ ff('-i', mRaw, '-af', `volume=${mGain.toFixed(2)}dB,afade=t=in:st=0:d=2,afade=t=
 // 3) OPTIONAL transition textures (Version B only). One soft airy sound at a time, ~30 dB below the narration, hand-picked times.
 //    No file / no times / --no-sfx  =>  digital silence (Version A).
 const SFX_FILE = arg('sfx-file');
+// POLICY GATE: any effect stem needs the policy flag enabled AND an explicit approval id. Default = refuse.
+if (SFX_FILE && !NO_SFX) assertSfxAllowed('transition', arg('sfx-approval'));
+if (!FMC_AUDIO_POLICY.backgroundMusicEnabled && arg('music')) throw new Error('FMC audio policy: background music is disabled.');
 const SFX_TIMES = (arg('sfx-times', '') ?? '').split(',').filter(Boolean).map(parseFloat).filter((t) => t < total - 1.5);
 const REL_DB = parseFloat(arg('sfx-rel-db', '-30')!);
 const sfx = `${tmp}/sfx.wav`;
@@ -99,3 +103,9 @@ if (STEMS) {
 mkdirSync(p('output'), {recursive: true});
 ff('-i', video, '-i', fin, '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-af', 'alimiter=limit=0.7:attack=3:release=60:level=disabled', '-c:a', 'aac', '-b:a', '256k', '-ar', '48000', '-ac', '2', '-t', total.toFixed(3), '-movflags', '+faststart', out);
 console.log(`stems → ${tmp}\nwrote ${out}\nnarration gain/music gain applied: music ${mGain.toFixed(1)} dB, final ${g.toFixed(1)} dB`);
+
+// 7) automatic post-mix audio QC (policy + loudness + clipping + transients). Reports; a human still has to listen.
+{
+  const qc = spawnSync('npx', ['tsx', p('scripts', 'audio-qc.ts'), '--video', out, ...(STEMS ? ['--stems', STEMS] : []), '--slug', slug, '--out', out.replace(/\.mp4$/, '.audio-qc.md')], {stdio: 'inherit', cwd: p()});
+  if (qc.status !== 0) console.error('\nAUDIO QC FAILED — see the report above. Do not publish until the errors are resolved.');
+}

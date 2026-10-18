@@ -74,3 +74,8 @@ The picture render never carries status text; review status lives in `output/V2/
 - Commands: `npm run render:v5` (picture), `npm run audio:mix:v5` (music/stems/final), `npm run anim:qc` (foot sliding / joint-snap check).
 Limits: stylised procedural character (not a sculpted film asset); lip sync is amplitude/spectrum driven; gesture timing is proportional, not word-aligned.
 The Agentoon.ai kit (robot.js etc.) was not available in this environment, so none of its code or architecture was used or studied.
+
+
+## Permanent quality rules (read first)
+See `docs/FMC_PRODUCTION_STANDARDS.md`, `CLAUDE.md` and `FMC_FUTURE_VIDEO_IMPROVEMENTS.md`. Audio is narration + one soft music bed only (policy enforced in `src/lib/audioPolicy.tsx`);
+run `npm run qc:all` (plus `audio:qc` / `standards:qc` with `--video`) before any export.

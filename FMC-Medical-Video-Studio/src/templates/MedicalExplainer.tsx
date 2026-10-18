@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Sequence, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {VideoProps} from '../lib/schema';
 import {computeTimeline, FPS, OVERLAP, totalFrames} from '../lib/timeline';
 import {BG_GRADIENT, makeLayout} from '../styles/theme';
@@ -7,6 +7,7 @@ import {loadFonts} from '../styles/fonts';
 import {SceneFade} from '../components/SceneTransitions';
 import {ArabicText} from '../components/ArabicTitles';
 import {LogoBug} from '../components/FMCBranding';
+import {NarrationAudio} from '../lib/audioPolicy';
 import {OpeningScene} from '../scenes/OpeningScene';
 import {AnatomyScene} from '../scenes/AnatomyScene';
 import {SymptomsScene} from '../scenes/SymptomsScene';
@@ -29,16 +30,6 @@ export const timelineFor = (p: VideoProps) => computeTimeline(p.content, p.manif
 export const durationFor = (p: VideoProps) => totalFrames(timelineFor(p));
 
 /** Music bed ducks under narration so the voice always sits on top. */
-const musicVolume = (windows: [number, number][], base = 0.16, ducked = 0.06) => (f: number) => {
-  for (const [a, b] of windows) {
-    if (f >= a - 12 && f <= b + 12) {
-      const edge = Math.min(f - (a - 12), b + 12 - f, 12) / 12;
-      return base + (ducked - base) * Math.max(0, Math.min(1, edge));
-    }
-  }
-  return base;
-};
-
 export const MedicalExplainer: React.FC<VideoProps> = (props) => {
   loadFonts();
   const {width, height} = useVideoConfig();
@@ -65,39 +56,15 @@ export const MedicalExplainer: React.FC<VideoProps> = (props) => {
         );
       })}
 
-      {/* narration (real generated audio only) */}
-      {tl.map((item) =>
-        item.audioFile ? (
-          <Sequence key={`a-${item.id}`} from={item.from + item.audioFrom} durationInFrames={item.audioFrames + 6} layout="none">
-            <Audio src={staticFile(item.audioFile)} volume={1} />
-          </Sequence>
-        ) : null,
-      )}
-      {props.music && <Audio src={staticFile(props.music)} volume={musicVolume(windows)} loop />}
-      {props.sfx &&
-        tl.map((item, i) =>
-          i > 0 ? (
-            <Sequence key={`s-${item.id}`} from={item.from} durationInFrames={FPS * 2} layout="none">
-              <Audio src={staticFile(props.sfx!)} volume={0.35} />
-            </Sequence>
-          ) : null,
-        )}
+      {/* AUDIO POLICY (src/lib/audioPolicy.tsx): narration is the only audio rendered here. Music is mixed in post;
+          all effect categories are disabled by policy and have no render path here. */}
+      {tl.map((item) => (item.audioFile ? <NarrationAudio key={`a-${item.id}`} file={item.audioFile} from={item.from + item.audioFrom} frames={item.audioFrames} /> : null))}
 
-      {(props.preview || props.label) && (
-        <div style={{position: 'absolute', left: 0, right: 0, bottom: layout.portrait ? 40 : 20, display: 'flex', justifyContent: 'center', pointerEvents: 'none'}}>
-          <div style={{fontFamily: 'monospace', fontSize: layout.portrait ? 26 : 20, letterSpacing: 2, color: '#fff', background: 'rgba(190,30,45,0.85)', padding: '8px 18px', borderRadius: 6}}>
-            {props.label ?? 'PREVIEW · NO VOICEOVER · NOT FOR PUBLICATION'}
-          </div>
-        </div>
-      )}
+      {/* No on-screen production-status banner. Review/draft status lives in the internal QC report only. */}
       <LogoBug size={layout.portrait ? 150 : 130} top={layout.portrait ? 54 : 40} right={layout.portrait ? 56 : 60} opacity={logoOpacity} />
-      <ProgressHairline frame={frame} total={total} />
     </AbsoluteFill>
   );
 };
 
-const ProgressHairline: React.FC<{frame: number; total: number}> = ({frame, total}) => (
-  <div style={{position: 'absolute', left: 0, bottom: 0, height: 4, width: `${(frame / total) * 100}%`, background: 'rgba(0,166,166,0.8)'}} />
-);
 
 export {ArabicText, OVERLAP};

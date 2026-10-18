@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, OffthreadVideo, staticFile} from 'remotion';
+import {footageMuted} from '../../lib/audioPolicy';
 import {AnimatedTitle, ArabicText, InfoCard} from '../../components/ArabicTitles';
 import {AnatomyViewer} from '../../components/AnatomyViewer';
 import {EducationalTag, HUDBackdrop, HUDFrame} from '../../components/MedicalHUD';
@@ -36,7 +37,7 @@ export const TreatmentScene: React.FC<SceneProps> = ({scene, layout, item, foota
     return (
       <AbsoluteFill>
         <AbsoluteFill>
-          <OffthreadVideo src={staticFile(footage.file)} muted style={{width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.85) contrast(1.05)'}} />
+          <OffthreadVideo src={staticFile(footage.file)} muted={footageMuted()} style={{width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.85) contrast(1.05)'}} />
         </AbsoluteFill>
         <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(16,42,67,0.75) 0%, rgba(18,59,102,0.35) 45%, rgba(16,42,67,0.85) 100%)'}} />
         {title}

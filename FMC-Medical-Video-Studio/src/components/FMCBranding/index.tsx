@@ -14,9 +14,26 @@ export const NameBug: React.FC<{size: number}> = ({size}) => (
   </div>
 );
 
-/** Original logo (unmodified file) on a white plate, top-right corner. */
+/** Corner logo for every scene: the original, unmodified file on a soft glass seal (see LogoMark). Replaced the square white sticker plate. */
 export const LogoBug: React.FC<{size: number; top: number; right: number; opacity: number}> = ({size, top, right, opacity}) => (
-  <div style={{position: 'absolute', top, right, width: size, height: size, borderRadius: size * 0.2, background: COLORS.white, padding: size * 0.06, boxShadow: '0 10px 30px rgba(0,0,0,0.35)', opacity}}>
+  <LogoMark size={size} top={top} right={right} opacity={opacity} variant="seal" />
+);
+
+/**
+ * Elegant logo placement variants (the supplied PNG is always shown untouched; only the surface behind it changes):
+ *  - "seal"  (dark scenes) : soft circular glass seal — near-opaque warm white, hairline turquoise ring, shallow shadow. Reads as a brand seal, not a sticker.
+ *  - "bare"  (light scenes): the transparent PNG directly on the scene, no plate.
+ * Placement: top-right, inside the Instagram-safe corner (right ≥ 56 px, top ≥ 54 px).
+ */
+export const LogoMark: React.FC<{size: number; top: number; right: number; opacity?: number; variant?: 'seal' | 'bare'}> = ({size, top, right, opacity = 1, variant = 'seal'}) => (
+  <div
+    style={{
+      position: 'absolute', top, right, width: size, height: size, opacity,
+      ...(variant === 'seal'
+        ? {borderRadius: '50%', background: 'rgba(255,255,255,0.94)', padding: size * 0.09, boxShadow: '0 6px 18px rgba(8,24,44,0.28)', border: `1.5px solid ${COLORS.turquoise}55`}
+        : {}),
+    }}
+  >
     <Img src={staticFile('logo/fmc-original-logo.png')} style={{width: '100%', height: '100%', objectFit: 'contain'}} />
   </div>
 );

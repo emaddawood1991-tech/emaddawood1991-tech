@@ -1,9 +1,10 @@
 import React, {useMemo} from 'react';
-import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import {useThree} from '@react-three/fiber';
 import * as THREE from 'three';
 import {BG_GRADIENT} from '../styles/theme';
+import {NarrationAudio} from '../lib/audioPolicy';
 import {loadFonts} from '../styles/fonts';
 import {HUDBackdrop} from '../components/MedicalHUD';
 import {Doctor} from '../components/Doctor/Doctor';
@@ -68,7 +69,7 @@ export const CharacterPreview: React.FC<PreviewProps> = ({visemes}) => {
       </ThreeCanvas>
       <LogoBug size={150} top={54} right={56} opacity={1} />
       <div style={{position: 'absolute', top: 230, width: '100%'}}><ArabicText size={62} weight={800} display>مقدم تعليمي افتراضي</ArabicText></div>
-      {visemes && <Sequence from={18} layout="none"><Audio src={staticFile('audio/lower-back-pain/anatomy.wav')} /></Sequence>}
+      {visemes && <NarrationAudio file="audio/lower-back-pain/anatomy.wav" from={18} frames={340} />}
     </AbsoluteFill>
   );
 };

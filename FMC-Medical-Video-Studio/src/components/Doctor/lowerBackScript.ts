@@ -1,3 +1,4 @@
+import {CAM} from './cameraPresets';
 import * as THREE from 'three';
 import type {Content, SceneId} from '../../lib/schema';
 import type {TimelineItem} from '../../lib/timeline';
@@ -132,15 +133,7 @@ export const buildPerformance = (tl: TimelineItem[], content: Content, visemes: 
   return {clips, walk, visemes: vis, restX: REST_X, restZ: 0};
 };
 
-/** Camera presets (vertical FOV 34°, 1080×1920). Frame heights: WIDE 3.7 m, BESIDE 4.0 m, CLOSE 2.1 m, ANAT 1.6 m. */
-const CAM = {
-  WIDE: {pos: [0.0, 1.4, 6.0] as V3, target: [-0.08, 1.2, 0] as V3, fov: 34},            // doctor ≈ 47 % of frame height
-  BESIDE: {pos: [0.06, 1.45, 6.4] as V3, target: [0.06, 1.3, 0] as V3, fov: 34},          // doctor ≈ 43 %
-  CLOSE: {pos: [-0.04, 1.32, 3.5] as V3, target: [-0.12, 1.24, 0] as V3, fov: 34},        // waist-up
-  ANAT: {pos: [0.45, 1.25, 2.6] as V3, target: [0.45, 1.22, -0.1] as V3, fov: 34},        // anatomy is the subject
-  L45: {pos: [0.44, 1.0, 1.95] as V3, target: [0.44, 0.97, -0.1] as V3, fov: 32},
-  END: {pos: [-0.2, 1.7, 3.2] as V3, target: [-0.26, 2.0, 0] as V3, fov: 32},
-};
+// Camera presets live in cameraPresets.ts (with enforced per-shot framing standards).
 export const buildCamera = (tl: TimelineItem[], content?: Content): CamKey[] => {
   const o = at(tl, 'opening'), an = at(tl, 'anatomy'), sy = at(tl, 'symptoms'), tr = at(tl, 'treatment'), fm = at(tl, 'fmc'), cl = at(tl, 'closing');
   const e = (t: TimelineItem) => t.from + t.duration;

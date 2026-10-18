@@ -1,11 +1,12 @@
 import React, {useMemo} from 'react';
-import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame, useVideoConfig, interpolate} from 'remotion';
+import {AbsoluteFill, Sequence, useCurrentFrame, useVideoConfig, interpolate} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import {useThree} from '@react-three/fiber';
 import * as THREE from 'three';
 import type {VideoProps} from '../lib/schema';
 import {computeTimeline, totalFrames} from '../lib/timeline';
 import {BG_GRADIENT, makeLayout} from '../styles/theme';
+import {NarrationAudio} from '../lib/audioPolicy';
 import {loadFonts} from '../styles/fonts';
 import {Doctor} from '../components/Doctor/Doctor';
 import {evaluate} from '../components/Doctor/engine';
@@ -168,11 +169,7 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
 
       <LogoBug size={150} top={54} right={56} opacity={frame < cl.from ? 1 : Math.max(0, 1 - (frame - cl.from) / 10)} />
       {tl.map((item) =>
-        item.audioFile ? (
-          <Sequence key={`a-${item.id}`} from={item.from + item.audioFrom} durationInFrames={item.audioFrames + 6} layout="none">
-            <Audio src={staticFile(item.audioFile)} volume={1} />
-          </Sequence>
-        ) : null,
+        item.audioFile ? <NarrationAudio key={`a-${item.id}`} file={item.audioFile} from={item.from + item.audioFrom} frames={item.audioFrames} /> : null,
       )}
       {frameInScene(an) < -1 ? null : null}
     </AbsoluteFill>
