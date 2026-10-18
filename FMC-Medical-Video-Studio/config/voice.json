@@ -1,1 +1,5 @@
-{"approvedProvider": null, "approvedBy": null, "approvedAt": null}
+{
+  "approvedProvider": "google",
+  "approvedBy": "Emad (instructed in chat)",
+  "approvedAt": "2026-10-18T09:17:59.616Z"
+}

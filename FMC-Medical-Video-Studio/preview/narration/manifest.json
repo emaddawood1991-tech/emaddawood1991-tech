@@ -1,0 +1,38 @@
+{
+  "provider": "google",
+  "model": "gemini-3.8-flash-tts",
+  "voice": "Charon",
+  "scriptHash": "e3578fed0067c8c3b3956cadbf1a0435cb58a857d9d10df3b6acbfa2770ad7ea",
+  "scenes": [
+    {
+      "id": "opening",
+      "file": "audio/lower-back-pain/opening.wav",
+      "durationSec": 3.807417
+    },
+    {
+      "id": "anatomy",
+      "file": "audio/lower-back-pain/anatomy.wav",
+      "durationSec": 14.807417
+    },
+    {
+      "id": "symptoms",
+      "file": "audio/lower-back-pain/symptoms.wav",
+      "durationSec": 18.167417
+    },
+    {
+      "id": "treatment",
+      "file": "audio/lower-back-pain/treatment.wav",
+      "durationSec": 15.607417
+    },
+    {
+      "id": "fmc",
+      "file": "audio/lower-back-pain/fmc.wav",
+      "durationSec": 18.887417
+    },
+    {
+      "id": "closing",
+      "file": "audio/lower-back-pain/closing.wav",
+      "durationSec": 4.247417
+    }
+  ]
+}

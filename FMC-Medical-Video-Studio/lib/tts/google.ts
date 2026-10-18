@@ -13,11 +13,12 @@ export const listGoogleTTSModels = async () => {
   return (j.models ?? []).filter((m: any) => /tts/i.test(m.name)).map((m: any) => m.name.replace('models/', '') as string);
 };
 
-const STYLE = 'Read the following Modern Standard Arabic text as a professional male medical narrator: calm, warm, confident, clear, natural pacing, no exaggeration. Pronounce every diacritic exactly as written. Text:';
+// Style prompts made the 3.x models read/pace unnaturally (8 words took 18 s), so none is sent unless GEMINI_TTS_STYLE is set.
+const _UNUSED_STYLE = 'Read the following Modern Standard Arabic text as a professional male medical narrator: calm, warm, confident, clear, natural pacing, no exaggeration. Pronounce every diacritic exactly as written. Text:';
 
 export const googleTTS = async (text: string, outFile: string) => {
   const key = needEnv('GEMINI_API_KEY', 'Google AI Studio — https://aistudio.google.com/apikey');
-  const model = process.env.GEMINI_TTS_MODEL || 'gemini-2.5-flash-preview-tts';
+  const model = process.env.GEMINI_TTS_MODEL || 'gemini-3.8-flash-tts';
   const voice = process.env.GEMINI_TTS_VOICE || 'Charon';
   let res: Response = undefined as unknown as Response;
   for (let attempt = 0; attempt < 6; attempt++) {
@@ -25,7 +26,7 @@ export const googleTTS = async (text: string, outFile: string) => {
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'x-goog-api-key': key},
     body: JSON.stringify({
-      contents: [{parts: [{text: `${STYLE}\n${text}`}]}],
+      contents: [{parts: [{text: process.env.GEMINI_TTS_STYLE ? `${process.env.GEMINI_TTS_STYLE}\n${text}` : text}]}],
       generationConfig: {responseModalities: ['AUDIO'], speechConfig: {voiceConfig: {prebuiltVoiceConfig: {voiceName: voice}}}},
     }),
   });

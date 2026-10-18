@@ -71,6 +71,8 @@ export const VideoPropsSchema = z.object({
   /** Preview renders have no narration and are watermarked; never publishable. */
   preview: z.boolean(),
   /** Relative paths inside assets/ (original ambient bed + soft whoosh). Null = none. */
+  /** Watermark text for non-final renders (e.g. voiced draft awaiting pronunciation approval). */
+  label: z.string().nullable().default(null),
   music: z.string().nullable(),
   sfx: z.string().nullable(),
 });

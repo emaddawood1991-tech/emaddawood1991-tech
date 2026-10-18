@@ -80,10 +80,10 @@ export const MedicalExplainer: React.FC<VideoProps> = (props) => {
           ) : null,
         )}
 
-      {props.preview && (
+      {(props.preview || props.label) && (
         <div style={{position: 'absolute', left: 0, right: 0, bottom: layout.portrait ? 40 : 20, display: 'flex', justifyContent: 'center', pointerEvents: 'none'}}>
           <div style={{fontFamily: 'monospace', fontSize: layout.portrait ? 26 : 20, letterSpacing: 2, color: '#fff', background: 'rgba(190,30,45,0.85)', padding: '8px 18px', borderRadius: 6}}>
-            PREVIEW · NO VOICEOVER · NOT FOR PUBLICATION
+            {props.label ?? 'PREVIEW · NO VOICEOVER · NOT FOR PUBLICATION'}
           </div>
         </div>
       )}

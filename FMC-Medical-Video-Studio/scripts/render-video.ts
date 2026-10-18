@@ -13,17 +13,20 @@ import {computeTimeline} from '../src/lib/timeline';
 
 const slug = arg('slug', 'lower-back-pain')!;
 const format = (arg('format', 'reel') as 'reel' | 'tv');
-const wantFinal = flag('final');
+const draft = flag('draft'); // voiced draft: real narration, but human approvals still pending
+const wantFinal = flag('final') || draft;
 const c = loadContent(slug);
 
 const errs = runArabicQC(c).filter((f) => f.level === 'error');
 if (errs.length) { console.error(errs.map((e) => `${e.scene}/${e.field}: ${e.message}`).join('\n')); throw new Error('Arabic QC errors: refusing to render.'); }
 
 let preview = !wantFinal;
+let label: string | null = null;
 let manifest = null;
 if (wantFinal) {
   const gate = finalExportGate(c);
-  if (!gate.ok) throw new Error(`FINAL export blocked. Missing approvals: ${gate.missing.join(', ')}. Use --preview semantics (omit --final) for a visual-only draft.`);
+  if (draft) label = gate.ok ? null : 'VOICED DRAFT · PRONUNCIATION & SCRIPT REVIEW PENDING · NOT FOR PUBLICATION';
+  if (!gate.ok && !draft) throw new Error(`FINAL export blocked. Missing approvals: ${gate.missing.join(', ')}. Use --preview semantics (omit --final) for a visual-only draft.`);
   const mf = p('assets', 'audio', slug, 'manifest.json');
   if (!existsSync(mf)) throw new Error('No voiceover manifest. Run: npm run voice:generate -- --slug ' + slug);
   manifest = ManifestSchema.parse(JSON.parse(readFileSync(mf, 'utf8')));
@@ -33,7 +36,7 @@ if (wantFinal) {
 const ff = p('assets', 'footage', slug, `footage-${format === 'reel' ? 'portrait' : 'landscape'}.json`);
 const footage = existsSync(ff) ? FootageSchema.parse(JSON.parse(readFileSync(ff, 'utf8'))) : null;
 const props: VideoProps = {
-  content: c, manifest, footage, preview,
+  content: c, manifest, footage, preview, label,
   music: existsSync(p('assets', 'audio', 'music', 'ambient-bed.mp3')) ? 'audio/music/ambient-bed.mp3' : null,
   sfx: existsSync(p('assets', 'audio', 'sfx', 'whoosh.mp3')) ? 'audio/sfx/whoosh.mp3' : null,
 };
@@ -42,7 +45,7 @@ mkdirSync(`${outDir}/qc`, {recursive: true});
 const propsFile = p('.tmp', `${slug}-${format}-props.json`);
 mkdirSync(p('.tmp'), {recursive: true});
 writeFileSync(propsFile, JSON.stringify(props));
-const out = `${outDir}/${slug}-${format}${preview ? '-PREVIEW-silent' : ''}.mp4`;
+const out = `${outDir}/${slug}-${format}${preview ? '-PREVIEW-silent' : label ? '-DRAFT-voiced' : ''}.mp4`;
 
 const r = spawnSync('npx', ['remotion', 'render', 'src/index.ts', format === 'reel' ? 'Reel' : 'TV', out, `--props=${propsFile}`, '--codec=h264', '--audio-codec=aac', '--gl=angle', `--browser-executable=${BROWSER}`, '--concurrency=4', '--crf=18'], {cwd: p(), stdio: 'inherit'});
 if (r.status !== 0 || !existsSync(out)) throw new Error('Render failed; no output file. Nothing is claimed as complete.');
@@ -69,6 +72,7 @@ for (const t of tl) {
 console.log(`\nQC ${out}\n  ${v.width}x${v.height} ${v.codec_name} ${v.r_frame_rate}fps, audio: ${a ? a.codec_name : 'NONE'}, ${dur.toFixed(2)}s, ${(parseInt(probe.format.size) / 1e6).toFixed(1)} MB`);
 console.log(issues.length ? `  ISSUES:\n   - ${issues.join('\n   - ')}` : '  technical checks passed');
 console.log(`  QC stills: ${outDir}/qc/${format}-<scene>.png — inspect Arabic text visually against content/${slug}.json`);
+if (label) console.log('  VOICED DRAFT — listen fully, then record pronunciation approval for a clean final.');
 if (preview) console.log('  This is a SILENT, watermarked PREVIEW — not a final export.');
 if (!preview && !manifest) throw new Error('internal: final without manifest');
 void ffprobeDuration;

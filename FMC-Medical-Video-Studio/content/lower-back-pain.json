@@ -1,57 +1,135 @@
 {
   "slug": "lower-back-pain",
-  "topic": {"ar": "ألم أسفل الظهر", "en": "Lower back pain"},
-  "services": ["العلاج الطبيعي", "طب العظام"],
+  "topic": {
+    "ar": "ألم أسفل الظهر",
+    "en": "Lower back pain"
+  },
+  "services": [
+    "العلاج الطبيعي",
+    "طب العظام"
+  ],
   "scenes": [
     {
       "id": "opening",
       "plannedSec": 5,
       "narration": "هل تعاني من ألم مستمر في أسفل الظهر؟",
       "ttsText": "هَلْ تُعَانِي مِنْ أَلَمٍ مُسْتَمِرٍّ فِي أَسْفَلِ الظَّهْرِ؟",
-      "onScreen": {"title": "هل تعاني من ألم مستمر في أسفل الظهر؟"},
-      "visual": {"model": "lumbar-spine", "highlight": "regions", "camera": "slow orbit, lateral to posterior-oblique, gentle push-in", "description": "Full lumbar spine with a soft amber pulse over the lower lumbar region; HUD frame; light sweep."},
+      "onScreen": {
+        "title": "هل تعاني من ألم مستمر في أسفل الظهر؟"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "regions",
+        "camera": "slow orbit, lateral to posterior-oblique, gentle push-in",
+        "description": "Full lumbar spine with a soft amber pulse over the lower lumbar region; HUD frame; light sweep."
+      },
       "footageQueries": [],
-      "sfx": ["soft-whoosh"]
+      "sfx": [
+        "soft-whoosh"
+      ]
     },
     {
       "id": "anatomy",
       "plannedSec": 10,
       "narration": "يتكون أسفل الظهر من خمس فقرات قطنية، تفصل بينها أقراص غضروفية تعمل كوسائد تمتص الصدمات، وتمر بالقرب منها أعصاب تحمل الإشارات إلى الساقين.",
       "ttsText": "يَتَكَوَّنُ أَسْفَلُ الظَّهْرِ مِنْ خَمْسِ فَقَرَاتٍ قَطَنِيَّةٍ، تَفْصِلُ بَيْنَهَا أَقْرَاصٌ غُضْرُوفِيَّةٌ تَعْمَلُ كَوَسَائِدَ تَمْتَصُّ الصَّدَمَاتِ، وَتَمُرُّ بِالْقُرْبِ مِنْهَا أَعْصَابٌ تَحْمِلُ الْإِشَارَاتِ إِلَى السَّاقَيْنِ.",
-      "onScreen": {"title": "تشريح أسفل الظهر", "bullets": ["الفقرات القطنية", "القرص الغضروفي", "الأعصاب"]},
-      "visual": {"model": "lumbar-spine", "highlight": "regions", "camera": "orbit toward posterior, callouts appear in sequence", "description": "Callouts on a vertebra, an intervertebral disc and a nerve root."},
+      "onScreen": {
+        "title": "تشريح أسفل الظهر",
+        "bullets": [
+          "الفقرات القطنية",
+          "القرص الغضروفي",
+          "الأعصاب"
+        ]
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "regions",
+        "camera": "orbit toward posterior, callouts appear in sequence",
+        "description": "Callouts on a vertebra, an intervertebral disc and a nerve root."
+      },
       "footageQueries": [],
-      "sfx": ["soft-whoosh", "ui-tick"]
+      "sfx": [
+        "soft-whoosh",
+        "ui-tick"
+      ]
     },
     {
       "id": "symptoms",
       "plannedSec": 14,
       "narration": "قد يظهر الألم على شكل تيبس أو شد في العضلات. وفي بعض الحالات يبرز أحد الأقراص الغضروفية ويضغط على عصب مجاور، فيمتد الألم إلى الساق مع تنميل. وتختلف الأسباب من شخص لآخر، لذلك يلزم الفحص الطبي.",
       "ttsText": "قَدْ يَظْهَرُ الْأَلَمُ عَلَى شَكْلِ تَيَبُّسٍ أَوْ شَدٍّ فِي الْعَضَلَاتِ. وَفِي بَعْضِ الْحَالَاتِ يَبْرُزُ أَحَدُ الْأَقْرَاصِ الْغُضْرُوفِيَّةِ وَيَضْغَطُ عَلَى عَصَبٍ مُجَاوِرٍ، فَيَمْتَدُّ الْأَلَمُ إِلَى السَّاقِ مَعَ تَنْمِيلٍ. وَتَخْتَلِفُ الْأَسْبَابُ مِنْ شَخْصٍ لِآخَرَ، لِذَلِكَ يَلْزَمُ الْفَحْصُ الطِّبِّيُّ.",
-      "onScreen": {"title": "الأعراض والأسباب", "bullets": ["تيبس وشد في العضلات", "ألم قد يمتد إلى الساق", "تنميل في بعض الحالات", "تختلف الأسباب من شخص لآخر"]},
-      "visual": {"model": "lumbar-spine", "highlight": "disc-herniation", "camera": "push-in to L4–L5, slow orbit", "description": "Illustrative (not diagnostic) disc protrusion contacting a nerve root; amber highlight; symptom cards."},
+      "onScreen": {
+        "title": "الأعراض والأسباب",
+        "bullets": [
+          "تيبس وشد في العضلات",
+          "ألم قد يمتد إلى الساق",
+          "تنميل في بعض الحالات",
+          "تختلف الأسباب من شخص لآخر"
+        ]
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "disc-herniation",
+        "camera": "push-in to L4–L5, slow orbit",
+        "description": "Illustrative (not diagnostic) disc protrusion contacting a nerve root; amber highlight; symptom cards."
+      },
       "footageQueries": [],
-      "sfx": ["soft-whoosh", "ui-tick"]
+      "sfx": [
+        "soft-whoosh",
+        "ui-tick"
+      ]
     },
     {
       "id": "treatment",
       "plannedSec": 11,
       "narration": "يبدأ العلاج بتقييم دقيق لحالتك. وغالبا ما يشمل العلاج الطبيعي تمارين لتقوية العضلات وزيادة المرونة، وتصحيح وضعيات الجلوس والحركة، ضمن برنامج تدريجي يناسب كل حالة.",
       "ttsText": "يَبْدَأُ الْعِلَاجُ بِتَقْيِيمٍ دَقِيقٍ لِحَالَتِكَ. وَغَالِبًا مَا يَشْمَلُ الْعِلَاجُ الطَّبِيعِيُّ تَمَارِينَ لِتَقْوِيَةِ الْعَضَلَاتِ وَزِيَادَةِ الْمَرُونَةِ، وَتَصْحِيحَ وَضْعِيَّاتِ الْجُلُوسِ وَالْحَرَكَةِ، ضِمْنَ بَرْنَامَجٍ تَدْرِيجِيٍّ يُنَاسِبُ كُلَّ حَالَةٍ.",
-      "onScreen": {"title": "العلاج والتأهيل", "bullets": ["تقييم دقيق للحالة", "تمارين تقوية ومرونة", "تصحيح وضعيات الجلوس والحركة"]},
-      "visual": {"model": "lumbar-spine", "highlight": "movement", "camera": "orbit while spine flexes and extends; core muscle highlight", "description": "Rehabilitation concept animation; replaced by licensed physiotherapy footage when available."},
-      "footageQueries": ["physiotherapist treating patient back", "physical therapy rehabilitation exercise", "physiotherapy lower back stretching"],
-      "sfx": ["soft-whoosh"]
+      "onScreen": {
+        "title": "العلاج والتأهيل",
+        "bullets": [
+          "تقييم دقيق للحالة",
+          "تمارين تقوية ومرونة",
+          "تصحيح وضعيات الجلوس والحركة"
+        ]
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "orbit while spine flexes and extends; core muscle highlight",
+        "description": "Rehabilitation concept animation; replaced by licensed physiotherapy footage when available."
+      },
+      "footageQueries": [
+        "physiotherapist treating patient back",
+        "physical therapy rehabilitation exercise",
+        "physiotherapy lower back stretching"
+      ],
+      "sfx": [
+        "soft-whoosh"
+      ]
     },
     {
       "id": "fmc",
       "plannedSec": 14,
       "narration": "في مركز الفيصل الطبي نقدم لك خدمات العلاج الطبيعي وطب العظام، بدءا من التقييم وحتى وضع خطة رعاية تناسب حالتك. وإذا ترافق الألم مع ضعف في الساق، أو فقدان التحكم في البول أو البراز، فاطلب الرعاية الطبية العاجلة.",
       "ttsText": "فِي مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ نُقَدِّمُ لَكَ خَدَمَاتِ الْعِلَاجِ الطَّبِيعِيِّ وَطِبِّ الْعِظَامِ، بَدْءًا مِنَ التَّقْيِيمِ وَحَتَّى وَضْعِ خُطَّةِ رِعَايَةٍ تُنَاسِبُ حَالَتَكَ. وَإِذَا تَرَافَقَ الْأَلَمُ مَعَ ضَعْفٍ فِي السَّاقِ، أَوْ فُقْدَانِ التَّحَكُّمِ فِي الْبَوْلِ أَوِ الْبَرَازِ، فَاطْلُبِ الرِّعَايَةَ الطِّبِّيَّةَ الْعَاجِلَةَ.",
-      "onScreen": {"title": "من التقييم إلى خطة الرعاية", "bullets": ["العلاج الطبيعي", "طب العظام", "اطلب الرعاية العاجلة عند ضعف الساق أو فقدان التحكم في البول أو البراز"]},
-      "visual": {"model": "none", "highlight": "none", "camera": "static, soft parallax on cards", "description": "Service cards for physiotherapy and orthopedics plus an amber urgent-care safety note."},
+      "onScreen": {
+        "title": "من التقييم إلى خطة الرعاية",
+        "bullets": [
+          "العلاج الطبيعي",
+          "طب العظام",
+          "اطلب الرعاية العاجلة عند ضعف الساق أو فقدان التحكم في البول أو البراز"
+        ]
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "static, soft parallax on cards",
+        "description": "Service cards for physiotherapy and orthopedics plus an amber urgent-care safety note."
+      },
       "footageQueries": [],
-      "sfx": ["ui-tick"]
+      "sfx": [
+        "ui-tick"
+      ]
     },
     {
       "id": "closing",
@@ -59,24 +137,59 @@
       "narration": "مركز الفيصل الطبي. الرعاية المثالية.",
       "ttsText": "مَرْكَزُ الْفَيْصَلِ الطِّبِّيُّ. الرِّعَايَةُ الْمِثَالِيَّةُ.",
       "onScreen": {},
-      "visual": {"model": "none", "highlight": "none", "camera": "static", "description": "Animated reveal of the official logo, clinic name and slogan."},
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "static",
+        "description": "Animated reveal of the official logo, clinic name and slogan."
+      },
       "footageQueries": [],
-      "sfx": ["soft-whoosh"]
+      "sfx": [
+        "soft-whoosh"
+      ]
     }
   ],
   "instagramCaption": "هل تعاني من ألم مستمر في أسفل الظهر؟\n\nتختلف أسباب ألم أسفل الظهر من شخص لآخر، ولذلك يبدأ العلاج بتقييم دقيق للحالة. في مركز الفيصل الطبي نقدم خدمات العلاج الطبيعي وطب العظام لمساعدتك على وضع خطة رعاية تناسب حالتك.\n\nإذا ترافق الألم مع ضعف في الساق أو فقدان التحكم في البول أو البراز، فاطلب الرعاية الطبية العاجلة.\n\nهذا المحتوى للتوعية ولا يغني عن استشارة الطبيب.\n\nمركز الفيصل الطبي — الرعاية المثالية",
-  "hashtags": ["#مركز_الفيصل_الطبي", "#العين", "#الإمارات", "#ألم_الظهر", "#العلاج_الطبيعي", "#طب_العظام", "#الرعاية_المثالية", "#FMC", "#AlAin", "#UAE", "#Physiotherapy", "#BackPain", "#Orthopedics", "#IdealCare"],
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العين",
+    "#الإمارات",
+    "#ألم_الظهر",
+    "#العلاج_الطبيعي",
+    "#طب_العظام",
+    "#الرعاية_المثالية",
+    "#FMC",
+    "#AlAin",
+    "#UAE",
+    "#Physiotherapy",
+    "#BackPain",
+    "#Orthopedics",
+    "#IdealCare"
+  ],
   "sources": [
-    {"title": "NINDS — Low Back Pain", "url": "https://www.ninds.nih.gov/health-information/disorders/low-back-pain"},
-    {"title": "NICE NG59 — Low back pain and sciatica in over 16s", "url": "https://www.nice.org.uk/guidance/ng59"},
-    {"title": "WHO — Guideline for non-surgical management of chronic primary low back pain in adults (2023)", "url": "https://www.who.int/publications/i/item/9789240081789"}
+    {
+      "title": "NINDS — Low Back Pain",
+      "url": "https://www.ninds.nih.gov/health-information/disorders/low-back-pain"
+    },
+    {
+      "title": "NICE NG59 — Low back pain and sciatica in over 16s",
+      "url": "https://www.nice.org.uk/guidance/ng59"
+    },
+    {
+      "title": "WHO — Guideline for non-surgical management of chronic primary low back pain in adults (2023)",
+      "url": "https://www.who.int/publications/i/item/9789240081789"
+    }
   ],
   "approvals": {
     "grammarReview": null,
     "medicalTerminologyReview": null,
     "medicalAccuracyReview": null,
-    "scriptApproved": null,
+    "scriptApproved": {
+      "by": "Emad (instructed in chat)",
+      "date": "2026-10-18T09:18:00.250Z",
+      "notes": "Proceed to voiced draft; no native-reader/clinician review recorded yet"
+    },
     "pronunciationApproved": null,
-    "approvedHash": null
+    "approvedHash": "e3578fed0067c8c3b3956cadbf1a0435cb58a857d9d10df3b6acbfa2770ad7ea"
   }
 }
