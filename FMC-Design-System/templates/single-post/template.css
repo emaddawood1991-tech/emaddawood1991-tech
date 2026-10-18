@@ -1,0 +1,6 @@
+.post-art{flex:1;min-height:0;display:grid;place-items:center;position:relative;margin:6px 0;overflow:hidden}
+.post-art::before{content:"";position:absolute;inset:0;margin:auto;height:100%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff 0%,#DCEBFA 68%,transparent 70%);z-index:-1}
+.post-art .illus{position:relative;height:88%;aspect-ratio:2/3}
+.post-art .big-icon{position:relative;width:340px;height:340px;border-radius:90px}
+.post-art .big-icon svg{width:190px;height:190px}
+.post-msg{font-size:36px;font-weight:600;line-height:1.7;color:var(--ink-soft);margin-bottom:26px}

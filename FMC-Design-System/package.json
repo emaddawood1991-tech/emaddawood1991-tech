@@ -1,0 +1,23 @@
+{
+  "name": "fmc-design-system",
+  "version": "1.0.0",
+  "description": "FMC (Al Faisal Medical Centre) Arabic Instagram design system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "render": "node src/rendering/render.js",
+    "demo": "node src/rendering/render.js src/content/carpal-tunnel.json",
+    "samples": "node src/rendering/render-all.js --samples",
+    "all": "node src/rendering/render-all.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fontsource-variable/cairo": "^5.3.0",
+    "@fontsource/ibm-plex-sans-arabic": "^5.3.0",
+    "@fontsource/tajawal": "^5.3.0",
+    "playwright": "^1.56.1"
+  },
+  "type": "module"
+}

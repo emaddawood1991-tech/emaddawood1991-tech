@@ -1,0 +1,24 @@
+.hook-row{display:flex;gap:30px;flex:1;min-height:0;align-items:stretch;margin-top:10px}
+.hook-text{flex:1;display:flex;flex-direction:column;justify-content:center;gap:26px}
+.hook-text .lead{font-size:34px}
+.chips{display:flex;flex-direction:column;gap:16px}
+.chip{display:flex;align-items:center;gap:16px;font-weight:700;font-size:32px;color:var(--fmc-navy);background:#fff;border:2px solid var(--card-border);
+  border-radius:99px;padding:10px 26px 10px 30px;box-shadow:var(--shadow);width:fit-content}
+.chip svg{width:34px;height:34px;color:var(--fmc-red)}
+.hook-art{flex:none;width:430px;position:relative}
+.hook-art::before{content:"";position:absolute;inset:6% -10% 0 -10%;border-radius:50% 50% 40% 40%;background:radial-gradient(circle at 50% 40%,#fff 0%,#DCEBFA 70%,transparent 72%)}
+.hook-art .illus{position:absolute;inset:0}
+.art-frame{background:#fff;border:2px solid var(--card-border);border-radius:44px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.art-frame .illus{position:absolute;inset:14px}
+.slide h2.arabic-title.one{font-size:64px;white-space:nowrap}
+.list-compact{display:flex;flex-direction:column;gap:16px}
+.check{display:flex;align-items:center;gap:22px;background:#fff;border:2px solid var(--card-border);border-radius:26px;padding:16px 26px;box-shadow:var(--shadow);font-size:33px;font-weight:700;line-height:1.5}
+.check .ck{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--fmc-blue);color:#fff}
+.check .ck svg{width:30px;height:30px}
+.check.red .ck{background:var(--fmc-red)}
+.cta{display:flex;align-items:center;gap:30px;border-radius:40px;padding:26px 36px;color:#fff;background:linear-gradient(135deg,var(--fmc-navy),var(--fmc-blue));box-shadow:0 26px 50px -24px rgba(11,36,85,.8);position:relative;overflow:hidden}
+.cta::after{content:"";position:absolute;left:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)}
+.cta .logo{flex:none;width:150px;height:150px;border-radius:34px;background:#fff;display:grid;place-items:center}
+.cta .logo img{height:118px;width:auto}
+.cta h3{font-size:50px;font-weight:800;line-height:1.3}.cta p{font-size:29px;font-weight:600;opacity:.92;margin-top:4px}
+.art-frame.ar .illus{inset:auto;top:14px;bottom:14px;left:50%;transform:translateX(-50%);aspect-ratio:860/580}

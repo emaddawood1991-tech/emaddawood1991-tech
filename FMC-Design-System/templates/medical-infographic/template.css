@@ -1,0 +1,6 @@
+.ig-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;min-height:0;margin:22px 0 22px;grid-auto-rows:1fr}
+.cell{display:flex;flex-direction:row;align-items:center;gap:18px;padding:18px 22px;justify-content:flex-start}
+.cell .icon-badge{width:74px;height:74px;border-radius:22px}.cell .icon-badge svg{width:42px;height:42px}
+.cell h3{font-size:30px;font-weight:800;line-height:1.35}.cell p{font-size:24px;font-weight:500;color:var(--ink-soft);line-height:1.45}
+.cell .nn{display:none}
+.cell{position:relative}
