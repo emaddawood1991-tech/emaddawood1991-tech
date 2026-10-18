@@ -5,7 +5,7 @@
  *        → sidechain ducking under narration → faint air swells at scene changes → loudness to -16 LUFS, -1.5 dBTP ceiling.
  */
 import {execFileSync} from 'node:child_process';
-import {existsSync, mkdirSync, readFileSync} from 'node:fs';
+import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {arg, flag, ffprobeDuration, loadContent, p} from '../lib/common';
 import {loudness} from '../lib/audio-metrics';
 import {computeTimeline, FPS, totalFrames} from '../src/lib/timeline';
@@ -54,14 +54,24 @@ const mGain = MUSIC_LUFS - loudness(mRaw).lufs;
 const music = `${tmp}/music.wav`;
 ff('-i', mRaw, '-af', `volume=${mGain.toFixed(2)}dB,afade=t=in:st=0:d=2,afade=t=out:st=${(total - FADE_OUT).toFixed(2)}:d=${FADE_OUT}`, music);
 
-// 3) extremely subtle air swells (soft filtered noise) at scene changes — far below narration
-const swell = `${tmp}/swell.wav`;
-ff('-f', 'lavfi', '-i', 'anoisesrc=d=3:c=pink:r=48000:a=0.5', '-af', 'highpass=f=250,lowpass=f=1800,afade=t=in:st=0:d=1.5:curve=qsin,afade=t=out:st=1.5:d=1.5:curve=qsin,volume=-26dB,aformat=channel_layouts=stereo', swell);
-const cuts = NO_SFX ? [] : tl.slice(1).map((t) => Math.max(0, Math.round((t.from / FPS - 1.2) * 1000)));
-const sIns = cuts.flatMap(() => ['-i', swell]);
-const sChains = cuts.map((ms, i) => `[${i}:a]adelay=${ms}|${ms}[s${i}]`);
+// 3) OPTIONAL transition textures (Version B only). One soft airy sound at a time, ~30 dB below the narration, hand-picked times.
+//    No file / no times / --no-sfx  =>  digital silence (Version A).
+const SFX_FILE = arg('sfx-file');
+const SFX_TIMES = (arg('sfx-times', '') ?? '').split(',').filter(Boolean).map(parseFloat).filter((t) => t < total - 1.5);
+const REL_DB = parseFloat(arg('sfx-rel-db', '-30')!);
 const sfx = `${tmp}/sfx.wav`;
-if (cuts.length) ff(...sIns, '-filter_complex', `${sChains.join(';')};${cuts.map((_, i) => `[s${i}]`).join('')}amix=inputs=${cuts.length}:normalize=0,apad=whole_dur=${total},atrim=0:${total}[o]`, '-map', '[o]', sfx);
+let cuts: number[] = [];
+if (!NO_SFX && SFX_FILE && SFX_TIMES.length) {
+  const sorted = [...SFX_TIMES].sort((x, y) => x - y);
+  const dur = ffprobeDuration(p(SFX_FILE));
+  for (let i = 1; i < sorted.length; i++) if (sorted[i] - sorted[i - 1] < dur + 0.5) throw new Error('SFX events overlap: only one transition sound may play at a time.');
+  const gdb = NARR_LUFS + REL_DB - loudness(p(SFX_FILE)).lufs; // level relative to the (levelled) narration
+  cuts = sorted.map((t) => Math.round(t * 1000));
+  const sIns = cuts.flatMap(() => ['-i', p(SFX_FILE)]);
+  const sChains = cuts.map((ms, i) => `[${i}:a]aresample=48000,aformat=channel_layouts=stereo,volume=${gdb.toFixed(2)}dB,adelay=${ms}|${ms}[s${i}]`);
+  ff(...sIns, '-filter_complex', `${sChains.join(';')};${cuts.map((_, i) => `[s${i}]`).join('')}amix=inputs=${cuts.length}:normalize=0,apad=whole_dur=${total},atrim=0:${total}[o]`, '-map', '[o]', sfx);
+  console.log(`SFX events at ${sorted.join(', ')} s, ${gdb.toFixed(1)} dB gain (target ${REL_DB} dB under narration)`);
+}
 
 // 4) duck music+sfx under narration (sidechain). The narration bus stays untouched.
 const duckedBed = `${tmp}/bed_ducked.wav`;
@@ -71,20 +81,21 @@ ff(...(cuts.length ? ['-i', music, '-i', sfx, '-i', narr] : ['-i', music, '-i', 
 // 5) final loudness: ONE static gain applied to both stems (no pumping), true-peak ceiling -1.5 dBFS on the sum
 const sum0 = `${tmp}/sum0.wav`;
 ff('-i', duckedBed, '-i', narr, '-filter_complex', '[0:a][1:a]amix=inputs=2:normalize=0[o]', '-map', '[o]', sum0);
-const g = FINAL_LUFS - loudness(sum0).lufs;
+const g = arg('final-gain') ? parseFloat(arg('final-gain')!) : FINAL_LUFS - loudness(sum0).lufs;
 const narrOut = `${tmp}/narration_final.wav`, musicOut = `${tmp}/music_final.wav`, sfxOut = `${tmp}/sfx_final.wav`;
 ff('-i', narr, '-af', `volume=${g.toFixed(2)}dB,alimiter=limit=0.89:attack=3:release=60:level=disabled`, narrOut);
 ff('-i', duckedBed, '-af', `volume=${g.toFixed(2)}dB`, musicOut);
-ff('-f', 'lavfi', '-i', `anullsrc=r=48000:cl=stereo`, '-t', total.toFixed(3), sfxOut); // transition/character sound effects are disabled: silence
+if (cuts.length) ff('-i', sfx, '-af', `volume=${g.toFixed(2)}dB`, sfxOut); else ff('-f', 'lavfi', '-i', `anullsrc=r=48000:cl=stereo`, '-t', total.toFixed(3), sfxOut); // Version A: silence
 const fin = `${tmp}/final.wav`;
-ff('-i', narrOut, '-i', musicOut, '-filter_complex', '[0:a][1:a]amix=inputs=2:normalize=0,alimiter=limit=0.8:attack=5:release=80:level=disabled[o]', '-map', '[o]', fin);
+ff(...(cuts.length ? ['-i', narrOut, '-i', musicOut, '-i', sfxOut] : ['-i', narrOut, '-i', musicOut]), '-filter_complex', `${cuts.length ? '[0:a][1:a][2:a]amix=inputs=3' : '[0:a][1:a]amix=inputs=2'}:normalize=0,alimiter=limit=0.8:attack=5:release=80:level=disabled[o]`, '-map', '[o]', fin);
 if (STEMS) {
   mkdirSync(STEMS, {recursive: true});
+  writeFileSync(`${STEMS}/gain.json`, JSON.stringify({finalGainDb: g}));
   for (const [src, name] of [[narrOut, 'narration.wav'], [musicOut, 'music.wav'], [sfxOut, 'sound_effects.wav'], [fin, 'final_mix.wav']]) ff('-i', src, '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s16le', `${STEMS}/${name}`);
   ff('-i', fin, '-c:a', 'libmp3lame', '-b:a', '256k', `${STEMS}/final_mix.mp3`);
 }
 
 // 6) mux: video stream copied untouched
 mkdirSync(p('output'), {recursive: true});
-ff('-i', video, '-i', fin, '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '256k', '-ar', '48000', '-ac', '2', '-t', total.toFixed(3), '-movflags', '+faststart', out);
+ff('-i', video, '-i', fin, '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-af', 'alimiter=limit=0.7:attack=3:release=60:level=disabled', '-c:a', 'aac', '-b:a', '256k', '-ar', '48000', '-ac', '2', '-t', total.toFixed(3), '-movflags', '+faststart', out);
 console.log(`stems → ${tmp}\nwrote ${out}\nnarration gain/music gain applied: music ${mGain.toFixed(1)} dB, final ${g.toFixed(1)} dB`);

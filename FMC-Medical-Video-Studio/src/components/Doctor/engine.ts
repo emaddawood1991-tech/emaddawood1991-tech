@@ -58,6 +58,7 @@ const blendArm = (a: ArmPose, b: ArmPose, w: number): ArmPose => ({
   fore: a.fore.clone().slerp(b.fore, w),
   hand: a.hand.clone().slerp(b.hand, w),
   shape: {curl: a.shape.curl.map((c, i) => lerp(c, b.shape.curl[i], w)), spread: lerp(a.shape.spread, b.shape.spread, w)},
+  sh: a.sh.clone().lerp(b.sh, w),
 });
 
 // ---------------------------------------------------------------- arm intent helpers
@@ -88,7 +89,7 @@ export const pointAtWorld = (s: Side, world: V3, standOff = 0.0, shape: HandShap
 
 const swing = (t: number, f: number, a: number) => Math.sin(t * f * Math.PI * 2) * a;
 
-export type Perf = {clips: Clip[]; walk: WalkSpec | null; visemes: (frame: number) => {o: number; w: number}; restX: number; restZ: number};
+export type Perf = {clips: Clip[]; walk: WalkSpec | null; visemes: (frame: number) => {o: number; w: number}; restX: number; restZ: number; /** turntable mode: feet rotate with the body */ feetFollowYaw?: boolean};
 export type WalkSpec = {start: number; end: number; x0: number; x1: number; z: number; travelYaw: number; turnStart: number; turnEnd: number; finalYaw: number};
 
 // ---------------------------------------------------------------- the reusable action library (clip factories)
@@ -101,7 +102,7 @@ export const A = {
   wave: (start: number, end: number, side: Side = 'R'): Clip => ({
     name: id('wave'), start, end, inF: 12, outF: 14,
     arms: {[side]: ((c: Ctx, t: number) => {
-      const wv = Math.sin(t * 0.55);
+      const wv = Math.sin(t * 0.5) * (1 - ss((t - 34) / 14)); // ~2 swings, then settle (no endless waving)
       return armIK(side, new THREE.Vector3(sx(side) * (0.37 + 0.035 * wv), 0.78, 0.12), new THREE.Vector3(sx(side) * 0.9, -0.55, -0.1), handE(side, [0, 0, sx(side) * 0.5 * wv]), HAND.open);
     }) as ArmIntent},
     body: (t) => ({face: {smile: 0.85, brow: 0.35}, head: {roll: 0.06 * Math.sin(t * 0.2)}}),
@@ -154,8 +155,8 @@ export const A = {
   explain: (start: number, end: number, side: Side = 'L', other = true): Clip => ({
     name: id('explain'), start, end, inF: 16, outF: 16,
     arms: {
-      [side]: ((c: Ctx, t: number) => armIK(side, new THREE.Vector3(sx(side) * (0.3 + 0.03 * swing(t, 0.02, 1) + 0.02 * Math.sin(t * 0.13)), 0.18 + 0.04 * Math.sin(t * 0.11), 0.26 + 0.04 * Math.sin(t * 0.17)), new THREE.Vector3(sx(side) * 0.7, -0.4, -0.3), handE(side, [-0.2, 0, sx(side) * 0.3]), HAND.present)) as ArmIntent,
-      ...(other ? {[side === 'L' ? 'R' : 'L']: ((c: Ctx, t: number) => { const o: Side = side === 'L' ? 'R' : 'L'; return armIK(o, new THREE.Vector3(sx(o) * 0.27, 0.0 + 0.02 * Math.sin(t * 0.1 + 1), 0.15), new THREE.Vector3(sx(o) * 0.7, -0.4, -0.3), handE(o, [-0.1, 0, 0]), HAND.relaxed); }) as ArmIntent} : {}),
+      [side]: ((c: Ctx, t: number) => armIK(side, new THREE.Vector3(sx(side) * (0.27 + 0.02 * Math.sin(t * 0.13)), 0.1 + 0.03 * Math.sin(t * 0.11), 0.27 + 0.03 * Math.sin(t * 0.17)), new THREE.Vector3(sx(side) * 0.35, -0.5, -0.6), handE(side, [-0.2, 0, sx(side) * 0.3]), HAND.present)) as ArmIntent,
+      ...(other ? {[side === 'L' ? 'R' : 'L']: ((c: Ctx, t: number) => { const o: Side = side === 'L' ? 'R' : 'L'; return armIK(o, new THREE.Vector3(sx(o) * 0.25, -0.03 + 0.015 * Math.sin(t * 0.1 + 1), 0.1), new THREE.Vector3(sx(o) * 0.3, -0.4, -0.8), handE(o, [-0.1, 0, 0]), HAND.relaxed); }) as ArmIntent} : {}),
     },
     body: (t) => ({head: {pitch: 0.03 * Math.sin(t * 0.09)}, face: {smile: 0.45}}),
     look: 'camera',
@@ -176,6 +177,19 @@ export const A = {
   }),
   lookAtCamera: (start: number, end: number): Clip => ({name: id('lookAtCamera'), start, end, inF: 10, outF: 10, look: 'camera'}),
   lookAtAnatomy: (start: number, end: number, world: V3): Clip => ({name: id('lookAtAnatomy'), start, end, inF: 12, outF: 12, look: world}),
+  /** Rehabilitation demo: hands on hips, gentle lumbar extension then neutral, slow pelvic tilt (no footage available offline). */
+  rehabReset: (start: number, end: number): Clip => ({
+    name: id('rehabReset'), start, end, inF: 16, outF: 16,
+    arms: {
+      L: reach('L', [0.21, 0.02, 0.07], [0.9, -0.2, -0.5], [0.0, 0, 0.0], HAND.flat) as ArmIntent,
+      R: reach('R', [-0.21, 0.02, 0.07], [-0.9, -0.2, -0.5], [0.0, 0, 0.0], HAND.flat) as ArmIntent,
+    },
+    body: (t) => {
+      const cyc = Math.sin((t / 48) * Math.PI * 2);
+      return {torso: {pitch: -0.1 * Math.max(0, cyc) + 0.06 * Math.max(0, -cyc)}, hips: {yaw: 0.05 * cyc}, face: {smile: 0.55, brow: 0.2}};
+    },
+    look: 'camera',
+  }),
   /** Left hand climbs three small "steps" (gradual programme) while he smiles at the camera. */
   progressSteps: (start: number, end: number): Clip => ({
     name: id('progressSteps'), start, end, inF: 14, outF: 14,
@@ -200,7 +214,7 @@ export const A = {
 // ---------------------------------------------------------------- evaluation
 const matFromRoot = (root: DoctorPose['root'], hips: DoctorPose['hips'], torso: DoctorPose['torso']) => {
   const mRoot = new THREE.Matrix4().compose(new THREE.Vector3(root.x, root.y, root.z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, root.yaw, 0)), new THREE.Vector3(1, 1, 1));
-  const mHips = new THREE.Matrix4().compose(new THREE.Vector3(0, DIM.hipY + hips.yOffset, 0), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hips.yaw, hips.roll)), new THREE.Vector3(1, 1, 1));
+  const mHips = new THREE.Matrix4().compose(new THREE.Vector3(hips.x, DIM.hipY + hips.yOffset, 0), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, hips.yaw, hips.roll)), new THREE.Vector3(1, 1, 1));
   const mTorso = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(torso.pitch, torso.yaw, torso.roll));
   const hipsW = mRoot.clone().multiply(mHips);
   const torsoW = hipsW.clone().multiply(mTorso);
@@ -224,6 +238,8 @@ export const evaluate = (perf: Perf, frame: number, fps: number, camera: V3): Do
   pose.torso.pitch = 0.012 * Math.sin(t * 1.5);
   pose.torso.roll = 0.012 * Math.sin(t * 0.7);
   pose.hips.roll = 0.012 * Math.sin(t * 0.7 + 1);
+  pose.hips.x = 0.014 * Math.sin(t * 0.45); // weight shift over the feet (feet stay planted)
+  pose.torso.roll += -0.35 * 0.014 * Math.sin(t * 0.45);
   pose.head.yaw = 0.03 * Math.sin(t * 0.6);
   pose.head.pitch = 0.02 * Math.sin(t * 0.9 + 0.5);
 
@@ -325,6 +341,12 @@ export const evaluate = (perf: Perf, frame: number, fps: number, camera: V3): Do
     f2.lookY = lerp(f2.lookY, clampv(-(pitch - hp), 0.3), look.w);
   }
 
+  // ---- eye life: small gaze saccades held for ~1.3 s each (never a dead stare)
+  const hold = Math.floor(frame / 38);
+  const hsh = (n: number) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+  f2.lookX += (hsh(hold) - 0.5) * 0.07;
+  f2.lookY += (hsh(hold + 91) - 0.5) * 0.04;
+
   // ---- blink + speech
   f2.blink = Math.max(f2.blink, blinkAt(frame));
   const v = perf.visemes(frame);
@@ -348,12 +370,17 @@ export const evaluate = (perf: Perf, frame: number, fps: number, camera: V3): Do
       if (intent) arms[s] = blendArm(arms[s], intent(ctx, frame - c.start), w);
     }
   }
+  for (const sd of ['L', 'R'] as Side[]) {
+    const sh = arms[sd].shape;
+    const pointing = sh.curl[1] < 0.2 && sh.curl[2] > 0.8;
+    arms[sd] = {...arms[sd], shape: {spread: sh.spread, curl: sh.curl.map((c, i) => Math.max(0, Math.min(1, c + (pointing && i === 1 ? 0 : 0.045 * Math.sin(t * 1.3 + i * 0.9 + (sd === 'L' ? 0 : 2)))))) }};
+  }
   pose.arms = arms;
 
   // ---- legs from world-planted feet
   const hipsInv = hipsW.clone().invert();
   const stand = (side: Side) => {
-    const sp = wk ? {x: wk.x1, z: wk.z, yaw: wk.finalYaw} : {x: perf.restX, z: perf.restZ, yaw: 0};
+    const sp = wk ? {x: wk.x1, z: wk.z, yaw: wk.finalYaw} : {x: perf.restX, z: perf.restZ, yaw: perf.feetFollowYaw ? pose.root.yaw : 0};
     const p = new THREE.Vector3(sx(side) * 0.105, DIM.ankleH, 0).applyEuler(new THREE.Euler(0, sp.yaw, 0));
     return new THREE.Vector3(sp.x + p.x, DIM.ankleH, sp.z + p.z);
   };

@@ -14,13 +14,13 @@ const manifest = ManifestSchema.parse(JSON.parse(readFileSync(p('assets', 'audio
 const vis = JSON.parse(readFileSync(p('assets', 'audio', slug, 'visemes.json'), 'utf8'));
 const tl = computeTimeline(c, manifest);
 const perf = buildPerformance(tl, c, vis);
-const keys = buildCamera(tl);
+const keys = buildCamera(tl, c);
 const total = totalFrames(tl);
 const camPos = (f: number): [number, number, number] => keys[Math.min(keys.length - 1, keys.findIndex((k) => k.f >= f) < 0 ? keys.length - 1 : keys.findIndex((k) => k.f >= f))].pos;
 
 const ankle = (pose: ReturnType<typeof evaluate>, side: 'L' | 'R') => {
   const mRoot = new THREE.Matrix4().compose(new THREE.Vector3(pose.root.x, pose.root.y, pose.root.z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, pose.root.yaw, 0)), new THREE.Vector3(1, 1, 1));
-  const mHips = new THREE.Matrix4().compose(new THREE.Vector3(0, DIM.hipY + pose.hips.yOffset, 0), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, pose.hips.yaw, pose.hips.roll)), new THREE.Vector3(1, 1, 1));
+  const mHips = new THREE.Matrix4().compose(new THREE.Vector3(pose.hips.x, DIM.hipY + pose.hips.yOffset, 0), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, pose.hips.yaw, pose.hips.roll)), new THREE.Vector3(1, 1, 1));
   const leg = pose.legs[side];
   const hip = new THREE.Vector3((side === 'L' ? 1 : -1) * DIM.hipX, 0, 0);
   const knee = hip.clone().add(new THREE.Vector3(0, -DIM.thigh, 0).applyQuaternion(leg.thigh));
@@ -69,6 +69,6 @@ const report = {
   snapFramesOver0_45rad: snaps,
   note: 'Sliding is estimated from the rendered skeleton (ankle world positions). A planted foot is ~0 cm/frame; the root walks ~1.5 cm/frame.',
 };
-mkdirSync(p('output', 'V5'), {recursive: true});
-writeFileSync(p('output', 'V5', 'anim_qc.json'), JSON.stringify(report, null, 2));
+mkdirSync(p('output', 'V6'), {recursive: true});
+writeFileSync(p('output', 'V6', 'anim_qc.json'), JSON.stringify(report, null, 2));
 console.log(JSON.stringify(report, null, 2));

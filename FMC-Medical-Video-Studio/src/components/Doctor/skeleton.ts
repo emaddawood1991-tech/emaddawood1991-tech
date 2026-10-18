@@ -7,18 +7,18 @@ import * as THREE from 'three';
  *            hips → thighs → shins → feet. Arms/legs are driven by analytic two-bone IK in parent space.
  */
 export const DIM = {
-  hipY: 0.935,
-  hipX: 0.098,
-  thigh: 0.46,
-  shin: 0.45,
+  hipY: 0.9,
+  hipX: 0.092,
+  thigh: 0.44,
+  shin: 0.43,
   ankleH: 0.075,
-  shoulderX: 0.19,
-  shoulderY: 0.495,
-  upperArm: 0.29,
-  foreArm: 0.265,
-  neckY: 0.56,
-  headY: 0.205,
-  handLen: 0.16,
+  shoulderX: 0.178,
+  shoulderY: 0.47,
+  upperArm: 0.265,
+  foreArm: 0.24,
+  neckY: 0.53,
+  headY: 0.185,
+  handLen: 0.145,
 };
 
 export type V3 = [number, number, number];
@@ -47,12 +47,12 @@ export type Face = {
   mouthW: number; // width factor
 };
 
-export type ArmPose = {upper: THREE.Quaternion; fore: THREE.Quaternion; hand: THREE.Quaternion; shape: HandShape};
+export type ArmPose = {upper: THREE.Quaternion; fore: THREE.Quaternion; hand: THREE.Quaternion; shape: HandShape; /** shoulder joint position in torso space (clavicle lift/protract) */ sh: THREE.Vector3};
 export type LegPose = {thigh: THREE.Quaternion; shin: THREE.Quaternion; footPitch: number};
 
 export type DoctorPose = {
   root: {x: number; y: number; z: number; yaw: number};
-  hips: {yOffset: number; roll: number; yaw: number};
+  hips: {yOffset: number; roll: number; yaw: number; x: number};
   torso: {pitch: number; yaw: number; roll: number};
   head: {pitch: number; yaw: number; roll: number};
   arms: {L: ArmPose; R: ArmPose};
@@ -85,16 +85,23 @@ export const limbQuats = (root: THREE.Vector3, mid: THREE.Vector3, end: THREE.Ve
   const du = mid.clone().sub(root).normalize();
   const df = end.clone().sub(mid).normalize();
   const qu = new THREE.Quaternion().setFromUnitVectors(DOWN, du);
-  const qfWorld = new THREE.Quaternion().setFromUnitVectors(DOWN, df);
-  const qf = qu.clone().invert().multiply(qfWorld);
+  // fore-bone rotation = minimal rotation in the UPPER bone's own frame (no holonomy twist → no flips when the arm points up)
+  const dLocal = df.clone().applyQuaternion(qu.clone().invert());
+  const qf = new THREE.Quaternion().setFromUnitVectors(DOWN, dLocal);
   return {upper: qu, fore: qf};
 };
 
 export const armIK = (side: Side, targetTorso: THREE.Vector3, elbowPole: THREE.Vector3, handEuler: V3 = [0, 0, 0], shape: HandShape = HAND.relaxed): ArmPose => {
-  const sh = new THREE.Vector3(sx(side) * DIM.shoulderX, DIM.shoulderY, 0);
+  const base = new THREE.Vector3(sx(side) * DIM.shoulderX, DIM.shoulderY, 0);
+  // clavicle follow: the shoulder lifts / protracts as the hand goes up and forward (no stiff shoulders)
+  const elev = targetTorso.y - DIM.shoulderY;
+  const lift = THREE.MathUtils.clamp(elev * 0.12, -0.01, 0.04);
+  const fwd = THREE.MathUtils.clamp(targetTorso.z * 0.06, -0.01, 0.03);
+  const inward = -sx(side) * THREE.MathUtils.clamp(Math.max(0, elev) * 0.03, 0, 0.012);
+  const sh = base.clone().add(new THREE.Vector3(inward, lift, fwd));
   const {mid, end} = solveTwoBone(sh, targetTorso, DIM.upperArm, DIM.foreArm, elbowPole);
   const {upper, fore} = limbQuats(sh, mid, end);
-  return {upper, fore, hand: new THREE.Quaternion().setFromEuler(new THREE.Euler(...handEuler)), shape};
+  return {upper, fore, hand: new THREE.Quaternion().setFromEuler(new THREE.Euler(...handEuler)), shape, sh};
 };
 
 export const legIK = (side: Side, ankleHips: THREE.Vector3, footPitch = 0): LegPose => {
@@ -105,11 +112,11 @@ export const legIK = (side: Side, ankleHips: THREE.Vector3, footPitch = 0): LegP
 };
 
 const IDENT = new THREE.Quaternion();
-export const neutralFace = (): Face => ({smile: 0.35, brow: 0, furrow: 0, eyeOpen: 1, blink: 0, lookX: 0, lookY: 0, mouthO: 0, mouthW: 1});
+export const neutralFace = (): Face => ({smile: 0.5, brow: 0, furrow: 0, eyeOpen: 1, blink: 0, lookX: 0, lookY: 0, mouthO: 0, mouthW: 1});
 
 export const neutralPose = (): DoctorPose => ({
   root: {x: 0, y: 0, z: 0, yaw: 0},
-  hips: {yOffset: 0, roll: 0, yaw: 0},
+  hips: {yOffset: 0, roll: 0, yaw: 0, x: 0},
   torso: {pitch: 0, yaw: 0, roll: 0},
   head: {pitch: 0, yaw: 0, roll: 0},
   arms: {

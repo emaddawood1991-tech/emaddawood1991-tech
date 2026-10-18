@@ -9,9 +9,9 @@ import {BG_GRADIENT, makeLayout} from '../styles/theme';
 import {loadFonts} from '../styles/fonts';
 import {Doctor} from '../components/Doctor/Doctor';
 import {evaluate} from '../components/Doctor/engine';
-import {buildCamera, buildPerformance, spineWorld, SPINE} from '../components/Doctor/lowerBackScript';
+import {buildCamera, buildPerformance, phrases, spineWorld, spineRot, SPINE} from '../components/Doctor/lowerBackScript';
 import {LumbarSpine, ANCHORS, projectToScreen, sampleCamera} from '../components/Medical3D';
-import {AnimatedTitle, InfoCard} from '../components/ArabicTitles';
+import {AnimatedTitle, ArabicText, InfoCard} from '../components/ArabicTitles';
 import {Callout, EducationalTag, HUDBackdrop} from '../components/MedicalHUD';
 import {LogoBug, LogoReveal} from '../components/FMCBranding';
 import {SceneFade} from '../components/SceneTransitions';
@@ -58,7 +58,7 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
   const layout = makeLayout(width, height);
   const tl = useMemo(() => computeTimeline(props.content, props.manifest), [props.content, props.manifest]);
   const perf = useMemo(() => buildPerformance(tl, props.content, props.visemes), [tl, props.content, props.visemes]);
-  const keys = useMemo(() => buildCamera(tl), [tl]);
+  const keys = useMemo(() => buildCamera(tl, props.content), [tl, props.content]);
   const cam = sampleCamera(keys, frame);
   const pose = evaluate(perf, frame, fps, cam.pos);
   const t = (id: string) => tl.find((x) => x.id === id)!;
@@ -78,7 +78,7 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
   // 2D overlay helpers
   const stage = {w: width, h: height};
   const scene = (id: string) => props.content.scenes.find((s) => s.id === id)!;
-  const anchor = (local: [number, number, number]) => projectToScreen(spineWorld(local), keys, frame, stage.w, stage.h);
+  const anchor = (local: [number, number, number]) => projectToScreen(spineWorld(local, frame), keys, frame, stage.w, stage.h);
 
   const cardW = layout.width - layout.safe.left - layout.safe.right;
   const Cards: React.FC<{items: string[]; amber?: boolean; delay: number; size: number}> = ({items, amber, delay, size}) => (
@@ -109,7 +109,7 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
         <FloorShadow x={pose.root.x} z={pose.root.z} />
         <Doctor pose={pose} time={frame / fps} />
         {spineScale > 0.0006 && (
-          <group position={SPINE.pos} rotation={[0, SPINE.rotY, 0]} scale={spineScale}>
+          <group position={SPINE.pos} rotation={[0, spineRot(frame), 0]} scale={spineScale}>
             <group position={[-SPINE.center[0], -SPINE.center[1], -SPINE.center[2]]}>
               <LumbarSpine bulge={bulge} glow={bulge} nerveGlow={nerve} muscleGlow={ramp(frame, tr.from + 60, tr.from + 90)} showMuscles={muscles} flexion={flex(frame)} time={frame / fps} />
             </group>
@@ -117,6 +117,8 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
         )}
       </ThreeCanvas>
 
+      {/* soft top scrim so titles stay readable over bright anatomy (not a banner; fades to nothing) */}
+      <div style={{position: 'absolute', left: 0, right: 0, top: 0, height: 330, background: 'linear-gradient(180deg, rgba(14,36,60,0.62) 0%, rgba(14,36,60,0) 100%)', pointerEvents: 'none'}} />
       {/* ---- Arabic text / cards (real text layers) ---- */}
       <Sequence from={0} durationInFrames={t('opening').duration} layout="none">
         <SceneFade duration={t('opening').duration} first>
@@ -126,28 +128,30 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
       <Sequence from={an.from} durationInFrames={an.duration} layout="none">
         <SceneFade duration={an.duration}>
           <Title text={scene('anatomy').onScreen.title ?? ''} />
-          {frame > an.from + 140 && (
-            <>
-              <Callout label="الفقرات القطنية" anchor={anchor(ANCHORS.vertebraL3)} labelY={layout.height * 0.37} edge="right" margin={52} delay={an.from + 150 - an.from} size={34} screenW={stage.w} />
-              <Callout label="القرص الغضروفي" anchor={anchor(ANCHORS.discL2L3)} labelY={layout.height * 0.44} edge="right" margin={52} delay={an.from + 215 - an.from} size={34} screenW={stage.w} />
-              <Callout label="الأعصاب" anchor={anchor(ANCHORS.nerveRoot)} labelY={layout.height * 0.51} edge="right" margin={52} delay={an.from + 290 - an.from} size={34} screenW={stage.w} />
-            </>
-          )}
-          <EducationalTag size={26} x={stage.w / 2} y={layout.height - layout.safe.bottom + 52} />
+          {(() => {
+            const pa = phrases(tl, props.content, 'anatomy');
+            const rel = (f: number) => f - an.from;
+            return (
+              <>
+                {frame > pa[0].e - 14 && <Callout label="الفقرات القطنية" anchor={anchor(ANCHORS.vertebraL3)} labelY={layout.height * 0.3} edge="right" margin={48} delay={rel(pa[0].e - 14)} size={34} screenW={stage.w} />}
+                {frame > pa[1].s + 14 && <Callout label="القرص الغضروفي" anchor={anchor(ANCHORS.discL2L3)} labelY={layout.height * 0.4} edge="right" margin={48} delay={rel(pa[1].s + 14)} size={34} screenW={stage.w} />}
+                {frame > pa[2].s + 30 && <Callout label="الأعصاب" anchor={anchor(ANCHORS.nerveRoot)} labelY={layout.height * 0.5} edge="right" margin={48} delay={rel(pa[2].s + 30)} size={34} screenW={stage.w} />}
+              </>
+            );
+          })()}
+          <div style={{position: 'absolute', top: layout.safe.top + 118, width: '100%', display: 'flex', justifyContent: 'center', opacity: 0.85}}><ArabicText size={24} weight={500} color={COLORS.silver}>نموذج تعليمي مبسّط — لا يمثّل حالة مريض بعينه</ArabicText></div>
         </SceneFade>
       </Sequence>
       <Sequence from={sy.from} durationInFrames={sy.duration} layout="none">
         <SceneFade duration={sy.duration}>
           <Title text={scene('symptoms').onScreen.title ?? ''} />
           <Cards items={scene('symptoms').onScreen.bullets ?? []} delay={40} size={31} />
-          <EducationalTag size={26} x={stage.w / 2} y={layout.height - layout.safe.bottom + 52} />
         </SceneFade>
       </Sequence>
       <Sequence from={tr.from} durationInFrames={tr.duration} layout="none">
         <SceneFade duration={tr.duration}>
           <Title text={scene('treatment').onScreen.title ?? ''} />
           <Cards items={scene('treatment').onScreen.bullets ?? []} delay={50} size={36} />
-          <EducationalTag size={26} x={stage.w / 2} y={layout.height - layout.safe.bottom + 52} />
         </SceneFade>
       </Sequence>
       <Sequence from={fm.from} durationInFrames={fm.duration} layout="none">
@@ -170,7 +174,6 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
           </Sequence>
         ) : null,
       )}
-      <div style={{position: 'absolute', left: 0, bottom: 0, height: 4, width: `${(frame / total) * 100}%`, background: 'rgba(0,166,166,0.8)'}} />
       {frameInScene(an) < -1 ? null : null}
     </AbsoluteFill>
   );

@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import {DIM, sx, type ArmPose, type DoctorPose, type HandShape, type Side} from './skeleton';
 
 const C = {
-  skin: '#d99d76', skinDark: '#c88a63', coat: '#f3f5f7', scrubs: '#17335a', hair: '#2b180e', lips: '#b5675b', teeth: '#f7f3ea', tongue: '#c4606a',
+  skin: '#d9a07b', skinDark: '#c88d68', coat: '#f3f5f7', scrubs: '#17335a', hair: '#2b180e', lips: '#b8685d', teeth: '#f7f3ea', tongue: '#c4606a',
   mouth: '#2a0d0f', iris: '#5a3a22', shoe: '#f4f4f2', steth: '#1c2026', silver: '#bfc8d2',
 };
 
@@ -24,12 +24,12 @@ const smooth = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
 };
-const taper = (v: number) => 1 - 0.36 * smooth(-0.05, -0.95, v) * 1; // jaw narrows toward the chin
+const taper = (v: number) => 1 - 0.2 * smooth(-0.1, -1.0, v); // jaw narrows toward the chin
 /** Position on the head surface (unit head space) for a given x,y — used to place features. */
 export const headSurface = (x: number, y: number): V => {
-  const v = y / 1.08;
+  const v = y / 1.04;
   const t = taper(v);
-  const u = x / (0.93 * t);
+  const u = x / (0.95 * t);
   const w = Math.sqrt(Math.max(0, 1 - u * u - v * v));
   return [x, y, w * (1 - 0.04 * smooth(-0.3, -0.95, v)) * 0.98];
 };
@@ -43,7 +43,8 @@ const buildHeadGeometry = (radius = 1, keep?: (n: THREE.Vector3) => boolean, w =
     v3.fromBufferAttribute(pos, i);
     const n = v3.clone().normalize();
     const t = taper(n.y);
-    v3.set(v3.x * 0.93 * t, v3.y * 1.08, v3.z * (1 - 0.04 * smooth(-0.3, -0.95, n.y)) * 0.98);
+    const chin = smooth(-0.55, -0.98, n.y);
+    v3.set(v3.x * 0.95 * t * (1 - 0.16 * chin), v3.y * 1.04, v3.z * (1 - 0.04 * smooth(-0.3, -0.95, n.y)) * 0.98 + 0.13 * chin * Math.max(0, n.z));
     pos.setXYZ(i, v3.x, v3.y, v3.z);
   }
   g.computeVertexNormals();
@@ -57,24 +58,13 @@ const buildHeadGeometry = (radius = 1, keep?: (n: THREE.Vector3) => boolean, w =
     const ia = idx.getX(i), ib = idx.getX(i + 1), ic = idx.getX(i + 2);
     a.fromBufferAttribute(pos, ia); b.fromBufferAttribute(pos, ib); c.fromBufferAttribute(pos, ic);
     const cen = a.add(b).add(c).multiplyScalar(1 / 3);
-    const n = new THREE.Vector3(cen.x / 0.93, cen.y / 1.08, cen.z).normalize();
+    const n = new THREE.Vector3(cen.x / 0.95, cen.y / 1.04, cen.z).normalize();
     if (keep(n)) out.push(ia, ib, ic);
   }
   g.setIndex(out);
   void nrm;
   return g;
 };
-
-// hair: scalp cap with a front hairline, fuller on top
-const hairKeep = (n: THREE.Vector3) => {
-  const front = smooth(-0.15, 0.55, n.z);
-  const thr = -0.32 * (1 - front) + 0.52 * front - 0.16 * smooth(0.7, 1, Math.abs(n.x)) * front;
-  return n.y > thr;
-};
-// beard: sides + chin, with a hole for the mouth region handled by the mouth meshes
-const beardSideKeep = (n: THREE.Vector3) => n.z > -0.25 && n.y < -0.12 && n.y > -0.98 && !(Math.abs(n.x) < 0.5 && n.y > -0.62 && n.z > 0.5) && Math.abs(n.x) > 0.36 && n.z < 0.97;
-const beardChinKeep = (n: THREE.Vector3) => n.z > 0.15 && n.y < -0.6 && Math.abs(n.x) <= 0.4;
-const jawBeardKeep = beardChinKeep;
 
 const maskTexture = (fn: (x: number, y: number, z: number) => number, jitter = 0.05) => {
   const W = 512, H = 256;
@@ -100,68 +90,32 @@ const maskTexture = (fn: (x: number, y: number, z: number) => number, jitter = 0
   t.wrapS = THREE.RepeatWrapping;
   return t;
 };
-const beardMask = (x: number, y: number, z: number) => {
-  if (z < -0.35) return 0;
-  const ax = Math.abs(x);
-  const cheek = smooth(0.38, 0.5, ax) * smooth(0.02, -0.12, y) * smooth(0.95, 0.8, ax / 1);        // sideburns + cheeks
-  const chin = smooth(-0.22, -0.34, y) * smooth(0.5, 0.38, ax);                                       // chin
-  const jaw = smooth(-0.08, -0.22, y - (ax - 0.5) * 0.35) * smooth(0.36, 0.5, ax);
-  let m = Math.max(cheek, chin, jaw);
-  const mx = x / 0.33, my = (y + 0.5) / 0.17;
-  m *= smooth(0.85, 1.25, mx * mx + my * my);                                                         // mouth hole
-  m *= smooth(-0.35, -0.05, z);
-  return m;
-};
+/** Short, neatly styled hair: clean forehead line, tight temples, short sides and back. Face is completely clean-shaven. */
 const hairMask = (x: number, y: number, z: number) => {
-  const front = smooth(-0.15, 0.55, z);
-  const thr = -0.3 * (1 - front) + 0.5 * front - 0.18 * smooth(0.65, 0.95, Math.abs(x)) * front;
-  return smooth(thr - 0.03, thr + 0.05, y);
+  const front = smooth(-0.1, 0.6, z);
+  const thr = -0.12 * (1 - front) + 0.56 * front - 0.2 * smooth(0.6, 0.92, Math.abs(x)) * front + 0.06 * smooth(0.2, 0.7, Math.abs(x)) * front * 0;
+  const sideLift = smooth(0.75, 0.97, Math.abs(x)) * 0.12; // ear area stays clear
+  return smooth(thr + sideLift - 0.03, thr + sideLift + 0.05, y) * smooth(-0.55, -0.25, y + 0.0 * z);
 };
 
 const HeadShape: React.FC = () => {
   const skin = useMemo(() => buildHeadGeometry(1), []);
-  const hair = useMemo(() => buildHeadGeometry(1.07, undefined, 72, 56), []);
-  const beard = useMemo(() => buildHeadGeometry(1.03, undefined, 72, 56), []);
-  const hairMap = useMemo(() => maskTexture(hairMask, 0.25), []);
-  const beardMap = useMemo(() => maskTexture(beardMask, 0.35), []);
+  const hair = useMemo(() => buildHeadGeometry(1.055, undefined, 72, 56), []);
+  const hairMap = useMemo(() => maskTexture(hairMask, 0.22), []);
   return (
     <>
-      <mesh geometry={skin}>{mat(C.skin, 0.58)}</mesh>
+      <mesh geometry={skin}>{mat(C.skin, 0.55)}</mesh>
       <mesh geometry={hair}>
-        <meshStandardMaterial color={C.hair} roughness={0.5} alphaMap={hairMap} transparent alphaTest={0.5} side={THREE.DoubleSide} />
+        <meshStandardMaterial color={C.hair} roughness={0.42} alphaMap={hairMap} transparent alphaTest={0.5} side={THREE.DoubleSide} />
       </mesh>
-      <mesh geometry={beard}>
-        <meshStandardMaterial color={C.hair} roughness={0.85} alphaMap={beardMap} transparent alphaTest={0.5} />
+      {/* side-swept top: low, tidy volume (no big quiff) */}
+      <mesh position={[0.1, 0.8, 0.34]} scale={[0.6, 0.17, 0.5]} rotation={[0.35, 0, -0.28]}>
+        <sphereGeometry args={[1, 28, 16]} />
+        {mat(C.hair, 0.42)}
       </mesh>
-      <mesh position={[0.06, 0.9, 0.34]} scale={[0.55, 0.25, 0.5]} rotation={[0.25, 0, -0.2]}>
-        <sphereGeometry args={[1, 24, 16]} />
-        {mat(C.hair, 0.5)}
-      </mesh>
-      <mesh position={[-0.3, 0.84, 0.42]} scale={[0.42, 0.24, 0.45]} rotation={[0.25, 0, 0.3]}>
-        <sphereGeometry args={[1, 24, 16]} />
-        {mat(C.hair, 0.5)}
-      </mesh>
-    </>
-  );
-};
-
-const _OldHeadShape: React.FC = () => {
-  const skin = useMemo(() => buildHeadGeometry(1), []);
-  const hair = useMemo(() => buildHeadGeometry(1.075, hairKeep, 72, 56), []);
-  const beardSide = useMemo(() => buildHeadGeometry(1.035, beardSideKeep, 72, 56), []);
-  return (
-    <>
-      <mesh geometry={skin}>{mat(C.skin, 0.62)}</mesh>
-      <mesh geometry={hair}>{mat(C.hair, 0.55)}</mesh>
-      <mesh geometry={beardSide}>{mat(C.hair, 0.8)}</mesh>
-      {/* quiff / volume at the front-top of the hair */}
-      <mesh position={[0.1, 0.9, 0.42]} scale={[0.55, 0.3, 0.55]} rotation={[0.2, 0, -0.15]}>
-        <sphereGeometry args={[1, 24, 16]} />
-        {mat(C.hair, 0.55)}
-      </mesh>
-      <mesh position={[-0.28, 0.82, 0.5]} scale={[0.42, 0.26, 0.45]} rotation={[0.2, 0, 0.25]}>
-        <sphereGeometry args={[1, 24, 16]} />
-        {mat(C.hair, 0.55)}
+      <mesh position={[-0.2, 0.74, 0.4]} scale={[0.4, 0.14, 0.4]} rotation={[0.4, 0, 0.35]}>
+        <sphereGeometry args={[1, 24, 14]} />
+        {mat(C.hair, 0.42)}
       </mesh>
     </>
   );
@@ -175,16 +129,16 @@ const Eye: React.FC<{side: Side; lookX: number; lookY: number; open: number}> = 
   return (
     <group position={[p[0], p[1], p[2] - 0.075]}>
       <mesh scale={[1, 1, 0.8]}>
-        <sphereGeometry args={[0.165, 28, 20]} />
+        <sphereGeometry args={[0.148, 28, 20]} />
         {mat('#fbfaf8', 0.35)}
       </mesh>
       <group rotation={[-lookY, lookX, 0]}>
         <mesh position={[0, 0, 0.128]} rotation={[0, 0, 0]}>
-          <circleGeometry args={[0.098, 28]} />
+          <circleGeometry args={[0.088, 28]} />
           {mat(C.iris, 0.3)}
         </mesh>
         <mesh position={[0, 0, 0.1285]}>
-          <circleGeometry args={[0.054, 24]} />
+          <circleGeometry args={[0.048, 24]} />
           {mat('#0b0705', 0.2)}
         </mesh>
         <mesh position={[0.034, 0.04, 0.13]}>
@@ -193,11 +147,11 @@ const Eye: React.FC<{side: Side; lookX: number; lookY: number; open: number}> = 
         </mesh>
       </group>
       <mesh rotation={[upperRot, 0, 0]} scale={[1, 1, 0.86]}>
-        <sphereGeometry args={[0.172, 28, 14, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <sphereGeometry args={[0.156, 28, 14, 0, Math.PI * 2, 0, Math.PI / 2]} />
         {mat(C.skin, 0.62, {side: THREE.DoubleSide})}
       </mesh>
       <mesh rotation={[lowerRot, 0, 0]} scale={[1, 1, 0.86]}>
-        <sphereGeometry args={[0.172, 28, 14, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
+        <sphereGeometry args={[0.156, 28, 14, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
         {mat(C.skin, 0.62, {side: THREE.DoubleSide})}
       </mesh>
     </group>
@@ -208,7 +162,7 @@ const Brow: React.FC<{side: Side; raise: number; furrow: number}> = ({side, rais
   const s = sx(side);
   const p = headSurface(s * 0.4, 0.42 + raise * 0.07);
   const curve = useMemo(() => new THREE.CatmullRomCurve3([new THREE.Vector3(-0.2, -0.01, 0), new THREE.Vector3(-0.05, 0.035, 0.01), new THREE.Vector3(0.1, 0.03, 0.0), new THREE.Vector3(0.22, -0.02, -0.02)]), []);
-  const geo = useMemo(() => new THREE.TubeGeometry(curve, 20, 0.042, 8), [curve]);
+  const geo = useMemo(() => new THREE.TubeGeometry(curve, 20, 0.032, 8), [curve]);
   // inner end (towards the nose) lowers with furrow
   return (
     <group position={[p[0], p[1], p[2] + 0.005]} rotation={[-0.15, s * -0.25, s * (-0.12 + 0.34 * furrow - 0.1 * raise)]} scale={[s, 1, 1]}>
@@ -223,8 +177,8 @@ const Mouth: React.FC<{o: number; w: number; smile: number}> = ({o, w, smile}) =
   const z = base[2];
   const lipHalf = (s: number, upper: boolean) => (
     <group rotation={[0, 0, s * (smile * 0.42 - (upper ? 0 : 0.05 * smile))]} position={[0, 0, 0]}>
-      <mesh position={[s * 0.085 * w, 0, 0]} rotation={[0, 0, Math.PI / 2]} scale={[1, 1, upper ? 0.9 : 1]}>
-        <capsuleGeometry args={[upper ? 0.03 : 0.034, 0.12 * w, 6, 14]} />
+      <mesh position={[s * 0.1 * w, 0, 0]} rotation={[0, 0, Math.PI / 2]} scale={[1, 1, upper ? 0.9 : 1]}>
+        <capsuleGeometry args={[upper ? 0.036 : 0.043, 0.17 * w, 6, 14]} />
         {mat(C.lips, 0.45)}
       </mesh>
     </group>
@@ -259,29 +213,18 @@ const Mouth: React.FC<{o: number; w: number; smile: number}> = ({o, w, smile}) =
             {mat(C.tongue, 0.6)}
           </mesh>
         </group>
-        <JawBeard />
       </group>
     </>
   );
 };
 
-const JawBeard: React.FC = () => <group />; // the beard is a single masked shell on the head (smooth edges)
 
 const Head: React.FC<{pose: DoctorPose}> = ({pose}) => {
   const f = pose.face;
   const open = Math.min(1.1, f.eyeOpen) * (1 - f.blink);
   const nose = headSurface(0, -0.14);
-  const mustache = (s: number) => {
-    const p = headSurface(s * 0.13, -0.4);
-    return (
-      <mesh key={s} position={[p[0] + s * 0.02, p[1], p[2] + 0.025]} rotation={[0.25, s * -0.55, Math.PI / 2 + s * (0.18 - f.smile * 0.22)]}>
-        <capsuleGeometry args={[0.036, 0.2, 6, 12]} />
-        {mat(C.hair, 0.8)}
-      </mesh>
-    );
-  };
   return (
-    <group scale={0.162}>
+    <group scale={0.146}>
       <HeadShape />
       {[-1, 1].map((s) => {
         const e = headSurface(s * 0.97, -0.05);
@@ -292,16 +235,21 @@ const Head: React.FC<{pose: DoctorPose}> = ({pose}) => {
           </mesh>
         );
       })}
-      <mesh position={[0, nose[1], nose[2] + 0.045]} scale={[0.82, 1.05, 1]}>
-        <sphereGeometry args={[0.1, 24, 18]} />
-        {mat(C.skin, 0.6)}
+      {/* nose */}
+      <mesh position={[0, nose[1] + 0.0, nose[2] + 0.03]} scale={[0.82, 1.15, 0.95]}>
+        <sphereGeometry args={[0.105, 24, 18]} />
+        {mat(C.skin, 0.55)}
       </mesh>
+      {[1, -1].map((s) => (
+        <mesh key={s} position={[s * 0.075, nose[1] - 0.07, nose[2] + 0.015]} scale={[0.9, 0.7, 0.8]}>
+          <sphereGeometry args={[0.05, 14, 10]} />
+          {mat(C.skinDark, 0.6)}
+        </mesh>
+      ))}
       <Eye side="L" lookX={f.lookX} lookY={f.lookY} open={open} />
       <Eye side="R" lookX={f.lookX} lookY={f.lookY} open={open} />
       <Brow side="L" raise={f.brow} furrow={f.furrow} />
       <Brow side="R" raise={f.brow} furrow={f.furrow} />
-      {mustache(1)}
-      {mustache(-1)}
       <Mouth o={f.mouthO} w={f.mouthW} smile={f.smile} />
     </group>
   );
@@ -357,7 +305,7 @@ const Hand: React.FC<{side: Side; shape: HandShape}> = ({side, shape}) => {
 const Arm: React.FC<{side: Side; arm: ArmPose}> = ({side, arm}) => {
   const s = sx(side);
   return (
-    <group position={[s * DIM.shoulderX, DIM.shoulderY, 0]} quaternion={arm.upper}>
+    <group position={arm.sh} quaternion={arm.upper}>
       <mesh>
         <sphereGeometry args={[0.056, 20, 16]} />
         {mat(C.coat, 0.85)}
@@ -378,7 +326,7 @@ const Arm: React.FC<{side: Side; arm: ArmPose}> = ({side, arm}) => {
             <cylinderGeometry args={[0.024, 0.028, 0.04, 14]} />
             {mat(C.skin, 0.62)}
           </mesh>
-          <group scale={1.28}><Hand side={side} shape={arm.shape} /></group>
+          <group scale={1.12}><Hand side={side} shape={arm.shape} /></group>
         </group>
       </group>
     </group>
@@ -463,7 +411,7 @@ const Torso: React.FC<{pose: DoctorPose; time: number}> = ({pose, time}) => {
   const pulse = 0.65 + 0.35 * Math.sin(time * 4);
   return (
     <>
-      <group scale={[1.08, 1, 0.74]}>
+      <group scale={[1.0, 1, 0.74]}>
         <mesh>
           <latheGeometry args={[coatProfile, 48]} />
           {mat(C.coat, 0.85, {side: THREE.DoubleSide})}
@@ -471,8 +419,8 @@ const Torso: React.FC<{pose: DoctorPose; time: number}> = ({pose, time}) => {
       </group>
       {/* shoulders blend */}
       {[1, -1].map((s) => (
-        <mesh key={s} position={[s * 0.175, 0.485, 0]} scale={[1.0, 0.9, 1]}>
-          <sphereGeometry args={[0.062, 20, 14]} />
+        <mesh key={s} position={[s * 0.165, 0.46, 0]} scale={[1.0, 0.9, 1]}>
+          <sphereGeometry args={[0.05, 20, 14]} />
           {mat(C.coat, 0.85)}
         </mesh>
       ))}
@@ -537,7 +485,7 @@ export const Doctor: React.FC<{pose: DoctorPose; time: number}> = ({pose, time})
   const {root, hips, torso, head} = pose;
   return (
     <group position={[root.x, root.y, root.z]} rotation={[0, root.yaw, 0]}>
-      <group position={[0, DIM.hipY + hips.yOffset, 0]} rotation={[0, hips.yaw, hips.roll]}>
+      <group position={[hips.x, DIM.hipY + hips.yOffset, 0]} rotation={[0, hips.yaw, hips.roll]}>
         <mesh position={[0, -0.03, 0]} scale={[1.25, 0.95, 0.9]}>
           <sphereGeometry args={[0.13, 24, 16]} />
           {mat(C.scrubs, 0.85)}
@@ -545,7 +493,7 @@ export const Doctor: React.FC<{pose: DoctorPose; time: number}> = ({pose, time})
         <Leg side="L" leg={pose.legs.L} />
         <Leg side="R" leg={pose.legs.R} />
         <group rotation={[torso.pitch, torso.yaw, torso.roll]}>
-          <Torso pose={pose} time={time} />
+          <group scale={[1, 0.95, 1]}><Torso pose={pose} time={time} /></group>
           <Arm side="L" arm={pose.arms.L} />
           <Arm side="R" arm={pose.arms.R} />
           <group position={[0, DIM.neckY, 0]} rotation={[head.pitch, head.yaw, head.roll]}>
