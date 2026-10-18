@@ -19,7 +19,9 @@ export const googleTTS = async (text: string, outFile: string) => {
   const key = needEnv('GEMINI_API_KEY', 'Google AI Studio — https://aistudio.google.com/apikey');
   const model = process.env.GEMINI_TTS_MODEL || 'gemini-2.5-flash-preview-tts';
   const voice = process.env.GEMINI_TTS_VOICE || 'Charon';
-  const res = await fetch(`${BASE}/models/${model}:generateContent`, {
+  let res: Response = undefined as unknown as Response;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    res = await fetch(`${BASE}/models/${model}:generateContent`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'x-goog-api-key': key},
     body: JSON.stringify({
@@ -27,6 +29,11 @@ export const googleTTS = async (text: string, outFile: string) => {
       generationConfig: {responseModalities: ['AUDIO'], speechConfig: {voiceConfig: {prebuiltVoiceConfig: {voiceName: voice}}}},
     }),
   });
+    if (res.status !== 429) break;
+    const wait = parseFloat((await res.clone().text()).match(/retry in ([\d.]+)s/)?.[1] ?? '20');
+    console.log(`  Google rate limit (free tier); waiting ${Math.ceil(wait) + 2}s…`);
+    await new Promise((r) => setTimeout(r, (wait + 2) * 1000));
+  }
   const j: any = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`Google TTS failed: HTTP ${res.status} ${j.error?.message ?? ''}`);
   const b64: string | undefined = j.candidates?.[0]?.content?.parts?.find((x: any) => x.inlineData)?.inlineData?.data;

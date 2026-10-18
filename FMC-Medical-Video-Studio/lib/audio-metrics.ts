@@ -32,7 +32,7 @@ export const asrRoundTrip = async (audioFile: string, expected: string) => {
   const key = needEnv('GEMINI_API_KEY', 'ASR round-trip check');
   const ext = audioFile.split('.').pop();
   const mime = ext === 'mp3' ? 'audio/mp3' : 'audio/wav';
-  const model = process.env.GEMINI_TEXT_MODEL || 'gemini-2.5-flash';
+  const model = process.env.GEMINI_TEXT_MODEL || 'gemini-3.8-flash';
   const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'x-goog-api-key': key},

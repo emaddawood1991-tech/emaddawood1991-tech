@@ -9,7 +9,7 @@ if (!topic || !slug) throw new Error('Usage: npm run script:generate -- --topic 
 const out = p('content', `${slug}.json`);
 if (existsSync(out)) throw new Error(`${out} exists; refusing to overwrite.`);
 const key = needEnv('GEMINI_API_KEY', 'script drafting');
-const model = process.env.GEMINI_TEXT_MODEL || 'gemini-2.5-pro';
+const model = process.env.GEMINI_TEXT_MODEL || 'gemini-3.8-flash';
 const template = JSON.parse((await import('node:fs')).readFileSync(p('content', 'lower-back-pain.json'), 'utf8'));
 
 const prompt = `You are a medical content writer for مركز الفيصل الطبي (Al Ain, UAE). Draft a JSON content file for an Arabic educational video about: "${topic}".
