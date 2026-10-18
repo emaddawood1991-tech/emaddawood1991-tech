@@ -1,5 +1,7 @@
 # Episode 02 · "I Made Claude Code Find 100 Potential Clients in Dubai" (Vibe Prospecting)
 
+**Decisions received 2026-10-18: record on the user's machine; credits: 5-company sample only; mask person-level contact data. Next step: user sends recordings + CSV (see RECORDING-RUNBOOK.md).**
+
 **Status: PRE-PRODUCTION ONLY. Blocked at the approval gate (sign-in, credits, network). No demo has been run, no data exists, nothing is mocked.**
 
 ## 1. Verified facts (official repo `explorium-ai/vibeprospecting-plugin`, HEAD `ca43f6d`, read 2026-10-18)
