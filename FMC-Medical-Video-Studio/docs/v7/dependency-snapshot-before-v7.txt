@@ -1,0 +1,29 @@
+fmc-medical-video-studio@1.0.0 /home/user/emaddawood1991-tech/FMC-Medical-Video-Studio
++-- @fontsource/cairo@5.3.0
++-- @fontsource/ibm-plex-sans-arabic@5.3.0
++-- @fontsource/tajawal@5.3.0
++-- @react-three/fiber@9.0.0
++-- @remotion/bundler@4.0.505
++-- @remotion/cli@4.0.505
++-- @remotion/media-utils@4.0.505
++-- @remotion/renderer@4.0.505
++-- @remotion/three@4.0.505
++-- @remotion/transitions@4.0.505
++-- @types/node@26.6.5
++-- @types/react@19.2.7
++-- @types/three@0.170.0
++-- react-dom@19.2.3
++-- react@19.2.3
++-- remotion@4.0.505
++-- three@0.170.0
++-- tsx@4.23.15
++-- typescript@5.9.3
++-- use-sync-external-store@1.7.0
++-- zod@4.6.7
+`-- zustand@5.0.15
+
+
+v22.22.0
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+2.1.302 (Claude Code)
+0dcffabd816ee0fe36a6bf71c3eb7ed59359e59b2b543c65feb3332fc947ea34  package-lock.json

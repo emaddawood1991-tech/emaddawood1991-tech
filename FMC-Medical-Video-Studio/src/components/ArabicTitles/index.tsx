@@ -59,6 +59,7 @@ export const AnimatedTitle: React.FC<Omit<TextProps, 'children'> & {delay?: numb
 };
 
 /** Glass information card used for symptoms / key points. */
+/** Arabic information card. Standard: size ≥ 40 px, ≤ 6 words (see TYPOGRAPHY in src/lib/fmcStandards.ts). */
 export const InfoCard: React.FC<{text: string; size: number; delay: number; accent?: string; width?: number}> = ({text, size, delay, accent = COLORS.turquoise, width}) => {
   const frame = useCurrentFrame();
   const t = interpolate(frame - delay, [0, 16], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)});
@@ -68,16 +69,16 @@ export const InfoCard: React.FC<{text: string; size: number; delay: number; acce
         width,
         opacity: t,
         transform: `translateX(${(1 - t) * 60}px)`,
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05))',
-        border: '1.5px solid rgba(255,255,255,0.22)',
-        borderRight: `6px solid ${accent}`,
-        borderRadius: 18,
-        padding: `${size * 0.5}px ${size * 0.8}px`,
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 18px 40px rgba(0,0,0,0.25)',
+        // V7: near-opaque navy so Arabic stays readable over the white coat and the pale anatomy (the old 14 % white glass was not)
+        background: 'linear-gradient(135deg, rgba(14,38,64,0.93), rgba(18,52,86,0.9))',
+        border: '1.5px solid rgba(255,255,255,0.24)',
+        borderRight: `8px solid ${accent}`,
+        borderRadius: 22,
+        padding: `${size * 0.42}px ${size * 0.75}px`,
+        boxShadow: '0 14px 34px rgba(0,0,0,0.32)',
       }}
     >
-      <ArabicText size={size} weight={600} align="right">
+      <ArabicText size={size} weight={700} align="right">
         {text}
       </ArabicText>
     </div>

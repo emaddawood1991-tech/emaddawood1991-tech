@@ -49,3 +49,12 @@ Problem within 3 s; affected region early; anatomy visual; short Arabic lines; c
 
 ## Pre-export checklist
 `npm run qc:all` → fix ERRORs → human: watch full video, listen full audio, native-Arabic review, clinician review → `npm run approve …`.
+
+## V7 additions
+- **Audio config:** `FMC_AUDIO` (src/lib/audioPolicy.tsx) is the single source; scenes cannot declare `sfx`; `audio:qc` also scans `v7/` HyperFrames overlays (no `<audio>`, no audio files), music-bed heuristics (percussive onsets, crest), and content files.
+- **Camera:** `src/lib/cameraFlow.ts` (monotone cubic, C1, holds rest, no overshoot) replaced the stop-at-every-key sampler. Transition presets: `src/lib/continuousTransitions.ts`.
+- **Directing styles:** `src/lib/directorStyles.ts` — documentary / commercial / explainer3d; see docs/v7/FMC_DIRECTING_SYSTEM.md.
+- **Acting principles:** `src/components/Doctor/actingPrinciples.ts` (anticipation/overshoot on pointing gestures).
+- **Cards:** near-opaque navy, ≥ 40 px, bottom edge at the safe-zone line (y ≤ 1500).
+- **Logo:** seal variant by default; unchanged original PNG.
+- **HyperFrames:** only through `npm run hf` (guarded). Tests: `npm test`.

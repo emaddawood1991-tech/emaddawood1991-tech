@@ -15,6 +15,8 @@ import {CAM, SHOT_STANDARDS, doctorPct, visibleHeightM} from '../src/components/
 import {CHARACTER_SPEC, LOGO, PACING, SCENE_TYPES, TYPOGRAPHY, sceneVarietyProblems, type SceneTypeKey} from '../src/lib/fmcStandards';
 import {computeTimeline, FPS, totalFrames} from '../src/lib/timeline';
 import {ManifestSchema} from '../src/lib/schema';
+import {buildPerformance} from '../src/components/Doctor/lowerBackScript';
+import {actingExtremes, GESTURE_ACTING} from '../src/components/Doctor/actingPrinciples';
 
 type Level = 'ERROR' | 'WARN' | 'INFO';
 const F: {level: Level; area: string; msg: string}[] = [];
@@ -27,6 +29,24 @@ const doctor = stripComments(readFileSync(p('src', 'components', 'Doctor', 'Doct
 for (const w of CHARACTER_SPEC.forbiddenIdentifiers) if (new RegExp(w, 'i').test(doctor)) add('ERROR', 'character', `Doctor.tsx contains "${w}" — presenter must be clean-shaven`);
 if (!/staticFile\('logo\/fmc-original-logo\.png'\)/.test(doctor)) add('ERROR', 'character', 'Doctor.tsx coat logo does not use the official logo file');
 add('INFO', 'character', 'static checks only: no facial-hair identifiers; official logo file on coat. Appearance (age, friendliness, proportions) needs a human look at real frames.');
+
+// 1b ─ performance grammar (from the real performance script, not from video): repeated gestures, wave count, acting principles present
+{
+  const mf = p('assets', 'audio', arg('slug', 'lower-back-pain')!, 'manifest.json');
+  if (existsSync(mf)) {
+    const cc = loadContent(arg('slug', 'lower-back-pain')!);
+    const perf = buildPerformance(computeTimeline(cc, ManifestSchema.parse(JSON.parse(readFileSync(mf, 'utf8')))), cc, null);
+    const base = (n: string) => n.replace(/#\d+$/, '');
+    const gestures = perf.clips.filter((k) => /^(wave|point|attention|explain|present|celebrate|jump|rehabReset|progressSteps)/.test(base(k.name))).sort((a, b) => a.start - b.start);
+    for (let i = 1; i < gestures.length; i++) if (base(gestures[i].name) === base(gestures[i - 1].name) && gestures[i].start - gestures[i - 1].end < 150) add('WARN', 'animation', `"${base(gestures[i].name)}" repeats within 5 s (frames ${gestures[i - 1].start}–${gestures[i].end})`);
+    const waves = gestures.filter((g) => base(g.name) === 'wave').length;
+    if (waves > 2) add('WARN', 'animation', `${waves} wave gestures (max 2: opening and closing)`);
+    const noActing = gestures.filter((g) => /^point|^attention|^present/.test(base(g.name)) && !g.acting).map((g) => base(g.name));
+    if (noActing.length) add('WARN', 'animation', `pointing gestures without anticipation/follow-through: ${noActing.join(', ')}`);
+    const ex = actingExtremes(GESTURE_ACTING);
+    add('INFO', 'animation', `${gestures.length} gesture clips (${[...new Set(gestures.map((g) => base(g.name)))].join(', ')}); acting curve dips to ${ex.min.toFixed(3)} (anticipation) and peaks at ${ex.max.toFixed(3)} (overshoot)`);
+  }
+}
 
 // 2 ─ camera presets (computed from geometry)
 for (const [kind, st] of Object.entries(SHOT_STANDARDS)) {

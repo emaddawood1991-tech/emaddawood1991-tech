@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import type {Content} from '../src/lib/schema';
 import {scriptHash} from './common';
 
@@ -93,6 +94,23 @@ export const runArabicQC = (c: Content): Finding[] => {
     const words = s.narration.split(/\s+/).length;
     if (words / s.plannedSec > 3.2) add('warn', s.id, 'pacing', 'pacing', `~${words} words in ${s.plannedSec}s planned; timeline will stretch to fit narration.`);
   }
+
+  // Contact details are never added unless explicitly requested (phone numbers, websites, QR, handles, messaging apps).
+  for (const f of textFields(c)) {
+    if (/(?:\+?\d[\d\s-]{6,}\d)/.test(f.text) || /https?:|www\.|\.(?:com|ae|org|net)\b|@\w|\bQR\b|رمز\s*الاستجابة|واتساب|واتس\s*اب|\bwhatsapp\b|تواصل\s+معنا\s+على|اتصل\s+(?:بنا|على)/i.test(f.text))
+      add('error', f.scene, f.field, 'contact-details', 'Phone numbers, websites, QR codes and handles must not appear unless explicitly requested.', f.text);
+  }
+  // Pronunciation lexicon: where a known term is narrated, ttsText must carry the lexicon's diacritised form (human review still required).
+  try {
+    const lex = JSON.parse(readFileSync(new URL('../config/pronunciation.json', import.meta.url), 'utf8')).entries as {term: string; tts: string; alt?: string[]; humanReviewed: boolean}[];
+    for (const s of c.scenes) for (const e of lex) {
+      if (!stripDiacritics(s.ttsText).includes(e.term)) continue;
+      const forms = [e.tts, ...(e.alt ?? [])];
+      if (!forms.some((x) => s.ttsText.includes(x))) add('warn', s.id, 'ttsText', 'pronunciation-lexicon', `"${e.term}" is narrated but ttsText does not use the lexicon form (${forms[0]}) — check case endings or update the lexicon.`, s.ttsText);
+    }
+    const open = lex.filter((e) => !e.humanReviewed).length;
+    if (open) add('warn', '-', 'pronunciation', 'lexicon-unreviewed', `${open} lexicon entries are machine-drafted and not human-reviewed; pronunciation approval after listening is still required.`);
+  } catch { add('warn', '-', 'pronunciation', 'lexicon-missing', 'config/pronunciation.json not found or invalid.'); }
 
   for (const sv of c.services) if (!ALLOWED_SERVICES.includes(sv)) add('error', '-', 'services', 'service', `"${sv}" is not in the allowed service list.`);
   if (c.scenes.at(-1)?.id !== 'closing') add('error', '-', 'scenes', 'structure', 'Last scene must be the branded closing.');

@@ -22,7 +22,10 @@ export const SceneSchema = z.object({
     description: z.string(),
   }),
   footageQueries: z.array(z.string()).default([]),
-  sfx: z.array(z.string()).default([]),
+  /** FMC audio policy: scenes may NOT declare sound effects (this used to be a latent trigger — the original content files said "soft-whoosh"). */
+  sfx: z.array(z.string()).max(0, 'FMC audio policy: scenes cannot declare sound effects').default([]),
+  /** Scene type A–F (see SCENE_TYPES in fmcStandards). Optional; enables the scene-variety check. */
+  sceneType: z.enum(['A', 'B', 'C', 'D', 'E', 'F']).optional(),
 });
 export type Scene = z.infer<typeof SceneSchema>;
 
@@ -75,6 +78,8 @@ export const VideoPropsSchema = z.object({
   visemes: z.object({fps: z.number(), scenes: z.record(z.string(), z.object({o: z.array(z.number()), w: z.array(z.number())}))}).nullable().default(null),
   /** Watermark text for non-final renders (e.g. voiced draft awaiting pronunciation approval). */
   label: z.string().nullable().default(null),
+  /** Director style (documentary | commercial | explainer3d); see src/lib/directorStyles.ts. */
+  styleKey: z.enum(['documentary', 'commercial', 'explainer3d']).default('documentary'),
   music: z.string().nullable(),
   sfx: z.string().nullable(),
 });

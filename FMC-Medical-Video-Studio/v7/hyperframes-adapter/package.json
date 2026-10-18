@@ -1,0 +1,8 @@
+{
+  "name": "fmc-hyperframes-adapter",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Isolated HyperFrames workspace for FMC overlays/inspection. Does not touch the Remotion engine. Local only: no cloud render, no TTS, no catalog audio.",
+  "license": "UNLICENSED",
+  "dependencies": { "gsap": "3.14.2" }
+}

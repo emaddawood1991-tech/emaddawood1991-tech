@@ -6,7 +6,9 @@ import * as THREE from 'three';
 import type {VideoProps} from '../lib/schema';
 import {computeTimeline, totalFrames} from '../lib/timeline';
 import {BG_GRADIENT, makeLayout} from '../styles/theme';
+import {TYPOGRAPHY} from '../lib/fmcStandards';
 import {NarrationAudio} from '../lib/audioPolicy';
+import {DIRECTOR_STYLES, type LightingRig} from '../lib/directorStyles';
 import {loadFonts} from '../styles/fonts';
 import {Doctor} from '../components/Doctor/Doctor';
 import {evaluate} from '../components/Doctor/engine';
@@ -52,6 +54,14 @@ const FloorShadow: React.FC<{x: number; z: number}> = ({x, z}) => {
 
 const ramp = (f: number, a: number, b: number) => interpolate(f, [a, b], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
 
+/** Lighting from the chosen director style (default documentary = the pre-V7 rig, pixel-identical). */
+const StageLights: React.FC<{rig: LightingRig}> = ({rig}) => (
+  <>
+    <hemisphereLight args={[rig.hemi.sky, rig.hemi.ground, rig.hemi.intensity]} />
+    {rig.lights.map((l, i) => <directionalLight key={i} position={l.position} intensity={l.intensity} color={l.color} />)}
+  </>
+);
+
 export const DoctorExplainer: React.FC<VideoProps> = (props) => {
   loadFonts();
   const frame = useCurrentFrame();
@@ -83,7 +93,7 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
 
   const cardW = layout.width - layout.safe.left - layout.safe.right;
   const Cards: React.FC<{items: string[]; amber?: boolean; delay: number; size: number}> = ({items, amber, delay, size}) => (
-    <div style={{position: 'absolute', left: layout.safe.left, right: layout.safe.right, bottom: layout.safe.bottom - 20, display: 'flex', flexDirection: 'column', gap: 10}}>
+    <div style={{position: 'absolute', left: layout.safe.left, right: layout.safe.right, bottom: TYPOGRAPHY.safe.bottom, display: 'flex', flexDirection: 'column', gap: 14}}>
       {items.map((b, i) => (
         <InfoCard key={b} text={b} size={size} delay={delay + i * 24} accent={amber && i === items.length - 1 ? COLORS.amber : undefined} />
       ))}
@@ -103,10 +113,7 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
       <HUDBackdrop />
       <ThreeCanvas width={width} height={height} camera={{fov: 33, position: [0, 1.3, 4.4], near: 0.1, far: 60}} gl={{antialias: true, alpha: true}}>
         <Rig frame={frame} keys={keys} />
-        <hemisphereLight args={['#d7e8ff', '#15263c', 1.0]} />
-        <directionalLight position={[2.5, 3.8, 3.5]} intensity={2.4} color="#fff0de" />
-        <directionalLight position={[-3, 2.2, -2.5]} intensity={1.5} color="#4fd1d1" />
-        <directionalLight position={[0, 1, 4]} intensity={0.5} color="#ffffff" />
+        <StageLights rig={DIRECTOR_STYLES[props.styleKey ?? 'documentary'].lighting} />
         <FloorShadow x={pose.root.x} z={pose.root.z} />
         <Doctor pose={pose} time={frame / fps} />
         {spineScale > 0.0006 && (
@@ -134,9 +141,9 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
             const rel = (f: number) => f - an.from;
             return (
               <>
-                {frame > pa[0].e - 14 && <Callout label="الفقرات القطنية" anchor={anchor(ANCHORS.vertebraL3)} labelY={layout.height * 0.3} edge="right" margin={48} delay={rel(pa[0].e - 14)} size={34} screenW={stage.w} />}
-                {frame > pa[1].s + 14 && <Callout label="القرص الغضروفي" anchor={anchor(ANCHORS.discL2L3)} labelY={layout.height * 0.4} edge="right" margin={48} delay={rel(pa[1].s + 14)} size={34} screenW={stage.w} />}
-                {frame > pa[2].s + 30 && <Callout label="الأعصاب" anchor={anchor(ANCHORS.nerveRoot)} labelY={layout.height * 0.5} edge="right" margin={48} delay={rel(pa[2].s + 30)} size={34} screenW={stage.w} />}
+                {frame > pa[0].e - 14 && <Callout label="الفقرات القطنية" anchor={anchor(ANCHORS.vertebraL3)} labelY={layout.height * 0.3} edge="right" margin={48} delay={rel(pa[0].e - 14)} size={TYPOGRAPHY.minPx.callout} screenW={stage.w} />}
+                {frame > pa[1].s + 14 && <Callout label="القرص الغضروفي" anchor={anchor(ANCHORS.discL2L3)} labelY={layout.height * 0.4} edge="right" margin={48} delay={rel(pa[1].s + 14)} size={TYPOGRAPHY.minPx.callout} screenW={stage.w} />}
+                {frame > pa[2].s + 30 && <Callout label="الأعصاب" anchor={anchor(ANCHORS.nerveRoot)} labelY={layout.height * 0.5} edge="right" margin={48} delay={rel(pa[2].s + 30)} size={TYPOGRAPHY.minPx.callout} screenW={stage.w} />}
               </>
             );
           })()}
@@ -146,19 +153,19 @@ export const DoctorExplainer: React.FC<VideoProps> = (props) => {
       <Sequence from={sy.from} durationInFrames={sy.duration} layout="none">
         <SceneFade duration={sy.duration}>
           <Title text={scene('symptoms').onScreen.title ?? ''} />
-          <Cards items={scene('symptoms').onScreen.bullets ?? []} delay={40} size={31} />
+          <Cards items={scene('symptoms').onScreen.bullets ?? []} delay={40} size={TYPOGRAPHY.minPx.cardText} />
         </SceneFade>
       </Sequence>
       <Sequence from={tr.from} durationInFrames={tr.duration} layout="none">
         <SceneFade duration={tr.duration}>
           <Title text={scene('treatment').onScreen.title ?? ''} />
-          <Cards items={scene('treatment').onScreen.bullets ?? []} delay={50} size={36} />
+          <Cards items={scene('treatment').onScreen.bullets ?? []} delay={50} size={TYPOGRAPHY.minPx.cardText} />
         </SceneFade>
       </Sequence>
       <Sequence from={fm.from} durationInFrames={fm.duration} layout="none">
         <SceneFade duration={fm.duration}>
           <Title text={scene('fmc').onScreen.title ?? ''} size={64} />
-          <Cards items={scene('fmc').onScreen.bullets ?? []} delay={36} size={34} amber />
+          <Cards items={scene('fmc').onScreen.bullets ?? []} delay={36} size={TYPOGRAPHY.minPx.cardText} amber />
         </SceneFade>
       </Sequence>
       <Sequence from={cl.from} durationInFrames={cl.duration + 30} layout="none">

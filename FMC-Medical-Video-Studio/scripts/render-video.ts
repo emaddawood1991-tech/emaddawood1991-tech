@@ -39,7 +39,7 @@ const ff = p('assets', 'footage', slug, `footage-${format === 'reel' ? 'portrait
 const footage = existsSync(ff) ? FootageSchema.parse(JSON.parse(readFileSync(ff, 'utf8'))) : null;
 const props: VideoProps = {
   // `label` is intentionally NOT passed to the composition: no production-status banner is ever drawn on screen (status goes to the QC report).
-  content: c, manifest, footage, preview, label: null, visemes: existsSync(p('assets', 'audio', slug, 'visemes.json')) ? JSON.parse(readFileSync(p('assets', 'audio', slug, 'visemes.json'), 'utf8')) : null,
+  content: c, manifest, footage, preview, label: null, styleKey: (arg('style', 'documentary') as 'documentary' | 'commercial' | 'explainer3d'), visemes: existsSync(p('assets', 'audio', slug, 'visemes.json')) ? JSON.parse(readFileSync(p('assets', 'audio', slug, 'visemes.json'), 'utf8')) : null,
   // music + effects are mixed in the dedicated audio stage (scripts/mix-audio.ts); the render carries narration only
   music: null,
   sfx: null,

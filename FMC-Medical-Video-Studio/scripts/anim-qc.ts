@@ -1,4 +1,4 @@
-/** Objective animation QC for the FMC Doctor performance: foot sliding, joint snaps, leg reach. Output: output/V5/anim_qc.json */
+/** Objective animation QC for the FMC Doctor performance: foot sliding, joint snaps, leg reach. Output: docs/v7/anim_qc_v7.json */
 import * as THREE from 'three';
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {loadContent, p} from '../lib/common';
@@ -70,5 +70,6 @@ const report = {
   note: 'Sliding is estimated from the rendered skeleton (ankle world positions). A planted foot is ~0 cm/frame; the root walks ~1.5 cm/frame.',
 };
 mkdirSync(p('output', 'V6'), {recursive: true});
-writeFileSync(p('output', 'V6', 'anim_qc.json'), JSON.stringify(report, null, 2));
+mkdirSync(p('docs', 'v7'), {recursive: true});
+writeFileSync(p('docs', 'v7', 'anim_qc_v7.json'), JSON.stringify(report, null, 2)); // new location: never overwrite earlier version outputs
 console.log(JSON.stringify(report, null, 2));

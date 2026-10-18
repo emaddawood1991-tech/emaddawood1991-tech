@@ -16,7 +16,7 @@ import {existsSync, readdirSync, readFileSync, statSync, writeFileSync} from 'no
 import {join, relative} from 'node:path';
 import {arg, p, loadContent} from '../lib/common';
 import {loudness} from '../lib/audio-metrics';
-import {FMC_AUDIO_POLICY, FMC_AUDIO_TARGETS} from '../src/lib/audioPolicy';
+import {FMC_AUDIO, FMC_AUDIO_POLICY, FMC_AUDIO_TARGETS} from '../src/lib/audioPolicy';
 import {computeTimeline, FPS} from '../src/lib/timeline';
 import {ManifestSchema} from '../src/lib/schema';
 
@@ -51,7 +51,7 @@ for (const f of srcFiles) {
       if (!/muted(=\{footageMuted\(\)\}|=\{true\}|\s|\/)/.test(block) || /muted=\{false\}/.test(block)) add('ERROR', 'source', `${at} video element is not muted (embedded footage audio would play)`);
       else sources.push(`${at} video element (muted via policy)`);
     }
-    if (/addSound|whoosh|swoosh|\bsfx\b|click|notification|\bding\b|chime/i.test(code) && !allowed(f) && !/src\/(Root\.tsx|lib\/schema\.ts)$/.test(rel(f))) add('WARN', 'source', `${at} sound-effect-like identifier: ${code.trim().slice(0, 100)}`);
+    if (/addSound|whoosh|swoosh|\bsfx\b|click|notification|\bding\b|chime/i.test(code) && !allowed(f) && !/\bsfx: null\b|const FORBIDDEN/.test(code) && !/src\/(Root\.tsx|lib\/schema\.ts)$/.test(rel(f))) add('WARN', 'source', `${at} sound-effect-like identifier: ${code.trim().slice(0, 100)}`);
     const m = code.match(/staticFile\(([^)]+)\)/);
     if (m && /\.(mp3|wav|ogg|m4a|aac)/i.test(m[1]) && !allowed(f)) add('ERROR', 'source', `${at} audio file referenced directly: ${m[1]}`);
   });
@@ -70,9 +70,33 @@ const mx = readFileSync(p('scripts', 'mix-audio.ts'), 'utf8');
 if (!/assertSfxAllowed/.test(mx)) add('ERROR', 'pipeline', 'scripts/mix-audio.ts does not gate effects with assertSfxAllowed()');
 if (/swell|whoosh/i.test(mx)) add('WARN', 'pipeline', 'scripts/mix-audio.ts mentions swell/whoosh — re-check it cannot add seam effects by default');
 
+const refs = new Map<string, number>();
+for (const f of srcFiles) for (const m of readFileSync(f, 'utf8').matchAll(/file="([^"]+\.(?:wav|mp3|ogg))"/g)) refs.set(m[1], (refs.get(m[1]) ?? 0) + 1);
+for (const [k, n] of refs) if (n > 1) add('WARN', 'source', `audio file ${k} is placed ${n} times in source — check for duplicated layers`);
+
 // ───────────────────────── 2. POLICY / ASSET AUDIT ─────────────────────────
 for (const k of ['transitionSfxEnabled', 'characterSfxEnabled', 'interfaceSfxEnabled', 'cameraMovementSfxEnabled', 'anatomyAnimationSfxEnabled', 'automaticWhooshesEnabled', 'footageAudioEnabled'] as const)
   if ((FMC_AUDIO_POLICY as any)[k] !== false) add('ERROR', 'policy', `${k} is ${(FMC_AUDIO_POLICY as any)[k]} (default must be false)`);
+// content files must not declare per-scene effects (the original lower-back-pain.json carried "soft-whoosh"/"ui-tick" on every scene)
+for (const f of walk(p('content')).filter((f) => f.endsWith('.json'))) {
+  try { for (const sc of JSON.parse(readFileSync(f, 'utf8')).scenes ?? []) if ((sc.sfx ?? []).length) add('ERROR', 'content', `${rel(f)} scene "${sc.id}" declares sfx ${JSON.stringify(sc.sfx)} — scenes may not request sound effects`); } catch { add('WARN', 'content', `${rel(f)} is not valid JSON`); }
+}
+// canonical V7 config: music direction flags
+for (const k of ['piano', 'percussion', 'vocals', 'footageAudio', 'autoSoundEffects'] as const) if ((FMC_AUDIO as any)[k] !== false) add('ERROR', 'policy', `FMC_AUDIO.${k} must be false`);
+if (FMC_AUDIO.musicStyle !== 'ultra-soft-medical-ambient') add('WARN', 'policy', `musicStyle is "${FMC_AUDIO.musicStyle}" (expected ultra-soft-medical-ambient)`);
+if (!existsSync(p('scripts', 'hf.mjs'))) add('ERROR', 'pipeline', 'scripts/hf.mjs (guarded HyperFrames wrapper) missing — HyperFrames could be used unguarded');
+else if (!/BLOCKED_WHY/.test(readFileSync(p('scripts', 'hf.mjs'), 'utf8'))) add('ERROR', 'pipeline', 'scripts/hf.mjs no longer blocks tts/cloud/add');
+
+// HyperFrames adapter + any other HTML compositions: no audio/video elements, no effect chains, no audio files
+for (const f of walk(p('v7')).filter((f) => /\.(html?|mjs|js)$/.test(f) && !/node_modules|\.hyperframes/.test(f))) {
+  const t = readFileSync(f, 'utf8');
+  if (/<audio[\s>]/i.test(t)) add('ERROR', 'hyperframes', `${rel(f)} contains an <audio> element — overlays must be silent (narration/music are mixed by mix-audio.ts)`);
+  if (/<video[\s>]/i.test(t) && !/<video[^>]*\bmuted\b/i.test(t)) add('ERROR', 'hyperframes', `${rel(f)} contains a video element that is not muted`);
+  if (/data-fx-chain|<hf-audio-group|data-automation/.test(t)) add('WARN', 'hyperframes', `${rel(f)} uses HyperFrames audio mixing attributes — FMC mixes audio in mix-audio.ts`);
+  if (/\.(mp3|wav|ogg|m4a|flac)['"\)\s]/i.test(t)) add('ERROR', 'hyperframes', `${rel(f)} references an audio file`);
+}
+for (const f of walk(p('v7')).filter((f) => /\.(mp3|wav|ogg|m4a|flac)$/i.test(f) && !/node_modules/.test(f))) add('ERROR', 'hyperframes', `${rel(f)} is an audio file inside the HyperFrames workspace (registry block with bundled SFX/music?)`);
+
 const audioAssets = walk(p('assets', 'audio')).filter((f) => /\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(f));
 const byKind = (f: string) => (/\/_retired\//.test(f) ? 'retired' : /\/sfx-optional\//.test(f) ? 'sfx-optional' : /\/sfx\//.test(f) ? 'SFX-ACTIVE-FOLDER' : /\/music\//.test(f) ? 'music' : 'narration/other');
 for (const f of audioAssets) {
@@ -155,6 +179,25 @@ if (video) {
     } else add('WARN', 'stems', `no sound_effects.wav in ${stems}`);
   }
   add('INFO', 'file', `${lu.lufs} LUFS, ${lu.truePeakDb} dBTP, ${clipped} clipped samples, ${events.length} bright onsets of which ${events.length - nonSpeech.length} are inside narration (normal speech consonants, ignored) and ${nonSpeech.length} outside`);
+}
+
+// 4 ─ music bed heuristics (--music <file>, default: the standard pad bed). Flags percussive/plucked behaviour; it cannot prove "no piano".
+{
+  const mf = arg('music') ?? p('assets', 'audio', 'music', 'fmc-ambient-pads-v6.wav');
+  if (existsSync(mf)) {
+    const buf = execFileSync('ffmpeg', ['-v', 'error', '-i', mf, '-ac', '1', '-ar', '16000', '-f', 's16le', '-'], {maxBuffer: 1 << 29});
+    const x = new Int16Array(buf.buffer, buf.byteOffset, Math.floor(buf.byteLength / 2));
+    const hop = 160, n = Math.floor(x.length / hop), env = new Float64Array(n);
+    let pk = 0, ss = 0;
+    for (let i = 0; i < n; i++) { let e = 0; for (let j = 0; j < hop; j++) { const v = x[i * hop + j] / 32768; e += v * v; pk = Math.max(pk, Math.abs(v)); } ss += e; env[i] = 10 * Math.log10(e / hop + 1e-12); }
+    let onsets = 0, last = -100;
+    for (let i = 4; i < n - 3; i++) if (env[i + 2] - Math.min(...Array.from(env.slice(i - 4, i))) >= 9 && env[i + 2] > -55 && i - last > 20) { onsets++; last = i; }
+    const mins = n / 100 / 60, rms = Math.sqrt(ss / (n * hop)), crest = 20 * Math.log10(pk / (rms + 1e-9));
+    const lu = loudness(mf);
+    add('INFO', 'music', `${rel(mf)}: ${lu.lufs} LUFS, crest ${crest.toFixed(1)} dB, ${(onsets / mins).toFixed(1)} sudden onsets/min`);
+    if (onsets / mins > 4) add('WARN', 'music', `${(onsets / mins).toFixed(1)} sudden onsets per minute in the music bed — percussive/plucked content? Pads should be near 0 (threshold tuned on only two reference files: the pad bed and the retired piano bed)`);
+    if (crest > 14.5) add('WARN', 'music', `crest factor ${crest.toFixed(1)} dB is high for a sustained pad bed (sharp attacks)`);
+  }
 }
 
 // ───────────────────────── report ─────────────────────────

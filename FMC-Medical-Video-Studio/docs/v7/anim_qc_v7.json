@@ -1,0 +1,29 @@
+{
+  "totalFrames": 2415,
+  "groundedFootSpeed_cmPerFrame_whileWalking": {
+    "frames": 103,
+    "mean": 0.086,
+    "max": 2.171,
+    "over1cm": 5
+  },
+  "groundedFootSpeed_cmPerFrame_afterWalk": {
+    "frames": 4613,
+    "mean": 0,
+    "max": 0,
+    "over1cm": 0
+  },
+  "maxJointAngularStep_radPerFrame": {
+    "value": 0.323,
+    "atFrame": 1997,
+    "perJoint": {
+      "armL.upper": 0.171,
+      "armR.upper": 0.242,
+      "armL.fore": 0.239,
+      "armR.fore": 0.323,
+      "legL.thigh": 0.193,
+      "legR.thigh": 0.195
+    }
+  },
+  "snapFramesOver0_45rad": 0,
+  "note": "Sliding is estimated from the rendered skeleton (ankle world positions). A planted foot is ~0 cm/frame; the root walks ~1.5 cm/frame."
+}

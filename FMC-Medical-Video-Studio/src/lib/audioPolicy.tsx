@@ -16,18 +16,40 @@ import {Audio, Sequence, staticFile} from 'remotion';
 
 export type SfxKind = 'transition' | 'character' | 'interface' | 'cameraMovement' | 'anatomyAnimation' | 'automaticWhoosh';
 
+/** Canonical permanent audio configuration (V7). Frozen; every other name below is derived from it. */
+export const FMC_AUDIO = Object.freeze({
+  narration: true,
+  backgroundMusic: true,
+
+  transitionSFX: false,
+  cameraSFX: false,
+  characterSFX: false,
+  interfaceSFX: false,
+  anatomySFX: false,
+
+  autoSoundEffects: false,
+
+  musicStyle: 'ultra-soft-medical-ambient',
+  piano: false,
+  percussion: false,
+  vocals: false,
+
+  /** Embedded audio in stock footage / imported clips is always stripped unless a clip is explicitly approved. */
+  footageAudio: false,
+});
+
+/** Older flag names, derived from FMC_AUDIO so there is only one place to change (kept for existing imports/QC). */
 export const FMC_AUDIO_POLICY = Object.freeze({
-  transitionSfxEnabled: false,
-  characterSfxEnabled: false,
-  interfaceSfxEnabled: false,
-  cameraMovementSfxEnabled: false,
-  anatomyAnimationSfxEnabled: false,
-  automaticWhooshesEnabled: false,
-  backgroundMusicEnabled: true,
-  narrationEnabled: true,
-  backgroundMusicStyle: 'soft-healthcare-ambient',
-  /** Embedded audio in stock footage is always stripped unless a footage item is explicitly approved. */
-  footageAudioEnabled: false,
+  transitionSfxEnabled: FMC_AUDIO.transitionSFX,
+  characterSfxEnabled: FMC_AUDIO.characterSFX,
+  interfaceSfxEnabled: FMC_AUDIO.interfaceSFX,
+  cameraMovementSfxEnabled: FMC_AUDIO.cameraSFX,
+  anatomyAnimationSfxEnabled: FMC_AUDIO.anatomySFX,
+  automaticWhooshesEnabled: FMC_AUDIO.autoSoundEffects,
+  backgroundMusicEnabled: FMC_AUDIO.backgroundMusic,
+  narrationEnabled: FMC_AUDIO.narration,
+  backgroundMusicStyle: FMC_AUDIO.musicStyle,
+  footageAudioEnabled: FMC_AUDIO.footageAudio,
 });
 
 /** Measured targets used by the mix stage and by audio-qc (single place to tune). */

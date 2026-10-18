@@ -1,23 +1,13 @@
 import React from 'react';
-import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import {useThree} from '@react-three/fiber';
 
-export type CamKey = {f: number; pos: [number, number, number]; target: [number, number, number]; fov?: number};
+import {sampleCameraFlow, type CamKey as FlowKey} from '../../lib/cameraFlow';
+export type CamKey = FlowKey;
 
-const lerp3 = (a: number[], b: number[], t: number) => a.map((v, i) => v + (b[i] - v) * t) as [number, number, number];
-
-export const sampleCamera = (keys: CamKey[], frame: number) => {
-  if (frame <= keys[0].f) return keys[0];
-  for (let i = 0; i < keys.length - 1; i++) {
-    const a = keys[i], b = keys[i + 1];
-    if (frame >= a.f && frame <= b.f) {
-      const t = Easing.inOut(Easing.cubic)((frame - a.f) / (b.f - a.f));
-      return {f: frame, pos: lerp3(a.pos, b.pos, t), target: lerp3(a.target, b.target, t), fov: (a.fov ?? 35) + ((b.fov ?? 35) - (a.fov ?? 35)) * t};
-    }
-  }
-  return keys[keys.length - 1];
-};
+/** Continuous (non-stop-at-every-key) camera sampler — see src/lib/cameraFlow.ts. */
+export const sampleCamera = (keys: CamKey[], frame: number) => sampleCameraFlow(keys, frame);
 
 const Rig: React.FC<{keys: CamKey[]}> = ({keys}) => {
   const frame = useCurrentFrame();

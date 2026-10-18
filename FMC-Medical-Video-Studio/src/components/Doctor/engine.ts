@@ -1,3 +1,4 @@
+import {actingEase, GESTURE_ACTING, type Acting} from './actingPrinciples';
 import * as THREE from 'three';
 import {armIK, DIM, HAND, legIK, neutralFace, neutralPose, sx, type ArmPose, type DoctorPose, type Face, type HandShape, type Side, type V3} from './skeleton';
 
@@ -33,6 +34,8 @@ export type Clip = {
   arms?: {L?: ArmIntent; R?: ArmIntent};
   /** world-space point the head/eyes should track */
   look?: V3 | 'camera';
+  /** anticipation + follow-through on the arm blend (pointing/explaining gestures). Omitted = plain ease. */
+  acting?: Acting;
 };
 
 const ss = (x: number) => {
@@ -43,6 +46,13 @@ const weight = (c: Clip, f: number) => {
   if (f < c.start || f > c.end) return 0;
   const i = c.inF ?? 10, o = c.outF ?? 10;
   return ss((f - c.start) / Math.max(1, i)) * (1 - ss((f - (c.end - o)) / Math.max(1, o)));
+};
+/** Arm blend weight: the plain ease, or anticipation/overshoot during the IN phase when the clip opts in. */
+const armWeight = (c: Clip, f: number) => {
+  const w = weight(c, f);
+  if (!c.acting || w === 0) return w;
+  const i = Math.max(1, c.inF ?? 10), x = (f - c.start) / i;
+  return x < 1 ? actingEase(x, c.acting) : w;
 };
 const lerp = (a: number, b: number, w: number) => a + (b - a) * w;
 
@@ -119,36 +129,36 @@ export const A = {
     },
   }),
   pointToLowerBack: (start: number, end: number, side: Side = 'R'): Clip => ({
-    name: id('pointToLowerBack'), start, end, inF: 22, outF: 18,
+    name: id('pointToLowerBack'), start, end, inF: 22, outF: 18, acting: GESTURE_ACTING,
     arms: {[side]: reach(side, [sx(side) * 0.12, 0.1, -0.165], [sx(side) * 0.9, -0.1, -0.7], [-1.2, 0, 0], HAND.flat) as ArmIntent},
     body: () => ({torso: {pitch: -0.05}, face: {furrow: 0.45, smile: 0.12, brow: 0.2}}),
     look: 'camera',
   }),
   pointToShoulder: (start: number, end: number, side: Side = 'R'): Clip => ({
-    name: id('pointToShoulder'), start, end, inF: 14, outF: 14,
+    name: id('pointToShoulder'), start, end, inF: 14, outF: 14, acting: GESTURE_ACTING,
     arms: {[side]: reach(side, [-sx(side) * 0.17, 0.5, 0.17], [sx(side) * 0.4, 0.2, 0.9], [-0.6, 0, 0], HAND.point) as ArmIntent},
   }),
   /** "Attention" gesture: raised open palm (used for the safety note). */
   attention: (start: number, end: number, side: Side = 'R'): Clip => ({
-    name: id('attention'), start, end, inF: 14, outF: 14,
+    name: id('attention'), start, end, inF: 14, outF: 14, acting: GESTURE_ACTING,
     arms: {[side]: ((c: Ctx, t: number) => armIK(side, new THREE.Vector3(sx(side) * 0.27, 0.56 + 0.012 * Math.sin(t * 0.15), 0.3), new THREE.Vector3(sx(side) * 0.8, -0.3, -0.2), handE(side, [-0.1, 0, sx(side) * 0.25]), HAND.open)) as ArmIntent},
     body: () => ({face: {furrow: 0.35, smile: 0, brow: 0.1}}),
     look: 'camera',
   }),
   pointToKnee: (start: number, end: number, side: Side = 'R'): Clip => ({
-    name: id('pointToKnee'), start, end, inF: 14, outF: 14,
+    name: id('pointToKnee'), start, end, inF: 14, outF: 14, acting: GESTURE_ACTING,
     arms: {[side]: reach(side, [sx(side) * 0.16, -0.36, 0.2], [sx(side) * 0.6, 0.0, 0.6], [0.2, 0, 0], HAND.point) as ArmIntent},
     body: () => ({torso: {pitch: 0.12}, head: {pitch: 0.22}}),
   }),
   pointToWrist: (start: number, end: number, side: Side = 'R'): Clip => ({
-    name: id('pointToWrist'), start, end, inF: 14, outF: 14,
+    name: id('pointToWrist'), start, end, inF: 14, outF: 14, acting: GESTURE_ACTING,
     arms: {
       [sx(side) > 0 ? 'R' : 'L']: reach(sx(side) > 0 ? 'R' : 'L', [-0.05 * sx(side), 0.12, 0.33], [-sx(side) * 0.3, -0.2, 0.6], [-0.5, 0, 0], HAND.flat),
       [side]: reach(side, [-sx(side) * 0.03, 0.14, 0.27], [sx(side) * 0.5, 0, 0.4], [0, 0, 0], HAND.point),
     } as Clip['arms'],
   }),
   pointAtAnatomy: (start: number, end: number, world: V3 | (() => V3), side: Side = 'L'): Clip => ({
-    name: id('pointAtAnatomy'), start, end, inF: 16, outF: 16,
+    name: id('pointAtAnatomy'), start, end, inF: 16, outF: 16, acting: GESTURE_ACTING,
     arms: {[side]: ((c: Ctx, t: number) => pointAtWorld(side, typeof world === 'function' ? world() : world, 0.035 + 0.01 * Math.sin(t * 0.12))(c, t)) as ArmIntent},
     body: () => ({face: {smile: 0.3}}),
   }),
@@ -162,7 +172,7 @@ export const A = {
     look: 'camera',
   }),
   presentMedicalModel: (start: number, end: number, world: V3, side: Side = 'L'): Clip => ({
-    name: id('presentMedicalModel'), start, end, inF: 18, outF: 18,
+    name: id('presentMedicalModel'), start, end, inF: 18, outF: 18, acting: GESTURE_ACTING,
     arms: {[side]: ((c: Ctx) => armIK(side, c.toTorso(new THREE.Vector3(world[0] - 0.12 * sx(side) * -1, world[1], world[2] + 0.05)), new THREE.Vector3(sx(side) * 0.8, -0.5, -0.2), handE(side, [0, 0, 0.5 * sx(side)]), HAND.flat)) as ArmIntent},
     body: () => ({face: {smile: 0.5, brow: 0.25}}),
   }),
@@ -367,7 +377,7 @@ export const evaluate = (perf: Perf, frame: number, fps: number, camera: V3): Do
     if (!c.arms) continue;
     for (const s of ['L', 'R'] as Side[]) {
       const intent = c.arms[s];
-      if (intent) arms[s] = blendArm(arms[s], intent(ctx, frame - c.start), w);
+      if (intent) arms[s] = blendArm(arms[s], intent(ctx, frame - c.start), armWeight(c, frame));
     }
   }
   for (const sd of ['L', 'R'] as Side[]) {

@@ -9,3 +9,7 @@ assets/audio/*/
 assets/footage/*/
 assets/audio/_cache/
 .tmp/
+
+# HyperFrames adapter
+v7/hyperframes-adapter/node_modules/
+v7/hyperframes-adapter/.hyperframes/

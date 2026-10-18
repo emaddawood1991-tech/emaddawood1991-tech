@@ -19,6 +19,8 @@
     "audio:bed": "tsx scripts/make-audio-bed.ts",
     "audio:qc": "tsx scripts/audio-qc.ts",
     "standards:qc": "tsx scripts/standards-qc.ts",
+    "hf": "node scripts/hf.mjs",
+    "test": "tsx --test tests/*.test.ts",
     "qc:all": "npm run -s arabic:check -- lower-back-pain; npm run -s audio:qc; npm run -s standards:qc",
     "audio:pads": "python3 scripts/audio/compose_pads_v6.py assets/audio/music/fmc-ambient-pads-v6.wav",
     "audio:mix": "tsx scripts/mix-audio.ts",
