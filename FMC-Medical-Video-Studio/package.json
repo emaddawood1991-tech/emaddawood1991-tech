@@ -16,7 +16,9 @@
     "produce": "tsx scripts/produce.ts",
     "approve": "tsx scripts/approve.ts",
     "voice:approve": "tsx scripts/approve.ts",
-    "audio:bed": "tsx scripts/make-audio-bed.ts"
+    "audio:bed": "tsx scripts/make-audio-bed.ts",
+    "audio:mix": "tsx scripts/mix-audio.ts",
+    "audio:music": "python3 scripts/audio/compose_music.py assets/audio/music/fmc-ambient-piano.wav 86"
   },
   "dependencies": {
     "@fontsource/cairo": "^5.3.0",
