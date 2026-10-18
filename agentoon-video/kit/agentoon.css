@@ -58,6 +58,8 @@ body { font-family: var(--body); -webkit-font-smoothing: antialiased; }
 .cap-style-bar .cap-word { color: var(--cap-idle, #DCE6FA); }
 .cap-style-note .cap-chunk { padding: 20px 36px 24px; border-radius: 8px; background: rgba(9,20,50,.95); border: 3px solid #E7F0F9; box-shadow: inset 0 0 0 9px rgba(9,20,50,.95), inset 0 0 0 12px rgba(231,240,249,.9); }
 .cap-style-note .cap-word { font: italic 700 62px/1.15 var(--display); color: var(--cap-idle, #EAF2FB); letter-spacing: 0; }
+.cap-style-pill .cap-chunk { padding: 16px 26px 20px; border-radius: 999px; background: rgba(6,10,22,.92); border: 2px solid rgba(255,255,255,.16); box-shadow: 0 10px 40px rgba(0,0,0,.5); gap: 0 6px; }
+.cap-style-pill .cap-word { font: 800 58px/1.15 var(--body); text-transform: uppercase; color: var(--cap-idle, #fff); padding: 0 14px; border-radius: 16px; letter-spacing: .01em; }
 .cap-style-plain .cap-word { color: var(--cap-idle, #fff); text-shadow: 0 4px 18px rgba(0,0,0,.55); }
 
 /* paper collage pieces */

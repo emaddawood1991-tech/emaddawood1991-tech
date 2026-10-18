@@ -1,0 +1,1499 @@
+{
+ "voice": "am_michael",
+ "speed": 1.1,
+ "wpm": 158,
+ "total": 99.931,
+ "phrases": [
+  {
+   "id": "p0",
+   "start": 0.15,
+   "end": 3.65,
+   "show": "What if Claude Code could find your next hundred potential clients?",
+   "speak": "What if Claude Code could find your next hundred potential clients?",
+   "map": null
+  },
+  {
+   "id": "p1",
+   "start": 3.77,
+   "end": 12.187,
+   "show": "This is Vibe Prospecting, an open plugin from Explorium that connects Claude Code to a live database of companies and professionals.",
+   "speak": "This is Vibe Prospecting, an open plugin from Explorium that connects Claude Code to a live database of companies and professionals.",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "start": 12.307,
+   "end": 17.493,
+   "show": "Everything lives in an open GitHub repository, under the MIT license.",
+   "speak": "Everything lives in an open GitHub repository, under the MIT license.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "start": 17.613,
+   "end": 20.462,
+   "show": "Install it with one command inside Claude Code.",
+   "speak": "Install it with one command inside Claude Code.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "start": 20.582,
+   "end": 24.674,
+   "show": "Then sign in with your Vibe Prospecting account, and you're ready to search.",
+   "speak": "Then sign in with your Vibe Prospecting account, and you're ready to search.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "start": 24.794,
+   "end": 32.128,
+   "show": "Now give Claude a mission: real estate agencies in Dubai that sell apartments, or advise property investors.",
+   "speak": "Now give Claude a mission: real estate agencies in Dubai that sell apartments, or advise property investors.",
+   "map": null
+  },
+  {
+   "id": "p6",
+   "start": 32.248,
+   "end": 36.314,
+   "show": "That becomes a precise search: location, industry, and company type.",
+   "speak": "That becomes a precise search: location, industry, and company type.",
+   "map": null
+  },
+  {
+   "id": "p7",
+   "start": 36.434,
+   "end": 41.346,
+   "show": "Ask for a sample first, and for any credit requirements before anything is processed.",
+   "speak": "Ask for a sample first, and for any credit requirements before anything is processed.",
+   "map": null
+  },
+  {
+   "id": "p8",
+   "start": 41.466,
+   "end": 47.375,
+   "show": "Behind the scenes, the plugin queries Vibe Prospecting's business database, not the open web.",
+   "speak": "Behind the scenes, the plugin queries Vibe Prospecting's business database, not the open web.",
+   "map": null
+  },
+  {
+   "id": "p9",
+   "start": 47.495,
+   "end": 53.648,
+   "show": "It checks your filters, counts the matches, then runs the whole workflow on a sample of five companies.",
+   "speak": "It checks your filters, counts the matches, then runs the whole workflow on a sample of five companies.",
+   "map": null
+  },
+  {
+   "id": "p10",
+   "start": 53.768,
+   "end": 57.274,
+   "show": "You review that sample, and decide whether to approve a full run.",
+   "speak": "You review that sample, and decide whether to approve a full run.",
+   "map": null
+  },
+  {
+   "id": "p11",
+   "start": 57.394,
+   "end": 67.056,
+   "show": "Next comes enrichment: decision-makers by role and seniority, job titles, company domains, and professional contact details where they exist.",
+   "speak": "Next comes enrichment: decision-makers by role and seniority, job titles, company domains, and professional contact details where they exist.",
+   "map": null
+  },
+  {
+   "id": "p12",
+   "start": 67.176,
+   "end": 69.977,
+   "show": "Where they don't, the field simply says not available.",
+   "speak": "Where they don't, the field simply says not available.",
+   "map": null
+  },
+  {
+   "id": "p13",
+   "start": 70.097,
+   "end": 76.383,
+   "show": "Then the results are saved as a CSV file in your folder, ready for a spreadsheet or your sales team.",
+   "speak": "Then the results are saved as a CSV file in your folder, ready for a spreadsheet or your sales team.",
+   "map": null
+  },
+  {
+   "id": "p14",
+   "start": 76.503,
+   "end": 80.97,
+   "show": "The final count is whatever the database returns. Not always a hundred.",
+   "speak": "The final count is whatever the database returns. Not always a hundred.",
+   "map": null
+  },
+  {
+   "id": "p15",
+   "start": 81.09,
+   "end": 87.178,
+   "show": "Instead of starting every search from scratch, you get a structured list of companies to research and qualify.",
+   "speak": "Instead of starting every search from scratch, you get a structured list of companies to research and qualify.",
+   "map": null
+  },
+  {
+   "id": "p16",
+   "start": 87.298,
+   "end": 90.408,
+   "show": "Find companies. Discover contacts. Export leads.",
+   "speak": "Find companies. Discover contacts. Export leads.",
+   "map": null
+  },
+  {
+   "id": "p17",
+   "start": 90.528,
+   "end": 93.301,
+   "show": "It builds the list. Reaching out is still up to you.",
+   "speak": "It builds the list. Reaching out is still up to you.",
+   "map": null
+  },
+  {
+   "id": "p18",
+   "start": 93.421,
+   "end": 95.604,
+   "show": "Would you use this to find your next clients?",
+   "speak": "Would you use this to find your next clients?",
+   "map": null
+  },
+  {
+   "id": "p19",
+   "start": 95.724,
+   "end": 99.811,
+   "show": "Follow Agentoon.ai for more real AI tutorials.",
+   "speak": "Follow Agentoon dot A I for more real AI tutorials.",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai",
+     "Agentoon dot A I"
+    ],
+    [
+     "for",
+     "for"
+    ],
+    [
+     "more",
+     "more"
+    ],
+    [
+     "real",
+     "real"
+    ],
+    [
+     "AI",
+     "AI"
+    ],
+    [
+     "tutorials.",
+     "tutorials."
+    ]
+   ]
+  }
+ ],
+ "words": [
+  {
+   "w": "What",
+   "s": 0.15,
+   "e": 0.416
+  },
+  {
+   "w": "if",
+   "s": 0.416,
+   "e": 0.593
+  },
+  {
+   "w": "Claude",
+   "s": 0.593,
+   "e": 0.947
+  },
+  {
+   "w": "Code",
+   "s": 0.947,
+   "e": 1.213
+  },
+  {
+   "w": "could",
+   "s": 1.213,
+   "e": 1.523
+  },
+  {
+   "w": "find",
+   "s": 1.523,
+   "e": 1.789
+  },
+  {
+   "w": "your",
+   "s": 1.789,
+   "e": 2.055
+  },
+  {
+   "w": "next",
+   "s": 2.055,
+   "e": 2.321
+  },
+  {
+   "w": "hundred",
+   "s": 2.321,
+   "e": 2.72
+  },
+  {
+   "w": "potential",
+   "s": 2.72,
+   "e": 3.207
+  },
+  {
+   "w": "clients?",
+   "s": 3.207,
+   "e": 3.65
+  },
+  {
+   "w": "This",
+   "s": 3.77,
+   "e": 4.098
+  },
+  {
+   "w": "is",
+   "s": 4.098,
+   "e": 4.317
+  },
+  {
+   "w": "Vibe",
+   "s": 4.317,
+   "e": 4.644
+  },
+  {
+   "w": "Prospecting,",
+   "s": 4.644,
+   "e": 5.41
+  },
+  {
+   "w": "an",
+   "s": 5.41,
+   "e": 5.628
+  },
+  {
+   "w": "open",
+   "s": 5.628,
+   "e": 5.956
+  },
+  {
+   "w": "plugin",
+   "s": 5.956,
+   "e": 6.393
+  },
+  {
+   "w": "from",
+   "s": 6.393,
+   "e": 6.721
+  },
+  {
+   "w": "Explorium",
+   "s": 6.721,
+   "e": 7.323
+  },
+  {
+   "w": "that",
+   "s": 7.323,
+   "e": 7.651
+  },
+  {
+   "w": "connects",
+   "s": 7.651,
+   "e": 8.197
+  },
+  {
+   "w": "Claude",
+   "s": 8.197,
+   "e": 8.634
+  },
+  {
+   "w": "Code",
+   "s": 8.634,
+   "e": 8.962
+  },
+  {
+   "w": "to",
+   "s": 8.962,
+   "e": 9.181
+  },
+  {
+   "w": "a",
+   "s": 9.181,
+   "e": 9.345
+  },
+  {
+   "w": "live",
+   "s": 9.345,
+   "e": 9.673
+  },
+  {
+   "w": "database",
+   "s": 9.673,
+   "e": 10.219
+  },
+  {
+   "w": "of",
+   "s": 10.219,
+   "e": 10.438
+  },
+  {
+   "w": "companies",
+   "s": 10.438,
+   "e": 11.039
+  },
+  {
+   "w": "and",
+   "s": 11.039,
+   "e": 11.313
+  },
+  {
+   "w": "professionals.",
+   "s": 11.313,
+   "e": 12.187
+  },
+  {
+   "w": "Everything",
+   "s": 12.307,
+   "e": 13.075
+  },
+  {
+   "w": "lives",
+   "s": 13.075,
+   "e": 13.523
+  },
+  {
+   "w": "in",
+   "s": 13.523,
+   "e": 13.78
+  },
+  {
+   "w": "an",
+   "s": 13.78,
+   "e": 14.036
+  },
+  {
+   "w": "open",
+   "s": 14.036,
+   "e": 14.42
+  },
+  {
+   "w": "GitHub",
+   "s": 14.42,
+   "e": 14.932
+  },
+  {
+   "w": "repository,",
+   "s": 14.932,
+   "e": 15.764
+  },
+  {
+   "w": "under",
+   "s": 15.764,
+   "e": 16.213
+  },
+  {
+   "w": "the",
+   "s": 16.213,
+   "e": 16.533
+  },
+  {
+   "w": "MIT",
+   "s": 16.533,
+   "e": 16.853
+  },
+  {
+   "w": "license.",
+   "s": 16.853,
+   "e": 17.493
+  },
+  {
+   "w": "Install",
+   "s": 17.613,
+   "e": 18.071
+  },
+  {
+   "w": "it",
+   "s": 18.071,
+   "e": 18.274
+  },
+  {
+   "w": "with",
+   "s": 18.274,
+   "e": 18.58
+  },
+  {
+   "w": "one",
+   "s": 18.58,
+   "e": 18.834
+  },
+  {
+   "w": "command",
+   "s": 18.834,
+   "e": 19.292
+  },
+  {
+   "w": "inside",
+   "s": 19.292,
+   "e": 19.699
+  },
+  {
+   "w": "Claude",
+   "s": 19.699,
+   "e": 20.106
+  },
+  {
+   "w": "Code.",
+   "s": 20.106,
+   "e": 20.462
+  },
+  {
+   "w": "Then",
+   "s": 20.582,
+   "e": 20.855
+  },
+  {
+   "w": "sign",
+   "s": 20.855,
+   "e": 21.128
+  },
+  {
+   "w": "in",
+   "s": 21.128,
+   "e": 21.309
+  },
+  {
+   "w": "with",
+   "s": 21.309,
+   "e": 21.582
+  },
+  {
+   "w": "your",
+   "s": 21.582,
+   "e": 21.855
+  },
+  {
+   "w": "Vibe",
+   "s": 21.855,
+   "e": 22.128
+  },
+  {
+   "w": "Prospecting",
+   "s": 22.128,
+   "e": 22.719
+  },
+  {
+   "w": "account,",
+   "s": 22.719,
+   "e": 23.174
+  },
+  {
+   "w": "and",
+   "s": 23.174,
+   "e": 23.401
+  },
+  {
+   "w": "you're",
+   "s": 23.401,
+   "e": 23.765
+  },
+  {
+   "w": "ready",
+   "s": 23.765,
+   "e": 24.083
+  },
+  {
+   "w": "to",
+   "s": 24.083,
+   "e": 24.265
+  },
+  {
+   "w": "search.",
+   "s": 24.265,
+   "e": 24.674
+  },
+  {
+   "w": "Now",
+   "s": 24.794,
+   "e": 25.085
+  },
+  {
+   "w": "give",
+   "s": 25.085,
+   "e": 25.434
+  },
+  {
+   "w": "Claude",
+   "s": 25.434,
+   "e": 25.9
+  },
+  {
+   "w": "a",
+   "s": 25.9,
+   "e": 26.075
+  },
+  {
+   "w": "mission:",
+   "s": 26.075,
+   "e": 26.657
+  },
+  {
+   "w": "real",
+   "s": 26.657,
+   "e": 27.006
+  },
+  {
+   "w": "estate",
+   "s": 27.006,
+   "e": 27.471
+  },
+  {
+   "w": "agencies",
+   "s": 27.471,
+   "e": 28.054
+  },
+  {
+   "w": "in",
+   "s": 28.054,
+   "e": 28.286
+  },
+  {
+   "w": "Dubai",
+   "s": 28.286,
+   "e": 28.694
+  },
+  {
+   "w": "that",
+   "s": 28.694,
+   "e": 29.043
+  },
+  {
+   "w": "sell",
+   "s": 29.043,
+   "e": 29.392
+  },
+  {
+   "w": "apartments,",
+   "s": 29.392,
+   "e": 30.149
+  },
+  {
+   "w": "or",
+   "s": 30.149,
+   "e": 30.382
+  },
+  {
+   "w": "advise",
+   "s": 30.382,
+   "e": 30.847
+  },
+  {
+   "w": "property",
+   "s": 30.847,
+   "e": 31.43
+  },
+  {
+   "w": "investors.",
+   "s": 31.43,
+   "e": 32.128
+  },
+  {
+   "w": "That",
+   "s": 32.248,
+   "e": 32.557
+  },
+  {
+   "w": "becomes",
+   "s": 32.557,
+   "e": 33.02
+  },
+  {
+   "w": "a",
+   "s": 33.02,
+   "e": 33.174
+  },
+  {
+   "w": "precise",
+   "s": 33.174,
+   "e": 33.638
+  },
+  {
+   "w": "search:",
+   "s": 33.638,
+   "e": 34.101
+  },
+  {
+   "w": "location,",
+   "s": 34.101,
+   "e": 34.667
+  },
+  {
+   "w": "industry,",
+   "s": 34.667,
+   "e": 35.233
+  },
+  {
+   "w": "and",
+   "s": 35.233,
+   "e": 35.491
+  },
+  {
+   "w": "company",
+   "s": 35.491,
+   "e": 35.954
+  },
+  {
+   "w": "type.",
+   "s": 35.954,
+   "e": 36.314
+  },
+  {
+   "w": "Ask",
+   "s": 36.434,
+   "e": 36.68
+  },
+  {
+   "w": "for",
+   "s": 36.68,
+   "e": 36.925
+  },
+  {
+   "w": "a",
+   "s": 36.925,
+   "e": 37.073
+  },
+  {
+   "w": "sample",
+   "s": 37.073,
+   "e": 37.466
+  },
+  {
+   "w": "first,",
+   "s": 37.466,
+   "e": 37.858
+  },
+  {
+   "w": "and",
+   "s": 37.858,
+   "e": 38.104
+  },
+  {
+   "w": "for",
+   "s": 38.104,
+   "e": 38.35
+  },
+  {
+   "w": "any",
+   "s": 38.35,
+   "e": 38.595
+  },
+  {
+   "w": "credit",
+   "s": 38.595,
+   "e": 38.988
+  },
+  {
+   "w": "requirements",
+   "s": 38.988,
+   "e": 39.676
+  },
+  {
+   "w": "before",
+   "s": 39.676,
+   "e": 40.069
+  },
+  {
+   "w": "anything",
+   "s": 40.069,
+   "e": 40.56
+  },
+  {
+   "w": "is",
+   "s": 40.56,
+   "e": 40.757
+  },
+  {
+   "w": "processed.",
+   "s": 40.757,
+   "e": 41.346
+  },
+  {
+   "w": "Behind",
+   "s": 41.466,
+   "e": 41.904
+  },
+  {
+   "w": "the",
+   "s": 41.904,
+   "e": 42.177
+  },
+  {
+   "w": "scenes,",
+   "s": 42.177,
+   "e": 42.67
+  },
+  {
+   "w": "the",
+   "s": 42.67,
+   "e": 42.943
+  },
+  {
+   "w": "plugin",
+   "s": 42.943,
+   "e": 43.381
+  },
+  {
+   "w": "queries",
+   "s": 43.381,
+   "e": 43.873
+  },
+  {
+   "w": "Vibe",
+   "s": 43.873,
+   "e": 44.202
+  },
+  {
+   "w": "Prospecting's",
+   "s": 44.202,
+   "e": 45.022
+  },
+  {
+   "w": "business",
+   "s": 45.022,
+   "e": 45.569
+  },
+  {
+   "w": "database,",
+   "s": 45.569,
+   "e": 46.171
+  },
+  {
+   "w": "not",
+   "s": 46.171,
+   "e": 46.445
+  },
+  {
+   "w": "the",
+   "s": 46.445,
+   "e": 46.718
+  },
+  {
+   "w": "open",
+   "s": 46.718,
+   "e": 47.047
+  },
+  {
+   "w": "web.",
+   "s": 47.047,
+   "e": 47.375
+  },
+  {
+   "w": "It",
+   "s": 47.495,
+   "e": 47.697
+  },
+  {
+   "w": "checks",
+   "s": 47.697,
+   "e": 48.1
+  },
+  {
+   "w": "your",
+   "s": 48.1,
+   "e": 48.403
+  },
+  {
+   "w": "filters,",
+   "s": 48.403,
+   "e": 48.907
+  },
+  {
+   "w": "counts",
+   "s": 48.907,
+   "e": 49.311
+  },
+  {
+   "w": "the",
+   "s": 49.311,
+   "e": 49.563
+  },
+  {
+   "w": "matches,",
+   "s": 49.563,
+   "e": 50.067
+  },
+  {
+   "w": "then",
+   "s": 50.067,
+   "e": 50.37
+  },
+  {
+   "w": "runs",
+   "s": 50.37,
+   "e": 50.672
+  },
+  {
+   "w": "the",
+   "s": 50.672,
+   "e": 50.925
+  },
+  {
+   "w": "whole",
+   "s": 50.925,
+   "e": 51.278
+  },
+  {
+   "w": "workflow",
+   "s": 51.278,
+   "e": 51.782
+  },
+  {
+   "w": "on",
+   "s": 51.782,
+   "e": 51.984
+  },
+  {
+   "w": "a",
+   "s": 51.984,
+   "e": 52.135
+  },
+  {
+   "w": "sample",
+   "s": 52.135,
+   "e": 52.538
+  },
+  {
+   "w": "of",
+   "s": 52.538,
+   "e": 52.74
+  },
+  {
+   "w": "five",
+   "s": 52.74,
+   "e": 53.043
+  },
+  {
+   "w": "companies.",
+   "s": 53.043,
+   "e": 53.648
+  },
+  {
+   "w": "You",
+   "s": 53.768,
+   "e": 53.993
+  },
+  {
+   "w": "review",
+   "s": 53.993,
+   "e": 54.352
+  },
+  {
+   "w": "that",
+   "s": 54.352,
+   "e": 54.622
+  },
+  {
+   "w": "sample,",
+   "s": 54.622,
+   "e": 55.027
+  },
+  {
+   "w": "and",
+   "s": 55.027,
+   "e": 55.251
+  },
+  {
+   "w": "decide",
+   "s": 55.251,
+   "e": 55.611
+  },
+  {
+   "w": "whether",
+   "s": 55.611,
+   "e": 56.015
+  },
+  {
+   "w": "to",
+   "s": 56.015,
+   "e": 56.195
+  },
+  {
+   "w": "approve",
+   "s": 56.195,
+   "e": 56.6
+  },
+  {
+   "w": "a",
+   "s": 56.6,
+   "e": 56.735
+  },
+  {
+   "w": "full",
+   "s": 56.735,
+   "e": 57.004
+  },
+  {
+   "w": "run.",
+   "s": 57.004,
+   "e": 57.274
+  },
+  {
+   "w": "Next",
+   "s": 57.394,
+   "e": 57.754
+  },
+  {
+   "w": "comes",
+   "s": 57.754,
+   "e": 58.174
+  },
+  {
+   "w": "enrichment:",
+   "s": 58.174,
+   "e": 58.954
+  },
+  {
+   "w": "decision-makers",
+   "s": 58.954,
+   "e": 59.975
+  },
+  {
+   "w": "by",
+   "s": 59.975,
+   "e": 60.215
+  },
+  {
+   "w": "role",
+   "s": 60.215,
+   "e": 60.575
+  },
+  {
+   "w": "and",
+   "s": 60.575,
+   "e": 60.875
+  },
+  {
+   "w": "seniority,",
+   "s": 60.875,
+   "e": 61.595
+  },
+  {
+   "w": "job",
+   "s": 61.595,
+   "e": 61.895
+  },
+  {
+   "w": "titles,",
+   "s": 61.895,
+   "e": 62.435
+  },
+  {
+   "w": "company",
+   "s": 62.435,
+   "e": 62.975
+  },
+  {
+   "w": "domains,",
+   "s": 62.975,
+   "e": 63.575
+  },
+  {
+   "w": "and",
+   "s": 63.575,
+   "e": 63.875
+  },
+  {
+   "w": "professional",
+   "s": 63.875,
+   "e": 64.716
+  },
+  {
+   "w": "contact",
+   "s": 64.716,
+   "e": 65.256
+  },
+  {
+   "w": "details",
+   "s": 65.256,
+   "e": 65.796
+  },
+  {
+   "w": "where",
+   "s": 65.796,
+   "e": 66.216
+  },
+  {
+   "w": "they",
+   "s": 66.216,
+   "e": 66.576
+  },
+  {
+   "w": "exist.",
+   "s": 66.576,
+   "e": 67.056
+  },
+  {
+   "w": "Where",
+   "s": 67.176,
+   "e": 67.482
+  },
+  {
+   "w": "they",
+   "s": 67.482,
+   "e": 67.745
+  },
+  {
+   "w": "don't,",
+   "s": 67.745,
+   "e": 68.095
+  },
+  {
+   "w": "the",
+   "s": 68.095,
+   "e": 68.314
+  },
+  {
+   "w": "field",
+   "s": 68.314,
+   "e": 68.62
+  },
+  {
+   "w": "simply",
+   "s": 68.62,
+   "e": 68.97
+  },
+  {
+   "w": "says",
+   "s": 68.97,
+   "e": 69.233
+  },
+  {
+   "w": "not",
+   "s": 69.233,
+   "e": 69.452
+  },
+  {
+   "w": "available.",
+   "s": 69.452,
+   "e": 69.977
+  },
+  {
+   "w": "Then",
+   "s": 70.097,
+   "e": 70.409
+  },
+  {
+   "w": "the",
+   "s": 70.409,
+   "e": 70.668
+  },
+  {
+   "w": "results",
+   "s": 70.668,
+   "e": 71.136
+  },
+  {
+   "w": "are",
+   "s": 71.136,
+   "e": 71.396
+  },
+  {
+   "w": "saved",
+   "s": 71.396,
+   "e": 71.759
+  },
+  {
+   "w": "as",
+   "s": 71.759,
+   "e": 71.967
+  },
+  {
+   "w": "a",
+   "s": 71.967,
+   "e": 72.123
+  },
+  {
+   "w": "CSV",
+   "s": 72.123,
+   "e": 72.383
+  },
+  {
+   "w": "file",
+   "s": 72.383,
+   "e": 72.695
+  },
+  {
+   "w": "in",
+   "s": 72.695,
+   "e": 72.902
+  },
+  {
+   "w": "your",
+   "s": 72.902,
+   "e": 73.214
+  },
+  {
+   "w": "folder,",
+   "s": 73.214,
+   "e": 73.682
+  },
+  {
+   "w": "ready",
+   "s": 73.682,
+   "e": 74.045
+  },
+  {
+   "w": "for",
+   "s": 74.045,
+   "e": 74.305
+  },
+  {
+   "w": "a",
+   "s": 74.305,
+   "e": 74.461
+  },
+  {
+   "w": "spreadsheet",
+   "s": 74.461,
+   "e": 75.136
+  },
+  {
+   "w": "or",
+   "s": 75.136,
+   "e": 75.344
+  },
+  {
+   "w": "your",
+   "s": 75.344,
+   "e": 75.656
+  },
+  {
+   "w": "sales",
+   "s": 75.656,
+   "e": 76.019
+  },
+  {
+   "w": "team.",
+   "s": 76.019,
+   "e": 76.383
+  },
+  {
+   "w": "The",
+   "s": 76.503,
+   "e": 76.769
+  },
+  {
+   "w": "final",
+   "s": 76.769,
+   "e": 77.141
+  },
+  {
+   "w": "count",
+   "s": 77.141,
+   "e": 77.513
+  },
+  {
+   "w": "is",
+   "s": 77.513,
+   "e": 77.726
+  },
+  {
+   "w": "whatever",
+   "s": 77.726,
+   "e": 78.258
+  },
+  {
+   "w": "the",
+   "s": 78.258,
+   "e": 78.524
+  },
+  {
+   "w": "database",
+   "s": 78.524,
+   "e": 79.056
+  },
+  {
+   "w": "returns.",
+   "s": 79.056,
+   "e": 79.587
+  },
+  {
+   "w": "Not",
+   "s": 79.587,
+   "e": 79.853
+  },
+  {
+   "w": "always",
+   "s": 79.853,
+   "e": 80.279
+  },
+  {
+   "w": "a",
+   "s": 80.279,
+   "e": 80.438
+  },
+  {
+   "w": "hundred.",
+   "s": 80.438,
+   "e": 80.97
+  },
+  {
+   "w": "Instead",
+   "s": 81.09,
+   "e": 81.515
+  },
+  {
+   "w": "of",
+   "s": 81.515,
+   "e": 81.704
+  },
+  {
+   "w": "starting",
+   "s": 81.704,
+   "e": 82.175
+  },
+  {
+   "w": "every",
+   "s": 82.175,
+   "e": 82.506
+  },
+  {
+   "w": "search",
+   "s": 82.506,
+   "e": 82.883
+  },
+  {
+   "w": "from",
+   "s": 82.883,
+   "e": 83.167
+  },
+  {
+   "w": "scratch,",
+   "s": 83.167,
+   "e": 83.638
+  },
+  {
+   "w": "you",
+   "s": 83.638,
+   "e": 83.874
+  },
+  {
+   "w": "get",
+   "s": 83.874,
+   "e": 84.11
+  },
+  {
+   "w": "a",
+   "s": 84.11,
+   "e": 84.252
+  },
+  {
+   "w": "structured",
+   "s": 84.252,
+   "e": 84.818
+  },
+  {
+   "w": "list",
+   "s": 84.818,
+   "e": 85.101
+  },
+  {
+   "w": "of",
+   "s": 85.101,
+   "e": 85.29
+  },
+  {
+   "w": "companies",
+   "s": 85.29,
+   "e": 85.809
+  },
+  {
+   "w": "to",
+   "s": 85.809,
+   "e": 85.998
+  },
+  {
+   "w": "research",
+   "s": 85.998,
+   "e": 86.47
+  },
+  {
+   "w": "and",
+   "s": 86.47,
+   "e": 86.706
+  },
+  {
+   "w": "qualify.",
+   "s": 86.706,
+   "e": 87.178
+  },
+  {
+   "w": "Find",
+   "s": 87.298,
+   "e": 87.637
+  },
+  {
+   "w": "companies.",
+   "s": 87.637,
+   "e": 88.316
+  },
+  {
+   "w": "Discover",
+   "s": 88.316,
+   "e": 88.881
+  },
+  {
+   "w": "contacts.",
+   "s": 88.881,
+   "e": 89.503
+  },
+  {
+   "w": "Export",
+   "s": 89.503,
+   "e": 89.956
+  },
+  {
+   "w": "leads.",
+   "s": 89.956,
+   "e": 90.408
+  },
+  {
+   "w": "It",
+   "s": 90.528,
+   "e": 90.701
+  },
+  {
+   "w": "builds",
+   "s": 90.701,
+   "e": 91.048
+  },
+  {
+   "w": "the",
+   "s": 91.048,
+   "e": 91.265
+  },
+  {
+   "w": "list.",
+   "s": 91.265,
+   "e": 91.568
+  },
+  {
+   "w": "Reaching",
+   "s": 91.568,
+   "e": 92.001
+  },
+  {
+   "w": "out",
+   "s": 92.001,
+   "e": 92.218
+  },
+  {
+   "w": "is",
+   "s": 92.218,
+   "e": 92.391
+  },
+  {
+   "w": "still",
+   "s": 92.391,
+   "e": 92.694
+  },
+  {
+   "w": "up",
+   "s": 92.694,
+   "e": 92.868
+  },
+  {
+   "w": "to",
+   "s": 92.868,
+   "e": 93.041
+  },
+  {
+   "w": "you.",
+   "s": 93.041,
+   "e": 93.301
+  },
+  {
+   "w": "Would",
+   "s": 93.421,
+   "e": 93.699
+  },
+  {
+   "w": "you",
+   "s": 93.699,
+   "e": 93.897
+  },
+  {
+   "w": "use",
+   "s": 93.897,
+   "e": 94.096
+  },
+  {
+   "w": "this",
+   "s": 94.096,
+   "e": 94.334
+  },
+  {
+   "w": "to",
+   "s": 94.334,
+   "e": 94.493
+  },
+  {
+   "w": "find",
+   "s": 94.493,
+   "e": 94.731
+  },
+  {
+   "w": "your",
+   "s": 94.731,
+   "e": 94.969
+  },
+  {
+   "w": "next",
+   "s": 94.969,
+   "e": 95.207
+  },
+  {
+   "w": "clients?",
+   "s": 95.207,
+   "e": 95.604
+  },
+  {
+   "w": "Follow",
+   "s": 95.724,
+   "e": 96.278
+  },
+  {
+   "w": "Agentoon.ai",
+   "s": 96.278,
+   "e": 97.525
+  },
+  {
+   "w": "for",
+   "s": 97.525,
+   "e": 97.871
+  },
+  {
+   "w": "more",
+   "s": 97.871,
+   "e": 98.287
+  },
+  {
+   "w": "real",
+   "s": 98.287,
+   "e": 98.703
+  },
+  {
+   "w": "AI",
+   "s": 98.703,
+   "e": 98.98
+  },
+  {
+   "w": "tutorials.",
+   "s": 98.98,
+   "e": 99.811
+  }
+ ]
+}

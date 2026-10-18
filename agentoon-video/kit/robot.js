@@ -169,6 +169,25 @@
     return end + 0.3;
   };
 
+  /* press a key/button at stage position: arm reaches (aimPoint), taps, returns. Returns {end, tapAt} so the UI can respond on contact. */
+  B.press = function (tl, at, o) {
+    const arm = (o.hand || "R") === "L" ? this.P.armL : this.P.armR;
+    const end = this.aimPoint(tl, at, Object.assign({ hold: 0.35 }, o));
+    const tapAt = at + 0.44 + 0.12;
+    const base = arm.__theta == null ? 0 : arm.__theta;
+    tl.to(arm, { y: 5, duration: 0.07, ease: "power2.in" }, tapAt); tl.to(arm, { y: 0, duration: 0.12, ease: "power2.out" }, tapAt + 0.07);
+    tl.to(this.P.bob, { y: 3, duration: 0.07 }, tapAt); tl.to(this.P.bob, { y: 0, duration: 0.14 }, tapAt + 0.07);
+    return { end, tapAt };
+  };
+  /* rise from below an edge/card (peek), settle with a little overshoot */
+  B.rise = function (tl, at, dy, dur) {
+    const w = this.P.wrap, d = dur || 0.5;
+    tl.from(w, { y: "+=" + dy, duration: d, ease: "back.out(1.6)" }, at); tl.from(this.P.eyes, { opacity: 0, duration: 0.05 }, at);
+    return at + d;
+  };
+  B.nod = function (tl, at) { const h = this.P.head; for (let i = 0; i < 2; i++) { tl.to(h, { y: 7, duration: 0.1, ease: "power1.in" }, at + i * 0.22); tl.to(h, { y: 0, duration: 0.12, ease: "power1.out" }, at + i * 0.22 + 0.1); } return at + 0.46; };
+  B.shake = function (tl, at) { const h = this.P.head; for (let i = 0; i < 3; i++) { tl.to(h, { rotation: i % 2 ? 9 : -9, duration: 0.09 }, at + i * 0.1); } tl.to(h, { rotation: 0, duration: 0.12 }, at + 0.3); this.mouth(tl, at, "flat"); this.mouth(tl, at + 0.5, "smile"); return at + 0.5; };
+
   B.react = function (tl, at, mood) {
     const P = this.P; let t = at;
     if (mood === "wow") {

@@ -6,7 +6,9 @@
      Cam.push(tl, at, dur, {out, inn, ox, oy, scale})               push through a point; next scene arrives from inside it
      Cam.drift(tl, el, at, dur, {ax, ay, rot})                      subtle hand-held drift (deterministic sine)
      Cam.frame(world, cx, cy, s) / Cam.fly(tl, world, at, dur, {cx, cy, s})   continuous camera over a big world
-     Cam.sheetDrop(tl, at, dur, {out, inn})                         a new sheet is laid over the old one */
+     Cam.sheetDrop(tl, at, dur, {out, inn})                         a new sheet is laid over the old one
+     Cam.iris(tl, at, dur, {inn, cx, cy, ring})                     circle grows from a point and reveals the incoming scene
+     Cam.fly(..., {cx, cy, s, blur})                                blur: px of motion blur at peak speed */
 (function () {
   const W = 1080, H = 1920;
 
@@ -50,12 +52,30 @@
 
   /* continuous camera over a big world: world is positioned with transform-origin 0 0 and moved so (cx,cy) is centred at scale s */
   function frame(world, cx, cy, s) { gsap.set(world, { transformOrigin: "0px 0px", x: W / 2 - cx * s, y: H / 2 - cy * s, scale: s }); }
-  function fly(tl, world, at, dur, o) { const s = o.s || 1; tl.to(world, { x: W / 2 - o.cx * s, y: H / 2 - o.cy * s, scale: s, duration: dur, ease: o.ease || "power2.inOut" }, at); return at + dur; }
+  function fly(tl, world, at, dur, o) {
+    const s = o.s || 1; tl.to(world, { x: W / 2 - o.cx * s, y: H / 2 - o.cy * s, scale: s, duration: dur, ease: o.ease || "power2.inOut" }, at);
+    if (o.blur) { tl.to(world, { filter: "blur(" + o.blur + "px)", duration: dur * 0.4, ease: "power2.in" }, at); tl.to(world, { filter: "blur(0px)", duration: dur * 0.4, ease: "power2.out" }, at + dur * 0.6); }
+    return at + dur;
+  }
 
   /* a new sheet is laid onto the desk from above (incoming scene must sit above the outgoing one in the DOM) */
   function sheetDrop(tl, at, dur, o) {
     tl.fromTo(o.inn, { y: -H * 1.08, rotation: -3, filter: "drop-shadow(0px 60px 50px rgba(0,0,0,0.55))" }, { y: 0, rotation: 0, filter: "drop-shadow(0px 0px 0px rgba(0,0,0,0))", duration: dur, ease: "power3.out" }, at);
     tl.to(o.out, { scale: 0.97, duration: dur, ease: "power2.out" }, at);
+    return at + dur;
+  }
+
+  /* circle grows from (cx,cy) and reveals the incoming scene (match-cut iris). ring: optional glowing edge colour */
+  function iris(tl, at, dur, o) {
+    const cx = o.cx == null ? W / 2 : o.cx, cy = o.cy == null ? H / 2 : o.cy, R = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 40;
+    tl.fromTo(o.inn, { clipPath: "circle(0px at " + cx + "px " + cy + "px)" }, { clipPath: "circle(" + Math.round(R) + "px at " + cx + "px " + cy + "px)", duration: dur, ease: "power3.inOut" }, at);
+    if (o.ring) {
+      const r = document.createElement("div"); r.id = o.id || ("iris-" + Math.round(at * 100));
+      r.style.cssText = "position:absolute;z-index:55;pointer-events:none;border-radius:50%;opacity:0;border:10px solid " + o.ring + ";box-shadow:0 0 60px " + o.ring + ",inset 0 0 60px " + o.ring + "66;left:" + cx + "px;top:" + cy + "px;width:0;height:0";
+      (o.host || document.getElementById("fx")).appendChild(r);
+      tl.fromTo(r, { opacity: 1, width: 0, height: 0, x: 0, y: 0 }, { width: R * 2, height: R * 2, x: -R, y: -R, duration: dur, ease: "power3.inOut" }, at);
+      tl.to(r, { opacity: 0, duration: 0.18 }, at + dur * 0.85);
+    }
     return at + dur;
   }
 
@@ -69,5 +89,5 @@
     return at + dur;
   }
 
-  window.Cam = { cardGrow, whip, push, drift, frame, fly, sheetDrop };
+  window.Cam = { cardGrow, whip, push, drift, frame, fly, sheetDrop, iris };
 })();

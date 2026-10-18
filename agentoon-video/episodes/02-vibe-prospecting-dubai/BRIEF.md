@@ -43,3 +43,7 @@ Concept **"Night Ops"**: an AI sales-intelligence mission. Hero technique: giant
 
 ## 7. Deliverables when unblocked
 Final MP4 (new filename), narration script, storyboard, verified install steps (section 1), GitHub source, the real lead count, QC report (`validate-render.sh`, `motion-profile.sh`, phone sheet, seams).
+
+## Status (2026-10-18)
+Preview production complete with honest placeholders (see `REPLACE.md`). Final publishable video still needs the real run: install/login output, real prompt recording, match count, 5-company sample, credit message, enriched record (masked), real CSV and count.
+Learned: dark UI scenes score low on the motion profile; a radar scan beam plus a camera tour about every 2.3 s lifted mean energy 1.5 -> ~4 and bursts to ~23/min. Use them from the start next time.

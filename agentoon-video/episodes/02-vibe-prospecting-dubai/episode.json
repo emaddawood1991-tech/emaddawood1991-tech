@@ -1,0 +1,140 @@
+{
+ "title": "Vibe Prospecting: Find Potential Clients in Dubai (PREVIEW, placeholders)",
+ "voice": "am_michael",
+ "speed": 1.1,
+ "total": 100.0,
+ "phrases": [
+  {
+   "id": "p0",
+   "speak": "What if Claude Code could find your next hundred potential clients?",
+   "show": "What if Claude Code could find your next hundred potential clients?"
+  },
+  {
+   "id": "p1",
+   "speak": "This is Vibe Prospecting, an open plugin from Explorium that connects Claude Code to a live database of companies and professionals.",
+   "show": "This is Vibe Prospecting, an open plugin from Explorium that connects Claude Code to a live database of companies and professionals."
+  },
+  {
+   "id": "p2",
+   "speak": "Everything lives in an open GitHub repository, under the MIT license.",
+   "show": "Everything lives in an open GitHub repository, under the MIT license."
+  },
+  {
+   "id": "p3",
+   "speak": "Install it with one command inside Claude Code.",
+   "show": "Install it with one command inside Claude Code."
+  },
+  {
+   "id": "p4",
+   "speak": "Then sign in with your Vibe Prospecting account, and you're ready to search.",
+   "show": "Then sign in with your Vibe Prospecting account, and you're ready to search."
+  },
+  {
+   "id": "p5",
+   "speak": "Now give Claude a mission: real estate agencies in Dubai that sell apartments, or advise property investors.",
+   "show": "Now give Claude a mission: real estate agencies in Dubai that sell apartments, or advise property investors."
+  },
+  {
+   "id": "p6",
+   "speak": "That becomes a precise search: location, industry, and company type.",
+   "show": "That becomes a precise search: location, industry, and company type."
+  },
+  {
+   "id": "p7",
+   "speak": "Ask for a sample first, and for any credit requirements before anything is processed.",
+   "show": "Ask for a sample first, and for any credit requirements before anything is processed."
+  },
+  {
+   "id": "p8",
+   "speak": "Behind the scenes, the plugin queries Vibe Prospecting's business database, not the open web.",
+   "show": "Behind the scenes, the plugin queries Vibe Prospecting's business database, not the open web."
+  },
+  {
+   "id": "p9",
+   "speak": "It checks your filters, counts the matches, then runs the whole workflow on a sample of five companies.",
+   "show": "It checks your filters, counts the matches, then runs the whole workflow on a sample of five companies."
+  },
+  {
+   "id": "p10",
+   "speak": "You review that sample, and decide whether to approve a full run.",
+   "show": "You review that sample, and decide whether to approve a full run."
+  },
+  {
+   "id": "p11",
+   "speak": "Next comes enrichment: decision-makers by role and seniority, job titles, company domains, and professional contact details where they exist.",
+   "show": "Next comes enrichment: decision-makers by role and seniority, job titles, company domains, and professional contact details where they exist."
+  },
+  {
+   "id": "p12",
+   "speak": "Where they don't, the field simply says not available.",
+   "show": "Where they don't, the field simply says not available."
+  },
+  {
+   "id": "p13",
+   "speak": "Then the results are saved as a CSV file in your folder, ready for a spreadsheet or your sales team.",
+   "show": "Then the results are saved as a CSV file in your folder, ready for a spreadsheet or your sales team."
+  },
+  {
+   "id": "p14",
+   "speak": "The final count is whatever the database returns. Not always a hundred.",
+   "show": "The final count is whatever the database returns. Not always a hundred."
+  },
+  {
+   "id": "p15",
+   "speak": "Instead of starting every search from scratch, you get a structured list of companies to research and qualify.",
+   "show": "Instead of starting every search from scratch, you get a structured list of companies to research and qualify."
+  },
+  {
+   "id": "p16",
+   "speak": "Find companies. Discover contacts. Export leads.",
+   "show": "Find companies. Discover contacts. Export leads."
+  },
+  {
+   "id": "p17",
+   "speak": "It builds the list. Reaching out is still up to you.",
+   "show": "It builds the list. Reaching out is still up to you."
+  },
+  {
+   "id": "p18",
+   "speak": "Would you use this to find your next clients?",
+   "show": "Would you use this to find your next clients?"
+  },
+  {
+   "id": "p19",
+   "speak": "Follow Agentoon dot A I for more real AI tutorials.",
+   "show": "Follow Agentoon.ai for more real AI tutorials.",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai",
+     "Agentoon dot A I"
+    ],
+    [
+     "for",
+     "for"
+    ],
+    [
+     "more",
+     "more"
+    ],
+    [
+     "real",
+     "real"
+    ],
+    [
+     "AI",
+     "AI"
+    ],
+    [
+     "tutorials.",
+     "tutorials."
+    ]
+   ]
+  }
+ ],
+ "music": [],
+ "sfx": []
+}

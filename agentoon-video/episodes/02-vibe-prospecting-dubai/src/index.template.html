@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 02 Vibe Prospecting (PREVIEW)</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Night Ops". Dark AI operations room, glass dashboards, glowing data connections, hand-drawn callouts.
+     Light scenes (export, value) alternate for relief. Everything standing in for a real tool result is a PLACEHOLDER (hazard ribbon). */
+  .chip { position: absolute; white-space: nowrap; }
+  .gl { position: absolute; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .term { border-color: #1E3A66; box-shadow: 0 0 50px rgba(0,224,198,.22), 0 30px 60px rgba(0,0,0,.5); }
+  .key { position: absolute; border-radius: 20px; display: flex; align-items: center; justify-content: center; font: 800 36px/1 var(--mono); letter-spacing: .06em; color: #BFE9FF; background: linear-gradient(180deg,#1B2C57,#101C3C); border: 3px solid #60CDFF; box-shadow: 0 10px 0 #0A1230, 0 0 30px rgba(96,205,255,.35); }
+  .tile { position: absolute; border-radius: 22px; background: rgba(12,26,56,.85); border: 2px solid rgba(96,205,255,.45); box-shadow: 0 0 34px rgba(0,224,198,.18); }
+  .lbl { position: absolute; font: 800 22px/1 var(--mono); letter-spacing: .1em; color: #7FA4FF; }
+  .val { position: absolute; font: 700 30px/1.15 var(--body); color: #EAF2FF; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/nightops.js"></script>
+<script src="kit/term.js"></script>
+<script src="kit/outro.js"></script>
+<script src="assets/map.js"></script>
+<script src="timeline.js"></script>
+<script src="slots.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="{{TOTAL}}">
+  <section id="s1" class="clip scene" data-start="{{s1.start}}" data-duration="{{s1.len}}"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="{{s2.start}}" data-duration="{{s2.len}}"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="{{s3.start}}" data-duration="{{s3.len}}"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="{{s4.start}}" data-duration="{{s4.len}}"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="{{s5.start}}" data-duration="{{s5.len}}"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="{{s6.start}}" data-duration="{{s6.len}}"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="{{s7.start}}" data-duration="{{s7.len}}"><div id="s7i" class="inner"></div></section>
+  <section id="s8" class="clip scene" data-start="{{s8.start}}" data-duration="{{s8.len}}"><div id="s8i" class="inner"></div></section>
+  <section id="s9" class="clip scene" data-start="{{s9.start}}" data-duration="{{s9.len}}"><div id="s9i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, SL = window.SLOTS, MAP = window.MAP, S = E.scenes, $ = id => document.getElementById(id);
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + pid + " " + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const isPh = k => SL[k].status !== "verified";
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 230, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#BFE9FF") + ";background:" + (o.bg || "rgba(96,205,255,.12)") + ";border:2px solid " + (o.bd || "#60CDFF"), text); };
+  const AMB = { fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.12)" };
+  const hud = (host, id, label, t0, light) => {
+    const k = chip(host, id + "k", 60, 196, label, light ? { fg: "#1E3A8A", bd: "#1E3A8A", bg: "rgba(255,255,255,.7)" } : {}); tl.from(k, { opacity: 0, x: -30, duration: 0.3 }, t0);
+    if (SL.banner) { const b = chip(host, id + "b", 60, 130, "PREVIEW · PLACEHOLDERS MARKED", Object.assign({ size: 20, pad: "8px 16px 9px" }, light ? { fg: "#92400E", bd: "#D97706", bg: "rgba(251,191,36,.35)" } : AMB)); tl.from(b, { opacity: 0, duration: 0.3 }, t0 + 0.1); }
+    return k;
+  };
+  const rib = (host, id, x, y, w, slot, text) => isPh(slot) ? NO.ribbon(host, { id, x, y, w, text }) : null;
+  const fadeIn = (e, at, d, y) => tl.from(e, { opacity: 0, y: y == null ? 30 : y, duration: d || 0.3, ease: "power3.out" }, at);
+  const scene = (k, id, tint, seed) => { const inn = $(k + "i"); const e = NO.env(inn, { id, tint, seed }); NO.motion(tl, e, S[k].start, S[k].len); return inn; };
+  const burst = (host, id, x, y, at, color) => { const r = el(host, id, "", "left:" + (x - 60) + "px;top:" + (y - 60) + "px;width:120px;height:120px;border-radius:50%;border:8px solid " + (color || "#60CDFF") + ";opacity:0;box-shadow:0 0 40px " + (color || "#60CDFF")); tl.fromTo(r, { opacity: 1, scale: 0.3 }, { opacity: 0, scale: 4, duration: 0.6, ease: "power2.out" }, at); };
+  const typeLines = (tl2, nodes, at, cps) => { let t = at; nodes.forEach(d => { const n = +d.dataset.chars; const dur = Math.max(0.12, n / cps); tl2.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + n + ")" }, t); t += dur + 0.06; }); return t; };
+
+  /* placeholder-aware table: skeleton bars until the slot is verified, then real (already masked) rows */
+  function table(host, id, x, y, w, cols, slot, nrows, rowH, font, light) {
+    const wrap = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px"), cw = w / cols.length, rows = [];
+    cols.forEach((c, i) => el(wrap, id + "h" + i, "", "left:" + (i * cw + 12) + "px;top:0;width:" + (cw - 16) + "px;font:800 " + font + "px/1 var(--mono);color:" + (light ? "#1D4ED8" : "#60CDFF") + ";white-space:nowrap;overflow:hidden", c));
+    for (let r = 0; r < nrows; r++) {
+      const row = el(wrap, id + "r" + r, "", "left:0;top:" + (font + 26 + r * rowH) + "px;width:" + w + "px;height:" + rowH + "px;border-top:2px solid " + (light ? "#D7E3F7" : "rgba(96,205,255,.2)"));
+      cols.forEach((c, i) => {
+        if (isPh(slot)) el(row, id + "c" + r + "_" + i, "", "left:" + (i * cw + 12) + "px;top:" + (rowH / 2 - 11) + "px;width:" + Math.round((cw - 40) * (0.55 + ((r * 7 + i * 13) % 40) / 100)) + "px;height:22px;border-radius:11px;background:" + (light ? "linear-gradient(90deg,#BCD0F5,#E0E9FA,#BCD0F5)" : "linear-gradient(90deg,#7FA4FF33,#7FA4FF77,#7FA4FF33)"));
+        else el(row, id + "c" + r + "_" + i, "", "left:" + (i * cw + 12) + "px;top:" + (rowH / 2 - font * 0.6) + "px;width:" + (cw - 20) + "px;font:600 " + (font - 2) + "px/1.2 var(--body);color:" + (light ? "#1E293B" : "#EAF2FF") + ";white-space:nowrap;overflow:hidden", (SL[slot].rows[r] && SL[slot].rows[r][c]) || "Not available");
+      });
+      rows.push(row);
+    }
+    return { wrap, rows };
+  }
+
+  /* ================================================================= S1  HOOK: tilted placeholder spreadsheet -> hero 100 */
+  const s1i = scene("s1", "e1", "#00E0C6", 3);
+  hud(s1i, "h1", "EP 02 · VIBE PROSPECTING", 0.05);
+  const t1a = el(s1i, "t1a", "", "left:60px;top:262px;width:960px;font:800 100px/1 var(--body);letter-spacing:-.02em;color:#fff", "FIND CLIENTS");
+  const t1b = el(s1i, "t1b", "", "left:60px;top:364px;width:960px;font:800 100px/1 var(--body);letter-spacing:-.02em;color:#fff", "IN DUBAI");
+  const t1c = el(s1i, "t1c", "", "left:62px;top:480px;width:960px;font:italic 700 64px/1 var(--display);color:#60CDFF", "with Claude Code");
+  tl.from(t1a, { opacity: 0, y: 50, duration: 0.35, ease: "power3.out" }, 0.1); tl.from(t1b, { opacity: 0, y: 50, duration: 0.35, ease: "power3.out" }, 0.28); tl.from(t1c, { opacity: 0, x: -40, duration: 0.35, ease: "power3.out" }, 0.5);
+  const g1 = NO.glass(s1i, { id: "g1", x: 80, y: 590, w: 920, h: 440, title: "leads.csv" });
+  gsap.set(g1, { rotationX: 14, rotationY: -14, transformPerspective: 1100 });
+  const tb1 = table(g1.querySelector(".gb"), "tb1", 24, 24, 872, ["company_name", "domain", "contact_name", "title"], "hook_csv", 5, 64, 24);
+  tl.fromTo(g1, { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 0.25);
+  tl.to(g1, { rotationY: -2, rotationX: 6, duration: 3.2, ease: "sine.inOut" }, 0.5);
+  tb1.rows.forEach((r, i) => tl.from(r, { opacity: 0, x: 40, duration: 0.25, ease: "power2.out" }, 0.8 + i * 0.16));
+  rib(s1i, "r1", 260, 1018, 560, "hook_csv", "PLACEHOLDER · REAL CSV GOES HERE");
+  const th = PW("p0", "hundred");
+  tl.to(g1, { y: -30, scale: 0.9, duration: 0.5, ease: "power2.inOut" }, th - 0.3);
+  const hero1 = el(s1i, "hero1", "", "left:50px;top:1060px;font:italic 800 330px/1 var(--display);color:#fff;text-shadow:0 0 70px #00E0C6;opacity:0", "100");
+  tl.fromTo(hero1, { opacity: 0, scale: 0.3, transformOrigin: "0px 70%" }, { opacity: 1, scale: 1, duration: 0.42, ease: "back.out(2.4)" }, th - 0.05);
+  burst(s1i, "b1", 330, 1210, th, "#00E0C6");
+  const pc = chip(s1i, "pc1", 64, 1380, "POTENTIAL CLIENTS?", { size: 40, pad: "12px 28px 15px", bg: "rgba(0,224,198,.14)", bd: "#00E0C6", fg: "#CFFFF8" }); fadeIn(pc, PW("p0", "potential") - 0.1, 0.3);
+  tl.fromTo(s1i, { scale: 1 }, { scale: 1.05, transformOrigin: "540px 900px", duration: S.s1.len + 0.5, ease: "sine.inOut" }, 0);
+  const bot1 = botAt(s1i, "bot1", 780, 1090, 250);
+  bot1.face(tl, 0, -1, 0.01); bot1.rise(tl, 0.55, 520, 0.55); bot1.look(tl, 1.3, -4, 2, 0.2); bot1.blinks(tl, 1.2, 4.6, 1.2); bot1.react(tl, th, "wow");
+
+  /* ================================================================= S2  REPO (rebuilt from real README + file list) */
+  const s2i = scene("s2", "e2", "#8B5CF6", 7);
+  hud(s2i, "h2", "THE TOOL · OPEN SOURCE", S.s2.start + 0.5);
+  const w2 = el(s2i, "w2", "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Cam.frame(w2, 540, 960, 1);
+  el(w2, "g2", "", "left:-100px;top:300px;width:1280px;height:1280px;border-radius:50%;background:radial-gradient(circle,#19B5A566 0%,#3B82F644 45%,#8B5CF622 68%,transparent 70%)");
+  const cardX = 50, cardY = 370;
+  const rc = el(w2, "rc", "", "left:" + cardX + "px;top:" + cardY + "px;width:980px;height:850px;border-radius:26px;background:#F7F9FC;box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 80px rgba(96,205,255,.25);border:3px solid #D0D7DE");
+  el(rc, "rcic", "", "left:30px;top:32px;width:40px;height:44px;border-radius:6px;border:5px solid #57606A");
+  el(rc, "rcnm", "", "left:90px;top:32px;font:700 31px/44px var(--mono);color:#0969DA;white-space:nowrap", "explorium-ai / vibeprospecting-plugin");
+  el(rc, "rcpb", "", "left:810px;top:36px;padding:6px 18px 8px;border-radius:999px;border:2px solid #D0D7DE;font:700 22px/1 var(--body);color:#57606A", "Public");
+  el(rc, "rcrd", "", "left:30px;top:110px;font:800 22px/1 var(--mono);letter-spacing:.08em;color:#57606A", "README.md");
+  el(rc, "rctx", "", "left:30px;top:156px;width:640px;font:600 29px/38px var(--body);color:#24292F", "Vibe Prospecting is a GTM data plugin for Claude Code, Claude Cowork, Claude Chat, OpenAI Codex, and OpenClaw that lets AI agents search companies and contacts, enrich CRM records, and build lead lists from live B2B data");
+  el(rc, "rcst", "", "left:30px;top:396px;width:640px;font:700 27px/38px var(--mono);color:#1A7F37;white-space:nowrap", "150M+ companies · 800M+ professionals");
+  el(rc, "rccm", "", "left:30px;top:466px;width:920px;height:56px;border-radius:10px 10px 0 0;background:#EEF2F7;border:2px solid #D0D7DE");
+  el(rc, "rccm1", "", "left:46px;top:482px;font:600 21px/1 var(--mono);color:#24292F;white-space:nowrap", "Merge pull request #6 from explorium-ai/docs/grok-build-support");
+  el(rc, "rccm2", "", "left:828px;top:482px;font:600 21px/1 var(--mono);color:#57606A", "ca43f6d");
+  const files = [[".claude-plugin", "d"], ["commands", "d"], ["docs", "d"], ["skills", "d"], ["LICENSE", "f"], ["README.md", "f"]];
+  files.forEach(([n, k], i) => {
+    const r = el(rc, "fr" + i, "", "left:30px;top:" + (524 + i * 50) + "px;width:920px;height:50px;border-bottom:2px solid #E3E8EE");
+    el(r, "fri" + i, "", "left:6px;top:14px;width:26px;height:22px;border-radius:" + (k === "d" ? "4px;background:#54AEFF" : "3px;border:3px solid #8C959F"));
+    el(r, "frn" + i, "", "left:50px;top:0;font:600 25px/50px var(--mono);color:#24292F", n);
+  });
+  el(rc, "rcpl", "", "left:640px;top:830px;font:600 20px/1 var(--mono);color:#8C959F", "(partial list)");
+  const mit = el(rc, "mit", "", "left:660px;top:" + (524 + 4 * 50 + 8) + "px;padding:6px 16px 8px;border-radius:999px;background:#1A7F37;color:#fff;font:800 22px/1 var(--mono)", "MIT");
+  tl.fromTo(w2, { scale: 1 }, { scale: 1, duration: 0.01 }, S.s2.start);
+  const cnm = NO.callout(w2, { id: "cnm", x: cardX + 82, y: cardY + 30, w: 740, h: 50, color: "#FFC83D" });
+  const cst = NO.callout(w2, { id: "cst", x: cardX + 22, y: cardY + 394, w: 650, h: 46, color: "#00E0C6" });
+  const cmit = NO.callout(w2, { id: "cmit", x: cardX + 24, y: cardY + 524 + 4 * 50 + 3, w: 620, h: 46, color: "#FF5A5F" });
+  const cfl = NO.callout(w2, { id: "cfl", x: cardX + 24, y: cardY + 526, w: 900, h: 200, color: "#8B5CF6" });
+  chip(s2i, "rebuilt", 60, 1650, "REBUILT FROM THE REAL REPO CONTENT · REPLACE WITH SCREENSHOT", { size: 19, pad: "8px 16px 9px", ...AMB });
+  tl.from("#rebuilt", { opacity: 0, duration: 0.3 }, S.s2.start + 0.6);
+  const cyBase = 640;
+  Cam.fly(tl, w2, S.s2.start + 1.0, 1.1, { cx: 500, cy: 700, s: 1.12 });
+  cnm.draw(tl, PW("p1", "Vibe") - 0.1, 0.5);
+  Cam.fly(tl, w2, PW("p1", "database") - 0.6, 1.0, { cx: 470, cy: 700, s: 1.25 });
+  cst.draw(tl, PW("p1", "live") + 0.1, 0.5);
+  Cam.fly(tl, w2, P("p2").start - 0.25, 1.0, { cx: 540, cy: 1000, s: 1.08 });
+  cfl.draw(tl, PW("p2", "GitHub") - 0.1, 0.5); cfl.hide(tl, PW("p2", "under") - 0.1);
+  fadeIn(mit, PW("p2", "MIT") - 0.25, 0.25, 0); cmit.draw(tl, PW("p2", "MIT") - 0.1, 0.5);
+  Cam.fly(tl, w2, PW("p2", "license") + 0.1, 1.0, { cx: 540, cy: 960, s: 1 });
+  const bot2 = botAt(w2, "bot2", 790, 555, 210);
+  bot2.introduce(tl, S.s2.start + 0.9, { fromX: 1250, toX: 790, y: 555, hops: 1 }); bot2.blinks(tl, 6, 17, 1.2);
+  bot2.face(tl, 7.5, -1, 0.15);
+  bot2.aimPoint(tl, PW("p1", "Explorium") - 0.3, { x: 790, y: 555, scale: 1, target: [350, 650], hand: "L", hold: 0.8 });
+  bot2.aimPoint(tl, PW("p2", "GitHub") - 0.2, { x: 790, y: 555, scale: 1, target: [450, 1000], hand: "L", hold: 0.8 });
+  bot2.react(tl, PW("p2", "MIT") + 0.1, "wow");
+
+  /* ================================================================= S3  INSTALL (command typed, ENTER pressed, sign-in flow) */
+  const s3i = scene("s3", "e3", "#3B82F6", 11);
+  hud(s3i, "h3", "STEP 1 · INSTALL + SIGN IN", S.s3.start + 0.3);
+  const tc = Term.card(s3i, { id: "tc", x: 40, y: 320, w: 1000, title: "Claude Code · plugin manager", font: 34, lines: [
+    { t: "> /plugin install", c: "prompt" }, { t: "  vibe-prospecting@claude-plugins-official", c: "hl" }, { t: "  # command from the official README", c: "cmt" } ] });
+  fadeIn(tc, S.s3.start + 0.1, 0.3);
+  const ty = Term.type(tl, tc, P("p3").start + 0.4, 28, 0, 2); Term.type(tl, tc, ty.end + 0.1, 40, 2, 3);
+  const hlc = NO.callout(s3i, { id: "hlc", x: 56, y: 424, w: 936, h: 54, color: "#FFC83D" }); hlc.draw(tl, PW("p3", "one") + 0.1, 0.5);
+  const og = NO.glass(s3i, { id: "og", x: 40, y: 600, w: 1000, h: 160, title: "OUTPUT", accent: "#7FA4FF" });
+  const ogb = og.querySelector(".gb"), sk3 = NO.skel(ogb, { id: "sk3", x: 26, y: 20, w: 500, rows: 2, rowH: 20, gap: 14 }); NO.shimmer(tl, sk3, S.s3.start + 1, 8);
+  NO.ribbon(ogb, { id: "r3", x: 420, y: 24, w: 560, text: "PLACEHOLDER · REAL INSTALL OUTPUT" });
+  const kb = el(s3i, "kb3", "key", "left:730px;top:950px;width:220px;height:100px", "ENTER");
+  const bot3 = botAt(s3i, "bot3", 440, 770, 280);
+  const pr3 = bot3.press(tl, PW("p3", "command") - 0.6, { x: 440, y: 770, scale: 1, target: [735, 1000], hand: "R" });
+  tl.to(kb, { y: 8, boxShadow: "0 2px 0 #0A1230, 0 0 50px rgba(96,205,255,.9)", duration: 0.07 }, pr3.tapAt); tl.to(kb, { y: 0, boxShadow: "0 10px 0 #0A1230, 0 0 30px rgba(96,205,255,.35)", duration: 0.14 }, pr3.tapAt + 0.07);
+  fadeIn(og, S.s3.start + 0.2, 0.3); tl.from(og, { opacity: 0, duration: 0.01 }, 0);
+  burst(s3i, "b3", 840, 1000, pr3.tapAt, "#60CDFF");
+  bot3.blinks(tl, S.s3.start, S.s3.end - 1, 1.2); bot3.react(tl, P("p4").start + 0.2, "think");
+  chip(s3i, "docs3", 60, 1134, "STEPS FROM THE OFFICIAL DOCS", { size: 20, pad: "8px 16px 9px" }); tl.from("#docs3", { opacity: 0, duration: 0.3 }, P("p4").start - 0.2);
+  const stepCard = (id, x, n, big, small, at) => {
+    const c = el(s3i, id, "tile", "left:" + x + "px;top:1186px;width:300px;height:190px");
+    el(c, id + "n", "", "left:18px;top:16px;width:44px;height:44px;border-radius:50%;background:#60CDFF;color:#0B1630;font:800 26px/44px var(--mono);text-align:center", n);
+    el(c, id + "b", "", "left:18px;top:76px;width:270px;font:800 31px/1.1 var(--mono);color:#fff", big);
+    el(c, id + "s", "", "left:18px;top:138px;width:270px;font:600 22px/1.2 var(--body);color:#9FB6E6", small);
+    tl.from(c, { opacity: 0, y: 40, scale: 0.9, duration: 0.35, ease: "back.out(1.8)" }, at); return c;
+  };
+  const sc1 = stepCard("sc1", 40, "1", "vpai login", "sign in", PW("p4", "sign") - 0.1);
+  const sc2 = stepCard("sc2", 390, "2", "approve", "in your browser", PW("p4", "account") - 0.1);
+  const sc3 = stepCard("sc3", 740, "3", "vpai whoami", "exit 0 = ready", PW("p4", "ready") - 0.2);
+  [345, 695].forEach((x, i) => { const a = el(s3i, "ar3" + i, "", "left:" + x + "px;top:1250px;font:800 44px/1 var(--mono);color:#60CDFF", "→"); tl.from(a, { opacity: 0, x: -14, duration: 0.25 }, PW("p4", i ? "account" : "sign") + 0.25); });
+  rib(s3i, "r3b", 40, 1396, 600, "whoami_out", "PLACEHOLDER · REAL whoami RESULT"); tl.from("#r3b", { opacity: 0, duration: 0.3 }, PW("p4", "ready"));
+  tl.fromTo(s3i, { scale: 1 }, { scale: 1.04, transformOrigin: "540px 800px", duration: S.s3.len, ease: "sine.inOut" }, S.s3.start);
+
+  /* ================================================================= S4  MISSION: exact prompt + Dubai map */
+  const s4i = scene("s4", "e4", "#00E0C6", 13);
+  hud(s4i, "h4", "STEP 2 · THE MISSION", S.s4.start + 0.3);
+  const pg = NO.glass(s4i, { id: "pg", x: 40, y: 270, w: 1000, h: 452, title: "CLAUDE CODE · PROMPT (excerpt)" });
+  fadeIn(pg, S.s4.start + 0.1, 0.3);
+  const pgb = pg.querySelector(".gb");
+  const L4 = ["Using Vibe Prospecting, find up to 100", "real estate agencies in Dubai, UAE,", "specializing in residential apartment", "sales or property investment. …", "… First show me a sample of results", "and explain any credit requirements", "before processing the complete list."];
+  const ln4 = L4.map((t, i) => { const d = el(pgb, "pl" + i, "", "left:30px;top:" + (20 + i * 46) + "px;font:600 31px/46px var(--mono);color:#EAF2FF;white-space:pre", t); d.dataset.chars = t.length; d.style.clipPath = "inset(0 100% 0 0)"; return d; });
+  const tEnd = typeLines(tl, ln4, P("p5").start + 0.2, 40);
+  const lineT = i => P("p5").start + 0.2 + L4.slice(0, i + 1).reduce((a, s) => a + Math.max(0.12, s.length / 40) + 0.06, 0);
+  const callAt = (id, line, sub, color, at) => { const idx = L4[line].indexOf(sub); const c = NO.callout(s4i, { id, x: 70 + 18.6 * idx - 6, y: 334 + 20 + 46 * line + 1, w: 18.6 * sub.length + 12, h: 42, color }); c.draw(tl, Math.max(at, lineT(line)), 0.4); return c; };
+  callAt("c40", 0, "up to 100", "#FFC83D", P("p5").start + 1.0);
+  callAt("c41", 1, "real estate agencies", "#00E0C6", PW("p5", "real"));
+  callAt("c42", 1, "Dubai, UAE", "#FF5A8A", PW("p5", "Dubai"));
+  callAt("c43", 2, "residential apartment", "#7CFFB2", PW("p5", "apartments") - 0.1);
+  const sendK = el(s4i, "sendk", "key", "left:745px;top:652px;width:104px;height:56px;font-size:22px;border-radius:14px", "SEND");
+  const mp = NO.glass(s4i, { id: "mp", x: 40, y: 770, w: 1000, h: 640, title: "DUBAI · SEARCH AREA" });
+  fadeIn(mp, S.s4.start + 0.2, 0.3);
+  const mpb = mp.querySelector(".gb");
+  const NSs = "http://www.w3.org/2000/svg", svg = document.createElementNS(NSs, "svg");
+  svg.setAttribute("viewBox", "0 0 " + MAP.w + " " + MAP.h); svg.style.cssText = "position:absolute;left:400px;top:12px;width:576px;height:540px;overflow:hidden"; mpb.appendChild(svg);
+  const ringD = pts => "M" + pts.map(p => p[0] + " " + p[1]).join("L") + "Z";
+  Object.keys(MAP.rings).forEach(k => { const pth = document.createElementNS(NSs, "path"); pth.setAttribute("d", MAP.rings[k].map(ringD).join("")); pth.setAttribute("fill", k === "dubai" ? "rgba(0,224,198,.28)" : "rgba(127,164,255,.12)"); pth.setAttribute("stroke", k === "dubai" ? "#00E0C6" : "#7FA4FF66"); pth.setAttribute("stroke-width", k === "dubai" ? 7 : 3); pth.setAttribute("stroke-linejoin", "round"); svg.appendChild(pth); });
+  const inPoly = (x, y, poly) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const a = poly[i], b = poly[j]; if ((a[1] > y) !== (b[1] > y) && x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; };
+  const poly = MAP.rings.dubai[0]; let sd = 17; const rn = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
+  const dots = []; for (let tries = 0; dots.length < 12 && tries < 4000; tries++) { const x = 255 + rn() * 673, y = 157 + rn() * 770; if (x < MAP.w && y < MAP.h && inPoly(x, y, poly)) dots.push([x, y]); }
+  const dotEls = dots.map((d, i) => { const c = document.createElementNS(NSs, "circle"); c.setAttribute("cx", d[0]); c.setAttribute("cy", d[1]); c.setAttribute("r", 14); c.setAttribute("fill", "#FFC83D"); c.setAttribute("opacity", 0); svg.appendChild(c); const r = document.createElementNS(NSs, "circle"); r.setAttribute("cx", d[0]); r.setAttribute("cy", d[1]); r.setAttribute("r", 14); r.setAttribute("fill", "none"); r.setAttribute("stroke", "#FFC83D"); r.setAttribute("stroke-width", 5); r.setAttribute("opacity", 0); svg.appendChild(r); return [c, r, d]; });
+  const dT0 = P("p6").start + 0.2;
+  dotEls.forEach(([c, r], i) => { const t = dT0 + i * 0.16; tl.to(c, { attr: { opacity: 0.95 }, duration: 0.15 }, t); tl.fromTo(r, { attr: { opacity: 0.9, r: 14 } }, { attr: { opacity: 0, r: 70 }, duration: 0.8, ease: "power2.out" }, t); tl.fromTo(r, { attr: { opacity: 0.9, r: 14 } }, { attr: { opacity: 0, r: 70 }, duration: 0.8, ease: "power2.out" }, t + 1.6); });
+  const mtag = (id, y, lab, val, at) => { const t = el(mpb, id, "", "left:24px;top:" + y + "px;width:350px;height:100px;border-radius:16px;border:2px solid rgba(0,224,198,.55);background:rgba(0,224,198,.08)"); el(t, id + "l", "lbl", "left:16px;top:14px", lab); el(t, id + "v", "val", "left:16px;top:48px;width:320px;font-size:27px", val); tl.from(t, { opacity: 0, x: -50, duration: 0.35, ease: "back.out(1.6)" }, at); return t; };
+  mtag("mt0", 14, "LOCATION", "Dubai, UAE", PW("p6", "location") - 0.1);
+  mtag("mt1", 130, "INDUSTRY", "Real estate", PW("p6", "industry") - 0.1);
+  mtag("mt2", 246, "COMPANY TYPE", "Residential sales · investment", PW("p6", "company") - 0.1);
+  mtag("mt3", 362, "TARGET", "up to 100 · sample first", PW("p7", "sample") - 0.1);
+  chip(mpb, "illus", 24, 490, "ILLUSTRATIVE PINS · NOT REAL COMPANIES", Object.assign({ size: 19, pad: "8px 14px 9px" }, AMB)); tl.from("#illus", { opacity: 0, duration: 0.3 }, dT0);
+  const badge = el(mpb, "bdg", "", "left:690px;top:380px;width:150px;height:150px;border-radius:50%;background:#FFC83D;color:#1A1200;text-align:center;box-shadow:0 0 50px #FFC83D99");
+  el(badge, "bdgt", "", "left:0;right:0;top:26px;font:800 20px/1 var(--mono);letter-spacing:.1em", "SAMPLE"); el(badge, "bdgn", "", "left:0;right:0;top:50px;font:800 80px/1 var(--display)", "5");
+  tl.fromTo(badge, { scale: 0, rotation: -30 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.4)" }, PW("p7", "sample") - 0.05);
+  const cr4 = chip(mpb, "cred4", 560, 330, "CREDITS: ASK FIRST", { size: 22, pad: "10px 18px 12px", fg: "#FFB3B3", bd: "#FF5A5F", bg: "rgba(255,90,95,.14)" }); fadeIn(cr4, PW("p7", "credit") - 0.15, 0.3);
+  const bot4 = botAt(s4i, "bot4", 850, 462, 220);
+  bot4.face(tl, 0, -1, 0.01); bot4.introduce(tl, S.s4.start + 0.4, { fromX: 1250, toX: 850, y: 462, hops: 1 }); bot4.face(tl, S.s4.start + 1.9, -1, 0.1);
+  bot4.blinks(tl, S.s4.start, S.s4.end - 1, 1.2); bot4.react(tl, PW("p5", "mission") - 0.1, "think");
+  const pr4 = bot4.press(tl, PW("p7", "anything") - 0.8, { x: 850, y: 462, scale: 1, target: [800, 680], hand: "L" });
+  tl.to(sendK, { y: 6, duration: 0.07 }, pr4.tapAt); tl.to(sendK, { y: 0, duration: 0.14 }, pr4.tapAt + 0.07);
+  tl.fromTo(s4i, { scale: 1 }, { scale: 1.035, transformOrigin: "540px 900px", duration: S.s4.len, ease: "sine.inOut" }, S.s4.start);
+
+  /* ================================================================= S5  RESEARCH: business database, filters, count, sample of 5 */
+  const s5i = scene("s5", "e5", "#7C5CFF", 19);
+  hud(s5i, "h5", "STEP 3 · THE RESEARCH", S.s5.start + 0.3);
+  const cmp = el(s5i, "cmp", "", "left:0;top:0;width:1080px;height:760px");
+  const web = el(cmp, "web", "tile", "left:40px;top:290px;width:470px;height:400px"), dbt = el(cmp, "dbt", "tile", "left:570px;top:290px;width:470px;height:400px;border-color:#00E0C6;box-shadow:0 0 60px rgba(0,224,198,.4)");
+  const gl = document.createElementNS(NSs, "svg"); gl.setAttribute("viewBox", "0 0 200 200"); gl.style.cssText = "position:absolute;left:135px;top:50px;width:200px;height:200px"; web.appendChild(gl);
+  [["circle", { cx: 100, cy: 100, r: 88 }], ["ellipse", { cx: 100, cy: 100, rx: 40, ry: 88 }], ["ellipse", { cx: 100, cy: 100, rx: 88, ry: 34 }], ["line", { x1: 12, y1: 100, x2: 188, y2: 100 }], ["line", { x1: 100, y1: 12, x2: 100, y2: 188 }]].forEach(([t, a]) => { const e = document.createElementNS(NSs, t); for (const k in a) e.setAttribute(k, a[k]); e.setAttribute("fill", "none"); e.setAttribute("stroke", "#7FA4FF"); e.setAttribute("stroke-width", 5); gl.appendChild(e); });
+  el(web, "webl", "", "left:0;right:0;top:290px;text-align:center;font:800 40px/1 var(--mono);color:#9FB6E6", "OPEN WEB");
+  const cy = document.createElementNS(NSs, "svg"); cy.setAttribute("viewBox", "0 0 200 200"); cy.style.cssText = "position:absolute;left:135px;top:50px;width:200px;height:200px"; dbt.appendChild(cy);
+  [["path", { d: "M30 50 L30 150 A70 24 0 0 0 170 150 L170 50" }], ["ellipse", { cx: 100, cy: 50, rx: 70, ry: 24 }], ["path", { d: "M30 100 A70 24 0 0 0 170 100" }]].forEach(([t, a]) => { const e = document.createElementNS(NSs, t); for (const k in a) e.setAttribute(k, a[k]); e.setAttribute("fill", t === "ellipse" ? "rgba(0,224,198,.3)" : "none"); e.setAttribute("stroke", "#00E0C6"); e.setAttribute("stroke-width", 6); cy.appendChild(e); });
+  el(dbt, "dbl", "", "left:0;right:0;top:290px;text-align:center;font:800 36px/1 var(--mono);color:#00E0C6", "BUSINESS DATABASE");
+  el(dbt, "dbs", "", "left:0;right:0;top:340px;text-align:center;font:600 24px/1 var(--body);color:#9FD3FF", "live B2B data");
+  const strike = el(web, "strike", "", "left:-10px;top:196px;width:490px;height:10px;border-radius:5px;background:#FF5A5F;transform-origin:0 50%;transform:rotate(-24deg) scaleX(0);box-shadow:0 0 24px #FF5A5F");
+  tl.from(web, { opacity: 0, x: -60, duration: 0.4, ease: "power3.out" }, S.s5.start + 0.2); tl.from(dbt, { opacity: 0, x: 60, duration: 0.4, ease: "power3.out" }, S.s5.start + 0.45);
+  tl.to(strike, { rotation: -24, scaleX: 1, duration: 0.35, ease: "power3.out" }, PW("p8", "not") - 0.05); tl.to(web, { opacity: 0.45, duration: 0.3 }, PW("p8", "not") + 0.3);
+  tl.to(dbt, { scale: 1.05, duration: 0.5, ease: "sine.inOut" }, PW("p8", "business")); tl.to(dbt, { scale: 1, duration: 0.5, ease: "sine.inOut" }, PW("p8", "business") + 0.5);
+  tl.to(cmp, { opacity: 0, y: -50, duration: 0.35, ease: "power2.in" }, P("p9").start - 0.15);
+  const pn = (id, x, lab, sub) => { const n = el(s5i, id, "tile", "left:" + x + "px;top:330px;width:300px;height:180px"); el(n, id + "l", "", "left:0;right:0;top:50px;text-align:center;font:800 38px/1 var(--mono);color:#fff", lab); el(n, id + "s", "", "left:0;right:0;top:108px;text-align:center;font:600 24px/1.2 var(--body);color:#9FB6E6", sub); return n; };
+  const nA = pn("pnA", 40, "FILTERS", "location · industry"), nB = pn("pnB", 390, "MATCHES", "counted first"), nC = pn("pnC", 740, "SAMPLE · 5", "full workflow");
+  [nA, nB, nC].forEach((n, i) => { tl.set(n, { opacity: 0 }, 0); tl.fromTo(n, { opacity: 0, y: 50, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(1.7)" }, [PW("p9", "checks"), PW("p9", "counts"), PW("p9", "sample")][i] - 0.2); });
+  const pkt = (id, x0, x1, t0, t1) => { const k = el(s5i, id, "", "left:" + x0 + "px;top:410px;width:34px;height:34px;border-radius:50%;background:#FFC83D;box-shadow:0 0 22px #FFC83D;opacity:0"); for (let t = t0, i = 0; t < t1; t += 0.55, i++) { tl.fromTo(k, { x: 0, opacity: 0 }, { x: x1 - x0, opacity: 1, duration: 0.42, ease: "none" }, t); tl.to(k, { opacity: 0, duration: 0.08 }, t + 0.42); } };
+  pkt("pk5a", 345, 385, PW("p9", "checks") + 0.2, PW("p9", "counts")); pkt("pk5b", 695, 735, PW("p9", "counts") + 0.2, PW("p9", "sample"));
+  const cnt = el(s5i, "cnt", "", "left:0;width:1080px;top:540px;text-align:center;font:italic 800 150px/1 var(--display);color:#fff;text-shadow:0 0 50px #7C5CFF", isPh("stats_count") ? "X,XXX" : String(SL.stats_count.value));
+  tl.from(cnt, { opacity: 0, scale: 0.6, duration: 0.4, ease: "back.out(2)" }, PW("p9", "counts") + 0.1);
+  rib(s5i, "r5a", 260, 700, 560, "stats_count", "PLACEHOLDER · REAL MATCH COUNT"); tl.from("#r5a", { opacity: 0, duration: 0.3 }, PW("p9", "counts") + 0.3);
+  const tiles5 = [];
+  for (let i = 0; i < 5; i++) {
+    const tt = el(s5i, "tl5" + i, "tile", "left:" + (40 + i * 204) + "px;top:790px;width:184px;height:200px;border-radius:18px");
+    el(tt, "tl5a" + i, "", "left:20px;top:20px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7FA4FF55,#7FA4FF22)");
+    el(tt, "tl5b" + i, "", "left:20px;top:100px;width:" + (110 + (i * 17) % 40) + "px;height:20px;border-radius:10px;background:linear-gradient(90deg,#7FA4FF33,#7FA4FF77,#7FA4FF33)");
+    el(tt, "tl5c" + i, "", "left:20px;top:136px;width:" + (80 + (i * 29) % 50) + "px;height:20px;border-radius:10px;background:linear-gradient(90deg,#7FA4FF22,#7FA4FF55,#7FA4FF22)");
+    el(tt, "tl5d" + i, "lbl", "right:14px;top:18px;font-size:20px", "#" + (i + 1)); tt.querySelector("#tl5d" + i).style.right = "14px";
+    tl.from(tt, { opacity: 0, y: 70, scale: 0.85, duration: 0.35, ease: "back.out(1.6)" }, PW("p9", "sample") + 0.35 + i * 0.12); tiles5.push(tt);
+  }
+  rib(s5i, "r5b", 40, 1004, 560, "sample_table", "PLACEHOLDER · REAL 5-COMPANY SAMPLE"); tl.from("#r5b", { opacity: 0, duration: 0.3 }, PW("p9", "sample") + 1.0);
+  const b1 = el(s5i, "ap", "", "left:40px;top:1070px;width:600px;height:86px;border-radius:18px;background:linear-gradient(90deg,#16A34A,#22C55E);color:#fff;font:800 32px/86px var(--mono);text-align:center;box-shadow:0 0 36px rgba(34,197,94,.45)", "APPROVE FULL RUN");
+  const b2 = el(s5i, "adj", "", "left:40px;top:1176px;width:600px;height:70px;border-radius:18px;border:3px solid #60CDFF;color:#BFE9FF;font:800 26px/64px var(--mono);text-align:center", "ADJUST FILTERS");
+  tl.from(b1, { opacity: 0, x: -60, duration: 0.35, ease: "power3.out" }, P("p10").start + 0.3); tl.from(b2, { opacity: 0, x: -60, duration: 0.35, ease: "power3.out" }, P("p10").start + 0.5);
+  const cn = NO.glass(s5i, { id: "cn5", x: 40, y: 1272, w: 1000, h: 130, title: "CREDIT NOTE", accent: "#FFC83D" });
+  NO.ribbon(cn.querySelector(".gb"), { id: "r5c", x: 20, y: 10, w: 620, text: "PLACEHOLDER · EXACT CREDIT MESSAGE" }); tl.from(cn, { opacity: 0, y: 40, duration: 0.35 }, P("p10").start + 0.9);
+  const bot5 = botAt(s5i, "bot5", 780, 1056, 240);
+  bot5.face(tl, 0, -1, 0.01); bot5.rise(tl, PW("p9", "sample") - 0.2, 480, 0.5); bot5.blinks(tl, S.s5.start, S.s5.end - 1, 1.2);
+  bot5.aimPoint(tl, PW("p10", "review") - 0.1, { x: 780, y: 1056, scale: 1, target: [500, 900], hand: "L", hold: 0.7 });
+  bot5.nod(tl, PW("p10", "decide") - 0.3);
+  const hl5 = NO.callout(s5i, { id: "c5", x: 40, y: 1070, w: 600, h: 86, color: "#7CFFB2" }); hl5.draw(tl, PW("p10", "approve") - 0.2, 0.45);
+  tl.fromTo(s5i, { scale: 1 }, { scale: 1.03, transformOrigin: "540px 800px", duration: S.s5.len, ease: "sine.inOut" }, S.s5.start);
+
+  /* ================================================================= S6  ENRICHMENT: company -> contact profile fields */
+  const s6i = scene("s6", "e6", "#FF5A8A", 23);
+  hud(s6i, "h6", "STEP 4 · ENRICHMENT", S.s6.start + 0.5);
+  const cg = NO.glass(s6i, { id: "cg6", x: 40, y: 290, w: 740, h: 230, title: "COMPANY" });
+  const cgb = cg.querySelector(".gb"); NO.shimmer(tl, NO.skel(cgb, { id: "sk6", x: 26, y: 20, w: 560, rows: 3, rowH: 20, gap: 16 }), S.s6.start + 0.3, 8);
+  tl.from(cg, { opacity: 0, y: -40, duration: 0.4 }, S.s6.start + 0.35);
+  const cl = el(s6i, "wire6", "", "left:408px;top:520px;width:6px;height:60px;border-radius:3px;background:linear-gradient(#60CDFF,#00E0C6);transform-origin:0 0;box-shadow:0 0 18px #60CDFF"); tl.from(cl, { scaleY: 0, duration: 0.3 }, S.s6.start + 0.7);
+  const pf = NO.glass(s6i, { id: "pf6", x: 40, y: 580, w: 1000, h: 590, title: "CONTACT PROFILE", accent: "#FF5A8A" });
+  tl.from(pf, { opacity: 0, y: 60, duration: 0.45, ease: "power3.out" }, S.s6.start + 0.7);
+  const pfb = pf.querySelector(".gb");
+  const rowsDef = [["NAME", "mask", "decision-makers"], ["ROLE", "roles", "role"], ["SENIORITY", "skel", "seniority"], ["JOB TITLE", "skel", "titles"], ["COMPANY DOMAIN", "skel", "domains"], ["WORK EMAIL", "mask", "contact"], ["PHONE", "mask", "details"]];
+  const fRows = rowsDef.map(([lab, kind, word], i) => {
+    const y = 14 + i * 70, r = el(pfb, "fr6" + i, "", "left:0;top:" + y + "px;width:1000px;height:64px");
+    el(r, "fl6" + i, "lbl", "left:30px;top:22px;font-size:21px", lab);
+    const vx = 330;
+    if (kind === "mask") el(r, "fv6" + i, "", "left:" + vx + "px;top:14px;width:" + (330 + i * 30) + "px;height:38px;border-radius:8px;background:repeating-linear-gradient(135deg,#3A4A78 0px,#3A4A78 10px,#2A3760 10px,#2A3760 20px);border:2px dashed #7FA4FF");
+    if (kind === "skel") el(r, "fv6" + i, "", "left:" + vx + "px;top:20px;width:" + (260 + i * 40) + "px;height:22px;border-radius:11px;background:linear-gradient(90deg,#7FA4FF33,#7FA4FF77,#7FA4FF33)");
+    if (kind === "roles") ["FOUNDER", "OWNER", "MANAGING DIRECTOR"].forEach((t, j) => chip(r, "role6" + j, vx + [0, 190, 340][j], 12, t, { size: 18, pad: "9px 14px 10px", fg: "#FFD0E1", bd: "#FF5A8A", bg: "rgba(255,90,138,.12)" }));
+    const at = PW("p11", word, 0) - 0.1; tl.from(r, { opacity: 0, x: 60, duration: 0.35, ease: "power3.out" }, Math.max(at, S.s6.start + 1.0)); return r;
+  });
+  const na = el(fRows[6], "na6", "", "left:330px;top:10px;width:300px;height:44px;border-radius:10px;border:3px solid #FFC83D;color:#FFE08A;font:800 24px/38px var(--mono);text-align:center;background:rgba(255,200,61,.1);opacity:0", "NOT AVAILABLE");
+  tl.set(fRows[6].querySelector("#fv6" + 6), { opacity: 1 }, 0); tl.to(fRows[6].querySelector("#fv6" + 6), { opacity: 0, duration: 0.2 }, PW("p12", "not") - 0.1);
+  tl.fromTo(na, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, PW("p12", "not") - 0.05);
+  chip(s6i, "mask6", 60, 1190, "PERSON FIELDS MASKED IN THE PUBLIC VIDEO", Object.assign({ size: 19, pad: "8px 14px 9px" }, AMB)); tl.from("#mask6", { opacity: 0, duration: 0.3 }, PW("p11", "decision-makers"));
+  rib(s6i, "r6", 260, 1250, 560, "enrich_profile", "PLACEHOLDER · ONE REAL RECORD HERE");
+  chip(s6i, "ex6", 60, 1330, "ROLE CHIPS = EXAMPLE FILTERS, NOT RESULTS", { size: 19, pad: "8px 14px 9px" }); tl.from("#ex6", { opacity: 0, duration: 0.3 }, PW("p11", "role"));
+  const bot6 = botAt(s6i, "bot6", 830, 322, 190);
+  bot6.face(tl, 0, -1, 0.01); bot6.rise(tl, S.s6.start + 0.6, 300, 0.5); bot6.blinks(tl, S.s6.start, S.s6.end - 1, 1.2);
+  bot6.aimPoint(tl, PW("p11", "role") - 0.2, { x: 830, y: 322, scale: 1, target: [650, 660], hand: "L", hold: 0.7 });
+  bot6.aimPoint(tl, PW("p11", "titles") - 0.2, { x: 830, y: 322, scale: 1, target: [650, 830], hand: "L", hold: 0.6 });
+  bot6.nod(tl, PW("p11", "exist") - 0.1); bot6.shake(tl, PW("p12", "not") + 0.2);
+  tl.fromTo(s6i, { scale: 1 }, { scale: 1.035, transformOrigin: "540px 800px", duration: S.s6.len, ease: "sine.inOut" }, S.s6.start);
+
+  /* ================================================================= S7  EXPORT (light): CSV into the folder, spreadsheet opens, hero N */
+  const s7i = $("s7i");
+  el(s7i, "bg7", "", "inset:0;position:absolute;background:linear-gradient(160deg,#EAF3FF 0%,#F6F1FF 100%)");
+  const gr7 = el(s7i, "gr7", "", "position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.12) 2px,transparent 2px),linear-gradient(90deg,rgba(59,130,246,.12) 2px,transparent 2px);background-size:120px 120px"); tl.to(gr7, { backgroundPosition: "120px 240px", duration: S.s7.len, ease: "none" }, S.s7.start);
+  for (let i = 0; i < 16; i++) { const d = el(s7i, "d7" + i, "", "left:" + ((i * 71) % 1060) + "px;top:" + (300 + (i * 137) % 1300) + "px;width:" + (8 + i % 4 * 3) + "px;height:" + (8 + i % 4 * 3) + "px;border-radius:50%;background:#3B82F6;opacity:.35"); tl.fromTo(d, { y: 0 }, { y: -140 - (i % 5) * 50, duration: S.s7.len, ease: "none" }, S.s7.start); }
+  hud(s7i, "h7", "STEP 5 · EXPORT TO CSV", S.s7.start + 0.4, true);
+  const fold = el(s7i, "fold7", "", "left:400px;top:960px;width:280px;height:220px");
+  const fs = document.createElementNS(NSs, "svg"); fs.setAttribute("viewBox", "0 0 280 220"); fs.style.cssText = "position:absolute;left:0;top:0;width:280px;height:220px"; fold.appendChild(fs);
+  [["path", { d: "M10 40 Q10 20 30 20 L100 20 L125 46 L250 46 Q270 46 270 66 L270 190 Q270 210 250 210 L30 210 Q10 210 10 190 Z", fill: "#3B82F6" }], ["path", { d: "M10 80 L270 80 L270 190 Q270 210 250 210 L30 210 Q10 210 10 190 Z", fill: "#60A5FA" }]].forEach(([t, a]) => { const e = document.createElementNS(NSs, t); for (const k in a) e.setAttribute(k, a[k]); fs.appendChild(e); });
+  const csv = el(s7i, "csv7", "", "left:90px;top:330px;width:170px;height:210px;border-radius:14px;background:#fff;border:4px solid #1D4ED8;box-shadow:0 20px 40px rgba(29,78,216,.3)");
+  el(csv, "csv7t", "", "left:0;right:0;top:72px;text-align:center;font:800 44px/1 var(--mono);color:#1D4ED8", "CSV"); el(csv, "csv7n", "", "left:0;right:0;top:140px;text-align:center;font:700 22px/1 var(--mono);color:#64748B", "leads.csv");
+  tl.fromTo(csv, { scale: 0, rotation: -20 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2)" }, S.s7.start + 0.3);
+  const tSave = PW("p13", "saved");
+  tl.to(csv, { x: 330, y: 600, rotation: 12, scale: 0.8, duration: 0.45, ease: "power2.in" }, tSave - 0.45);
+  tl.to(csv, { y: 640, scale: 0.15, opacity: 0, duration: 0.3, ease: "power3.in" }, tSave);
+  tl.fromTo(fold, { scale: 1 }, { scale: 1.12, duration: 0.12, yoyo: true, repeat: 1, transformOrigin: "50% 100%" }, tSave + 0.2);
+  tl.from(fold, { opacity: 0, y: 80, duration: 0.4, ease: "power3.out" }, S.s7.start + 0.4);
+  const sheet7 = el(s7i, "sheet7", "", "left:40px;top:300px;width:1000px;height:640px;border-radius:22px;background:#fff;border:3px solid #CBD5E1;box-shadow:0 40px 80px rgba(30,58,138,.28);overflow:hidden");
+  const sbar = el(sheet7, "sbar7", "", "left:0;top:0;right:0;height:64px;background:#EEF2F7;border-bottom:2px solid #CBD5E1"); ["#FF5F57", "#FEBC2E", "#28C840"].forEach((c, i) => el(sbar, "sdot7" + i, "", "left:" + (24 + i * 34) + "px;top:21px;width:22px;height:22px;border-radius:50%;background:" + c)); el(sbar, "stt7", "", "left:140px;top:0;font:700 26px/64px var(--mono);color:#334155", "leads.csv");
+  table(sheet7, "tb7", 20, 94, 960, ["company_name", "domain", "contact_name", "title"], "final_csv", 6, 76, 24, true);
+  chip(sheet7, "hdr7", 560, 16, "HEADERS FROM THE README EXAMPLE", { size: 18, pad: "7px 14px 8px", fg: "#92400E", bd: "#D97706", bg: "rgba(251,191,36,.2)" });
+  rib(s7i, "r7", 260, 880, 560, "final_csv", "PLACEHOLDER · REAL CSV ROWS");
+  tl.fromTo(sheet7, { scale: 0.12, opacity: 0, transformOrigin: "500px 740px" }, { scale: 1, opacity: 1, duration: 0.6, ease: "power3.out" }, tSave + 0.45);
+  tl.to(fold, { opacity: 0, duration: 0.3 }, P("p14").start - 0.2); tl.to("#r7", { opacity: 0.0, duration: 0.01 }, 0); tl.to("#r7", { opacity: 1, duration: 0.01 }, tSave + 0.9);
+  const old7 = el(s7i, "old7", "", "left:50px;top:1010px;font:italic 800 250px/1 var(--display);color:#94A3B8", "100");
+  const st7 = el(s7i, "st7", "", "left:30px;top:1140px;width:520px;height:16px;border-radius:8px;background:#E5484D;transform-origin:0 50%;transform:rotate(-8deg) scaleX(0)");
+  const nn7 = el(s7i, "nn7", "", "left:620px;top:1010px;font:italic 800 250px/1 var(--display);color:#1D4ED8", isPh("final_count") ? "N" : String(SL.final_count.value));
+  chip(s7i, "nl7", 600, 1290, "REAL COUNT HERE", { size: 22, pad: "9px 16px 10px", ...AMB }); if (!isPh("final_count")) tl.set("#nl7", { display: "none" }, 0);
+  tl.from(old7, { opacity: 0, scale: 0.5, duration: 0.4, ease: "back.out(2)", transformOrigin: "0 70%" }, P("p14").start + 0.1);
+  tl.to(st7, { rotation: -8, scaleX: 1, duration: 0.3, ease: "power3.out" }, PW("p14", "Not") + 0.05);
+  tl.from(nn7, { opacity: 0, scale: 0.3, duration: 0.4, ease: "back.out(2.4)", transformOrigin: "0 70%" }, PW("p14", "always") + 0.1); tl.from("#nl7", { opacity: 0, duration: 0.3 }, PW("p14", "always") + 0.4);
+  burst(s7i, "b7", 700, 1130, PW("p14", "always") + 0.1, "#3B82F6");
+  const bot7 = botAt(s7i, "bot7", 830, 1010, 220);
+  bot7.face(tl, 0, -1, 0.01); bot7.introduce(tl, S.s7.start + 0.4, { fromX: 1250, toX: 830, y: 1010, hops: 1 }); bot7.face(tl, S.s7.start + 1.9, -1, 0.1);
+  bot7.blinks(tl, S.s7.start, S.s7.end - 1, 1.2); bot7.aimPoint(tl, tSave - 0.2, { x: 830, y: 1010, scale: 1, target: [540, 1080], hand: "L", hold: 0.7 });
+  bot7.react(tl, tSave + 0.6, "think"); bot7.react(tl, PW("p14", "always") + 0.2, "wow");
+  tl.fromTo(s7i, { scale: 1 }, { scale: 1.03, transformOrigin: "540px 900px", duration: S.s7.len, ease: "sine.inOut" }, S.s7.start);
+
+  /* ================================================================= S8  VALUE: MANUAL RESEARCH -> AI-ASSISTED PROSPECTING */
+  const s8i = $("s8i");
+  el(s8i, "bg8", "", "inset:0;position:absolute;background:linear-gradient(160deg,#0EA5A0 0%,#2563EB 55%,#7C3AED 100%)");
+  [[-200, 400, 900], [500, 1000, 800], [100, 1500, 700]].forEach(([x, y, d], i) => { const c = el(s8i, "orb8" + i, "", "left:" + x + "px;top:" + y + "px;width:" + d + "px;height:" + d + "px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 68%)"); tl.fromTo(c, { x: 0, y: 0 }, { x: i % 2 ? -140 : 140, y: -120, duration: S.s8.len, ease: "sine.inOut" }, S.s8.start); });
+  hud(s8i, "h8", "THE VALUE", S.s8.start + 0.5);
+  const man = el(s8i, "man8", "", "left:40px;top:290px;width:420px;height:150px;border-radius:22px;background:rgba(255,255,255,.14);border:3px solid rgba(255,255,255,.5)");
+  el(man, "man8t", "", "left:0;right:0;top:56px;text-align:center;font:800 34px/1 var(--mono);color:#E6EEFF", "MANUAL RESEARCH");
+  const ms = el(man, "man8s", "", "left:20px;top:70px;width:380px;height:10px;border-radius:5px;background:#FF5A5F;transform-origin:0 50%;transform:scaleX(0)");
+  const ai = el(s8i, "ai8", "", "left:530px;top:270px;width:510px;height:190px;border-radius:26px;background:#fff;box-shadow:0 0 60px rgba(255,255,255,.5)");
+  el(ai, "ai8t", "", "left:0;right:0;top:46px;text-align:center;font:800 34px/1.15 var(--mono);color:#1E3A8A", "AI-ASSISTED"); el(ai, "ai8u", "", "left:0;right:0;top:100px;text-align:center;font:800 34px/1.15 var(--mono);color:#1E3A8A", "PROSPECTING");
+  const ar8 = el(s8i, "ar8", "", "left:470px;top:330px;font:800 60px/1 var(--mono);color:#fff", "→");
+  tl.from(man, { opacity: 0, x: -60, duration: 0.4, ease: "power3.out" }, P("p15").start + 0.1); tl.to(ms, { scaleX: 1, duration: 0.3, ease: "power3.out" }, PW("p15", "scratch") - 0.1); tl.to(man, { opacity: 0.6, duration: 0.3 }, PW("p15", "scratch") + 0.2);
+  tl.from(ar8, { opacity: 0, x: -20, duration: 0.25 }, PW("p15", "you") - 0.2); tl.from(ai, { opacity: 0, scale: 0.7, duration: 0.45, ease: "back.out(1.8)", transformOrigin: "50% 50%" }, PW("p15", "you") - 0.1);
+  const tile8 = (id, y, num, big, small, at) => { const t = el(s8i, id, "", "left:40px;top:" + y + "px;width:700px;height:150px;border-radius:24px;background:rgba(7,18,50,.55);border:3px solid rgba(255,255,255,.55);box-shadow:0 20px 50px rgba(0,0,0,.25)"); el(t, id + "n", "", "left:24px;top:36px;width:78px;height:78px;border-radius:50%;background:#fff;color:#1E3A8A;font:800 34px/78px var(--mono);text-align:center", num); el(t, id + "b", "", "left:126px;top:28px;font:800 46px/1 var(--body);color:#fff;letter-spacing:-.01em", big); el(t, id + "s", "", "left:126px;top:92px;font:600 26px/1 var(--body);color:#D6E4FF", small); tl.from(t, { opacity: 0, x: -80, duration: 0.4, ease: "power3.out" }, at); return t; };
+  const t81 = tile8("t81", 520, "1", "FIND COMPANIES", "filters → matches", PW("p16", "Find") - 0.1);
+  const t82 = tile8("t82", 700, "2", "DISCOVER CONTACTS", "roles → decision-makers", PW("p16", "Discover") - 0.1);
+  const t83 = tile8("t83", 880, "3", "EXPORT LEADS", "CSV → your sales team", PW("p16", "Export") - 0.1);
+  const ft = el(s8i, "ft8", "", "left:40px;top:1090px;width:1000px;height:170px;border-radius:24px;background:#fff;box-shadow:0 0 60px rgba(255,255,255,.35)");
+  el(ft, "ft8a", "", "left:34px;top:28px;font:800 44px/1.1 var(--display);color:#1E3A8A;font-style:italic", "A list to research and qualify."); el(ft, "ft8b", "", "left:34px;top:100px;font:700 28px/1 var(--body);color:#475569", "Not guaranteed customers. Outreach is up to you.");
+  tl.from(ft, { opacity: 0, y: 60, duration: 0.45, ease: "back.out(1.5)" }, PW("p17", "Reaching") - 0.4);
+  const bot8 = botAt(s8i, "bot8", 790, 520, 250);
+  bot8.face(tl, 0, -1, 0.01); bot8.introduce(tl, S.s8.start + 0.5, { fromX: 1250, toX: 790, y: 520, hops: 1 }); bot8.face(tl, S.s8.start + 2, -1, 0.1); bot8.blinks(tl, S.s8.start, S.s8.end - 1, 1.2);
+  [[t81, "Find"], [t82, "Discover"], [t83, "Export"]].forEach(([t, w], i) => bot8.aimPoint(tl, PW("p16", w) - 0.15, { x: 790, y: 520, scale: 1, target: [700, 595 + i * 180], hand: "L", hold: 0.45 }));
+  bot8.react(tl, PW("p17", "up") + 0.1, "celebrate");
+  tl.fromTo(s8i, { scale: 1 }, { scale: 1.03, transformOrigin: "540px 800px", duration: S.s8.len, ease: "sine.inOut" }, S.s8.start);
+
+  /* ================================================================= S9  QUESTION + SIGNATURE ENDING */
+  const s9i = scene("s9", "e9", "#60CDFF", 29);
+  const q9 = NO.glass(s9i, { id: "q9", x: 90, y: 440, w: 900, h: 560, title: "NEXT QUESTION" });
+  const qb = q9.querySelector(".gb");
+  el(qb, "q9t", "", "left:40px;top:60px;width:820px;font:italic 800 76px/1.12 var(--display);color:#fff", "Would you use this to find your next clients?");
+  const cl9 = el(qb, "cl9", "key", "left:620px;top:410px;width:240px;height:70px;font-size:26px;border-radius:14px", "CLOSE");
+  tl.from(q9, { opacity: 0, scale: 0.8, duration: 0.45, ease: "back.out(1.6)", transformOrigin: "50% 50%" }, S.s9.start + 0.15);
+  const bot9a = botAt(s9i, "bot9a", 560, 1050, 250);
+  bot9a.face(tl, 0, -1, 0.01); bot9a.introduce(tl, S.s9.start + 0.3, { fromX: 1250, toX: 560, y: 1050, hops: 1 }); bot9a.face(tl, S.s9.start + 1.9, -1, 0.1); bot9a.blinks(tl, S.s9.start, 95.6, 1.2);
+  const pr9 = bot9a.press(tl, 94.55, { x: 560, y: 1050, scale: 1, target: [760, 990], hand: "L" });
+  tl.to(cl9, { y: 6, duration: 0.07 }, pr9.tapAt); tl.to(cl9, { y: 0, duration: 0.14 }, pr9.tapAt + 0.07);
+  tl.to(q9, { opacity: 0, scale: 0.9, duration: 0.3, ease: "power2.in" }, pr9.tapAt + 0.2);
+  tl.to(bot9a.P.wrap, { x: 1300, duration: 0.5, ease: "power2.in" }, pr9.tapAt + 0.35); bot9a.hop(tl, pr9.tapAt + 0.3, 40, 0.3);
+  const bot9 = botAt(s9i, "bot9", -400, 470, 300);
+  Outro.build(tl, s9i, 95.65, { bot: bot9, cx: 390, y: 470, fromX: -400 });
+
+  /* ---------- Camera tours + scan beams: a new beat about every 3 s (carried by the ops-room camera and a radar scan beam) ---------- */
+  const cams = {};
+  ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"].forEach(k => {
+    const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform");
+    const keep = /^(e\d|bg7|gr7|d7|orb8|outro|bot9-wrap|cam)/;
+    Array.from(inn.children).filter(c => c !== w && !keep.test(c.id)).forEach(c => w.appendChild(c));
+    Cam.frame(w, 540, 960, 1); cams[k] = w;
+  });
+  const sceneOf = t => { let r = "s1"; Object.keys(S).forEach(k => { if (t >= S[k].b) r = k; }); return r; };
+  const bounds = Object.keys(S).map(k => S[k].b);
+  const beats = [];
+  E.phrases.forEach(p => { for (let t = p.start; t < p.end - 0.9; t += 2.3) beats.push(+t.toFixed(2)); });
+  const CY = [880, 1040, 820, 1000], CX = [540, 505, 575, 540];
+  let bi = 0, lastScene = null, flip = 1;
+  beats.forEach(t => {
+    if (bounds.some(b => Math.abs(b - t) < 1.1) || t > 95.3) return;
+    const k = sceneOf(t), light = k === "s7" || k === "s8";
+    if (k !== lastScene) { lastScene = k; bi = 0; }
+    const big = bi % 2 === 0;
+    Cam.fly(tl, cams[k], t - 0.05, 0.75, { cx: CX[bi % 4], cy: big ? CY[bi % 4] : 960, s: big ? (k === "s2" ? 1.06 : 1.13) : 1.0 });
+    const b = el($("fx"), "bm" + Math.round(t * 100), "", "left:-400px;top:0;width:380px;height:1920px;opacity:0;" + (k === "s7" ? "" : "mix-blend-mode:screen;") + "background:linear-gradient(90deg,transparent," + (k === "s7" ? "rgba(29,78,216,.5)" : k === "s8" ? "rgba(255,255,255,.75)" : "rgba(140,230,255,.8)") + ",transparent)");
+    tl.set(b, { opacity: 1, x: flip > 0 ? 0 : 1700 }, t); tl.to(b, { x: flip > 0 ? 1700 : 0, duration: 0.55, ease: "power2.inOut" }, t); tl.set(b, { opacity: 0 }, t + 0.6);
+    flip = -flip; bi++;
+  });
+
+  tl.to("#outro-halo", { scale: 1.14, duration: 1.1, yoyo: true, repeat: 3, ease: "sine.inOut" }, 97.4); bot9.idle(tl, 97.4, 5);
+  /* ---------- Transitions ---------- */
+  Cam.iris(tl, S.s2.b, 0.8, { inn: "#s2i", cx: 330, cy: 1250, ring: "#00E0C6", host: $("fx"), id: "ir2" });
+  Cam.whip(tl, S.s3.b, 0.6, { out: "#s2i", inn: "#s3i", dir: 1, blur: 24 });
+  Cam.push(tl, S.s4.b, 0.55, { out: "#s3i", inn: "#s4i", ox: 540, oy: 1280, scale: 4 });
+  Cam.cardGrow(tl, $("fx"), S.s5.b, 0.55, { id: "carrier5", x: 40, y: 770, w: 1000, h: 640, r: 26, color: "#0B1A3A", from: "#s4i" });
+  Cam.iris(tl, S.s6.b, 0.8, { inn: "#s6i", cx: 540, cy: 890, ring: "#FF5A8A", host: $("fx"), id: "ir6" });
+  Cam.whip(tl, S.s7.b, 0.6, { out: "#s6i", inn: "#s7i", dir: -1, blur: 24 });
+  Cam.sheetDrop(tl, S.s8.b, 0.7, { out: "#s7i", inn: "#s8i" });
+  Cam.iris(tl, S.s9.b, 0.8, { inn: "#s9i", cx: 540, cy: 700, ring: "#60CDFF", host: $("fx"), id: "ir9" });
+
+  /* ---------- Subtitles: karaoke pill, word block hops word to word ---------- */
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 330, active: "#FFFFFF", block: "#3B82F6", maxWords: 4, maxChars: 24 });
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>
