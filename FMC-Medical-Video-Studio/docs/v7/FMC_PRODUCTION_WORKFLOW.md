@@ -21,4 +21,4 @@ Default output: 1080 × 1920, 9:16, 30 fps, h264 `yuv420p` + AAC, Arabic narrati
 1 Audio sources & effects audit · 2 Arabic language review · 3 Character consistency · 4 Character framing · 5 Anatomical accuracy · 6 Scene variety · 7 Typography & safe zones · 8 Original logo verification · 9 Technical validation · 10 Limitations needing human approval. Automated findings come from `audio-qc` / `standards-qc`; items 2, 5 and the "comfort" part of 1 are human-only.
 
 ## Protecting existing work
-Git tag `fmc-pre-v7-checkpoint` (state before V7), dependency snapshot `docs/v7/dependency-snapshot-before-v7.txt`, all earlier exports untouched, Agentoon.ai files never modified, one new output path per video.
+Checkpoint = commit `fe7c918` on branch `claude/upbeat-pascal-hhmirn` (local tag `fmc-pre-v7-checkpoint` points to it; pushing the tag was refused by the network proxy), dependency snapshot `docs/v7/dependency-snapshot-before-v7.txt`, all earlier exports untouched, Agentoon.ai files never modified, one new output path per video.

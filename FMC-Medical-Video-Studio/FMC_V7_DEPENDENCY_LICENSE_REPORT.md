@@ -37,7 +37,7 @@ Nothing paid was activated. No API key was requested, created, printed or commit
 | three 0.170, React 19, zod, tsx (existing) | MIT | unchanged |
 
 ## Checkpoint / protection (Phase 13)
-Tag `fmc-pre-v7-checkpoint` (commit before V7), `docs/v7/dependency-snapshot-before-v7.txt` (exact versions + lockfile hash), no earlier output deleted or overwritten (`anim_qc` now writes to `docs/v7/`), no Agentoon files touched.
+Checkpoint commit `fe7c918` (local tag `fmc-pre-v7-checkpoint`; the tag push was refused by the proxy, the commit is on the pushed branch), `docs/v7/dependency-snapshot-before-v7.txt` (exact versions + lockfile hash), no earlier output deleted or overwritten (`anim_qc` now writes to `docs/v7/`), no Agentoon files touched.
 
 ## Needs your decision
 1. Confirm Remotion licensing status for commercial use.
