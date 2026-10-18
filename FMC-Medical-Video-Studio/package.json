@@ -1,0 +1,47 @@
+{
+  "name": "fmc-medical-video-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reusable Arabic medical video production system for \u0645\u0631\u0643\u0632 \u0627\u0644\u0641\u064a\u0635\u0644 \u0627\u0644\u0637\u0628\u064a",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio",
+    "lint": "tsc --noEmit",
+    "arabic:check": "tsx scripts/arabic-qc.ts",
+    "voice:compare": "tsx scripts/voice-compare.ts",
+    "script:generate": "tsx scripts/generate-script.ts",
+    "footage:fetch": "tsx scripts/fetch-footage.ts",
+    "voice:generate": "tsx scripts/generate-voiceover.ts",
+    "render": "tsx scripts/render-video.ts",
+    "produce": "tsx scripts/produce.ts",
+    "approve": "tsx scripts/approve.ts",
+    "voice:approve": "tsx scripts/approve.ts",
+    "audio:bed": "tsx scripts/make-audio-bed.ts"
+  },
+  "dependencies": {
+    "@fontsource/cairo": "^5.3.0",
+    "@fontsource/ibm-plex-sans-arabic": "^5.3.0",
+    "@fontsource/tajawal": "^5.3.0",
+    "@react-three/fiber": "^9.0.0",
+    "@remotion/bundler": "^4.0.505",
+    "@remotion/cli": "^4.0.505",
+    "@remotion/media-utils": "^4.0.505",
+    "@remotion/renderer": "^4.0.505",
+    "@remotion/three": "^4.0.505",
+    "@remotion/transitions": "^4.0.505",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "remotion": "^4.0.505",
+    "three": "^0.170.0",
+    "use-sync-external-store": "^1.7.0",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.2.7",
+    "@types/three": "^0.170.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "zod": "^4.6.7"
+  }
+}
