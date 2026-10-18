@@ -60,3 +60,17 @@ Presenter rig (`src/components/Presenter`, assets from `assets/character/fmc-pre
   0 credits, Gemini image/Veo were quota-blocked on the free key, and there is no GPU. Veo cannot take our narration audio as input.
 Audio V2: `npm run audio:pads` (original sustained pads, no piano/rhythm) → `tsx scripts/mix-audio.ts --music assets/audio/music/fmc-ambient-pads.wav --music-lufs -34 --no-sfx`.
 The picture render never carries status text; review status lives in `output/V2/FMC_V2_QC_Report.md`.
+
+
+## V5 — original 3D human doctor (procedural rig) — `src/components/Doctor`
+- `skeleton.ts` — dimensions, two-bone IK (arms in torso space, legs in hip space), hand shapes, face parameters.
+- `Doctor.tsx` — the character: stylised 3D human built from primitives/shells (head with masked hair + beard, eyes with eyelids, brows, lip-synced mouth with jaw,
+  coat with the official logo plane, scrubs, stethoscope, 5-finger hands with curl/spread). No external model, no Agentoon asset or code.
+- `engine.ts` — acting engine: clips with blend in/out; walking with world-planted feet (+ two-step settle), IK pointing, look-at (head leads, eyes follow),
+  blinking, breathing, speech nod; action library `A.idle/walk/wave/jump/pointToLowerBack/pointToShoulder/pointToKnee/pointToWrist/pointAtAnatomy/explain/
+  presentMedicalModel/think/react/lookAtCamera/lookAtAnatomy/celebrate/exitScene/attention/progressSteps`.
+- `lowerBackScript.ts` — the lower-back performance: gestures are timed from the narration (phrases split by punctuation, proportional to character count).
+- `src/templates/DoctorExplainer.tsx` — one continuous 3D stage (doctor + hologram spine + camera path) with real Arabic text layers on top.
+- Commands: `npm run render:v5` (picture), `npm run audio:mix:v5` (music/stems/final), `npm run anim:qc` (foot sliding / joint-snap check).
+Limits: stylised procedural character (not a sculpted film asset); lip sync is amplitude/spectrum driven; gesture timing is proportional, not word-aligned.
+The Agentoon.ai kit (robot.js etc.) was not available in this environment, so none of its code or architecture was used or studied.

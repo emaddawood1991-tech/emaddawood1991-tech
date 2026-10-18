@@ -23,9 +23,13 @@ const ff = (...a: string[]) => execFileSync('ffmpeg', ['-y', '-hide_banner', '-l
 const c = loadContent(slug);
 const manifest = ManifestSchema.parse(JSON.parse(readFileSync(p('assets', 'audio', slug, 'manifest.json'), 'utf8')));
 const tl = computeTimeline(c, manifest);
-const total = totalFrames(tl) / FPS;
+const timelineTotal = totalFrames(tl) / FPS;
 const vdur = ffprobeDuration(video);
-if (Math.abs(vdur - total) > 0.1) throw new Error(`Video is ${vdur}s but timeline is ${total}s — wrong video for this manifest.`);
+const partial = flag('partial'); // preview cut: use the first part of the timeline, fade out at the end of the cut
+const total = partial ? vdur : timelineTotal;
+const FADE_OUT = parseFloat(arg('fade-out', '3')!);
+const STEMS = arg('stems');
+if (!partial && Math.abs(vdur - total) > 0.1) throw new Error(`Video is ${vdur}s but timeline is ${total}s — wrong video for this manifest.`);
 
 // 1) narration bus: static gain per scene to a common loudness, placed at its exact timeline offset
 const items = tl.filter((t) => t.audioFile);
@@ -48,7 +52,7 @@ const mRaw = `${tmp}/music_raw.wav`;
 ff('-i', musicSrc, '-af', `aresample=48000,atrim=0:${total},asetpts=N/SR/TB`, mRaw);
 const mGain = MUSIC_LUFS - loudness(mRaw).lufs;
 const music = `${tmp}/music.wav`;
-ff('-i', mRaw, '-af', `volume=${mGain.toFixed(2)}dB,afade=t=in:st=0:d=2,afade=t=out:st=${(total - 3).toFixed(2)}:d=3`, music);
+ff('-i', mRaw, '-af', `volume=${mGain.toFixed(2)}dB,afade=t=in:st=0:d=2,afade=t=out:st=${(total - FADE_OUT).toFixed(2)}:d=${FADE_OUT}`, music);
 
 // 3) extremely subtle air swells (soft filtered noise) at scene changes — far below narration
 const swell = `${tmp}/swell.wav`;
@@ -59,16 +63,26 @@ const sChains = cuts.map((ms, i) => `[${i}:a]adelay=${ms}|${ms}[s${i}]`);
 const sfx = `${tmp}/sfx.wav`;
 if (cuts.length) ff(...sIns, '-filter_complex', `${sChains.join(';')};${cuts.map((_, i) => `[s${i}]`).join('')}amix=inputs=${cuts.length}:normalize=0,apad=whole_dur=${total},atrim=0:${total}[o]`, '-map', '[o]', sfx);
 
-// 4) duck music+sfx under narration (sidechain), then sum
-const bed = `${tmp}/bed.wav`;
+// 4) duck music+sfx under narration (sidechain). The narration bus stays untouched.
+const duckedBed = `${tmp}/bed_ducked.wav`;
 ff(...(cuts.length ? ['-i', music, '-i', sfx, '-i', narr] : ['-i', music, '-i', narr]), '-filter_complex',
-  (cuts.length ? '[0:a][1:a]amix=inputs=2:normalize=0[bed];[2:a]asplit=2[k][n];' : '[0:a]anull[bed];[1:a]asplit=2[k][n];') + '[bed][k]sidechaincompress=threshold=0.03:ratio=3.2:attack=60:release=1100:makeup=1[ducked];[ducked]alimiter=limit=0.95[d]'
-  + ';[d][n]amix=inputs=2:normalize=0[o]', '-map', '[o]', bed);
+  (cuts.length ? '[0:a][1:a]amix=inputs=2:normalize=0[bed];[2:a]asplit=2[k][n];' : '[0:a]anull[bed];[1:a]asplit=2[k][n];') + '[bed][k]sidechaincompress=threshold=0.03:ratio=3.2:attack=60:release=1100:makeup=1[d];[d]alimiter=limit=0.95[o];[n]anullsink', '-map', '[o]', duckedBed);
 
-// 5) final loudness: one static gain (no pumping), true-peak safety ceiling at -1.5 dBFS
+// 5) final loudness: ONE static gain applied to both stems (no pumping), true-peak ceiling -1.5 dBFS on the sum
+const sum0 = `${tmp}/sum0.wav`;
+ff('-i', duckedBed, '-i', narr, '-filter_complex', '[0:a][1:a]amix=inputs=2:normalize=0[o]', '-map', '[o]', sum0);
+const g = FINAL_LUFS - loudness(sum0).lufs;
+const narrOut = `${tmp}/narration_final.wav`, musicOut = `${tmp}/music_final.wav`, sfxOut = `${tmp}/sfx_final.wav`;
+ff('-i', narr, '-af', `volume=${g.toFixed(2)}dB,alimiter=limit=0.89:attack=3:release=60:level=disabled`, narrOut);
+ff('-i', duckedBed, '-af', `volume=${g.toFixed(2)}dB`, musicOut);
+ff('-f', 'lavfi', '-i', `anullsrc=r=48000:cl=stereo`, '-t', total.toFixed(3), sfxOut); // transition/character sound effects are disabled: silence
 const fin = `${tmp}/final.wav`;
-const g = FINAL_LUFS - loudness(bed).lufs;
-ff('-i', bed, '-af', `volume=${g.toFixed(2)}dB,alimiter=limit=0.84:attack=5:release=80:level=disabled`, fin);
+ff('-i', narrOut, '-i', musicOut, '-filter_complex', '[0:a][1:a]amix=inputs=2:normalize=0,alimiter=limit=0.8:attack=5:release=80:level=disabled[o]', '-map', '[o]', fin);
+if (STEMS) {
+  mkdirSync(STEMS, {recursive: true});
+  for (const [src, name] of [[narrOut, 'narration.wav'], [musicOut, 'music.wav'], [sfxOut, 'sound_effects.wav'], [fin, 'final_mix.wav']]) ff('-i', src, '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s16le', `${STEMS}/${name}`);
+  ff('-i', fin, '-c:a', 'libmp3lame', '-b:a', '256k', `${STEMS}/final_mix.mp3`);
+}
 
 // 6) mux: video stream copied untouched
 mkdirSync(p('output'), {recursive: true});

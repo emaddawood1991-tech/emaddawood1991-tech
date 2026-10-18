@@ -1,5 +1,7 @@
 import React from 'react';
 import {Composition} from 'remotion';
+import {DoctorPreview} from './compositions/DoctorPreview';
+import {DoctorExplainer, durationForDoctor} from './templates/DoctorExplainer';
 import {AnatomyPreview} from './compositions/AnatomyPreview';
 import {durationFor, MedicalExplainer} from './templates/MedicalExplainer';
 import {VideoPropsSchema, ContentSchema, type VideoProps} from './lib/schema';
@@ -33,6 +35,8 @@ export const Root: React.FC = () => (
       defaultProps={defaults}
       calculateMetadata={({props}) => ({durationInFrames: durationFor(props)})}
     />
+    <Composition id="DoctorReel" component={DoctorExplainer} width={1080} height={1920} fps={FPS} durationInFrames={durationForDoctor(defaults)} schema={VideoPropsSchema} defaultProps={defaults} calculateMetadata={({props}) => ({durationInFrames: durationForDoctor(props)})} />
+    <Composition id="DoctorPreview" component={DoctorPreview} width={1080} height={1920} fps={FPS} durationInFrames={60} defaultProps={{}} />
     <Composition id="AnatomyPreview" component={AnatomyPreview} width={1080} height={1920} fps={FPS} durationInFrames={90} defaultProps={{}} />
   </>
 );

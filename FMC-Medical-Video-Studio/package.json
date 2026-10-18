@@ -22,7 +22,10 @@
     "char:prep": "python3 scripts/char/prep_assets.py",
     "char:visemes": "python3 scripts/char/visemes.py assets/audio/lower-back-pain",
     "audio:pads": "python3 scripts/audio/compose_pads.py assets/audio/music/fmc-ambient-pads.wav 86",
-    "render:v2": "tsx scripts/render-video.ts --slug lower-back-pain --format reel --clean"
+    "render:v2": "tsx scripts/render-video.ts --slug lower-back-pain --format reel --clean",
+    "render:v5": "remotion render src/index.ts DoctorReel output/V5/picture.mp4 --props=.tmp/v5props.json --gl=angle",
+    "anim:qc": "tsx scripts/anim-qc.ts",
+    "audio:mix:v5": "tsx scripts/mix-audio.ts --video output/V5/picture.mp4 --out output/V5/FMC_Lower_Back_Pain_V5.mp4 --music assets/audio/music/fmc-ambient-pads.wav --music-lufs -34 --no-sfx --stems output/V5/stems"
   },
   "dependencies": {
     "@fontsource/cairo": "^5.3.0",
