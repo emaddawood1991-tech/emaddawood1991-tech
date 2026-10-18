@@ -1,0 +1,63 @@
+import { icon } from '../../src/components/icons.js';
+import { illustrations, labels } from '../../src/components/illustrations.js';
+import { slide, tag, note, rowCard, LOGO, BRAND_AR } from '../../src/components/layout.js';
+import { md } from '../../src/components/text.js';
+
+const BG = ['a', 'b', 'c'];
+
+const renderers = {
+  hook: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
+    <h1 class="arabic-title" style="margin-top:22px">${md(s.title)}</h1>
+    <div class="hook-row">
+      <div class="hook-text"><p class="lead arabic-body">${md(s.lead || '')}</p>
+        <div class="chips">${(s.chips || []).map((c) => `<div class="chip">${icon(c.icon)}<span>${md(c.text)}</span></div>`).join('')}</div></div>
+      <div class="hook-art"><div class="illus">${(illustrations[s.illustration] || illustrations.handNerve)()}</div></div>
+    </div>`,
+
+  explain: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
+    <h2 class="arabic-title one" style="margin:18px 0 14px">${md(s.title)}</h2>
+    <p class="lead arabic-body" style="font-size:33px;line-height:1.65">${md(s.lead)}</p>
+    <div class="art-frame ar fill" style="margin:22px 0 22px"><div class="illus">${(illustrations[s.illustration] || illustrations.wristCross)()}${labels(s.labels || [])}</div></div>
+    ${s.note ? note(md(s.note)) : ''}`,
+
+  cards: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
+    <h2 class="arabic-title one" style="margin:18px 0 26px">${md(s.title)}</h2>
+    <div class="stack">${s.items.map((it, i) => rowCard({ ic: it.icon, title: md(it.title), text: md(it.text), n: s.numbered ? String(i + 1).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]) : null, cls: it.tone })).join('')}</div>
+    <div style="flex:1"></div>${s.note ? note(md(s.note), { warn: s.warn }) : ''}`,
+
+  steps: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
+    <h2 class="arabic-title one" style="margin:18px 0 30px">${md(s.title)}</h2>
+    <div class="timeline">${s.items.map((it, i) => `<div class="step ${it.fmc ? 'hl-step' : ''}"><div class="dot">${String(i + 1).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d])}</div>
+      <div class="body"><h3>${md(it.title)}</h3><p>${md(it.text)}</p>${it.fmc ? `<span class="fmcbadge">${icon('check')}${md(it.fmc)}</span>` : ''}</div></div>`).join('')}</div>
+    <div style="flex:1"></div>${s.note ? note(md(s.note)) : ''}`,
+
+  advice: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag), 'red')}</div>` : ''}
+    <h2 class="arabic-title one" style="margin:18px 0 12px">${md(s.title)}</h2>
+    ${s.lead ? `<p class="lead arabic-body" style="font-size:32px;margin-bottom:18px">${md(s.lead)}</p>` : ''}
+    <div class="list-compact">${s.items.map((t) => `<div class="check red"><div class="ck">${icon('check')}</div><div>${md(t)}</div></div>`).join('')}</div>
+    <div style="flex:1"></div>
+    ${s.note ? `<div style="margin-bottom:22px">${note(md(s.note), { warn: true })}</div>` : ''}
+    ${s.cta ? `<div class="cta"><div class="logo"><img src="${LOGO}" alt="${BRAND_AR}"></div><div><h3>${md(s.cta.title)}</h3><p>${md(s.cta.text || BRAND_AR)}</p></div></div>` : ''}`,
+
+  closing: (s) => `
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:26px">
+      <div class="art-frame" style="width:380px;height:380px;display:grid;place-items:center"><img src="${LOGO}" style="width:290px;height:auto" alt="FMC"></div>
+      <h1 class="arabic-title" style="font-size:84px">${md(s.title || 'صحتك تستحق العناية')}</h1>
+      <p class="lead arabic-body" style="max-width:800px">${md(s.lead || '')}</p></div>`,
+};
+
+export function build(content) {
+  const n = content.slides.length;
+  return content.slides.map((s, i) => {
+    const r = renderers[s.type];
+    if (!r) throw new Error(`Unknown slide type "${s.type}" in medical-carousel (slide ${i + 1})`);
+    const last = i === n - 1;
+    return slide({ style: content.style, bg: BG[i % 3], index: i, total: n, body: r(s), more: !last && s.more !== false });
+  });
+}
+export const css = 'template.css';
