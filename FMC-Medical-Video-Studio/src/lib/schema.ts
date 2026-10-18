@@ -71,6 +71,8 @@ export const VideoPropsSchema = z.object({
   /** Preview renders have no narration and are watermarked; never publishable. */
   preview: z.boolean(),
   /** Relative paths inside assets/ (original ambient bed + soft whoosh). Null = none. */
+  /** Per-scene mouth curves from scripts/char/visemes.py (null = presenter idles, mouth closed). */
+  visemes: z.object({fps: z.number(), scenes: z.record(z.string(), z.object({o: z.array(z.number()), w: z.array(z.number())}))}).nullable().default(null),
   /** Watermark text for non-final renders (e.g. voiced draft awaiting pronunciation approval). */
   label: z.string().nullable().default(null),
   music: z.string().nullable(),

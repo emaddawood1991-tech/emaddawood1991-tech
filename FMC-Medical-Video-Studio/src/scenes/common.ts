@@ -7,6 +7,8 @@ export type SceneProps = {
   layout: Layout;
   item: TimelineItem;
   footage: {file: string; credit: string} | null;
+  /** audio-driven mouth curves for this scene's narration (null = presenter idles) */
+  speech: {o: number[]; w: number[]} | null;
 };
 
 /** Stage rectangle for the 3D canvas: full-bleed in portrait, left 58% in landscape (text sits on the RTL start side). */
@@ -14,3 +16,7 @@ export const stageRect = (l: Layout) => (l.portrait ? {x: 0, y: 0, w: l.width, h
 
 /** Portrait: aim the camera above the model so the anatomy sits in the lower 60% and titles stay clear. */
 export const lift = (t: [number, number, number], l: Layout, amount: number): [number, number, number] => (l.portrait ? [t[0], t[1] + amount, t[2]] : t);
+
+/** Square face crop on the presenter art, used for picture-in-picture bubbles. */
+export const FACE_VIEW = {x: 470, y: 60, w: 560, h: 560};
+export const PIP = (l: Layout) => (l.portrait ? 270 : 300);

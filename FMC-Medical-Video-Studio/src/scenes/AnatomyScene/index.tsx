@@ -1,13 +1,16 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
 import {AnimatedTitle} from '../../components/ArabicTitles';
+import {PainPose} from '../../components/Presenter';
+import {TitleRow} from '../TitleRow';
+import {interpolate} from 'remotion';
 import {AnatomyViewer} from '../../components/AnatomyViewer';
 import {Callout, EducationalTag, HUDBackdrop, HUDFrame} from '../../components/MedicalHUD';
 import {ANCHORS, orbit, projectToScreen, SPINE_CENTER, type CamKey} from '../../components/Medical3D';
 import type {SceneProps} from '../common';
 import {lift, stageRect} from '../common';
 
-export const AnatomyScene: React.FC<SceneProps> = ({scene, layout, item}) => {
+export const AnatomyScene: React.FC<SceneProps> = ({scene, layout, item, speech}) => {
   const frame = useCurrentFrame();
   const r = stageRect(layout);
   const d = item.duration;
@@ -24,16 +27,25 @@ export const AnatomyScene: React.FC<SceneProps> = ({scene, layout, item}) => {
   const pts = anchors.map((a) => projectToScreen(a, cam, frame, r.w, r.h));
   const edge: ('left' | 'right')[] = layout.portrait ? ['left', 'right', 'left'] : ['right', 'right', 'right'];
   const ys = layout.portrait ? [r.h * 0.42, r.h * 0.5, r.h * 0.6] : [r.h * 0.33, r.h * 0.5, r.h * 0.67];
+  const SPLIT = 150; // presenter shows where the pain is first (~5 s), then the 3D anatomy explains
+  const poseO = interpolate(frame, [SPLIT - 18, SPLIT + 6], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const threeO = 1 - poseO;
+  const poseH = layout.portrait ? 1130 : 900;
   return (
     <>
       <HUDBackdrop />
+      <div style={{position: 'absolute', inset: 0, opacity: poseO, display: poseO > 0 ? 'block' : 'none'}}>
+        <div style={{position: 'absolute', left: layout.portrait ? (layout.width - 612 * (poseH / 1032)) / 2 : layout.safe.left + 80, top: layout.portrait ? 330 : 90}}>
+          <PainPose height={poseH} delay={4} />
+        </div>
+      </div>
+      <div style={{position: 'absolute', inset: 0, opacity: threeO}}>
       <AnatomyViewer camera={cam} width={r.w} height={r.h} />
       <HUDFrame x={r.x + 40} y={r.y + 40} w={r.w - 80} h={r.h - 80} />
       {labels.slice(0, 3).map((l, i) => (
         <Callout key={l} label={l} anchor={pts[i]} labelY={ys[i]} edge={edge[i]} margin={layout.portrait ? 70 : 60} delay={40 + i * 28} size={sz} screenW={r.w} />
       ))}
-      <div style={{position: 'absolute', top: layout.portrait ? layout.safe.top : layout.height * 0.3, ...(layout.portrait ? {left: layout.safe.left, right: layout.safe.right} : {right: layout.safe.right, width: layout.width * 0.36})}}>
-        <AnimatedTitle text={scene.onScreen.title ?? ''} size={layout.portrait ? 72 : 62} weight={800} display delay={6} />
+      <TitleRow layout={layout} title={scene.onScreen.title ?? ''} speech={speech} audioFrom={item.audioFrom} seed={2} />
       </div>
       <EducationalTag size={layout.portrait ? 28 : 24} x={r.w / 2} y={layout.portrait ? layout.height - layout.safe.bottom - 10 : layout.height - 110} />
     </>

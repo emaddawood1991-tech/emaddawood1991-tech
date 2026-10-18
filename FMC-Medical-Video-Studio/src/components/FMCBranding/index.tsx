@@ -14,6 +14,13 @@ export const NameBug: React.FC<{size: number}> = ({size}) => (
   </div>
 );
 
+/** Original logo (unmodified file) on a white plate, top-right corner. */
+export const LogoBug: React.FC<{size: number; top: number; right: number; opacity: number}> = ({size, top, right, opacity}) => (
+  <div style={{position: 'absolute', top, right, width: size, height: size, borderRadius: size * 0.2, background: COLORS.white, padding: size * 0.06, boxShadow: '0 10px 30px rgba(0,0,0,0.35)', opacity}}>
+    <Img src={staticFile('logo/fmc-original-logo.png')} style={{width: '100%', height: '100%', objectFit: 'contain'}} />
+  </div>
+);
+
 /** Animated logo reveal. The supplied logo file is shown untouched on its own white plate. */
 export const LogoReveal: React.FC<{plate: number; delay?: number; titleSize: number; sloganSize: number}> = ({plate, delay = 0, titleSize, sloganSize}) => {
   const frame = useCurrentFrame();
@@ -35,7 +42,7 @@ export const LogoReveal: React.FC<{plate: number; delay?: number; titleSize: num
             clipPath: `circle(${reveal * 75}% at 50% 50%)`,
           }}
         >
-          <Img src={staticFile('logo/fmc-logo.webp')} style={{width: '100%', height: '100%', objectFit: 'contain'}} />
+          <Img src={staticFile('logo/fmc-original-logo.png')} style={{width: '100%', height: '100%', objectFit: 'contain'}} />
         </div>
       </div>
       <div style={{opacity: textT, transform: `translateY(${(1 - textT) * 24}px)`}}>

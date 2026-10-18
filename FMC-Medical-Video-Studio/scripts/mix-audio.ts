@@ -6,7 +6,7 @@
  */
 import {execFileSync} from 'node:child_process';
 import {existsSync, mkdirSync, readFileSync} from 'node:fs';
-import {arg, ffprobeDuration, loadContent, p} from '../lib/common';
+import {arg, flag, ffprobeDuration, loadContent, p} from '../lib/common';
 import {loudness} from '../lib/audio-metrics';
 import {computeTimeline, FPS, totalFrames} from '../src/lib/timeline';
 import {ManifestSchema} from '../src/lib/schema';
@@ -14,7 +14,9 @@ import {ManifestSchema} from '../src/lib/schema';
 const slug = arg('slug', 'lower-back-pain')!;
 const video = arg('video', p('output', slug, `${slug}-reel-DRAFT-voiced.mp4`))!;
 const out = arg('out', p('output', 'FMC_Lower_Back_Pain_Final_Audio.mp4'))!;
-const NARR_LUFS = -18, MUSIC_LUFS = -22.5, FINAL_LUFS = -16;
+const NARR_LUFS = -18, FINAL_LUFS = -16;
+const MUSIC_LUFS = parseFloat(arg('music-lufs', '-22.5')!);
+const NO_SFX = flag('no-sfx');
 const tmp = p('.tmp', 'mix'); mkdirSync(tmp, {recursive: true});
 const ff = (...a: string[]) => execFileSync('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', ...a], {stdio: ['ignore', 'inherit', 'inherit']});
 
@@ -40,7 +42,7 @@ const narr = `${tmp}/narr.wav`;
 ff('-i', narrRaw, '-af', 'acompressor=threshold=-22dB:ratio=2:attack=25:release=300:makeup=1.5dB', narr);
 
 // 2) music bed (one continuous track) with 2 s fade-in / 3 s fade-out
-const musicSrc = p('assets', 'audio', 'music', 'fmc-ambient-piano.wav');
+const musicSrc = p(arg('music', 'assets/audio/music/fmc-ambient-piano.wav')!);
 if (!existsSync(musicSrc)) throw new Error('Run: python3 scripts/audio/compose_music.py assets/audio/music/fmc-ambient-piano.wav 86');
 const mRaw = `${tmp}/music_raw.wav`;
 ff('-i', musicSrc, '-af', `aresample=48000,atrim=0:${total},asetpts=N/SR/TB`, mRaw);
@@ -51,16 +53,16 @@ ff('-i', mRaw, '-af', `volume=${mGain.toFixed(2)}dB,afade=t=in:st=0:d=2,afade=t=
 // 3) extremely subtle air swells (soft filtered noise) at scene changes — far below narration
 const swell = `${tmp}/swell.wav`;
 ff('-f', 'lavfi', '-i', 'anoisesrc=d=3:c=pink:r=48000:a=0.5', '-af', 'highpass=f=250,lowpass=f=1800,afade=t=in:st=0:d=1.5:curve=qsin,afade=t=out:st=1.5:d=1.5:curve=qsin,volume=-26dB,aformat=channel_layouts=stereo', swell);
-const cuts = tl.slice(1).map((t) => Math.max(0, Math.round((t.from / FPS - 1.2) * 1000)));
+const cuts = NO_SFX ? [] : tl.slice(1).map((t) => Math.max(0, Math.round((t.from / FPS - 1.2) * 1000)));
 const sIns = cuts.flatMap(() => ['-i', swell]);
 const sChains = cuts.map((ms, i) => `[${i}:a]adelay=${ms}|${ms}[s${i}]`);
 const sfx = `${tmp}/sfx.wav`;
-ff(...sIns, '-filter_complex', `${sChains.join(';')};${cuts.map((_, i) => `[s${i}]`).join('')}amix=inputs=${cuts.length}:normalize=0,apad=whole_dur=${total},atrim=0:${total}[o]`, '-map', '[o]', sfx);
+if (cuts.length) ff(...sIns, '-filter_complex', `${sChains.join(';')};${cuts.map((_, i) => `[s${i}]`).join('')}amix=inputs=${cuts.length}:normalize=0,apad=whole_dur=${total},atrim=0:${total}[o]`, '-map', '[o]', sfx);
 
 // 4) duck music+sfx under narration (sidechain), then sum
 const bed = `${tmp}/bed.wav`;
-ff('-i', music, '-i', sfx, '-i', narr, '-filter_complex',
-  '[0:a][1:a]amix=inputs=2:normalize=0[bed];[2:a]asplit=2[k][n];[bed][k]sidechaincompress=threshold=0.03:ratio=3.2:attack=60:release=1100:makeup=1[ducked];[ducked]alimiter=limit=0.95[d]'
+ff(...(cuts.length ? ['-i', music, '-i', sfx, '-i', narr] : ['-i', music, '-i', narr]), '-filter_complex',
+  (cuts.length ? '[0:a][1:a]amix=inputs=2:normalize=0[bed];[2:a]asplit=2[k][n];' : '[0:a]anull[bed];[1:a]asplit=2[k][n];') + '[bed][k]sidechaincompress=threshold=0.03:ratio=3.2:attack=60:release=1100:makeup=1[ducked];[ducked]alimiter=limit=0.95[d]'
   + ';[d][n]amix=inputs=2:normalize=0[o]', '-map', '[o]', bed);
 
 // 5) final loudness: one static gain (no pumping), true-peak safety ceiling at -1.5 dBFS

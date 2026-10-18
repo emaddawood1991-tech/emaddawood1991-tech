@@ -13,7 +13,8 @@ import {computeTimeline} from '../src/lib/timeline';
 
 const slug = arg('slug', 'lower-back-pain')!;
 const format = (arg('format', 'reel') as 'reel' | 'tv');
-const draft = flag('draft'); // voiced draft: real narration, but human approvals still pending
+const clean = flag('clean'); // V2: never burn status text into the picture; review status lives in the QC report
+const draft = flag('draft') || clean; // voiced draft: real narration, but human approvals still pending
 const wantFinal = flag('final') || draft;
 const c = loadContent(slug);
 
@@ -25,7 +26,7 @@ let label: string | null = null;
 let manifest = null;
 if (wantFinal) {
   const gate = finalExportGate(c);
-  if (draft) label = gate.ok ? null : 'VOICED DRAFT · PRONUNCIATION & SCRIPT REVIEW PENDING · NOT FOR PUBLICATION';
+  if (draft && !clean) label = gate.ok ? null : 'VOICED DRAFT · PRONUNCIATION & SCRIPT REVIEW PENDING · NOT FOR PUBLICATION';
   if (!gate.ok && !draft) throw new Error(`FINAL export blocked. Missing approvals: ${gate.missing.join(', ')}. Use --preview semantics (omit --final) for a visual-only draft.`);
   const mf = p('assets', 'audio', slug, 'manifest.json');
   if (!existsSync(mf)) throw new Error('No voiceover manifest. Run: npm run voice:generate -- --slug ' + slug);
@@ -36,9 +37,10 @@ if (wantFinal) {
 const ff = p('assets', 'footage', slug, `footage-${format === 'reel' ? 'portrait' : 'landscape'}.json`);
 const footage = existsSync(ff) ? FootageSchema.parse(JSON.parse(readFileSync(ff, 'utf8'))) : null;
 const props: VideoProps = {
-  content: c, manifest, footage, preview, label,
-  music: existsSync(p('assets', 'audio', 'music', 'ambient-bed.mp3')) ? 'audio/music/ambient-bed.mp3' : null,
-  sfx: existsSync(p('assets', 'audio', 'sfx', 'whoosh.mp3')) ? 'audio/sfx/whoosh.mp3' : null,
+  content: c, manifest, footage, preview, label, visemes: existsSync(p('assets', 'audio', slug, 'visemes.json')) ? JSON.parse(readFileSync(p('assets', 'audio', slug, 'visemes.json'), 'utf8')) : null,
+  // music + effects are mixed in the dedicated audio stage (scripts/mix-audio.ts); the render carries narration only
+  music: null,
+  sfx: null,
 };
 const outDir = p('output', slug);
 mkdirSync(`${outDir}/qc`, {recursive: true});

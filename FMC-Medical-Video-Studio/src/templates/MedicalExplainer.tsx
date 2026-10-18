@@ -6,6 +6,7 @@ import {BG_GRADIENT, makeLayout} from '../styles/theme';
 import {loadFonts} from '../styles/fonts';
 import {SceneFade} from '../components/SceneTransitions';
 import {ArabicText} from '../components/ArabicTitles';
+import {LogoBug} from '../components/FMCBranding';
 import {OpeningScene} from '../scenes/OpeningScene';
 import {AnatomyScene} from '../scenes/AnatomyScene';
 import {SymptomsScene} from '../scenes/SymptomsScene';
@@ -45,6 +46,8 @@ export const MedicalExplainer: React.FC<VideoProps> = (props) => {
   const layout = makeLayout(width, height);
   const tl = timelineFor(props);
   const total = totalFrames(tl);
+  const closing = tl[tl.length - 1];
+  const logoOpacity = frame < closing.from ? 1 : Math.max(0, 1 - (frame - closing.from) / 10); // closing scene shows the large logo instead
   const windows = tl.filter((t) => t.audioFile).map((t) => [t.from + t.audioFrom, t.from + t.audioFrom + t.audioFrames] as [number, number]);
 
   return (
@@ -56,7 +59,7 @@ export const MedicalExplainer: React.FC<VideoProps> = (props) => {
         return (
           <Sequence key={item.id} from={item.from} durationInFrames={item.duration} layout="none">
             <SceneFade duration={item.duration} first={i === 0} last={i === tl.length - 1}>
-              <Comp scene={scene} layout={layout} item={item} footage={fp ? {file: fp.file, credit: fp.credit} : null} />
+              <Comp scene={scene} layout={layout} item={item} footage={fp ? {file: fp.file, credit: fp.credit} : null} speech={props.visemes?.scenes[item.id] ?? null} />
             </SceneFade>
           </Sequence>
         );
@@ -87,6 +90,7 @@ export const MedicalExplainer: React.FC<VideoProps> = (props) => {
           </div>
         </div>
       )}
+      <LogoBug size={layout.portrait ? 150 : 130} top={layout.portrait ? 54 : 40} right={layout.portrait ? 56 : 60} opacity={logoOpacity} />
       <ProgressHairline frame={frame} total={total} />
     </AbsoluteFill>
   );

@@ -45,3 +45,18 @@ then follow the workflow above. A new anatomy topic needs its own model componen
 
 ## Review sources (verify before sign-off)
 See `sources` in `content/lower-back-pain.json`. Automated checks and the model's own read are not a substitute for a clinician and a native Arabic reader.
+
+
+## V2 — FMC presenter, new audio (what is real and what is not)
+Presenter rig (`src/components/Presenter`, assets from `assets/character/fmc-presenter-reference.png`):
+- **Real, audio-driven animation:** the mouth is redrawn every frame from the narration (`scripts/char/visemes.py`: loudness drives jaw opening,
+  spectrum modulates width, fricatives show teeth, pauses close), plus blinking, head sway/nod and breathing. The original mouth is inpainted
+  away (`npm run char:prep`) and replaced by the live mouth.
+- **Not generative video:** no body gestures are synthesised. "Pain location" uses the matted pose from the reference sheet (hands on lower back,
+  pain glow) with idle sway and a pulsing ring — a pose, not an animated gesture. Pointing to shoulder/knee/wrist, walking, or arm movement
+  is **not available** with this rig. The reference sheet is low-resolution (face ≈ 180 px), so the presenter is soft at full-screen size.
+- **Technology needed for full-body, photoreal-quality talking + gesturing:** an audio-driven avatar/video model fed with our approved Arabic audio
+  (e.g. Kling/OmniHuman/Hedra-class services or Wan-S2V on a GPU), or a rigged 3D/Live2D version of the character. In this environment Higgsfield had
+  0 credits, Gemini image/Veo were quota-blocked on the free key, and there is no GPU. Veo cannot take our narration audio as input.
+Audio V2: `npm run audio:pads` (original sustained pads, no piano/rhythm) → `tsx scripts/mix-audio.ts --music assets/audio/music/fmc-ambient-pads.wav --music-lufs -34 --no-sfx`.
+The picture render never carries status text; review status lives in `output/V2/FMC_V2_QC_Report.md`.

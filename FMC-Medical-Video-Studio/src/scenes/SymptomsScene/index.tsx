@@ -5,10 +5,11 @@ import {AnatomyViewer} from '../../components/AnatomyViewer';
 import {Callout, EducationalTag, HUDBackdrop, HUDFrame} from '../../components/MedicalHUD';
 import {ANCHORS, L45_FOCUS, orbit, projectToScreen, type CamKey} from '../../components/Medical3D';
 import {COLORS} from '../../styles/theme';
+import {TitleRow} from '../TitleRow';
 import type {SceneProps} from '../common';
 import {lift, stageRect} from '../common';
 
-export const SymptomsScene: React.FC<SceneProps> = ({scene, layout, item}) => {
+export const SymptomsScene: React.FC<SceneProps> = ({scene, layout, item, speech}) => {
   const frame = useCurrentFrame();
   const r = stageRect(layout);
   const d = item.duration;
@@ -28,9 +29,7 @@ export const SymptomsScene: React.FC<SceneProps> = ({scene, layout, item}) => {
       <AnatomyViewer camera={cam} width={r.w} height={r.h} state={{bulge: [30, 90], glow: [30, 90], nerveGlow: [60, 110]}} />
       <HUDFrame x={r.x + 40} y={r.y + 40} w={r.w - 80} h={r.h - 80} />
       <Callout label="مثال توضيحي لبروز القرص" anchor={pt} labelY={layout.portrait ? r.h * 0.36 : r.h * 0.3} edge="left" margin={layout.portrait ? 70 : 60} delay={50} size={sz} accent={COLORS.amber} screenW={r.w} />
-      <div style={{position: 'absolute', top: layout.portrait ? layout.safe.top : layout.height * 0.14, ...(layout.portrait ? {left: layout.safe.left, right: layout.safe.right} : {right: layout.safe.right, width: layout.width * 0.36})}}>
-        <AnimatedTitle text={scene.onScreen.title ?? ''} size={layout.portrait ? 66 : 56} weight={800} display delay={6} />
-      </div>
+      <TitleRow layout={layout} title={scene.onScreen.title ?? ''} speech={speech} audioFrom={item.audioFrom} seed={3} />
       <div
         style={{
           position: 'absolute', display: 'flex', flexDirection: 'column', gap: 18,

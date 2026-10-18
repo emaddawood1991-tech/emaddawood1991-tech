@@ -5,10 +5,11 @@ import {AnatomyViewer} from '../../components/AnatomyViewer';
 import {EducationalTag, HUDBackdrop, HUDFrame} from '../../components/MedicalHUD';
 import {orbit, SPINE_CENTER, type CamKey} from '../../components/Medical3D';
 import {COLORS} from '../../styles/theme';
+import {TitleRow} from '../TitleRow';
 import type {SceneProps} from '../common';
 import {lift, stageRect} from '../common';
 
-export const TreatmentScene: React.FC<SceneProps> = ({scene, layout, item, footage}) => {
+export const TreatmentScene: React.FC<SceneProps> = ({scene, layout, item, footage, speech}) => {
   const r = stageRect(layout);
   const d = item.duration;
   const bullets = scene.onScreen.bullets ?? [];
@@ -27,9 +28,7 @@ export const TreatmentScene: React.FC<SceneProps> = ({scene, layout, item, foota
     </div>
   );
   const title = (
-    <div style={{position: 'absolute', top: layout.portrait ? layout.safe.top : layout.height * 0.14, ...(layout.portrait ? {left: layout.safe.left, right: layout.safe.right} : {right: layout.safe.right, width: layout.width * 0.36})}}>
-      <AnimatedTitle text={scene.onScreen.title ?? ''} size={layout.portrait ? 66 : 56} weight={800} display delay={6} />
-    </div>
+      <TitleRow layout={layout} title={scene.onScreen.title ?? ''} speech={speech} audioFrom={item.audioFrom} seed={4} />
   );
 
   if (footage) {

@@ -18,7 +18,11 @@
     "voice:approve": "tsx scripts/approve.ts",
     "audio:bed": "tsx scripts/make-audio-bed.ts",
     "audio:mix": "tsx scripts/mix-audio.ts",
-    "audio:music": "python3 scripts/audio/compose_music.py assets/audio/music/fmc-ambient-piano.wav 86"
+    "audio:music": "python3 scripts/audio/compose_music.py assets/audio/music/fmc-ambient-piano.wav 86",
+    "char:prep": "python3 scripts/char/prep_assets.py",
+    "char:visemes": "python3 scripts/char/visemes.py assets/audio/lower-back-pain",
+    "audio:pads": "python3 scripts/audio/compose_pads.py assets/audio/music/fmc-ambient-pads.wav 86",
+    "render:v2": "tsx scripts/render-video.ts --slug lower-back-pain --format reel --clean"
   },
   "dependencies": {
     "@fontsource/cairo": "^5.3.0",
