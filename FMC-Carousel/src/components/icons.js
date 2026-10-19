@@ -21,6 +21,7 @@ const P = {
   spine: '<rect x="8.5" y="3" width="7" height="3.6" rx="1.4"/><rect x="8" y="8.2" width="8" height="3.6" rx="1.4"/><rect x="8.5" y="13.4" width="7" height="3.6" rx="1.4"/><rect x="9" y="18.6" width="6" height="2.8" rx="1.2"/>',
   heart: '<path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10C19.5 15.4 12 20 12 20z"/>',
   ban: '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+  pin: '<path d="M12 21s-6.5-6.2-6.5-11A6.5 6.5 0 0 1 18.5 10c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',
   swap: '<path d="M7 7h12l-3-3M17 17H5l3 3"/>',
 };
 export const icon = (name, { size, stroke = 1.9 } = {}) =>

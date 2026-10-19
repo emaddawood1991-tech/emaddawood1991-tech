@@ -2,6 +2,7 @@ import { icon } from '../../src/components/icons.js';
 import { illustrations, labels } from '../../src/components/illustrations.js';
 import { slide, tag, note, rowCard, LOGO, BRAND_AR } from '../../src/components/layout.js';
 import { md } from '../../src/components/text.js';
+import { scene, tile, childSvg } from '../../src/components/pedi.js';
 
 const BG = ['a', 'b', 'c'];
 
@@ -43,6 +44,40 @@ const renderers = {
     <div style="flex:1"></div>
     ${s.note ? `<div style="margin-bottom:22px">${note(md(s.note), { warn: true })}</div>` : ''}
     ${s.cta ? `<div class="cta"><div class="logo"><img src="${LOGO}" alt="${BRAND_AR}"></div><div><h3>${md(s.cta.title)}</h3><p>${md(s.cta.text || BRAND_AR)}</p></div></div>` : ''}`,
+
+
+  /* ---- pediatric gait set ---- */
+  scene: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
+    <h1 class="arabic-title" style="margin:14px 0 6px;font-size:70px">${md(s.title)}</h1>
+    <p class="sub arabic-body">${md(s.sub)}</p>
+    <div class="art-frame scene-frame fill" style="margin-top:18px"><div class="illus">${scene(s.pose || 'walk')}${labels(s.labels || [], { w: 860, h: 600 })}</div>
+      <div class="glass">${md(s.lead)}</div></div>`,
+
+  quad: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
+    <h2 class="arabic-title one" style="margin:16px 0 20px">${md(s.title)}</h2>
+    <div class="quad">${s.items.map((it, i) => `<div class="card qcard"><div class="qtile">${tile(it.tile)}<span class="qn">${String(i + 1).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d])}</span></div><h3>${md(it.title)}</h3><p>${md(it.text)}</p></div>`).join('')}</div>
+    <div style="flex:1"></div>${s.note ? note(md(s.note)) : ''}`,
+
+  illcards: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
+    <h2 class="arabic-title one" style="margin:16px 0 18px;font-size:56px">${md(s.title)}</h2>
+    <div class="stack" style="gap:14px">${s.items.map((it) => `<div class="card icard"><div class="itile">${tile(it.tile)}</div><div><h3>${md(it.title)}</h3><p>${md(it.text)}</p></div></div>`).join('')}</div>
+    <div style="flex:1"></div>${s.note ? note(md(s.note)) : ''}`,
+
+  signs: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag), 'red')}</div>` : ''}
+    <h2 class="arabic-title one" style="margin:16px 0 20px;font-size:60px">${md(s.title)}</h2>
+    <div class="signs">${s.items.map((it, i) => `<div class="card sign ${i === s.items.length - 1 ? 'wide' : ''}"><div class="stile">${tile(it.tile)}</div><p>${md(it.text)}</p></div>`).join('')}</div>
+    <div style="flex:1"></div>${s.note ? `<div class="urgent">${icon('alert')}<div><b>${md(s.noteTitle || 'تنبيه طبي')}</b><span>${md(s.note)}</span></div></div>` : ''}`,
+
+  closing2: (s) => `
+    <div class="c2-top"><div class="c2-text"><h1 class="arabic-title" style="font-size:68px">${md(s.title)}</h1><p class="lead arabic-body" style="font-size:31px;margin-top:10px">${md(s.lead)}</p></div>
+      <div class="c2-art">${childSvg(s.pose || 'walk')}</div></div>
+    ${note(md(s.caution), { warn: true })}
+    <div class="cta-btn">${icon('calendar')}<span>${md(s.cta)}</span></div>
+    <div class="brandcard"><div class="logo"><img src="${LOGO}" alt="${BRAND_AR}"></div><div><h3>${BRAND_AR}</h3><p>${icon('pin')}<span>${md(s.location)}</span></p></div></div>`,
 
   closing: (s) => `
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:26px">

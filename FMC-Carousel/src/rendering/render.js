@@ -35,7 +35,7 @@ const doc = (body) => `<!doctype html>
 <link rel="stylesheet" href="${rel(path.join(ROOT, 'src/styles/base.css'))}">
 ${tpl.css ? `<link rel="stylesheet" href="${rel(path.join(tplDir, tpl.css))}">` : ''}
 </head><body>${body}</body></html>`;
-const files = slides.map((s, i) => { const f = path.join(srcDir, `slide-${i + 1}.html`); fs.writeFileSync(f, doc(s)); return f; });
+const files = slides.map((s, i) => { const f = path.join(srcDir, `slide-${String(i + 1).padStart(2, '0')}.html`); fs.writeFileSync(f, doc(s)); return f; });
 
 const exe = ['/opt/pw-browsers/chromium', process.env.CHROMIUM_PATH].find((p) => p && fs.existsSync(p));
 const browser = await chromium.launch(exe ? { executablePath: exe } : {});
@@ -87,7 +87,7 @@ for (let i = 0; i < files.length; i++) {
     const lines = [...document.querySelectorAll('.slide h1,.slide h2,.slide h3,.slide p,.slide .label,.slide .chip,.slide .check,.slide .note,.slide .tag,.slide .slogan,.slide .more,.slide .num,.slide .disclaimer,.slide .cell,.slide .rowlabel,.slide .col-title')].map((e) => e.innerText.replace(/\s+/g, ' ').trim());
     return { problems, lines };
   }, { FOOTER_TOP });
-  const out = path.join(pngDir, `slide-${i + 1}.png`);
+  const out = path.join(pngDir, `slide-${String(i + 1).padStart(2, '0')}.png`);
   await page.screenshot({ path: out, clip: { x: 0, y: 0, width: W, height: H }, animations: 'disabled' });
   const buf = fs.readFileSync(out); const w = buf.readUInt32BE(16), h = buf.readUInt32BE(20);
   const ok = w === W * scale && h === H * scale;
