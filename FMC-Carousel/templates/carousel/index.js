@@ -2,6 +2,7 @@ import { icon } from '../../src/components/icons.js';
 import { illustrations, labels } from '../../src/components/illustrations.js';
 import { slide, tag, note, rowCard, LOGO, BRAND_AR } from '../../src/components/layout.js';
 import { md } from '../../src/components/text.js';
+import { clin, viz } from '../../src/components/clinical.js';
 import { badge } from '../../src/components/badges.js';
 
 const BG = ['a', 'b', 'c'];
@@ -69,6 +70,18 @@ const renderers = {
     <h2 class="arabic-title one" style="margin:16px 0 18px;font-size:56px">${md(s.title)}</h2>
     <div class="stack" style="gap:14px">${s.items.map((it) => `<div class="card icard"><div class="itile">${badge(it.tile)}</div><div><h3>${md(it.title)}</h3><p>${md(it.text)}</p></div></div>`).join('')}</div>
     <div style="flex:1"></div>${s.note ? note(md(s.note)) : ''}`,
+
+  dash: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
+    <h2 class="arabic-title one" style="margin:14px 0 14px;font-size:54px">${md(s.title)}</h2>
+    <div class="dgrid">${s.items.map((it) => `<div class="card dcard"><div class="dscreen">${viz(it.viz)}<span class="dtag">${md(s.exampleLabel)}</span>${(it.chips || []).map((c) => `<span class="dchip" style="left:${c.x}%;top:${c.y}%">${md(c.t)}</span>`).join('')}</div><h3>${md(it.title)}</h3><p>${md(it.text)}</p></div>`).join('')}</div>
+    <div style="flex:1"></div>${s.note ? note(md(s.note)) : ''}`,
+
+  signs2: (s) => `
+    ${s.tag ? `<div>${tag(md(s.tag), 'red')}</div>` : ''}
+    <h2 class="arabic-title one" style="margin:16px 0 18px;font-size:60px">${md(s.title)}</h2>
+    <div class="signs">${s.items.map((it, i) => `<div class="card sign sign2 ${i === s.items.length - 1 ? 'wide' : ''}"><div class="cl">${clin(it.clin)}</div><p>${md(it.text)}</p></div>`).join('')}</div>
+    <div style="flex:1"></div>${s.note ? `<div class="urgent">${icon('alert')}<div><b>${md(s.noteTitle || 'تنبيه طبي')}</b><span>${md(s.note)}</span></div></div>` : ''}`,
 
   signs: (s) => `
     ${s.tag ? `<div>${tag(md(s.tag), 'red')}</div>` : ''}

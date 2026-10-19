@@ -109,3 +109,18 @@
 .qcard h3{font-size:32px}.qcard p{font-size:25px}.qtile{height:118px}.qtile .bimg,.qtile .ib{height:114px;width:114px}
 .c2-photo{width:168px;height:528px}.c2-photo img{object-position:50% 50%}.c2-top{margin:14px 0 4px}
 .c2-photo{width:156px;height:490px}.c2-top{margin:10px 0 2px}
+
+/* ---- v4: slide 3 dashboard + slide 4 clinical set (new classes only) ---- */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.dcard{padding:12px 12px 16px;display:flex;flex-direction:column;gap:4px;border-radius:30px}
+.dscreen{position:relative;border-radius:20px;overflow:hidden;line-height:0;margin-bottom:8px}
+.dscreen svg{width:100%;height:auto;display:block}
+.dtag{position:absolute;top:8px;left:8px;line-height:1.2;font-size:24px;font-weight:700;color:#0E2A63;background:rgba(230,241,255,.95);border-radius:99px;padding:2px 14px}
+.dchip{position:absolute;transform:translate(-50%,-50%);line-height:1.2;font-size:24px;font-weight:700;color:#fff;background:rgba(14,42,99,.82);border:1.5px solid rgba(156,196,242,.7);border-radius:12px;padding:2px 10px;white-space:nowrap}
+.dcard h3{font-size:33px;font-weight:800;line-height:1.3;padding:0 8px}.dcard p{font-size:25px;font-weight:500;color:var(--ink-soft);line-height:1.5;padding:0 8px}
+.sign2{gap:14px;padding:12px 16px 12px 14px;min-height:170px}
+.sign2 .cl{flex:none;width:136px;height:136px;border-radius:26px;background:linear-gradient(145deg,#EEF5FC,#E2EDF8);border:2px solid rgba(46,90,180,.12);display:grid;place-items:center}
+.sign2 .cl svg{width:128px;height:128px}
+.sign2 p{font-size:29px}.sign2.wide{min-height:150px}
+.sign2{min-height:186px}.sign2 .cl{width:156px;height:156px}.sign2 .cl svg{width:150px;height:150px}.sign2.wide{min-height:170px}
+.dgrid{gap:14px}.dcard p{font-size:24px;line-height:1.45}.dcard h3{font-size:32px}.dcard{gap:2px;padding-bottom:12px}
