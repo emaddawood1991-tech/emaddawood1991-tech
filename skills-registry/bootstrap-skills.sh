@@ -22,4 +22,11 @@ else
   claude plugin install superpowers@claude-plugins-official
 fi
 
+# 3. Task Observer (rebelytics/one-skill-to-rule-them-all) -> $CLAUDE_HOME/skills/task-observer
+if [ -f "$CLAUDE_HOME/skills/task-observer/SKILL.md" ]; then
+  echo "task-observer: already installed"
+else
+  npx --yes skills add rebelytics/one-skill-to-rule-them-all --skill task-observer -g -a claude-code -y
+fi
+
 echo "Done. Start a NEW Claude Code session for plugins/skills to load."

@@ -93,6 +93,15 @@ Status keys: INSTALLED · ACTIVE · TESTED · AUTHENTICATION REQUIRED · NOT WOR
   - Not individually tested: brainstorming, writing-plans, systematic-debugging, subagent workflows. NOT VERIFIED.
 - Possible conflicts: overlaps with the project's `.claude/council.md` and agents only in role, not mechanically. Its injected "EXTREMELY_IMPORTANT" block competes with other plugins' injected context; no functional clash seen in the test session.
 
+### 5. Task Observer ("One Skill to Rule Them All")
+- Source: https://github.com/rebelytics/one-skill-to-rule-them-all (author Eoghan Henn, CC-BY-4.0, v3.7.0, HEAD 3463c7c, 2026-10-16). Skill name: `task-observer`.
+- Install used: `npx skills add rebelytics/one-skill-to-rule-them-all --skill task-observer -g -a claude-code -y`
+- Location: `~/.claude/skills/task-observer` (user level; does not persist in the cloud container).
+- Review before install: no network calls, no curl/eval/sudo/obfuscation in the scripts, no hooks installed by the skill itself. It writes observation logs (`skill-observations/`) to a workspace folder and stages skill edits as copies only; changes need your approval.
+- Status: INSTALLED, ACTIVE (listed as a skill in the session). NOT TESTED.
+- Not done (needs approval): its docs recommend activating it through a CLAUDE.md instruction or a SessionStart hook (`references/environments.md`). Its own description asks to run before the first tool call of every session, so it would log in every session. Neither the CLAUDE.md edit nor the hook was added.
+- Manual use: ask for "task-observer" or "One Skill to Rule Them All", or mention the observation log.
+
 ## Persistence and scope
 
 | Item | Persists across sessions | Available in other projects |
