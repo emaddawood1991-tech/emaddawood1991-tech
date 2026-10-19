@@ -302,7 +302,7 @@ const Hand: React.FC<{side: Side; shape: HandShape}> = ({side, shape}) => {
   );
 };
 
-const Arm: React.FC<{side: Side; arm: ArmPose}> = ({side, arm}) => {
+const Arm: React.FC<{side: Side; arm: ArmPose; hold?: DoctorPose['hold']}> = ({side, arm, hold}) => {
   const s = sx(side);
   return (
     <group position={arm.sh} quaternion={arm.upper}>
@@ -327,6 +327,14 @@ const Arm: React.FC<{side: Side; arm: ArmPose}> = ({side, arm}) => {
             {mat(C.skin, 0.62)}
           </mesh>
           <group scale={1.12}><Hand side={side} shape={arm.shape} /></group>
+          {hold && hold.side === side && hold.amount > 0.01 && (
+            // a plain cup (cylinder) held across the palm; sags with `tilt`
+            <group position={[0, -0.075, 0.05]} rotation={[0, 0, hold.tilt]} scale={1.35 * hold.amount}>
+              <mesh><cylinderGeometry args={[0.034, 0.03, 0.085, 28, 1, true]} /><meshStandardMaterial color="#e9eef3" roughness={0.35} side={THREE.DoubleSide} /></mesh>
+              <mesh position={[0, -0.04, 0]}><cylinderGeometry args={[0.03, 0.03, 0.004, 28]} /><meshStandardMaterial color="#e9eef3" roughness={0.35} /></mesh>
+              <mesh position={[0, 0.036, 0]}><cylinderGeometry args={[0.031, 0.031, 0.01, 28]} /><meshStandardMaterial color="#2a7fa8" roughness={0.4} /></mesh>
+            </group>
+          )}
         </group>
       </group>
     </group>
@@ -494,8 +502,8 @@ export const Doctor: React.FC<{pose: DoctorPose; time: number}> = ({pose, time})
         <Leg side="R" leg={pose.legs.R} />
         <group rotation={[torso.pitch, torso.yaw, torso.roll]}>
           <group scale={[1, 0.95, 1]}><Torso pose={pose} time={time} /></group>
-          <Arm side="L" arm={pose.arms.L} />
-          <Arm side="R" arm={pose.arms.R} />
+          <Arm side="L" arm={pose.arms.L} hold={pose.hold} />
+          <Arm side="R" arm={pose.arms.R} hold={pose.hold} />
           <group position={[0, DIM.neckY, 0]} rotation={[head.pitch, head.yaw, head.roll]}>
             <group position={[0, DIM.headY, 0.01]}>
               <Head pose={pose} />

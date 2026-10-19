@@ -16,8 +16,8 @@ export const SceneSchema = z.object({
     bullets: z.array(z.string()).optional(),
   }),
   visual: z.object({
-    model: z.enum(['lumbar-spine', 'none']),
-    highlight: z.enum(['none', 'regions', 'disc-herniation', 'movement']),
+    model: z.enum(['lumbar-spine', 'wrist-hand', 'none']),
+    highlight: z.enum(['none', 'regions', 'disc-herniation', 'movement', 'median-nerve']),
     camera: z.string(),
     description: z.string(),
   }),
@@ -36,6 +36,8 @@ export const ContentSchema = z.object({
   topic: z.object({ar: z.string(), en: z.string()}),
   scenes: z.array(SceneSchema).min(2),
   services: z.array(z.string()),
+  /** Optional per-episode timing override (frames of silence before/after narration inside a scene). */
+  timing: z.object({lead: z.number().int().min(0), tail: z.number().int().min(0)}).optional(),
   instagramCaption: z.string(),
   hashtags: z.array(z.string()),
   sources: z.array(z.object({title: z.string(), url: z.string()})),

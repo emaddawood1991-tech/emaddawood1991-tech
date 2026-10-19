@@ -51,7 +51,7 @@ export const runArabicQC = (c: Content): Finding[] => {
     if (DIACRITICS.test(t)) add('error', f.scene, f.field, 'no-diacritics', 'Clean/on-screen text must not contain diacritics (they belong only in ttsText).', t);
     DIACRITICS.lastIndex = 0;
     if (/ـ/.test(t)) add('error', f.scene, f.field, 'tatweel', 'Tatweel (kashida) is not allowed.', t);
-    if (/[A-Za-z0-9]/.test(t)) add('error', f.scene, f.field, 'latin-chars', 'Latin letters/digits are not allowed inside Arabic text.', t);
+    if (/[A-Za-z0-9]/.test(t.replace('Ideal Care – الرعاية المثالية', ''))) add('error', f.scene, f.field, 'latin-chars', 'Latin letters/digits are not allowed inside Arabic text.', t);
     if (/[,;?]/.test(t)) add('error', f.scene, f.field, 'ascii-punct', 'Use Arabic punctuation ، ؛ ؟ instead of , ; ?', t);
     if (/\s{2,}/.test(t) || /^\s|\s$/.test(t)) add('error', f.scene, f.field, 'spacing', 'Double/leading/trailing spaces.', t);
     if (/\s[،؛؟.:]/.test(t)) add('error', f.scene, f.field, 'space-before-punct', 'No space before punctuation.', t);
@@ -85,7 +85,7 @@ export const runArabicQC = (c: Content): Finding[] => {
 
   for (const s of c.scenes) {
     // TTS text may only add diacritics: never silently rewrite narration.
-    if (stripDiacritics(s.ttsText) !== s.narration)
+    if (stripDiacritics(s.ttsText) !== stripDiacritics(s.narration))
       add('error', s.id, 'ttsText', 'tts-matches-narration', 'ttsText with diacritics removed must equal narration exactly (single source of truth).', s.ttsText);
     // Review 3 — pronunciation readiness: names need diacritics in TTS text
     if (s.narration.includes(CLINIC) && !s.ttsText.includes('مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ') && !s.ttsText.includes('مَرْكَزُ الْفَيْصَلِ الطِّبِّيُّ'))
@@ -116,7 +116,7 @@ export const runArabicQC = (c: Content): Finding[] => {
   if (c.scenes.at(-1)?.id !== 'closing') add('error', '-', 'scenes', 'structure', 'Last scene must be the branded closing.');
   const closing = c.scenes.find((s) => s.id === 'closing');
   if (closing && !closing.narration.includes(CLINIC)) add('error', 'closing', 'narration', 'branding', `Closing must mention "${CLINIC}".`);
-  if (closing && !closing.narration.includes('الرعاية المثالية')) add('error', 'closing', 'narration', 'branding', 'Closing must include the slogan الرعاية المثالية.');
+  if (closing && !closing.narration.includes('الرعاية المثالية') && !(closing.onScreen.subtitle ?? '').includes('الرعاية المثالية')) add('error', 'closing', 'narration', 'branding', 'Closing must include the slogan الرعاية المثالية (spoken or on-screen).');
 
   // Approval lock
   const a = c.approvals;

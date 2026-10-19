@@ -60,6 +60,8 @@ export type DoctorPose = {
   face: Face;
   /** 0..1 pain highlight on the lower back (red glow patch on the coat) */
   painGlow: number;
+  /** prop held in one hand (a cup): amount 0..1 = visible, tilt = how much it sags (rad) */
+  hold: {side: Side; amount: number; tilt: number};
 };
 
 const DOWN = new THREE.Vector3(0, -1, 0);
@@ -129,6 +131,7 @@ export const neutralPose = (): DoctorPose => ({
   },
   face: neutralFace(),
   painGlow: 0,
+  hold: {side: 'R', amount: 0, tilt: 0},
 });
 
 export const _ = IDENT;

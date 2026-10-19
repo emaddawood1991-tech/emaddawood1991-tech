@@ -3,6 +3,9 @@ import {Composition} from 'remotion';
 import {CharacterPreview} from './compositions/CharacterPreview';
 import {LogoStudy} from './compositions/LogoStudy';
 import {CollageStudy} from './compositions/CollageStudy';
+import {WristStudy} from './compositions/WristStudy';
+import {PoseLab} from './compositions/PoseLab';
+import {CarpalTunnelEpisode, durationForCarpal} from './templates/CarpalTunnelEpisode';
 import {DoctorPreview} from './compositions/DoctorPreview';
 import {DoctorExplainer, durationForDoctor} from './templates/DoctorExplainer';
 import {AnatomyPreview} from './compositions/AnatomyPreview';
@@ -41,6 +44,9 @@ export const Root: React.FC = () => (
     <Composition id="DoctorReel" component={DoctorExplainer} width={1080} height={1920} fps={FPS} durationInFrames={durationForDoctor(defaults)} schema={VideoPropsSchema} defaultProps={defaults} calculateMetadata={({props}) => ({durationInFrames: durationForDoctor(props)})} />
     <Composition id="CharacterPreview" component={CharacterPreview} width={1080} height={1920} fps={FPS} durationInFrames={340} defaultProps={{visemes: null}} />
     <Composition id="CollageStudy" component={CollageStudy} width={1080} height={1920} fps={FPS} durationInFrames={60} defaultProps={{}} />
+    <Composition id="WristStudy" component={WristStudy} width={1080} height={1920} fps={FPS} durationInFrames={180} defaultProps={{}} />
+    <Composition id="CarpalReel" component={CarpalTunnelEpisode} width={1080} height={1920} fps={FPS} durationInFrames={durationForCarpal(defaults)} schema={VideoPropsSchema} defaultProps={defaults} calculateMetadata={({props}) => ({durationInFrames: durationForCarpal(props)})} />
+    <Composition id="PoseLab" component={PoseLab} width={1080} height={1920} fps={FPS} durationInFrames={1} defaultProps={{}} />
     <Composition id="LogoStudy" component={LogoStudy} width={1080} height={1920} fps={FPS} durationInFrames={1} defaultProps={{}} />
     <Composition id="DoctorPreview" component={DoctorPreview} width={1080} height={1920} fps={FPS} durationInFrames={60} defaultProps={{}} />
     <Composition id="AnatomyPreview" component={AnatomyPreview} width={1080} height={1920} fps={FPS} durationInFrames={90} defaultProps={{}} />

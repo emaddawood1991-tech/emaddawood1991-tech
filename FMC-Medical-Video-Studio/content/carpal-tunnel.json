@@ -1,0 +1,153 @@
+{
+  "slug": "carpal-tunnel",
+  "topic": {
+    "ar": "متلازمة النفق الرسغي",
+    "en": "Carpal tunnel syndrome"
+  },
+  "services": [
+    "طب العظام",
+    "العلاج الطبيعي"
+  ],
+  "scenes": [
+    {
+      "id": "opening",
+      "sceneType": "A",
+      "plannedSec": 5,
+      "narration": "هل تشعر بتنميل أو وخز في أصابع يدك، خصوصا أثناء الليل؟",
+      "ttsText": "هَلْ تَشْعُرُ بِتَنْمِيلٍ أَوْ وَخْزٍ فِي أَصَابِعِ يَدِكَ، خُصُوصًا أَثْنَاءَ اللَّيْلِ؟",
+      "onScreen": {
+        "title": "تنميل في أصابع اليد؟"
+      },
+      "visual": {
+        "model": "wrist-hand",
+        "highlight": "regions",
+        "camera": "wide intro, glide to the raised hand",
+        "description": "Presenter raises his hand; a 3D hand shows the affected fingers softly highlighted."
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "anatomy",
+      "sceneType": "C",
+      "plannedSec": 8,
+      "narration": "قد تكون هذه من أعراض متلازمة النفق الرسغي، التي تحدث نتيجة الضغط على العصب المتوسط عند الرسغ.",
+      "ttsText": "قَدْ تَكُونُ هَذِهِ مِنْ أَعْرَاضِ مُتَلَازِمَةِ النَّفَقِ الرُّسْغِيِّ، الَّتِي تَحْدُثُ نَتِيجَةَ الضَّغْطِ عَلَى الْعَصَبِ الْمُتَوَسِّطِ عِنْدَ الرُّسْغِ.",
+      "onScreen": {
+        "title": "متلازمة النفق الرسغي"
+      },
+      "visual": {
+        "model": "wrist-hand",
+        "highlight": "median-nerve",
+        "camera": "dolly from the presenter into the carpal tunnel, then axial cross-section inset",
+        "description": "Wrist bones, carpal tunnel, median nerve, flexor tendons and transverse carpal ligament; the median nerve is highlighted and mildly narrowed under the ligament."
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "symptoms",
+      "sceneType": "D",
+      "plannedSec": 8,
+      "narration": "وقد تسبب ألما أو تنميلا في الإبهام والسبابة والوسطى، وأحيانا ضعفا في قبضة اليد.",
+      "ttsText": "وَقَدْ تُسَبِّبُ أَلَمًا أَوْ تَنْمِيلًا فِي الْإِبْهَامِ وَالسَّبَّابَةِ وَالْوُسْطَى، وَأَحْيَانًا ضَعْفًا فِي قَبْضَةِ الْيَدِ.",
+      "onScreen": {
+        "title": "أين تظهر الأعراض؟"
+      },
+      "visual": {
+        "model": "wrist-hand",
+        "highlight": "median-nerve",
+        "camera": "palmar hand view, highlights thumb/index/middle and the thumb-side half of the ring finger",
+        "description": "Realistic hand with the median-nerve sensory zone softly highlighted and a subtle tingling; presenter shows difficulty holding a cup."
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "treatment",
+      "sceneType": "E",
+      "plannedSec": 9,
+      "narration": "يساعد التشخيص المبكر على اختيار العلاج المناسب، وقد يشمل جبيرة للرسغ أو العلاج الطبيعي وفقا للحالة.",
+      "ttsText": "يُسَاعِدُ التَّشْخِيصُ الْمُبَكِّرُ عَلَى اخْتِيَارِ الْعِلَاجِ الْمُنَاسِبِ، وَقَدْ يَشْمَلُ جَبِيرَةً لِلرُّسْغِ أَوِ الْعِلَاجَ الطَّبِيعِيَّ وَفْقًا لِلْحَالَةِ.",
+      "onScreen": {
+        "title": "خيارات العلاج",
+        "bullets": [
+          "تقييم الحالة",
+          "جبيرة للرسغ",
+          "العلاج الطبيعي وفق الحالة"
+        ]
+      },
+      "visual": {
+        "model": "wrist-hand",
+        "highlight": "none",
+        "camera": "assessment, wrist to neutral position, splint, gentle presenter-demonstrated exercise",
+        "description": "Assessment of the wrist; neutral wrist position; a volar wrist splint is fitted; presenter demonstrates gentle hand movements. Pexels footage unavailable, so the presenter demonstrates."
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "closing",
+      "sceneType": "F",
+      "plannedSec": 7.5,
+      "narration": "في مركز الفيصل الطبي، نهتم بتقييم حالتك وتوجيهك نحو العلاج المناسب.",
+      "ttsText": "فِي مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ، نَهْتَمُّ بِتَقْيِيمِ حَالَتِكَ وَتَوْجِيهِكَ نَحْوَ الْعِلَاجِ الْمُنَاسِبِ.",
+      "onScreen": {
+        "subtitle": "Ideal Care – الرعاية المثالية"
+      },
+      "visual": {
+        "model": "wrist-hand",
+        "highlight": "none",
+        "camera": "presenter beside a soft 3D medical background; original logo reveal",
+        "description": "Branded closing with the original logo, clinic name and slogan."
+      },
+      "footageQueries": [],
+      "sfx": []
+    }
+  ],
+  "instagramCaption": "هل تشعر بتنميل أو وخز في أصابع يدك، خصوصا أثناء الليل؟\n\nقد تكون هذه من أعراض متلازمة النفق الرسغي، التي تحدث نتيجة الضغط على العصب المتوسط عند الرسغ. يساعد التشخيص المبكر على اختيار العلاج المناسب، وقد يشمل جبيرة للرسغ أو العلاج الطبيعي وفقا للحالة.\n\nهذا المحتوى للتوعية ولا يغني عن استشارة الطبيب.\n\nمركز الفيصل الطبي — الرعاية المثالية",
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العين",
+    "#الإمارات",
+    "#متلازمة_النفق_الرسغي",
+    "#العصب_المتوسط",
+    "#طب_العظام",
+    "#العلاج_الطبيعي",
+    "#الرعاية_المثالية",
+    "#FMC",
+    "#AlAin",
+    "#UAE",
+    "#CarpalTunnel",
+    "#IdealCare"
+  ],
+  "sources": [
+    {
+      "title": "AAOS OrthoInfo — Carpal Tunnel Syndrome (target reference; NOT reachable from the production environment, not verified directly)",
+      "url": "https://orthoinfo.aaos.org/en/diseases--conditions/carpal-tunnel-syndrome/"
+    },
+    {
+      "title": "AAFP 2024 — Carpal Tunnel Syndrome (surfaced via web search; page content not retrievable here)",
+      "url": "https://www.aafp.org/afp/2024/0700/carpal-tunnel-syndrome.pdf"
+    },
+    {
+      "title": "NINDS — Carpal Tunnel Syndrome Information Page",
+      "url": "https://corpora.tika.apache.org/base/docs/govdocs1/080/080259.html"
+    }
+  ],
+  "approvals": {
+    "grammarReview": null,
+    "medicalTerminologyReview": null,
+    "medicalAccuracyReview": null,
+    "scriptApproved": {
+      "by": "Emad (script supplied in the episode brief; no native/clinician review yet)",
+      "date": "2026-10-19T06:47:17.086Z"
+    },
+    "pronunciationApproved": null,
+    "approvedHash": "e7b7c00a15b23431e64e382405ef1620d881776639e8b0a8fc6d89be619174be"
+  },
+  "timing": {
+    "lead": 5,
+    "tail": 9
+  }
+}

@@ -16,15 +16,16 @@ export type TimelineItem = {
 
 export const computeTimeline = (content: Content, manifest: VoiceManifest | null): TimelineItem[] => {
   let cursor = 0;
+  const LEAD = content.timing?.lead ?? AUDIO_LEAD, TAIL = content.timing?.tail ?? AUDIO_TAIL; // per-episode override (short reels)
   return content.scenes.map((scene, i) => {
     const a = manifest?.scenes.find((s) => s.id === scene.id) ?? null;
     const audioFrames = a ? Math.ceil(a.durationSec * FPS) : 0;
     const planned = Math.round(scene.plannedSec * FPS);
     // Narration decides the timing: never cut it off, never rewrite it.
-    const duration = Math.max(planned, a ? audioFrames + AUDIO_LEAD + AUDIO_TAIL + OVERLAP : 0);
+    const duration = Math.max(planned, a ? audioFrames + LEAD + TAIL + OVERLAP : 0);
     const from = i === 0 ? 0 : cursor - OVERLAP;
     cursor = from + duration;
-    return {id: scene.id, from, duration, audioFile: a?.file ?? null, audioFrom: OVERLAP + AUDIO_LEAD, audioFrames};
+    return {id: scene.id, from, duration, audioFile: a?.file ?? null, audioFrom: OVERLAP + LEAD, audioFrames};
   });
 };
 

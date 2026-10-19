@@ -1,14 +1,105 @@
 {
   "_status": "MACHINE-DRAFTED. Every entry has humanReviewed:false until a native Arabic speaker listens to the generated audio and signs it off (npm run approve -- pronunciation ...). The QC only checks that narration uses the lexicon's diacritised form; it cannot judge how the TTS voice actually pronounces it.",
   "entries": [
-    {"term": "مركز الفيصل الطبي", "tts": "مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ", "alt": ["مَرْكَزُ الْفَيْصَلِ الطِّبِّيُّ"], "humanReviewed": false, "notes": "case ending follows the sentence (genitive after في, nominative as subject)"},
-    {"term": "فقرات قطنية", "tts": "فَقَرَاتٍ قَطَنِيَّةٍ", "humanReviewed": false, "notes": "قَطَنِيَّة (lumbar) — not قُطْنِيَّة (cotton)"},
-    {"term": "أقراص غضروفية", "tts": "أَقْرَاصٌ غُضْرُوفِيَّةٌ", "humanReviewed": false, "notes": "غُضْرُوف: damma on the first letter"},
-    {"term": "الأقراص الغضروفية", "tts": "الْأَقْرَاصِ الْغُضْرُوفِيَّةِ", "humanReviewed": false},
-    {"term": "تنميل", "tts": "تَنْمِيلٍ", "humanReviewed": false},
-    {"term": "تيبس", "tts": "تَيَبُّسٍ", "humanReviewed": false},
-    {"term": "العلاج الطبيعي", "tts": "الْعِلَاجِ الطَّبِيعِيِّ", "alt": ["الْعِلَاجُ الطَّبِيعِيُّ"], "humanReviewed": false},
-    {"term": "طب العظام", "tts": "طِبِّ الْعِظَامِ", "humanReviewed": false},
-    {"term": "الرعاية المثالية", "tts": "الرِّعَايَةُ الْمِثَالِيَّةُ", "humanReviewed": false}
+    {
+      "term": "مركز الفيصل الطبي",
+      "tts": "مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ",
+      "alt": [
+        "مَرْكَزُ الْفَيْصَلِ الطِّبِّيُّ"
+      ],
+      "humanReviewed": false,
+      "notes": "case ending follows the sentence (genitive after في, nominative as subject)"
+    },
+    {
+      "term": "فقرات قطنية",
+      "tts": "فَقَرَاتٍ قَطَنِيَّةٍ",
+      "humanReviewed": false,
+      "notes": "قَطَنِيَّة (lumbar) — not قُطْنِيَّة (cotton)"
+    },
+    {
+      "term": "أقراص غضروفية",
+      "tts": "أَقْرَاصٌ غُضْرُوفِيَّةٌ",
+      "humanReviewed": false,
+      "notes": "غُضْرُوف: damma on the first letter"
+    },
+    {
+      "term": "الأقراص الغضروفية",
+      "tts": "الْأَقْرَاصِ الْغُضْرُوفِيَّةِ",
+      "humanReviewed": false
+    },
+    {
+      "term": "تنميل",
+      "tts": "تَنْمِيلٍ",
+      "humanReviewed": false,
+      "alt": [
+        "تَنْمِيلًا"
+      ]
+    },
+    {
+      "term": "تيبس",
+      "tts": "تَيَبُّسٍ",
+      "humanReviewed": false
+    },
+    {
+      "term": "العلاج الطبيعي",
+      "tts": "الْعِلَاجِ الطَّبِيعِيِّ",
+      "alt": [
+        "الْعِلَاجُ الطَّبِيعِيُّ",
+        "الْعِلَاجَ الطَّبِيعِيَّ"
+      ],
+      "humanReviewed": false
+    },
+    {
+      "term": "طب العظام",
+      "tts": "طِبِّ الْعِظَامِ",
+      "humanReviewed": false
+    },
+    {
+      "term": "الرعاية المثالية",
+      "tts": "الرِّعَايَةُ الْمِثَالِيَّةُ",
+      "humanReviewed": false
+    },
+    {
+      "term": "متلازمة النفق الرسغي",
+      "tts": "مُتَلَازِمَةِ النَّفَقِ الرُّسْغِيِّ",
+      "humanReviewed": false,
+      "notes": "الرُّسْغ (wrist): damma on the ra, sukun on sin"
+    },
+    {
+      "term": "العصب المتوسط",
+      "tts": "الْعَصَبِ الْمُتَوَسِّطِ",
+      "humanReviewed": false,
+      "notes": "median nerve"
+    },
+    {
+      "term": "الإبهام",
+      "tts": "الْإِبْهَامِ",
+      "humanReviewed": false,
+      "notes": "thumb"
+    },
+    {
+      "term": "السبابة",
+      "tts": "السَّبَّابَةِ",
+      "humanReviewed": false,
+      "notes": "index finger — shadda on ba"
+    },
+    {
+      "term": "الوسطى",
+      "tts": "الْوُسْطَى",
+      "humanReviewed": false,
+      "notes": "middle finger"
+    },
+    {
+      "term": "قبضة اليد",
+      "tts": "قَبْضَةِ الْيَدِ",
+      "humanReviewed": false,
+      "notes": "grip"
+    },
+    {
+      "term": "جبيرة",
+      "tts": "جَبِيرَةً",
+      "humanReviewed": false,
+      "notes": "splint"
+    }
   ]
 }

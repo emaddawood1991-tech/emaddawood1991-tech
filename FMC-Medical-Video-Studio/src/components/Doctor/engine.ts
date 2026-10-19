@@ -22,6 +22,7 @@ export type Body = {
   head?: Partial<DoctorPose['head']>;
   face?: Partial<Face>;
   painGlow?: number;
+  hold?: {side?: Side; amount?: number; tilt?: number};
 };
 export type ArmIntent = (c: Ctx, t: number) => ArmPose;
 export type Clip = {
@@ -328,6 +329,7 @@ export const evaluate = (perf: Perf, frame: number, fps: number, camera: V3): Do
       if (b.head) pose.head = mix(pose.head, b.head as DoctorPose['head'], w);
       if (b.face) Object.assign(f2, mix(f2, b.face, w));
       if (b.painGlow !== undefined) pose.painGlow = lerp(pose.painGlow, b.painGlow, w);
+      if (b.hold) pose.hold = {side: b.hold.side ?? pose.hold.side, amount: lerp(pose.hold.amount, b.hold.amount ?? 0, w), tilt: lerp(pose.hold.tilt, b.hold.tilt ?? 0, w)};
     }
     if (c.look && (!look || w >= look.w)) look = {target: c.look, w};
   }
