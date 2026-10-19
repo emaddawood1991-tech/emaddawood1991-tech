@@ -1,0 +1,257 @@
+{
+  "slug": "claude-code-skills-toolkit",
+  "title": "Your Claude Code Skills Can Improve Themselves",
+  "handle": "@agentoon.ai",
+  "recipe": "explainer",
+  "slides": [
+    {
+      "layout": "skillHub",
+      "theme": "dark",
+      "kicker": "Claude Code · Skills",
+      "title": "Your Claude Code Skills Can *Improve Themselves.*",
+      "sub": "Discover powerful skills that make your AI workflow smarter.",
+      "swipe": "Swipe to explore →",
+      "chip": "You review every change"
+    },
+    {
+      "layout": "skillsExplained",
+      "theme": "paper",
+      "kicker": "The basics",
+      "title": "What are *Claude Code skills?*",
+      "mood": "think",
+      "lede": "A skill is a folder with a `SKILL.md`. Claude follows it for a specialized task.",
+      "diagram": {
+        "type": "flow",
+        "nodes": [
+          {
+            "label": "Claude|Code"
+          },
+          {
+            "label": "Skills",
+            "sub": "SKILL.md"
+          },
+          {
+            "label": "Specialized|tasks"
+          }
+        ],
+        "h": 170
+      },
+      "code": [
+        "{{m:# .claude/skills/fix-issue/SKILL.md}}",
+        "---",
+        "{{k:name:}} fix-issue",
+        "{{k:description:}} Fix a GitHub issue",
+        "---",
+        "Fix GitHub issue {{f:$ARGUMENTS}}"
+      ],
+      "tag": "Used when",
+      "watch": "You type `/fix-issue 123`, or Claude loads it when your request matches."
+    },
+    {
+      "layout": "observer",
+      "theme": "mint",
+      "kicker": "Skill 1 · task-observer",
+      "title": "Meet the Skill That *Watches Your Workflow.*",
+      "titleSize": 58,
+      "mood": "focus",
+      "lede": "A meta-skill that watches your sessions and suggests improvements to your other skills.",
+      "repo": [
+        "github.com/rebelytics/",
+        "one-skill-to-rule-them-all"
+      ],
+      "by": "By Eoghan Henn · rebelytics.com",
+      "tag": "Full bundle",
+      "watch": "Install the whole folder, not just SKILL.md. Full use needs filesystem access."
+    },
+    {
+      "layout": "loop5",
+      "theme": "dark",
+      "kicker": "Continuous improvement",
+      "title": "From Work to *Better Skills.*",
+      "mood": "dizzy",
+      "lede": "Observations become suggested updates. You review them.",
+      "code": [
+        "{{m:# observations}}",
+        "skill-observations/observation-log/",
+        "{{m:# proposed updates}}",
+        "skill-updates/"
+      ],
+      "tag": "You decide",
+      "watch": "The observer doesn’t modify your installed skills. Nothing goes live until you install the updated bundle."
+    },
+    {
+      "layout": "impeccable",
+      "theme": "paper",
+      "kicker": "Skill 2 · impeccable",
+      "title": "Make Your AI Designs Look *Professional.*",
+      "titleSize": 58,
+      "mood": "wink",
+      "cmds": [
+        "craft",
+        "audit",
+        "polish",
+        "critique"
+      ],
+      "code": [
+        "{{m:# plugin marketplace}}",
+        "{{p:>}} {{c:/plugin marketplace add}} pbakaus/impeccable",
+        "{{m:# or the CLI installer}}",
+        "{{p:$}} {{c:npx impeccable install}}"
+      ],
+      "by": "By Paul Bakaus · github.com/pbakaus/impeccable"
+    },
+    {
+      "layout": "collections",
+      "theme": "mint",
+      "kicker": "The toolkit",
+      "title": "More Skills, *Better Workflows.*",
+      "mood": "proud",
+      "items": [
+        {
+          "name": "skill-creator",
+          "kind": "Plugin",
+          "what": "Official plugin that helps you build and test skills.",
+          "link": "github.com/anthropics/claude-plugins-official",
+          "cmd": "/plugin install skill-creator@claude-plugins-official"
+        },
+        {
+          "name": "anthropics/skills",
+          "kind": "Collection",
+          "what": "Anthropic’s example skills and the Agent Skills spec.",
+          "link": "github.com/anthropics/skills",
+          "cmd": "/plugin marketplace add anthropics/skills"
+        }
+      ],
+      "legend": [
+        [
+          "SKILL",
+          "a SKILL.md folder Claude follows"
+        ],
+        [
+          "PLUGIN",
+          "a bundle you add with /plugin"
+        ],
+        [
+          "CLI",
+          "a standalone tool, like npx impeccable"
+        ],
+        [
+          "MCP SERVER",
+          "connects outside tools. None here."
+        ]
+      ]
+    },
+    {
+      "layout": "install",
+      "theme": "dark",
+      "kicker": "Install",
+      "title": "Install Skills in *Claude Code.*",
+      "mood": "happy",
+      "where": [
+        [
+          "Personal",
+          "~/.claude/skills/<name>/SKILL.md",
+          "Every project on this machine"
+        ],
+        [
+          "Project",
+          ".claude/skills/<name>/SKILL.md",
+          "This repo. Commit to share."
+        ]
+      ],
+      "code": [
+        "{{m:# task-observer (add -g for all projects)}}",
+        "{{p:$}} {{c:npx skills add}} rebelytics/one-skill-to-rule-them-all --skill task-observer",
+        "{{m:# impeccable, inside Claude Code}}",
+        "{{p:>}} {{c:/plugin marketplace add}} pbakaus/impeccable"
+      ],
+      "tag": "Reload",
+      "watch": "Made a new top-level skills folder? Run `/reload-skills`."
+    },
+    {
+      "layout": "testSkills",
+      "theme": "paper",
+      "kicker": "Verify",
+      "title": "Test Your *Skills.*",
+      "mood": "think",
+      "checks": [
+        {
+          "t": "Is it recognized?",
+          "d": "Ask “What skills are available?” or run:",
+          "c": "/skills"
+        },
+        {
+          "t": "Run it directly",
+          "d": "A realistic example:",
+          "c": "/impeccable polish settings"
+        },
+        {
+          "t": "Did it really run?",
+          "d": "The skill’s instructions enter the conversation when it is invoked. Look for them in the transcript."
+        },
+        {
+          "t": "Not triggering?",
+          "d": "Check the description, try `/name`, or run with `--debug` to see frontmatter errors."
+        }
+      ],
+      "tag": "task-observer",
+      "watch": "Check `skill-observations/checkpoints.log` for a recent “session-start scan” line."
+    },
+    {
+      "layout": "toolkit9",
+      "theme": "coral",
+      "kicker": "Save this",
+      "title": "Save This *Toolkit.*",
+      "rows": [
+        [
+          "task-observer",
+          "Skill",
+          "rebelytics/one-skill-to-rule-them-all"
+        ],
+        [
+          "impeccable",
+          "Skill, plugin and CLI",
+          "pbakaus/impeccable"
+        ],
+        [
+          "skill-creator",
+          "Official plugin",
+          "anthropics/claude-plugins-official"
+        ],
+        [
+          "Anthropic skills",
+          "Official collection",
+          "anthropics/skills"
+        ]
+      ],
+      "handle": "@agentoon.ai",
+      "followBtn": "Follow @agentoon.ai.",
+      "actions": [
+        {
+          "icon": "bookmark",
+          "t": "Save this guide."
+        },
+        {
+          "icon": "send",
+          "t": "Share it with a Claude Code user."
+        }
+      ]
+    }
+  ],
+  "spellAllow": [
+    "rebelytics",
+    "impeccable",
+    "bakaus",
+    "eoghan",
+    "henn",
+    "anthropics",
+    "frontmatter",
+    "observer",
+    "pbakaus",
+    "onboarding",
+    "mockup",
+    "uncheck",
+    "cc",
+    "filesystem"
+  ]
+}

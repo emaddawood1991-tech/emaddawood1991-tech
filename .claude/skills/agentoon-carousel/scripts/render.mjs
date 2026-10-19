@@ -274,7 +274,7 @@ if (doZip) {
   const slug = cfg.slug || path.basename(dir);
   const zip = path.join(dir, `${slug}.zip`);
   fs.rmSync(zip, { force: true });
-  const inc = ["png", "source", "carousel.json", "extras.mjs", "contact-sheet.png", "mobile-preview.png", "safe-area-check.png", "preview-1x1-crop.png", "qa-report.md", "sources.md", "caption.md"].filter((p) => fs.existsSync(path.join(dir, p)));
+  const inc = ["png", "source", "carousel.json", "extras.mjs", "contact-sheet.png", "mobile-preview.png", "safe-area-check.png", "preview-1x1-crop.png", "qa-report.md", "sources.md", "verified-links.md", "caption.md"].filter((p) => fs.existsSync(path.join(dir, p)));
   execFileSync("zip", ["-qr", zip, ...inc], { cwd: dir });
   console.log("✓ zip →", path.relative(process.cwd(), zip));
 }

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>Your Claude Code Skills Can Improve Themselves — Agentoon.ai carousel</title>
+<link rel="stylesheet" href="assets/base.css">
+</head><body>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0" aria-hidden="true">
+  <!-- Agentoon robot mascot. Colours come from CSS vars: --m-head --m-screen --m-eye --m-body --m-ear --accent
+       Moods: happy · wow · think · wink · focus · cheer · dizzy · oops · proud  (use mascot(width, mood)) -->
+  <defs>
+    <g id="m-base">
+      <line x1="100" y1="22" x2="100" y2="50" stroke="var(--m-head)" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="100" cy="16" r="10" fill="var(--accent)"/>
+      <rect x="14" y="88" width="20" height="40" rx="10" fill="var(--m-ear)"/>
+      <rect x="166" y="88" width="20" height="40" rx="10" fill="var(--m-ear)"/>
+      <rect x="28" y="48" width="144" height="116" rx="38" fill="var(--m-head)"/>
+      <rect x="46" y="68" width="108" height="76" rx="26" fill="var(--m-screen)"/>
+      <rect x="58" y="170" width="84" height="50" rx="20" fill="var(--m-body)"/>
+      <rect x="86" y="184" width="28" height="22" rx="8" fill="var(--accent)"/>
+    </g>
+    <g id="m-eyes-happy"><rect x="70" y="88" width="16" height="26" rx="8" fill="var(--m-eye)"/><rect x="114" y="88" width="16" height="26" rx="8" fill="var(--m-eye)"/></g>
+    <g id="m-eyes-arc" fill="none" stroke="var(--m-eye)" stroke-width="7" stroke-linecap="round"><path d="M66 108 Q78 90 90 108"/><path d="M110 108 Q122 90 134 108"/></g>
+  </defs>
+
+  <symbol id="mascot-happy" viewBox="0 0 200 230"><use href="#m-base"/><use href="#m-eyes-happy"/>
+    <path d="M82 126 Q100 140 118 126" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+  <symbol id="mascot" viewBox="0 0 200 230"><use href="#mascot-happy"/></symbol>
+
+  <symbol id="mascot-wow" viewBox="0 0 200 230"><use href="#m-base"/>
+    <ellipse cx="78" cy="98" rx="12" ry="19" fill="var(--m-eye)"/><ellipse cx="122" cy="98" rx="12" ry="19" fill="var(--m-eye)"/>
+    <circle cx="82" cy="91" r="4.5" fill="var(--m-screen)"/><circle cx="126" cy="91" r="4.5" fill="var(--m-screen)"/>
+    <ellipse cx="100" cy="130" rx="13" ry="10" fill="var(--m-eye)"/>
+    <g stroke="var(--accent)" stroke-width="5" stroke-linecap="round"><path d="M178 28v18M169 37h18"/><path d="M22 36v14M15 43h14"/><path d="M164 6v10M159 11h10"/></g></symbol>
+
+  <symbol id="mascot-think" viewBox="0 0 200 230"><use href="#m-base"/>
+    <circle cx="82" cy="96" r="12" fill="var(--m-eye)"/><circle cx="126" cy="96" r="12" fill="var(--m-eye)"/>
+    <circle cx="86" cy="92" r="5" fill="var(--m-screen)"/><circle cx="130" cy="92" r="5" fill="var(--m-screen)"/>
+    <path d="M112 78 L140 72" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M84 130 H112" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="176" cy="30" r="6" fill="var(--accent)"/><circle cx="190" cy="12" r="4" fill="var(--accent)"/></symbol>
+
+  <symbol id="mascot-wink" viewBox="0 0 200 230"><use href="#m-base"/>
+    <rect x="70" y="88" width="16" height="26" rx="8" fill="var(--m-eye)"/>
+    <path d="M110 102 H134" stroke="var(--m-eye)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M78 122 Q100 148 122 122 Z" fill="var(--m-eye)"/>
+    <g stroke="var(--accent)" stroke-width="5" stroke-linecap="round"><path d="M178 30v16M170 38h16"/></g></symbol>
+
+  <symbol id="mascot-focus" viewBox="0 0 200 230"><use href="#m-base"/>
+    <rect x="68" y="96" width="20" height="10" rx="5" fill="var(--m-eye)"/>
+    <circle cx="124" cy="100" r="16" fill="none" stroke="var(--m-eye)" stroke-width="6"/><circle cx="124" cy="100" r="6" fill="var(--m-eye)"/>
+    <path d="M136 112 L150 126" stroke="var(--m-eye)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M86 130 H110" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+
+  <symbol id="mascot-cheer" viewBox="0 0 200 230"><use href="#m-base"/>
+    <g stroke="var(--m-ear)" stroke-width="16" stroke-linecap="round" fill="none"><path d="M62 186 L22 142"/><path d="M138 186 L178 142"/></g>
+    <circle cx="20" cy="138" r="11" fill="var(--m-ear)"/><circle cx="180" cy="138" r="11" fill="var(--m-ear)"/>
+    <use href="#m-eyes-arc"/>
+    <path d="M78 120 Q100 150 122 120 Z" fill="var(--m-eye)"/>
+    <circle cx="62" cy="124" r="6" fill="var(--accent)" opacity=".7"/><circle cx="138" cy="124" r="6" fill="var(--accent)" opacity=".7"/></symbol>
+
+  <symbol id="mascot-dizzy" viewBox="0 0 200 230"><use href="#m-base"/>
+    <g fill="none" stroke="var(--m-eye)" stroke-width="5" stroke-linecap="round"><circle cx="78" cy="100" r="15"/><circle cx="78" cy="100" r="6"/><circle cx="122" cy="100" r="15"/><circle cx="122" cy="100" r="6"/></g>
+    <path d="M84 130 Q92 122 100 130 T116 130" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+
+  <symbol id="mascot-oops" viewBox="0 0 200 230"><use href="#m-base"/>
+    <circle cx="78" cy="98" r="10" fill="var(--m-eye)"/><circle cx="122" cy="98" r="10" fill="var(--m-eye)"/>
+    <path d="M66 80 L88 86 M134 80 L112 86" stroke="var(--m-eye)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M82 134 Q100 122 118 134" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M168 56 q8 14 0 22 q-8 -8 0 -22z" fill="var(--accent)"/></symbol>
+
+  <symbol id="mascot-proud" viewBox="0 0 200 230"><use href="#m-base"/>
+    <path d="M138 186 L176 150" stroke="var(--m-ear)" stroke-width="16" stroke-linecap="round" fill="none"/><circle cx="178" cy="146" r="12" fill="var(--m-ear)"/>
+    <use href="#m-eyes-arc"/>
+    <path d="M82 126 Q100 142 118 126" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="8" r="2.2"/><path d="M6 7.2v9.6M18 10.2c0 4-6 3-11 7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-4M4 4v4h4M4 13a8 8 0 0 0 14 4M20 20v-4h-4"/></symbol>
+  <symbol id="i-bug" viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="12" rx="4"/><path d="M9 8a3 3 0 0 1 6 0M3 12h5M16 12h5M4 19l4-2M20 19l-4-2M4 5l4 3M20 5l-4 3"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5zM3 13l9 5 9-5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></symbol>
+  <symbol id="i-follow" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5S14.900 16.400 15.500 20M19 8v6M16 11h6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.200 9.500l6.100-.9z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v4h4"/></symbol>
+</svg>
+
+<main class="deck">
+<section class="slide dark" id="slide-01" data-slide="1">
+        <div class="kicker"><span class="bar"></span>Claude Code · Skills</div>
+        <h1 class="h1" style="margin-top:16px;font-size:88px">Your Claude Code Skills Can <em>Improve Themselves.</em></h1>
+        <p class="lede" style="margin-top:14px;font-size:34px;color:var(--muted)">Discover powerful skills that make your AI workflow smarter.</p>
+        <div class="grow stack" style="justify-content:center;min-height:0"><svg viewBox="0 0 940 330" width="940" height="330"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <path d="M268 62 L402 122" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 12" fill="none"/><path d="M238 280 L410 214" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 12" fill="none"/><path d="M672 62 L538 122" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 12" fill="none"/><path d="M612 280 L530 214" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 12" fill="none"/><path d="M470 244 L470 262" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 12" fill="none"/>
+        <use href="#mascot-wow" x="383" y="22" width="174" height="200"/>
+        <rect x="10" y="34" width="250" height="58" rx="29" fill="var(--accent)" stroke="var(--line)" stroke-width="2"/><text x="135" y="73" font-family="var(--mono)" font-size="28" font-weight="700" fill="var(--on-accent)" text-anchor="middle">task-observer</text><rect x="10" y="252" width="230" height="58" rx="29" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="125" y="291" font-family="var(--mono)" font-size="28" font-weight="700" fill="var(--fg)" text-anchor="middle">impeccable</text><rect x="680" y="34" width="250" height="58" rx="29" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="805" y="73" font-family="var(--mono)" font-size="28" font-weight="700" fill="var(--fg)" text-anchor="middle">skill-creator</text><rect x="600" y="252" width="330" height="58" rx="29" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="765" y="291" font-family="var(--mono)" font-size="28" font-weight="700" fill="var(--fg)" text-anchor="middle">anthropics/skills</text>
+        <rect x="398" y="262" width="144" height="58" rx="29" fill="none" stroke="var(--accent-t)" stroke-width="3"/><text x="470" y="301" font-family="var(--mono)" font-size="28" font-weight="700" fill="var(--accent-t)" text-anchor="middle">SKILL.md</text></svg></div>
+        <div class="row gap16 center"><span class="pill solid" style="font-size:32px;padding:16px 28px">Swipe to explore →</span><span class="pill" style="font-size:30px;padding:16px 24px"><svg class="ic" ><use href="#i-shield"/></svg> You review every change</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>01</i> / 09</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide paper" id="slide-02" data-slide="2"><svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-think"/></svg><div class="kicker"><span class="bar"></span>The basics</div>
+    <h2 class="h2" style="margin-top:14px;font-size:62px;max-width:790px">What are <em>Claude Code skills?</em></h2>
+        <p class="body" style="margin-top:8px;font-size:32px;color:var(--muted);max-width:790px">A skill is a folder with a <code class="mono">SKILL.md</code>. Claude follows it for a specialized task.</p>
+        <div style="margin-top:14px"><svg viewBox="0 0 936 210" width="936" height="210"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+    <rect x="0" y="20" width="269.3333333333333" height="170" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" />
+        
+        <text x="134.66666666666666" y="95" font-family="var(--sans)" font-size="32" font-weight="700" fill="var(--fg)" text-anchor="middle">Claude</text><text x="134.66666666666666" y="135" font-family="var(--sans)" font-size="32" font-weight="700" fill="var(--fg)" text-anchor="middle">Code</text>
+        
+        <path d="M277.3333333333333 105 L325.3333333333333 105" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><rect x="333.3333333333333" y="20" width="269.3333333333333" height="170" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" />
+        
+        <text x="468" y="95" font-family="var(--sans)" font-size="32" font-weight="700" fill="var(--fg)" text-anchor="middle">Skills</text>
+        <text x="468" y="141" font-family="var(--mono)" font-size="28" font-weight="600" fill="var(--muted)" text-anchor="middle">SKILL.md</text>
+        <path d="M610.6666666666666 105 L658.6666666666666 105" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><rect x="666.6666666666666" y="20" width="269.3333333333333" height="170" rx="22" fill="var(--accent)" stroke="var(--line)" stroke-width="2" />
+        
+        <text x="801.3333333333333" y="95" font-family="var(--sans)" font-size="32" font-weight="700" fill="var(--on-accent)" text-anchor="middle">Specialized</text><text x="801.3333333333333" y="135" font-family="var(--sans)" font-size="32" font-weight="700" fill="var(--on-accent)" text-anchor="middle">tasks</text>
+        
+        
+    </svg></div>
+        <div class="code" style="margin-top:14px;padding:20px 28px;flex:none"><span class="m"># .claude/skills/fix-issue/SKILL.md</span>
+---
+<span class="k">name:</span> fix-issue
+<span class="k">description:</span> Fix a GitHub issue
+---
+Fix GitHub issue <span class="f">$ARGUMENTS</span></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px"><span class="tag">Used when</span><span>You type <code class="mono">/fix-issue 123</code>, or Claude loads it when your request matches.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>02</i> / 09</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide mint" id="slide-03" data-slide="3"><svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-focus"/></svg><div class="kicker"><span class="bar"></span>Skill 1 · task-observer</div>
+    <h2 class="h2" style="margin-top:14px;font-size:58px;max-width:790px">Meet the Skill That <em>Watches Your Workflow.</em></h2>
+        <div class="row gap16" style="margin-top:12px"><span class="badge hot">Skill</span><span class="badge ghost">CC BY 4.0</span></div>
+        <p class="body" style="margin-top:10px;font-size:32px;color:var(--muted)">A meta-skill that watches your sessions and suggests improvements to your other skills.</p>
+        <div style="margin-top:10px"><svg viewBox="0 0 940 250" width="940" height="250"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <rect x="0" y="10" width="340" height="64" rx="32" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="170" y="52" font-family="var(--sans)" font-size="30" font-weight="700" fill="var(--fg)" text-anchor="middle">Your corrections</text><rect x="0" y="92" width="340" height="64" rx="32" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="170" y="134" font-family="var(--sans)" font-size="30" font-weight="700" fill="var(--fg)" text-anchor="middle">Gaps no skill covers</text><rect x="0" y="174" width="340" height="64" rx="32" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="170" y="216" font-family="var(--sans)" font-size="30" font-weight="700" fill="var(--fg)" text-anchor="middle">Its own blind spots</text>
+        <path d="M350 42 L390 100" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M350 124 L390 124" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M350 206 L390 148" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/>
+        <rect x="396" y="56" width="256" height="136" rx="26" fill="var(--accent)" stroke="none" stroke-width="2"/><text x="524" y="112" font-family="var(--sans)" font-size="31" font-weight="800" fill="var(--on-accent)" text-anchor="middle">task-observer</text><text x="524" y="154" font-family="var(--mono)" font-size="28" font-weight="600" fill="var(--on-accent)" text-anchor="middle">watches work</text>
+        <path d="M660 124 L704 124" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/>
+        <rect x="714" y="40" width="226" height="168" rx="26" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><g transform="translate(827 96)" fill="none" stroke="var(--accent-t)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M-26 -34 h38 l14 14 v54 h-52z"/><path d="M-14 -4 h28 M-14 12 h28"/></g><text x="827" y="168" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--fg)" text-anchor="middle">Observation</text><text x="827" y="200" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--fg)" text-anchor="middle">log</text></svg></div>
+        <div style="margin-top:10px"><div class="code" style="white-space:normal;padding:16px 24px 18px;flex:none"><div class="label" style="color:#2FE3B2;margin-bottom:4px">Official repository</div><div style="font:600 32px/1.3 var(--mono);color:#fff;word-break:break-all">github.com/rebelytics/<br>one-skill-to-rule-them-all</div></div></div>
+        <div class="src" style="margin-top:8px">By Eoghan Henn · rebelytics.com</div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px"><span class="tag">Full bundle</span><span>Install the whole folder, not just SKILL.md. Full use needs filesystem access.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>03</i> / 09</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide dark" id="slide-04" data-slide="4"><svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-dizzy"/></svg><div class="kicker"><span class="bar"></span>Continuous improvement</div>
+    <h2 class="h2" style="margin-top:14px;font-size:62px;max-width:790px">From Work to <em>Better Skills.</em></h2>
+        <p class="body" style="margin-top:8px;font-size:32px;color:var(--muted)">Observations become suggested updates. You review them.</p>
+        <div style="margin-top:14px"><svg viewBox="0 0 940 170" width="940" height="170"><path d="M0 6 H168 L196 54 L168 102 H0 L28 54 Z" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="104" y="65" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--fg)" text-anchor="middle">Work</text><path d="M182 6 H350 L378 54 L350 102 H182 L210 54 Z" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="286" y="65" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--fg)" text-anchor="middle">Observe</text><path d="M364 6 H532 L560 54 L532 102 H364 L392 54 Z" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="468" y="65" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--fg)" text-anchor="middle">Suggest</text><path d="M546 6 H714 L742 54 L714 102 H546 L574 54 Z" fill="var(--accent)" stroke="none" stroke-width="2"/><text x="650" y="65" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--on-accent)" text-anchor="middle">Review</text><path d="M728 6 H896 L924 54 L896 102 H728 L756 54 Z" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><text x="832" y="65" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--fg)" text-anchor="middle">Improve</text><text x="650" y="150" font-family="var(--mono)" font-size="28" font-weight="700" fill="var(--accent-t)" text-anchor="middle">you decide</text></svg></div>
+        <div class="code" style="margin-top:12px;padding:18px 26px;flex:none"><span class="m"># observations</span>
+skill-observations/observation-log/
+<span class="m"># proposed updates</span>
+skill-updates/</div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px"><span class="tag">You decide</span><span>The observer doesn’t modify your installed skills. Nothing goes live until you install the updated bundle.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>04</i> / 09</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide paper" id="slide-05" data-slide="5"><svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-wink"/></svg><div class="kicker"><span class="bar"></span>Skill 2 · impeccable</div>
+    <h2 class="h2" style="margin-top:14px;font-size:58px;max-width:790px">Make Your AI Designs Look <em>Professional.</em></h2>
+        <div class="row gap16" style="margin-top:12px;align-items:center"><span class="badge hot">Design skill</span><span class="label">Illustrative mock-up</span></div>
+        <div class="row gap16" style="margin-top:10px;align-items:stretch"><div style="flex:1;min-width:0;background:#E6E6E6;border:2px solid #999;padding:18px;color:#111"><div style="font:700 30px/1 'Times New Roman',serif;text-align:left">Sign Up</div><div style="height:26px;border-radius:0px;border:3px solid #111;background:#fff;margin-top:6px"></div><div style="height:26px;border-radius:0px;border:3px solid #111;background:#fff;margin-top:6px"></div><div style="height:26px;border-radius:0px;border:3px solid #111;background:#fff;margin-top:6px"></div><div style="margin-top:10px;background:#3366FF;color:#fff;font:700 30px/1 Arial,sans-serif;padding:12px 10px;text-align:center;border:3px solid #000">SUBMIT</div></div><div style="flex:1;min-width:0;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 10px 0 var(--line)"><div style="font:800 36px/1.05 var(--serif);color:var(--fg)">Sign <i style="color:var(--accent-t);font-weight:500">up</i></div><div style="height:34px;border-radius:12px;border:2px solid var(--line);background:var(--card);margin-top:12px"></div><div style="height:34px;border-radius:12px;border:2px solid var(--line);background:var(--card);margin-top:12px"></div><div style="height:34px;border-radius:12px;border:2px solid var(--line);background:var(--card);margin-top:12px"></div><div style="margin-top:16px;background:var(--accent);color:var(--on-accent);font:800 30px/1 var(--sans);padding:14px 10px;text-align:center;border-radius:14px">Create account</div></div></div>
+        <div style="font:600 32px/1.3 var(--sans);margin-top:18px">Commands: <code class="mono">craft</code> <code class="mono">audit</code> <code class="mono">polish</code> <code class="mono">critique</code></div>
+        <div class="code" style="margin-top:10px;padding:16px 26px;flex:none"><span class="m"># plugin marketplace</span>
+<span class="p">&gt;</span> <span class="c">/plugin marketplace add</span> pbakaus/impeccable
+<span class="m"># or the CLI installer</span>
+<span class="p">$</span> <span class="c">npx impeccable install</span></div>
+        <div class="grow"></div>
+        <div class="row between center" style="gap:12px"><span class="src" style="font-size:26px">By Paul Bakaus · github.com/pbakaus/impeccable</span><span class="badge ghost">Apache-2.0</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>05</i> / 09</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide mint" id="slide-06" data-slide="6"><svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-proud"/></svg><div class="kicker"><span class="bar"></span>The toolkit</div>
+    <h2 class="h2" style="margin-top:14px;font-size:62px;max-width:790px">More Skills, <em>Better Workflows.</em></h2>
+        <div class="stack" style="gap:10px;margin-top:12px"><div class="card stack" style="gap:6px;padding:12px 20px;border-radius:24px"><div class="row between center"><span class="mono" style="font-size:34px;font-weight:800;color:var(--accent-t)">skill-creator</span><span class="badge hot">Plugin</span></div><div style="font:600 32px/1.25 var(--sans)">Official plugin that helps you build and test skills.</div><div class="mono" style="font-size:30px;font-weight:600;word-break:break-all;color:var(--muted)">github.com/anthropics/claude-plugins-official</div><div class="code" style="white-space:normal;padding:10px 18px;border-radius:14px;font-size:32px;line-height:1.3;word-break:break-all">/plugin install skill-creator@claude-plugins-official</div></div><div class="card stack" style="gap:6px;padding:12px 20px;border-radius:24px"><div class="row between center"><span class="mono" style="font-size:34px;font-weight:800;color:var(--accent-t)">anthropics/skills</span><span class="badge ">Collection</span></div><div style="font:600 32px/1.25 var(--sans)">Anthropic’s example skills and the Agent Skills spec.</div><div class="mono" style="font-size:30px;font-weight:600;word-break:break-all;color:var(--muted)">github.com/anthropics/skills</div><div class="code" style="white-space:normal;padding:10px 18px;border-radius:14px;font-size:32px;line-height:1.3;word-break:break-all">/plugin marketplace add anthropics/skills</div></div></div>
+        <div class="grow"></div>
+        <div class="card" style="padding:10px 22px;border-radius:22px"><div class="label" style="margin-bottom:4px">Know the difference</div><div class="row gap16" style="align-items:baseline;font:500 30px/1.3 var(--sans)"><b style="flex:none;width:210px;font:800 30px/1.3 var(--mono);color:var(--accent-t)">SKILL</b><span>a SKILL.md folder Claude follows</span></div><div class="row gap16" style="align-items:baseline;font:500 30px/1.3 var(--sans)"><b style="flex:none;width:210px;font:800 30px/1.3 var(--mono);color:var(--accent-t)">PLUGIN</b><span>a bundle you add with /plugin</span></div><div class="row gap16" style="align-items:baseline;font:500 30px/1.3 var(--sans)"><b style="flex:none;width:210px;font:800 30px/1.3 var(--mono);color:var(--accent-t)">CLI</b><span>a standalone tool, like npx impeccable</span></div><div class="row gap16" style="align-items:baseline;font:500 30px/1.3 var(--sans)"><b style="flex:none;width:210px;font:800 30px/1.3 var(--mono);color:var(--accent-t)">MCP SERVER</b><span>connects outside tools. None here.</span></div></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>06</i> / 09</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide dark" id="slide-07" data-slide="7"><svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-happy"/></svg><div class="kicker"><span class="bar"></span>Install</div>
+    <h2 class="h2" style="margin-top:14px;font-size:62px;max-width:790px">Install Skills in <em>Claude Code.</em></h2>
+        <div class="row gap16" style="margin-top:14px;align-items:stretch"><div class="card stack" style="flex:1;gap:4px;padding:14px 18px;border-radius:22px;min-width:0"><div class="label" style="font-size:26px">Personal</div><div class="mono" style="font-size:30px;font-weight:700;word-break:break-all">~/.claude/skills/&lt;name&gt;/SKILL.md</div><div style="font:500 30px/1.25 var(--sans);color:var(--muted)">Every project on this machine</div></div><div class="card stack" style="flex:1;gap:4px;padding:14px 18px;border-radius:22px;min-width:0"><div class="label" style="font-size:26px">Project</div><div class="mono" style="font-size:30px;font-weight:700;word-break:break-all">.claude/skills/&lt;name&gt;/SKILL.md</div><div style="font:500 30px/1.25 var(--sans);color:var(--muted)">This repo. Commit to share.</div></div></div>
+        <div class="code" style="margin-top:12px;padding:18px 26px;flex:none;line-height:1.38"><span class="m"># task-observer (add -g for all projects)</span>
+<span class="p">$</span> <span class="c">npx skills add</span> rebelytics/one-skill-to-rule-them-all --skill task-observer
+<span class="m"># impeccable, inside Claude Code</span>
+<span class="p">&gt;</span> <span class="c">/plugin marketplace add</span> pbakaus/impeccable</div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px"><span class="tag">Reload</span><span>Made a new top-level skills folder? Run <code class="mono">/reload-skills</code>.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>07</i> / 09</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide paper" id="slide-08" data-slide="8"><svg class="mascot" viewBox="0 0 200 230" width="112" height="129" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-think"/></svg><div class="kicker"><span class="bar"></span>Verify</div>
+    <h2 class="h2" style="margin-top:14px;font-size:62px;max-width:790px">Test Your <em>Skills.</em></h2>
+        <div class="stack" style="gap:10px;margin-top:14px"><div class="card row" style="gap:18px;padding:12px 18px;border-radius:22px;align-items:flex-start"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">1</span><div class="stack" style="gap:2px;min-width:0"><div style="font:800 34px/1.15 var(--sans)">Is it recognized?</div><div style="font:500 30px/1.25 var(--sans);color:var(--muted)">Ask “What skills are available?” or run:</div><div class="mono" style="font-size:30px;font-weight:700;color:var(--accent-t);word-break:break-all">/skills</div></div></div><div class="card row" style="gap:18px;padding:12px 18px;border-radius:22px;align-items:flex-start"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">2</span><div class="stack" style="gap:2px;min-width:0"><div style="font:800 34px/1.15 var(--sans)">Run it directly</div><div style="font:500 30px/1.25 var(--sans);color:var(--muted)">A realistic example:</div><div class="mono" style="font-size:30px;font-weight:700;color:var(--accent-t);word-break:break-all">/impeccable polish settings</div></div></div><div class="card row" style="gap:18px;padding:12px 18px;border-radius:22px;align-items:flex-start"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">3</span><div class="stack" style="gap:2px;min-width:0"><div style="font:800 34px/1.15 var(--sans)">Did it really run?</div><div style="font:500 30px/1.25 var(--sans);color:var(--muted)">The skill’s instructions enter the conversation when it is invoked. Look for them in the transcript.</div></div></div><div class="card row" style="gap:18px;padding:12px 18px;border-radius:22px;align-items:flex-start"><span style="flex:none;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:800 30px/50px var(--serif);text-align:center">4</span><div class="stack" style="gap:2px;min-width:0"><div style="font:800 34px/1.15 var(--sans)">Not triggering?</div><div style="font:500 30px/1.25 var(--sans);color:var(--muted)">Check the description, try <code class="mono">/name</code>, or run with <code class="mono">--debug</code> to see frontmatter errors.</div></div></div></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px"><span class="tag">task-observer</span><span>Check <code class="mono">skill-observations/checkpoints.log</code> for a recent “session-start scan” line.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>08</i> / 09</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide coral" id="slide-09" data-slide="9">
+        <div class="kicker" style="color:var(--ink)"><span class="bar"></span>Save this</div>
+        <h2 class="h2" style="margin-top:14px;font-size:64px">Save This <em>Toolkit.</em></h2>
+        <div class="stack" style="gap:10px;margin-top:16px"><div class="card row" style="gap:16px;padding:10px 18px;border-radius:20px;align-items:center"><span style="flex:none;width:48px;height:48px;border-radius:50%;background:var(--ink);color:#F4F1EA;font:800 30px/48px var(--serif);text-align:center">1</span><div class="stack" style="min-width:0;gap:0"><div class="row gap16" style="align-items:baseline;flex-wrap:wrap"><b class="mono" style="font-size:32px;color:var(--accent-t)">task-observer</b><span style="font:600 30px/1.2 var(--sans);color:var(--muted)">Skill</span></div><div class="mono" style="font-size:30px;font-weight:600;word-break:break-all">rebelytics/one-skill-to-rule-them-all</div></div></div><div class="card row" style="gap:16px;padding:10px 18px;border-radius:20px;align-items:center"><span style="flex:none;width:48px;height:48px;border-radius:50%;background:var(--ink);color:#F4F1EA;font:800 30px/48px var(--serif);text-align:center">2</span><div class="stack" style="min-width:0;gap:0"><div class="row gap16" style="align-items:baseline;flex-wrap:wrap"><b class="mono" style="font-size:32px;color:var(--accent-t)">impeccable</b><span style="font:600 30px/1.2 var(--sans);color:var(--muted)">Skill, plugin and CLI</span></div><div class="mono" style="font-size:30px;font-weight:600;word-break:break-all">pbakaus/impeccable</div></div></div><div class="card row" style="gap:16px;padding:10px 18px;border-radius:20px;align-items:center"><span style="flex:none;width:48px;height:48px;border-radius:50%;background:var(--ink);color:#F4F1EA;font:800 30px/48px var(--serif);text-align:center">3</span><div class="stack" style="min-width:0;gap:0"><div class="row gap16" style="align-items:baseline;flex-wrap:wrap"><b class="mono" style="font-size:32px;color:var(--accent-t)">skill-creator</b><span style="font:600 30px/1.2 var(--sans);color:var(--muted)">Official plugin</span></div><div class="mono" style="font-size:30px;font-weight:600;word-break:break-all">anthropics/claude-plugins-official</div></div></div><div class="card row" style="gap:16px;padding:10px 18px;border-radius:20px;align-items:center"><span style="flex:none;width:48px;height:48px;border-radius:50%;background:var(--ink);color:#F4F1EA;font:800 30px/48px var(--serif);text-align:center">4</span><div class="stack" style="min-width:0;gap:0"><div class="row gap16" style="align-items:baseline;flex-wrap:wrap"><b class="mono" style="font-size:32px;color:var(--accent-t)">Anthropic skills</b><span style="font:600 30px/1.2 var(--sans);color:var(--muted)">Official collection</span></div><div class="mono" style="font-size:30px;font-weight:600;word-break:break-all">anthropics/skills</div></div></div></div>
+        <div class="grow"></div>
+        <div class="row" style="background:var(--ink);color:#F4F1EA;border-radius:30px;padding:18px 28px;gap:12px;align-items:center;box-shadow:0 10px 0 rgba(12,16,32,.28)">
+          <div class="stack grow" style="gap:10px;min-width:0">
+            <span class="label" style="font-size:28px;letter-spacing:.14em;color:#2FE3B2"><svg class="ic" ><use href="#i-follow"/></svg> Follow</span>
+            <div style="font:800 68px/1 var(--serif);color:#FFFFFF">@agentoon.ai</div>
+            <span class="pill" style="align-self:flex-start;background:#FF6A3D;color:#0C1020;border:none;font:800 32px/1 var(--sans);padding:14px 26px"><svg class="ic" ><use href="#i-plus"/></svg> Follow @agentoon.ai.</span>
+          </div>
+          <div style="flex:none"><svg class="mascot" viewBox="0 0 200 230" width="190" height="219" style="--m-head:#F4F1EA;--m-screen:#0C1020;--m-eye:#2FE3B2;--m-body:#F4F1EA;--m-ear:#FF6A3D" data-decor data-mascot><use href="#mascot-cheer"/></svg></div>
+        </div>
+        <div class="row gap16" style="margin-top:12px"><div class="card row center" style="flex:1;gap:12px;padding:12px 16px;border-radius:20px"><span style="flex:none;width:46px;height:46px;border-radius:14px;background:var(--ink);color:#F4F1EA;display:flex;align-items:center;justify-content:center;font-size:28px"><svg class="ic" ><use href="#i-bookmark"/></svg></span><div style="font:800 31px/1.12 var(--serif)">Save this guide.</div></div><div class="card row center" style="flex:1;gap:12px;padding:12px 16px;border-radius:20px"><span style="flex:none;width:46px;height:46px;border-radius:14px;background:var(--ink);color:#F4F1EA;display:flex;align-items:center;justify-content:center;font-size:28px"><svg class="ic" ><use href="#i-send"/></svg></span><div style="font:800 31px/1.12 var(--serif)">Share it with a Claude Code user.</div></div></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>09</i> / 09</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+</main></body></html>
