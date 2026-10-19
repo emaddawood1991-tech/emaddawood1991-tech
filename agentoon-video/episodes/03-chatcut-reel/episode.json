@@ -1,0 +1,107 @@
+{
+ "title": "ChatCut + Claude Code: edit videos with prompts (PREVIEW, real demo pending)",
+ "voice": "am_michael",
+ "speed": 1.2,
+ "total": 40.0,
+ "music": [],
+ "sfx": [],
+ "phrases": [
+  {
+   "id": "p0",
+   "speak": "Wait, Claude Code can edit videos now?",
+   "show": "Wait, Claude Code can edit videos now?",
+   "map": null
+  },
+  {
+   "id": "p1",
+   "speak": "Meet ChatCut.",
+   "show": "Meet ChatCut.",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "speak": "Cut clips, add captions, and generate B-roll, using simple prompts.",
+   "show": "Cut clips, add captions, and generate B-roll, using simple prompts.",
+   "map": null
+  },
+  {
+   "id": "p2b",
+   "speak": "Import media, transcribe speech, and export, all from one chat.",
+   "show": "Import media, transcribe speech, and export, all from one chat.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "speak": "Open Claude Code, paste this command, and connect ChatCut.",
+   "show": "Open Claude Code, paste this command, and connect ChatCut.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "speak": "One prompt, then approve the sign-in in your browser.",
+   "show": "One prompt, then approve the sign-in in your browser.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "speak": "Now tell Claude: remove pauses, add captions, and turn this into a short Reel.",
+   "show": "Now tell Claude: remove pauses, add captions, and turn this into a short Reel.",
+   "map": null
+  },
+  {
+   "id": "p6",
+   "speak": "It imports the footage, cuts the pauses, and adds captions.",
+   "show": "It imports the footage, cuts the pauses, and adds captions.",
+   "map": null
+  },
+  {
+   "id": "p6b",
+   "speak": "Every edit stays editable in the ChatCut timeline.",
+   "show": "Every edit stays editable in the ChatCut timeline.",
+   "map": null
+  },
+  {
+   "id": "p6c",
+   "speak": "Paid generation asks for your approval first.",
+   "show": "Paid generation asks for your approval first.",
+   "map": null
+  },
+  {
+   "id": "p7",
+   "speak": "And just like that, your edit is ready to review.",
+   "show": "And just like that, your edit is ready to review.",
+   "map": null
+  },
+  {
+   "id": "p8",
+   "speak": "Follow Agentoon dot A I for more AI tools!",
+   "show": "Follow Agentoon.ai for more AI tools!",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai",
+     "Agentoon dot A I"
+    ],
+    [
+     "for",
+     "for"
+    ],
+    [
+     "more",
+     "more"
+    ],
+    [
+     "AI",
+     "AI"
+    ],
+    [
+     "tools!",
+     "tools!"
+    ]
+   ]
+  }
+ ]
+}

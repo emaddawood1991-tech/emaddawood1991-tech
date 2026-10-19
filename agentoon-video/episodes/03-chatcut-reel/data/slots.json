@@ -1,0 +1,11 @@
+{
+  "_readme": "Every real ChatCut recording/result is a SLOT. status 'placeholder' renders skeletons + a PLACEHOLDER ribbon. Real media: put the file in assets/, set file + source, status 'verified', run `python3 build.py`, and add the <video> element described in REPLACE.md. Never mark verified without the real recording on disk.",
+  "preview_banner": true,
+  "slots": {
+    "hook_ba":        { "scene": "s1", "type": "recording", "status": "placeholder", "source": null, "file": null, "note": "Real BEFORE and AFTER clips of the same footage (before-and-after hook)." },
+    "editor_rec":     { "scene": "s2", "type": "recording", "status": "placeholder", "source": null, "file": null, "note": "Real ChatCut editor recording: a cut, captions appearing, B-roll added." },
+    "install_status": { "scene": "s3", "type": "lines",     "status": "placeholder", "source": null, "lines": [], "note": "Real `claude plugin details chatcut@chatcut-inc` / `claude mcp get plugin:chatcut:chatcut` (Connected). Hide any account info." },
+    "demo_log":       { "scene": "s4", "type": "recording", "status": "placeholder", "source": null, "file": null, "note": "Real Claude Code session: the exact prompt, tool actions, timeline edits." },
+    "demo_result":    { "scene": "s5", "type": "recording", "status": "placeholder", "source": null, "file": null, "note": "Real edited timeline + preview vs the original. Show export only if it really succeeded." }
+  }
+}

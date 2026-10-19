@@ -1,0 +1,641 @@
+{
+ "voice": "am_michael",
+ "speed": 1.11,
+ "wpm": 164,
+ "total": 38.573,
+ "phrases": [
+  {
+   "id": "p0",
+   "start": 0.15,
+   "end": 2.408,
+   "show": "Wait, Claude Code can edit videos now?",
+   "speak": "Wait, Claude Code can edit videos now?",
+   "map": null
+  },
+  {
+   "id": "p1",
+   "start": 2.528,
+   "end": 3.38,
+   "show": "Meet ChatCut.",
+   "speak": "Meet ChatCut.",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "start": 3.5,
+   "end": 7.698,
+   "show": "Cut clips, add captions, and generate B-roll, using simple prompts.",
+   "speak": "Cut clips, add captions, and generate B-roll, using simple prompts.",
+   "map": null
+  },
+  {
+   "id": "p2b",
+   "start": 7.818,
+   "end": 11.751,
+   "show": "Import media, transcribe speech, and export, all from one chat.",
+   "speak": "Import media, transcribe speech, and export, all from one chat.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "start": 11.871,
+   "end": 15.122,
+   "show": "Open Claude Code, paste this command, and connect ChatCut.",
+   "speak": "Open Claude Code, paste this command, and connect ChatCut.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "start": 15.242,
+   "end": 18.085,
+   "show": "One prompt, then approve the sign-in in your browser.",
+   "speak": "One prompt, then approve the sign-in in your browser.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "start": 18.205,
+   "end": 23.138,
+   "show": "Now tell Claude: remove pauses, add captions, and turn this into a short Reel.",
+   "speak": "Now tell Claude: remove pauses, add captions, and turn this into a short Reel.",
+   "map": null
+  },
+  {
+   "id": "p6",
+   "start": 23.258,
+   "end": 26.667,
+   "show": "It imports the footage, cuts the pauses, and adds captions.",
+   "speak": "It imports the footage, cuts the pauses, and adds captions.",
+   "map": null
+  },
+  {
+   "id": "p6b",
+   "start": 26.787,
+   "end": 29.694,
+   "show": "Every edit stays editable in the ChatCut timeline.",
+   "speak": "Every edit stays editable in the ChatCut timeline.",
+   "map": null
+  },
+  {
+   "id": "p6c",
+   "start": 29.814,
+   "end": 32.441,
+   "show": "Paid generation asks for your approval first.",
+   "speak": "Paid generation asks for your approval first.",
+   "map": null
+  },
+  {
+   "id": "p7",
+   "start": 32.561,
+   "end": 35.209,
+   "show": "And just like that, your edit is ready to review.",
+   "speak": "And just like that, your edit is ready to review.",
+   "map": null
+  },
+  {
+   "id": "p8",
+   "start": 35.329,
+   "end": 38.453,
+   "show": "Follow Agentoon.ai for more AI tools!",
+   "speak": "Follow Agentoon dot A I for more AI tools!",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai",
+     "Agentoon dot A I"
+    ],
+    [
+     "for",
+     "for"
+    ],
+    [
+     "more",
+     "more"
+    ],
+    [
+     "AI",
+     "AI"
+    ],
+    [
+     "tools!",
+     "tools!"
+    ]
+   ]
+  }
+ ],
+ "words": [
+  {
+   "w": "Wait,",
+   "s": 0.15,
+   "e": 0.494
+  },
+  {
+   "w": "Claude",
+   "s": 0.494,
+   "e": 0.886
+  },
+  {
+   "w": "Code",
+   "s": 0.886,
+   "e": 1.181
+  },
+  {
+   "w": "can",
+   "s": 1.181,
+   "e": 1.426
+  },
+  {
+   "w": "edit",
+   "s": 1.426,
+   "e": 1.721
+  },
+  {
+   "w": "videos",
+   "s": 1.721,
+   "e": 2.113
+  },
+  {
+   "w": "now?",
+   "s": 2.113,
+   "e": 2.408
+  },
+  {
+   "w": "Meet",
+   "s": 2.528,
+   "e": 2.848
+  },
+  {
+   "w": "ChatCut.",
+   "s": 2.848,
+   "e": 3.38
+  },
+  {
+   "w": "Cut",
+   "s": 3.5,
+   "e": 3.769
+  },
+  {
+   "w": "clips,",
+   "s": 3.769,
+   "e": 4.2
+  },
+  {
+   "w": "add",
+   "s": 4.2,
+   "e": 4.469
+  },
+  {
+   "w": "captions,",
+   "s": 4.469,
+   "e": 5.061
+  },
+  {
+   "w": "and",
+   "s": 5.061,
+   "e": 5.33
+  },
+  {
+   "w": "generate",
+   "s": 5.33,
+   "e": 5.868
+  },
+  {
+   "w": "B-roll,",
+   "s": 5.868,
+   "e": 6.352
+  },
+  {
+   "w": "using",
+   "s": 6.352,
+   "e": 6.729
+  },
+  {
+   "w": "simple",
+   "s": 6.729,
+   "e": 7.16
+  },
+  {
+   "w": "prompts.",
+   "s": 7.16,
+   "e": 7.698
+  },
+  {
+   "w": "Import",
+   "s": 7.818,
+   "e": 8.243
+  },
+  {
+   "w": "media,",
+   "s": 8.243,
+   "e": 8.668
+  },
+  {
+   "w": "transcribe",
+   "s": 8.668,
+   "e": 9.306
+  },
+  {
+   "w": "speech,",
+   "s": 9.306,
+   "e": 9.784
+  },
+  {
+   "w": "and",
+   "s": 9.784,
+   "e": 10.05
+  },
+  {
+   "w": "export,",
+   "s": 10.05,
+   "e": 10.529
+  },
+  {
+   "w": "all",
+   "s": 10.529,
+   "e": 10.794
+  },
+  {
+   "w": "from",
+   "s": 10.794,
+   "e": 11.113
+  },
+  {
+   "w": "one",
+   "s": 11.113,
+   "e": 11.379
+  },
+  {
+   "w": "chat.",
+   "s": 11.379,
+   "e": 11.751
+  },
+  {
+   "w": "Open",
+   "s": 11.871,
+   "e": 12.158
+  },
+  {
+   "w": "Claude",
+   "s": 12.158,
+   "e": 12.54
+  },
+  {
+   "w": "Code,",
+   "s": 12.54,
+   "e": 12.875
+  },
+  {
+   "w": "paste",
+   "s": 12.875,
+   "e": 13.21
+  },
+  {
+   "w": "this",
+   "s": 13.21,
+   "e": 13.497
+  },
+  {
+   "w": "command,",
+   "s": 13.497,
+   "e": 13.975
+  },
+  {
+   "w": "and",
+   "s": 13.975,
+   "e": 14.214
+  },
+  {
+   "w": "connect",
+   "s": 14.214,
+   "e": 14.644
+  },
+  {
+   "w": "ChatCut.",
+   "s": 14.644,
+   "e": 15.122
+  },
+  {
+   "w": "One",
+   "s": 15.242,
+   "e": 15.468
+  },
+  {
+   "w": "prompt,",
+   "s": 15.468,
+   "e": 15.874
+  },
+  {
+   "w": "then",
+   "s": 15.874,
+   "e": 16.145
+  },
+  {
+   "w": "approve",
+   "s": 16.145,
+   "e": 16.551
+  },
+  {
+   "w": "the",
+   "s": 16.551,
+   "e": 16.776
+  },
+  {
+   "w": "sign-in",
+   "s": 16.776,
+   "e": 17.182
+  },
+  {
+   "w": "in",
+   "s": 17.182,
+   "e": 17.363
+  },
+  {
+   "w": "your",
+   "s": 17.363,
+   "e": 17.634
+  },
+  {
+   "w": "browser.",
+   "s": 17.634,
+   "e": 18.085
+  },
+  {
+   "w": "Now",
+   "s": 18.205,
+   "e": 18.47
+  },
+  {
+   "w": "tell",
+   "s": 18.47,
+   "e": 18.788
+  },
+  {
+   "w": "Claude:",
+   "s": 18.788,
+   "e": 19.266
+  },
+  {
+   "w": "remove",
+   "s": 19.266,
+   "e": 19.69
+  },
+  {
+   "w": "pauses,",
+   "s": 19.69,
+   "e": 20.168
+  },
+  {
+   "w": "add",
+   "s": 20.168,
+   "e": 20.433
+  },
+  {
+   "w": "captions,",
+   "s": 20.433,
+   "e": 21.016
+  },
+  {
+   "w": "and",
+   "s": 21.016,
+   "e": 21.281
+  },
+  {
+   "w": "turn",
+   "s": 21.281,
+   "e": 21.6
+  },
+  {
+   "w": "this",
+   "s": 21.6,
+   "e": 21.918
+  },
+  {
+   "w": "into",
+   "s": 21.918,
+   "e": 22.236
+  },
+  {
+   "w": "a",
+   "s": 22.236,
+   "e": 22.395
+  },
+  {
+   "w": "short",
+   "s": 22.395,
+   "e": 22.767
+  },
+  {
+   "w": "Reel.",
+   "s": 22.767,
+   "e": 23.138
+  },
+  {
+   "w": "It",
+   "s": 23.258,
+   "e": 23.453
+  },
+  {
+   "w": "imports",
+   "s": 23.453,
+   "e": 23.891
+  },
+  {
+   "w": "the",
+   "s": 23.891,
+   "e": 24.135
+  },
+  {
+   "w": "footage,",
+   "s": 24.135,
+   "e": 24.622
+  },
+  {
+   "w": "cuts",
+   "s": 24.622,
+   "e": 24.914
+  },
+  {
+   "w": "the",
+   "s": 24.914,
+   "e": 25.157
+  },
+  {
+   "w": "pauses,",
+   "s": 25.157,
+   "e": 25.596
+  },
+  {
+   "w": "and",
+   "s": 25.596,
+   "e": 25.839
+  },
+  {
+   "w": "adds",
+   "s": 25.839,
+   "e": 26.131
+  },
+  {
+   "w": "captions.",
+   "s": 26.131,
+   "e": 26.667
+  },
+  {
+   "w": "Every",
+   "s": 26.787,
+   "e": 27.132
+  },
+  {
+   "w": "edit",
+   "s": 27.132,
+   "e": 27.428
+  },
+  {
+   "w": "stays",
+   "s": 27.428,
+   "e": 27.772
+  },
+  {
+   "w": "editable",
+   "s": 27.772,
+   "e": 28.265
+  },
+  {
+   "w": "in",
+   "s": 28.265,
+   "e": 28.462
+  },
+  {
+   "w": "the",
+   "s": 28.462,
+   "e": 28.709
+  },
+  {
+   "w": "ChatCut",
+   "s": 28.709,
+   "e": 29.152
+  },
+  {
+   "w": "timeline.",
+   "s": 29.152,
+   "e": 29.694
+  },
+  {
+   "w": "Paid",
+   "s": 29.814,
+   "e": 30.111
+  },
+  {
+   "w": "generation",
+   "s": 30.111,
+   "e": 30.706
+  },
+  {
+   "w": "asks",
+   "s": 30.706,
+   "e": 31.004
+  },
+  {
+   "w": "for",
+   "s": 31.004,
+   "e": 31.251
+  },
+  {
+   "w": "your",
+   "s": 31.251,
+   "e": 31.549
+  },
+  {
+   "w": "approval",
+   "s": 31.549,
+   "e": 32.044
+  },
+  {
+   "w": "first.",
+   "s": 32.044,
+   "e": 32.441
+  },
+  {
+   "w": "And",
+   "s": 32.561,
+   "e": 32.782
+  },
+  {
+   "w": "just",
+   "s": 32.782,
+   "e": 33.046
+  },
+  {
+   "w": "like",
+   "s": 33.046,
+   "e": 33.311
+  },
+  {
+   "w": "that,",
+   "s": 33.311,
+   "e": 33.62
+  },
+  {
+   "w": "your",
+   "s": 33.62,
+   "e": 33.885
+  },
+  {
+   "w": "edit",
+   "s": 33.885,
+   "e": 34.15
+  },
+  {
+   "w": "is",
+   "s": 34.15,
+   "e": 34.326
+  },
+  {
+   "w": "ready",
+   "s": 34.326,
+   "e": 34.635
+  },
+  {
+   "w": "to",
+   "s": 34.635,
+   "e": 34.812
+  },
+  {
+   "w": "review.",
+   "s": 34.812,
+   "e": 35.209
+  },
+  {
+   "w": "Follow",
+   "s": 35.329,
+   "e": 35.839
+  },
+  {
+   "w": "Agentoon.ai",
+   "s": 35.839,
+   "e": 36.987
+  },
+  {
+   "w": "for",
+   "s": 36.987,
+   "e": 37.305
+  },
+  {
+   "w": "more",
+   "s": 37.305,
+   "e": 37.688
+  },
+  {
+   "w": "AI",
+   "s": 37.688,
+   "e": 37.943
+  },
+  {
+   "w": "tools!",
+   "s": 37.943,
+   "e": 38.453
+  }
+ ]
+}
