@@ -52,4 +52,4 @@ full-body intro (WIDE, 40–55 %) · medium speaking (CLOSE, waist-up) · explai
 Camera-specific scale presets are used; the character's anatomical proportions are **never** scaled.
 
 ## Not done in this phase
-Collage / paper-collage visuals (Phase 7) — see `docs/v7/COLLAGE_NOTE.md`. Verified/licensed anatomical meshes (Phase 9) — the lumbar model is still the procedural simplified educational model.
+Collage visuals now exist as an early local component set (`docs/skills/paper-collage-broll.md`). Verified/licensed anatomical meshes (Phase 9) — the lumbar model is still the procedural simplified educational model.

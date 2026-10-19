@@ -1,0 +1,10 @@
+{
+  "enabledPlugins": {
+    "hyperframes@hyperframes": true,
+    "lemo-opuscar@lemolab": true
+  },
+  "extraKnownMarketplaces": {
+    "hyperframes": { "source": { "source": "github", "repo": "heygen-com/hyperframes" } },
+    "lemolab": { "source": { "source": "github", "repo": "lemomo-ai/lemo-opuscar" } }
+  }
+}
