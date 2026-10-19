@@ -1,0 +1,58 @@
+{
+ "title": "ONE product photo to a cinematic ad with Gemini + Veo 3.1 (PREVIEW, real demo pending)",
+ "voice": "am_michael",
+ "speed": 1.15,
+ "total": 25.0,
+ "music": [],
+ "sfx": [],
+ "phrases": [
+  {
+   "id": "p0",
+   "speak": "One photo... becomes this ad?!",
+   "show": "One photo becomes this ad?!",
+   "map": null
+  },
+  {
+   "id": "p1",
+   "speak": "This ad started with just one photo!",
+   "show": "This ad started with just one photo!",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "speak": "Open Gemini, and choose Veo 3.1.",
+   "show": "Open Gemini, and choose Veo 3.1.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "speak": "Upload your product, then paste this cinematic prompt.",
+   "show": "Upload your product, then paste this cinematic prompt.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "speak": "A strict product rule keeps your bottle exactly as it is. The set, the camera orbit, and the lighting do the rest.",
+   "show": "A strict product rule keeps your bottle exactly as it is. The set, the camera orbit, and the lighting do the rest.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "speak": "Watch it transform into a professional commercial.",
+   "show": "Watch it transform into a professional commercial.",
+   "map": null
+  },
+  {
+   "id": "p5b",
+   "speak": "Same product, brand new studio.",
+   "show": "Same product, brand new studio.",
+   "map": null
+  },
+  {
+   "id": "p6",
+   "speak": "Want the prompt? DM me PROMPT!",
+   "show": "Want the prompt? DM me PROMPT!",
+   "map": null
+  }
+ ]
+}

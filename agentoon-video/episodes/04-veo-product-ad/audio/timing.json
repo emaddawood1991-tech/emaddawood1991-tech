@@ -1,0 +1,404 @@
+{
+ "voice": "am_michael",
+ "speed": 1.098,
+ "wpm": 165,
+ "total": 24.199,
+ "phrases": [
+  {
+   "id": "p0",
+   "start": 0.15,
+   "end": 1.969,
+   "show": "One photo becomes this ad?!",
+   "speak": "One photo... becomes this ad?!",
+   "map": null
+  },
+  {
+   "id": "p1",
+   "start": 2.089,
+   "end": 4.09,
+   "show": "This ad started with just one photo!",
+   "speak": "This ad started with just one photo!",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "start": 4.21,
+   "end": 6.914,
+   "show": "Open Gemini, and choose Veo 3.1.",
+   "speak": "Open Gemini, and choose Veo 3.1.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "start": 7.034,
+   "end": 10.098,
+   "show": "Upload your product, then paste this cinematic prompt.",
+   "speak": "Upload your product, then paste this cinematic prompt.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "start": 10.218,
+   "end": 17.236,
+   "show": "A strict product rule keeps your bottle exactly as it is. The set, the camera orbit, and the lighting do the rest.",
+   "speak": "A strict product rule keeps your bottle exactly as it is. The set, the camera orbit, and the lighting do the rest.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "start": 17.356,
+   "end": 19.928,
+   "show": "Watch it transform into a professional commercial.",
+   "speak": "Watch it transform into a professional commercial.",
+   "map": null
+  },
+  {
+   "id": "p5b",
+   "start": 20.048,
+   "end": 22.009,
+   "show": "Same product, brand new studio.",
+   "speak": "Same product, brand new studio.",
+   "map": null
+  },
+  {
+   "id": "p6",
+   "start": 22.129,
+   "end": 24.079,
+   "show": "Want the prompt? DM me PROMPT!",
+   "speak": "Want the prompt? DM me PROMPT!",
+   "map": null
+  }
+ ],
+ "words": [
+  {
+   "w": "One",
+   "s": 0.15,
+   "e": 0.426
+  },
+  {
+   "w": "photo",
+   "s": 0.426,
+   "e": 0.811
+  },
+  {
+   "w": "becomes",
+   "s": 0.811,
+   "e": 1.308
+  },
+  {
+   "w": "this",
+   "s": 1.308,
+   "e": 1.638
+  },
+  {
+   "w": "ad?!",
+   "s": 1.638,
+   "e": 1.969
+  },
+  {
+   "w": "This",
+   "s": 2.089,
+   "e": 2.362
+  },
+  {
+   "w": "ad",
+   "s": 2.362,
+   "e": 2.544
+  },
+  {
+   "w": "started",
+   "s": 2.544,
+   "e": 2.953
+  },
+  {
+   "w": "with",
+   "s": 2.953,
+   "e": 3.226
+  },
+  {
+   "w": "just",
+   "s": 3.226,
+   "e": 3.499
+  },
+  {
+   "w": "one",
+   "s": 3.499,
+   "e": 3.726
+  },
+  {
+   "w": "photo!",
+   "s": 3.726,
+   "e": 4.09
+  },
+  {
+   "w": "Open",
+   "s": 4.21,
+   "e": 4.626
+  },
+  {
+   "w": "Gemini,",
+   "s": 4.626,
+   "e": 5.25
+  },
+  {
+   "w": "and",
+   "s": 5.25,
+   "e": 5.597
+  },
+  {
+   "w": "choose",
+   "s": 5.597,
+   "e": 6.151
+  },
+  {
+   "w": "Veo",
+   "s": 6.151,
+   "e": 6.498
+  },
+  {
+   "w": "3.1.",
+   "s": 6.498,
+   "e": 6.914
+  },
+  {
+   "w": "Upload",
+   "s": 7.034,
+   "e": 7.423
+  },
+  {
+   "w": "your",
+   "s": 7.423,
+   "e": 7.715
+  },
+  {
+   "w": "product,",
+   "s": 7.715,
+   "e": 8.201
+  },
+  {
+   "w": "then",
+   "s": 8.201,
+   "e": 8.493
+  },
+  {
+   "w": "paste",
+   "s": 8.493,
+   "e": 8.833
+  },
+  {
+   "w": "this",
+   "s": 8.833,
+   "e": 9.125
+  },
+  {
+   "w": "cinematic",
+   "s": 9.125,
+   "e": 9.66
+  },
+  {
+   "w": "prompt.",
+   "s": 9.66,
+   "e": 10.098
+  },
+  {
+   "w": "A",
+   "s": 10.218,
+   "e": 10.372
+  },
+  {
+   "w": "strict",
+   "s": 10.372,
+   "e": 10.781
+  },
+  {
+   "w": "product",
+   "s": 10.781,
+   "e": 11.243
+  },
+  {
+   "w": "rule",
+   "s": 11.243,
+   "e": 11.55
+  },
+  {
+   "w": "keeps",
+   "s": 11.55,
+   "e": 11.908
+  },
+  {
+   "w": "your",
+   "s": 11.908,
+   "e": 12.216
+  },
+  {
+   "w": "bottle",
+   "s": 12.216,
+   "e": 12.626
+  },
+  {
+   "w": "exactly",
+   "s": 12.626,
+   "e": 13.087
+  },
+  {
+   "w": "as",
+   "s": 13.087,
+   "e": 13.292
+  },
+  {
+   "w": "it",
+   "s": 13.292,
+   "e": 13.496
+  },
+  {
+   "w": "is.",
+   "s": 13.496,
+   "e": 13.753
+  },
+  {
+   "w": "The",
+   "s": 13.753,
+   "e": 14.009
+  },
+  {
+   "w": "set,",
+   "s": 14.009,
+   "e": 14.316
+  },
+  {
+   "w": "the",
+   "s": 14.316,
+   "e": 14.572
+  },
+  {
+   "w": "camera",
+   "s": 14.572,
+   "e": 14.982
+  },
+  {
+   "w": "orbit,",
+   "s": 14.982,
+   "e": 15.392
+  },
+  {
+   "w": "and",
+   "s": 15.392,
+   "e": 15.648
+  },
+  {
+   "w": "the",
+   "s": 15.648,
+   "e": 15.904
+  },
+  {
+   "w": "lighting",
+   "s": 15.904,
+   "e": 16.416
+  },
+  {
+   "w": "do",
+   "s": 16.416,
+   "e": 16.621
+  },
+  {
+   "w": "the",
+   "s": 16.621,
+   "e": 16.877
+  },
+  {
+   "w": "rest.",
+   "s": 16.877,
+   "e": 17.236
+  },
+  {
+   "w": "Watch",
+   "s": 17.356,
+   "e": 17.666
+  },
+  {
+   "w": "it",
+   "s": 17.666,
+   "e": 17.844
+  },
+  {
+   "w": "transform",
+   "s": 17.844,
+   "e": 18.332
+  },
+  {
+   "w": "into",
+   "s": 18.332,
+   "e": 18.598
+  },
+  {
+   "w": "a",
+   "s": 18.598,
+   "e": 18.731
+  },
+  {
+   "w": "professional",
+   "s": 18.731,
+   "e": 19.352
+  },
+  {
+   "w": "commercial.",
+   "s": 19.352,
+   "e": 19.928
+  },
+  {
+   "w": "Same",
+   "s": 20.048,
+   "e": 20.366
+  },
+  {
+   "w": "product,",
+   "s": 20.366,
+   "e": 20.896
+  },
+  {
+   "w": "brand",
+   "s": 20.896,
+   "e": 21.267
+  },
+  {
+   "w": "new",
+   "s": 21.267,
+   "e": 21.532
+  },
+  {
+   "w": "studio.",
+   "s": 21.532,
+   "e": 22.009
+  },
+  {
+   "w": "Want",
+   "s": 22.129,
+   "e": 22.445
+  },
+  {
+   "w": "the",
+   "s": 22.445,
+   "e": 22.709
+  },
+  {
+   "w": "prompt?",
+   "s": 22.709,
+   "e": 23.183
+  },
+  {
+   "w": "DM",
+   "s": 23.183,
+   "e": 23.394
+  },
+  {
+   "w": "me",
+   "s": 23.394,
+   "e": 23.605
+  },
+  {
+   "w": "PROMPT!",
+   "s": 23.605,
+   "e": 24.079
+  }
+ ]
+}

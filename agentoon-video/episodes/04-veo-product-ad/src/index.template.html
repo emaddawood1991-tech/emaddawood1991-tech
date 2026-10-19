@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 04 Veo product ad (PREVIEW)</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Ad Studio". Charcoal set, brushed-silver C structure, controlled red rim light, rolling smoke, orbiting camera.
+     Real items (user photo, Gemini recording, Veo output) are PLACEHOLDERS until supplied. The studio illustration is a labeled CONCEPT, never a Veo result. */
+  :root { --char: #0B0C0F; --silver: #C9CED6; --red: #E5262B; }
+  .chip { position: absolute; white-space: nowrap; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .h { position: absolute; font: 900 150px/1 var(--body); letter-spacing: -.04em; color: #fff; white-space: nowrap; }
+  .metal { background: linear-gradient(160deg,#2A2D34,#14161B); border: 2px solid #8A909C; box-shadow: 0 0 60px rgba(229,38,43,.25), inset 0 0 40px rgba(0,0,0,.5); }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/nightops.js"></script>
+<script src="timeline.js"></script>
+<script src="slots.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="{{TOTAL}}">
+  <section id="s1" class="clip scene" data-start="{{s1.start}}" data-duration="{{s1.len}}"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="{{s2.start}}" data-duration="{{s2.len}}"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="{{s3.start}}" data-duration="{{s3.len}}"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="{{s4.start}}" data-duration="{{s4.len}}"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="{{s5.start}}" data-duration="{{s5.len}}"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="{{s6.start}}" data-duration="{{s6.len}}"><div id="s6i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, SL = window.SLOTS, S = E.scenes, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + pid + " " + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#E8EAEE") + ";background:" + (o.bg || "rgba(201,206,214,.12)") + ";border:2px solid " + (o.bd || "#C9CED6"), text); };
+  const AMB = { fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.14)" };
+  const fadeIn = (e, at, d, y) => tl.from(e, { opacity: 0, y: y == null ? 40 : y, duration: d || 0.3, ease: "power3.out" }, at);
+  const isPh = k => SL[k].status !== "verified";
+  const hud = (host, id, label, t0) => {
+    const k = chip(host, id + "k", 60, 196, label, { bg: "rgba(229,38,43,.18)", bd: "#E5262B", fg: "#FFD3D4" }); tl.from(k, { opacity: 0, x: -30, duration: 0.25 }, t0);
+    if (SL.banner) { const b = chip(host, id + "b", 60, 128, "PREVIEW · UNFINISHED · NOT READY TO PUBLISH", Object.assign({ size: 19, pad: "8px 16px 9px" }, AMB)); tl.from(b, { opacity: 0, duration: 0.25 }, t0 + 0.1); }
+  };
+  const base = (k) => { const inn = $(k + "i"); el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 38%,#1B1D23 0%,#0B0C0F 62%,#050506 100%)"); el(inn, "bgr" + k, "", "position:absolute;inset:0;background:radial-gradient(60% 40% at 0% 55%,rgba(229,38,43,.30),transparent 70%),radial-gradient(60% 40% at 100% 55%,rgba(229,38,43,.30),transparent 70%)"); return inn; };
+
+  /* ---------- product bottle (generic stand-in, NOT the user's product): studio = glass + red rim, photo = flat grey-card look ---------- */
+  function bottle(host, id, cx, cy, h, mode) {
+    const w = h * 0.62, sv = svgEl(host, "svg", { viewBox: "0 0 120 200", width: w, height: h }); sv.id = id; sv.style.cssText = "position:absolute;left:" + (cx - w / 2) + "px;top:" + (cy - h / 2) + "px;overflow:visible";
+    const d = svgEl(sv, "defs", {}); const g = svgEl(d, "linearGradient", { id: id + "g", x1: 0, y1: 0, x2: 1, y2: 0 });
+    [["0", mode === "photo" ? "#B7824A" : "#6B3A22"], ["0.45", mode === "photo" ? "#E3B070" : "#D08A4C"], ["1", mode === "photo" ? "#8E5B2E" : "#4A2614"]].forEach(([o, c]) => svgEl(g, "stop", { offset: o, "stop-color": c }));
+    const g2 = svgEl(d, "linearGradient", { id: id + "c", x1: 0, y1: 0, x2: 1, y2: 0 });
+    [["0", "#7C828E"], ["0.4", "#F4F5F7"], ["1", "#5B616C"]].forEach(([o, c]) => svgEl(g2, "stop", { offset: o, "stop-color": c }));
+    svgEl(sv, "rect", { x: 40, y: 8, width: 40, height: 34, rx: 6, fill: "url(#" + id + "c)" });
+    svgEl(sv, "rect", { x: 52, y: 40, width: 16, height: 16, fill: "#CFC9BE", opacity: 0.8 });
+    svgEl(sv, "rect", { x: 10, y: 56, width: 100, height: 136, rx: 16, fill: "url(#" + id + "g)", stroke: mode === "photo" ? "#5B3A1E" : "#FF5A5F", "stroke-width": mode === "photo" ? 2 : 3, "stroke-opacity": 0.8 });
+    svgEl(sv, "rect", { x: 28, y: 100, width: 64, height: 54, rx: 4, fill: "#F2EEE6", opacity: 0.92 });
+    svgEl(sv, "rect", { x: 36, y: 118, width: 48, height: 5, rx: 2, fill: "#9A9388" }); svgEl(sv, "rect", { x: 36, y: 130, width: 34, height: 5, rx: 2, fill: "#B8B2A6" });
+    svgEl(sv, "rect", { x: 18, y: 66, width: 8, height: 118, rx: 4, fill: "#fff", opacity: 0.28 });
+    return sv;
+  }
+  /* ---------- ad-studio set (CSS/SVG): charcoal, silver C structure, red rim, smoke. Returns handles for motion. ---------- */
+  function studio(host, id, W, H, withBottle) {
+    const root = el(host, id, "", "left:0;top:0;width:" + W + "px;height:" + H + "px;overflow:hidden;background:radial-gradient(90% 70% at 50% 40%,#22242B,#0B0C0F 70%)");
+    el(root, id + "rl", "", "left:-" + W * 0.3 + "px;top:" + H * 0.2 + "px;width:" + W * 0.8 + "px;height:" + H * 0.7 + "px;background:radial-gradient(closest-side,rgba(229,38,43,.55),transparent)");
+    el(root, id + "rr", "", "left:" + W * 0.5 + "px;top:" + H * 0.2 + "px;width:" + W * 0.8 + "px;height:" + H * 0.7 + "px;background:radial-gradient(closest-side,rgba(229,38,43,.55),transparent)");
+    el(root, id + "fl", "", "left:" + W * 0.08 + "px;top:" + H * 0.72 + "px;width:" + W * 0.84 + "px;height:" + H * 0.2 + "px;border-radius:50%;background:radial-gradient(closest-side,rgba(229,38,43,.5),rgba(20,20,24,.9) 70%,transparent)");
+    const as = Math.round(W * 1.02), arch = svgEl(root, "svg", { viewBox: "0 0 400 400", width: as, height: as }); arch.id = id + "ar"; arch.style.cssText = "position:absolute;left:" + (W - as) / 2 + "px;top:" + (H * 0.47 - as / 2) + "px;overflow:visible";
+    const d = svgEl(arch, "defs", {}); const lg = svgEl(d, "linearGradient", { id: id + "mg", x1: 0, y1: 0, x2: 1, y2: 1 });
+    [["0", "#F5F6F8"], ["0.3", "#8A909C"], ["0.55", "#E8EAEE"], ["0.8", "#4B505B"], ["1", "#C9CED6"]].forEach(([o, c]) => svgEl(lg, "stop", { offset: o, "stop-color": c }));
+    svgEl(arch, "path", { d: "M314.9 103.6 A150 150 0 1 0 314.9 296.4", fill: "none", stroke: "url(#" + id + "mg)", "stroke-width": 46, "stroke-linecap": "round" });
+    svgEl(arch, "path", { d: "M308 118 A136 136 0 1 0 308 282", fill: "none", stroke: "#fff", "stroke-width": 3, "stroke-opacity": 0.55, "stroke-linecap": "round" });
+    svgEl(arch, "path", { d: "M322 92 A168 168 0 1 0 322 308", fill: "none", stroke: "#E5262B", "stroke-width": 3, "stroke-opacity": 0.7, "stroke-linecap": "round" });
+    el(root, id + "pd", "", "left:" + W * 0.3 + "px;top:" + H * 0.66 + "px;width:" + W * 0.4 + "px;height:" + H * 0.06 + "px;border-radius:50%;background:linear-gradient(#3A3D45,#0E0F12);border:2px solid #E5262B;box-shadow:0 0 30px rgba(229,38,43,.6)");
+    const bt = withBottle ? bottle(root, id + "bt", W / 2, H * 0.52, H * 0.34, "studio") : null;
+    const smoke = []; for (let i = 0; i < 6; i++) smoke.push(el(root, id + "sm" + i, "", "left:" + (-W * 0.2 + i * W * 0.22) + "px;top:" + (H * 0.64 + (i % 3) * H * 0.04) + "px;width:" + W * 0.5 + "px;height:" + H * 0.2 + "px;border-radius:50%;background:radial-gradient(closest-side,rgba(235,238,245,.32),transparent);filter:blur(" + Math.round(W * 0.03) + "px)"));
+    const parts = []; for (let i = 0; i < 14; i++) parts.push(el(root, id + "pt" + i, "", "left:" + ((i * 137) % W) + "px;top:" + (H * 0.3 + (i * 211) % (H * 0.5)) + "px;width:4px;height:4px;border-radius:50%;background:" + (i % 3 ? "#fff" : "#FF5A5F") + ";opacity:.6"));
+    return { root, arch, bt, smoke, parts };
+  }
+  function studioMotion(st, at, dur) {
+    tl.fromTo(st.arch, { rotation: -16, scale: 0.94 }, { rotation: 18, scale: 1.06, duration: dur, ease: "sine.inOut", transformOrigin: "50% 50%" }, at);
+    if (st.bt) tl.fromTo(st.bt, { scaleX: 0.96 }, { scaleX: 1.02, duration: dur, ease: "sine.inOut", transformOrigin: "50% 50%" }, at);
+    st.smoke.forEach((s, i) => tl.fromTo(s, { x: 0 }, { x: i % 2 ? -140 : 140, duration: dur, ease: "sine.inOut" }, at));
+    st.parts.forEach((p, i) => tl.fromTo(p, { y: 0 }, { y: -90 - (i % 5) * 40, duration: dur, ease: "none" }, at));
+  }
+  const photoCard = (host, id, x, y, w, h, tag) => {
+    const c = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px;border-radius:22px;overflow:hidden;background:linear-gradient(160deg,#E4E6EB,#C4C8D0);border:4px solid #fff;box-shadow:0 30px 60px rgba(0,0,0,.6)");
+    bottle(c, id + "b", w / 2, h * 0.5, h * 0.55, "photo");
+    el(c, id + "t", "", "left:0;right:0;bottom:16px;text-align:center;font:800 " + Math.max(14, Math.round(w * 0.04)) + "px/1 var(--mono);color:#7A5200", tag || "PLACEHOLDER · YOUR PRODUCT PHOTO");
+    return c;
+  };
+
+  /* ================================================================= S1  HOOK: concept studio + giant type */
+  const s1i = $("s1i"); el(s1i, "bgs1", "", "position:absolute;inset:0;background:#050506");
+  const st1 = studio(s1i, "st1", 1080, 1920, true); gsap.set(st1.root, { scale: 1 }); studioMotion(st1, 0, S.s1.len + 0.4);
+  tl.fromTo(st1.root, { scale: 1.18 }, { scale: 1.0, duration: S.s1.len, ease: "power2.out", transformOrigin: "50% 50%" }, 0);
+  hud(s1i, "h1", "EP 04 · ONE PHOTO → AD", 0.05);
+  const h1a = el(s1i, "h1a", "h", "left:60px;top:290px;font-size:158px", "ONE PHOTO"), h1b = el(s1i, "h1b", "h", "left:60px;top:470px;font-size:132px;color:#E5262B;text-shadow:0 0 60px rgba(229,38,43,.8)", "→ THIS AD?!");
+  const tp = PW("p0", "photo");
+  tl.from(h1a, { opacity: 0, scale: 0.4, x: -160, duration: 0.32, ease: "back.out(2)", transformOrigin: "0 50%" }, 0.2); tl.from(h1b, { opacity: 0, x: 200, duration: 0.3, ease: "power3.out" }, 0.65);
+  tl.to(h1b, { scale: 1.06, duration: 0.2, yoyo: true, repeat: 1, transformOrigin: "0 50%" }, 1.1);
+  chip(s1i, "con1", 60, 1650, "CONCEPT ILLUSTRATION · NOT A VEO OUTPUT", Object.assign({ size: 20, pad: "9px 16px 10px" }, AMB)); tl.from("#con1", { opacity: 0, duration: 0.25 }, 0.5);
+  const bot1 = botAt(s1i, "bot1", 840, 1150, 180);
+  bot1.face(tl, 0, -1, 0.01); bot1.rise(tl, 0.7, 450, 0.4); bot1.blinks(tl, 1, 2.4, 1.1); bot1.react(tl, 1.15, "wow");
+
+  /* ================================================================= S2  ONE PHOTO -> ... pipeline */
+  const s2i = base("s2"); hud(s2i, "h2", "THE WORKFLOW", S.s2.start + 0.15);
+  const pc = photoCard(s2i, "pc2", 60, 330, 440, 620);
+  const sw = el(s2i, "sw2", "", "left:580px;top:330px;width:440px;height:620px;border-radius:22px;overflow:hidden;border:4px solid #C9CED6;box-shadow:0 0 70px rgba(229,38,43,.45)");
+  const st2 = studio(sw, "st2", 440, 620, true); studioMotion(st2, S.s2.start, S.s2.len);
+  chip(s2i, "co2", 590, 970, "CONCEPT · NOT A VEO OUTPUT", Object.assign({ size: 16, pad: "6px 12px 7px" }, AMB));
+  const ar2 = el(s2i, "ar2", "", "left:500px;top:590px;font:900 76px/1 var(--body);color:#E5262B;text-shadow:0 0 30px rgba(229,38,43,.8)", "→");
+  tl.from(pc, { opacity: 0, x: -140, rotation: -8, duration: 0.4, ease: "power3.out" }, S.s2.start + 0.15);
+  tl.fromTo(sw, { clipPath: "circle(0px at 50% 50%)" }, { clipPath: "circle(560px at 50% 50%)", duration: 0.6, ease: "power3.inOut" }, PW("p1", "just") - 0.1); tl.from(ar2, { opacity: 0, x: -30, duration: 0.25 }, PW("p1", "just"));
+  tl.from("#co2", { opacity: 0, duration: 0.2 }, PW("p1", "just") + 0.5);
+  const nodes = ["PHOTO", "GEMINI", "VEO 3.1", "AD"], nodeEls = [];
+  nodes.forEach((t, i) => { const n = el(s2i, "nd" + i, "", "left:" + (40 + i * 255) + "px;top:1060px;width:225px;height:120px;border-radius:20px;text-align:center;font:900 38px/116px var(--body);color:#E8EAEE;background:linear-gradient(160deg,#30333B,#16181D);border:3px solid #8A909C", t); nodeEls.push(n); if (i < 3) el(s2i, "na" + i, "", "left:" + (262 + i * 255) + "px;top:1090px;font:900 44px/1 var(--mono);color:#E5262B", "→"); });
+  nodeEls.forEach((n, i) => { const t = S.s2.start + 0.5 + i * 0.4; tl.from(n, { opacity: 0, y: 50, scale: 0.8, duration: 0.3, ease: "back.out(2)" }, t); tl.to(n, { borderColor: "#E5262B", boxShadow: "0 0 36px rgba(229,38,43,.9)", color: "#fff", duration: 0.15 }, t + 0.2); });
+  for (let i = 0; i < 3; i++) tl.from("#na" + i, { opacity: 0, x: -14, duration: 0.2 }, S.s2.start + 0.7 + i * 0.4);
+  el(s2i, "wf2", "", "left:60px;top:1230px;width:960px;font:800 40px/1.15 var(--body);color:#C9CED6;text-align:center", "ONE PRODUCT PHOTO → CINEMATIC COMMERCIAL"); tl.from("#wf2", { opacity: 0, y: 30, duration: 0.3 }, S.s2.start + 1.7);
+  const bot2 = botAt(s2i, "bot2", 830, 1255, 170); bot2.face(tl, 0, -1, 0.01); bot2.rise(tl, S.s2.start + 0.8, 400, 0.4); bot2.blinks(tl, S.s2.start, S.s2.end, 1.1); bot2.nod(tl, S.s2.start + 1.9);
+
+  /* ================================================================= S3  GEMINI schematic: choose Veo 3.1 */
+  const s3i = base("s3"); hud(s3i, "h3", "STEP 1 · OPEN GEMINI", S.s3.start + 0.15);
+  const gw = el(s3i, "gw", "metal", "left:40px;top:300px;width:1000px;height:960px;border-radius:30px;overflow:hidden");
+  el(gw, "gwb", "", "left:0;top:0;width:1000px;height:80px;background:#0E0F12;border-bottom:2px solid #3A3F4A");
+  const star = svgEl(el(gw, "gws", "", "left:26px;top:18px;width:44px;height:44px"), "svg", { viewBox: "0 0 44 44", width: 44, height: 44 });
+  svgEl(star, "path", { d: "M22 2 C24 14 30 20 42 22 C30 24 24 30 22 42 C20 30 14 24 2 22 C14 20 20 14 22 2Z", fill: "#8AB4FF" });
+  el(gw, "gwt", "", "left:84px;top:0;font:700 32px/80px var(--body);color:#E8EAEE", "Gemini · schematic");
+  [[120, 560], [180, 420]].forEach(([y, w], i) => el(gw, "gk" + i, "", "left:60px;top:" + (y + 40) + "px;width:" + w + "px;height:34px;border-radius:17px;background:linear-gradient(90deg,#3A3F4A,#59606E,#3A3F4A)"));
+  const inp = el(gw, "inp", "", "left:50px;top:520px;width:900px;height:130px;border-radius:65px;background:#1A1C22;border:3px solid #59606E");
+  el(inp, "inpp", "", "left:28px;top:32px;width:66px;height:66px;border-radius:50%;background:#2A2D34;color:#C9CED6;font:700 46px/62px var(--body);text-align:center", "+");
+  el(inp, "inpt", "", "left:120px;top:0;font:500 34px/124px var(--body);color:#7C838F", "Describe your video…");
+  const tool = (id, x, w, txt, hot) => el(gw, id, "", "left:" + x + "px;top:700px;width:" + w + "px;height:84px;border-radius:42px;border:3px solid " + (hot ? "#E5262B" : "#59606E") + ";background:" + (hot ? "rgba(229,38,43,.18)" : "#16181D") + ";color:#fff;text-align:center;font:800 32px/78px var(--body)", txt);
+  const t1 = tool("tl1", 50, 200, "", false), t2 = tool("tl2", 270, 210, "", false);
+  [t1, t2].forEach((t, i) => el(t, t.id + "s", "", "left:30px;top:30px;width:" + (110 + i * 20) + "px;height:22px;border-radius:11px;background:#3A3F4A"));
+  const t3 = tool("tl3", 500, 420, "Video · Veo 3.1", true); tl.from(t3, { opacity: 0, scale: 0.7, duration: 0.3, ease: "back.out(2.2)" }, PW("p2", "choose") - 0.1);
+  const c3 = NO.callout(s3i, { id: "c3", x: 540, y: 1000, w: 420, h: 84, color: "#E5262B" }); c3.draw(tl, PW("p2", "Veo") - 0.1, 0.4);
+  NO.ribbon(gw, { id: "r3", x: 220, y: 860, w: 560, text: "PLACEHOLDER · REAL GEMINI RECORDING" });
+  chip(s3i, "reb3", 60, 1300, "REBUILT SCHEMATIC · REPLACE WITH REAL GEMINI SCREEN RECORDING", Object.assign({ size: 17, pad: "8px 14px 9px" }, AMB));
+  tl.from(gw, { opacity: 0, y: 80, duration: 0.35, ease: "power3.out" }, S.s3.start + 0.1);
+  const bot3 = botAt(s3i, "bot3", 840, 1090, 190); bot3.face(tl, 0, -1, 0.01); bot3.introduce(tl, S.s3.start + 0.3, { fromX: 1250, toX: 840, y: 1090, hops: 1 }); bot3.face(tl, S.s3.start + 1.5, -1, 0.1); bot3.blinks(tl, S.s3.start, S.s3.end, 1.1);
+  bot3.aimPoint(tl, PW("p2", "Veo") - 0.35, { x: 840, y: 1090, scale: 1, target: [760, 1050], hand: "L", hold: 0.5 });
+
+  /* ================================================================= S4  UPLOAD + PROMPT: readable excerpt, zoom on the four key instructions */
+  const s4i = base("s4"); hud(s4i, "h4", "STEP 2 · UPLOAD + PASTE THE PROMPT", S.s4.start + 0.15);
+  const w4 = el(s4i, "w4", "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Cam.frame(w4, 540, 960, 1);
+  const ib = el(w4, "ib4", "", "left:40px;top:290px;width:1000px;height:130px;border-radius:65px;background:#1A1C22;border:3px solid #59606E");
+  el(ib, "ib4p", "", "left:28px;top:32px;width:66px;height:66px;border-radius:50%;background:#2A2D34;color:#C9CED6;font:700 46px/62px var(--body);text-align:center", "+");
+  const att = el(ib, "att4", "", "left:120px;top:20px;width:90px;height:90px;border-radius:14px;overflow:hidden;background:linear-gradient(160deg,#E4E6EB,#C4C8D0);border:3px solid #fff"); bottle(att, "att4b", 45, 46, 62, "photo");
+  el(ib, "ib4t", "", "left:230px;top:0;font:500 32px/124px var(--body);color:#7C838F", "Create a cinematic product ad…");
+  const flyT = PW("p3", "Upload");
+  tl.fromTo(att, { x: -420, y: 560, scale: 3.4, opacity: 0, rotation: -12 }, { x: 0, y: 0, scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: "power3.inOut" }, flyT + 0.15);
+  chip(w4, "ph4", 40, 436, "YOUR PHOTO GOES HERE · PLACEHOLDER", Object.assign({ size: 16, pad: "6px 12px 7px" }, AMB)); tl.from("#ph4", { opacity: 0, duration: 0.2 }, flyT + 0.6);
+  const pg = el(w4, "pg4", "metal", "left:40px;top:480px;width:1000px;height:790px;border-radius:26px;overflow:hidden");
+  el(pg, "pg4h", "", "left:0;top:0;width:1000px;height:64px;background:#0E0F12;border-bottom:2px solid #3A3F4A;font:800 24px/64px var(--mono);color:#C9CED6;padding-left:26px;box-sizing:border-box;letter-spacing:.08em", "PROMPT · EXCERPT");
+  const rows = [["PRODUCT (STRICT)", "Exactly as shown in the uploaded photo.", "Preserve its exact shape, colors, label."], ["CINEMATIC SET", "A polished metallic C-shaped", "architectural structure, charcoal studio."], ["CAMERA MOVEMENT", "Smooth cinematic orbit, slowly pushing in.", "Finish on a locked hero shot."], ["LIGHTING", "Controlled red rim light, soft front key.", "Realistic reflections, deep blacks."]];
+  const rowEls = rows.map(([lab, a, b], i) => {
+    const r = el(pg, "pr4" + i, "", "left:0;top:" + (80 + i * 176) + "px;width:1000px;height:160px");
+    el(r, "pr4l" + i, "", "left:30px;top:6px;padding:8px 18px 10px;border-radius:10px;background:#E5262B;color:#fff;font:800 25px/1 var(--mono);letter-spacing:.04em;white-space:nowrap", lab);
+    [a, b].forEach((t, j) => { const d = el(r, "pr4t" + i + j, "", "left:30px;top:" + (60 + j * 44) + "px;font:600 31px/44px var(--mono);color:#EAF2FF;white-space:pre", t); d.dataset.chars = t.length; d.style.clipPath = "inset(0 100% 0 0)"; });
+    return r;
+  });
+  tl.from(pg, { opacity: 0, y: 70, duration: 0.35, ease: "power3.out" }, PW("p3", "paste") - 0.15);
+  rowEls.forEach((r, i) => { const t = PW("p3", "paste") + 0.3 + i * 0.5; tl.from(r.firstChild, { opacity: 0, x: -40, duration: 0.2, ease: "power3.out" }, t); [0, 1].forEach(j => { const d = r.querySelector("#pr4t" + i + j), n = +d.dataset.chars; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: n / 52, ease: "steps(" + n + ")" }, t + 0.15 + j * 0.3); }); });
+  chip(w4, "ex4", 40, 1290, "EXCERPT · FULL PROMPT IN THE PROJECT DELIVERABLES", { size: 20, pad: "8px 16px 9px" }); tl.from("#ex4", { opacity: 0, duration: 0.3 }, PW("p3", "prompt") + 0.8);
+  /* zoom beats: hard punch-ins on the four instructions, in the narrated order, then release */
+  const zoom = (k, word) => { const cy = 640 + k * 176 + 30, t = PW("p4", word) - 0.15; tl.set(w4, { scale: 1.3, x: 540 - 440 * 1.3, y: 650 - cy * 1.3 }, t); const call = NO.callout(w4, { id: "z4" + k, x: 38, y: 552 + k * 176, w: 940, h: 164, color: "#FFC83D" }); call.draw(tl, t + 0.05, 0.3); call.hide(tl, t + 1.3); };
+  zoom(0, "strict"); zoom(1, "set"); zoom(2, "camera"); zoom(3, "lighting");
+  tl.set(w4, { scale: 1, x: 0, y: 0 }, PW("p4", "lighting") + 1.6);
+  tl.to("#bot4-wrap", { opacity: 0, duration: 0.12 }, PW("p4", "strict") - 0.3); tl.to("#bot4-wrap", { opacity: 1, duration: 0.2 }, PW("p4", "lighting") + 1.6);
+  const bot4 = botAt(s4i, "bot4", 860, 1330, 170); bot4.face(tl, 0, -1, 0.01); bot4.rise(tl, S.s4.start + 0.6, 350, 0.4); bot4.blinks(tl, S.s4.start, S.s4.end, 1.1); bot4.nod(tl, PW("p4", "strict") + 0.5); bot4.react(tl, PW("p4", "lighting") + 0.6, "celebrate");
+
+  /* ================================================================= S5  RESULT: before/after wipe (real Veo output pending) */
+  const s5i = base("s5"); hud(s5i, "h5", "THE RESULT", S.s5.start + 0.15);
+  const FX = 270, FY = 330, FW = 540, FH = 960;
+  const fr = el(s5i, "fr5", "", "left:" + FX + "px;top:" + FY + "px;width:" + FW + "px;height:" + FH + "px;border-radius:28px;overflow:hidden;border:4px solid #C9CED6;box-shadow:0 0 80px rgba(229,38,43,.5)");
+  const bef = photoCard(fr, "bef5", 0, 0, FW, FH, "BEFORE · PLACEHOLDER PHOTO"); bef.style.borderRadius = "0"; bef.style.border = "0";
+  const aft = el(fr, "aft5", "", "left:0;top:0;width:" + FW + "px;height:" + FH + "px;background:linear-gradient(160deg,#1A1C22,#07080A);clip-path:inset(0 0 0 100%)");
+  el(aft, "aft5p", "", "left:" + (FW / 2 - 60) + "px;top:" + (FH / 2 - 80) + "px;width:120px;height:120px;border-radius:50%;border:6px solid #E5262B;box-shadow:0 0 40px rgba(229,38,43,.8)");
+  el(aft, "aft5t", "", "left:" + (FW / 2 - 14) + "px;top:" + (FH / 2 - 44) + "px;width:0;height:0;border-left:44px solid #fff;border-top:26px solid transparent;border-bottom:26px solid transparent");
+  el(aft, "aft5l", "", "left:0;right:0;top:" + (FH / 2 + 80) + "px;text-align:center;font:800 26px/1 var(--mono);color:#FFD3D4", "VEO 3.1 OUTPUT");
+  NO.ribbon(aft, { id: "r5", x: 10, y: FH - 160, w: 520, text: "PLACEHOLDER · REAL VEO OUTPUT" });
+  const dv = el(fr, "dv5", "", "left:" + (FW - 4) + "px;top:0;width:8px;height:" + FH + "px;background:#fff;box-shadow:0 0 0 3px #E5262B,0 0 30px #E5262B");
+  const wipe = (at, p0, p1, dur) => { tl.fromTo(aft, { clipPath: "inset(0 0 0 " + p0 + "%)" }, { clipPath: "inset(0 0 0 " + p1 + "%)", duration: dur, ease: "power3.inOut" }, at); tl.fromTo(dv, { x: -FW * (1 - p0 / 100) }, { x: -FW * (1 - p1 / 100), duration: dur, ease: "power3.inOut" }, at); };
+  const t5 = S.s5.start + 0.25;
+  wipe(t5, 100, 50, 0.5); wipe(t5 + 1.3, 50, 12, 0.35); wipe(t5 + 2.1, 12, 88, 0.4); wipe(t5 + 3.0, 88, 0, 0.5);
+  const cb = chip(s5i, "bf5", 270, 1310, "BEFORE", { size: 26, pad: "10px 22px 12px" }), ca = chip(s5i, "af5", 640, 1310, "AFTER", { size: 26, pad: "10px 22px 12px", bg: "rgba(229,38,43,.25)", bd: "#E5262B", fg: "#fff" });
+  chip(s5i, "ns5", 60, 1380, "NO VEO OUTPUT EXISTS YET · RESULT FRAME IS A PLACEHOLDER", Object.assign({ size: 18, pad: "8px 14px 9px" }, AMB));
+  const bot5 = botAt(s5i, "bot5", 850, 900, 180); bot5.face(tl, 0, -1, 0.01); bot5.rise(tl, S.s5.start + 0.5, 420, 0.4); bot5.blinks(tl, S.s5.start, S.s5.end, 1.1); bot5.react(tl, PW("p5b", "Same") - 0.1, "wow");
+  tl.fromTo(fr, { scale: 1 }, { scale: 1.04, duration: S.s5.len, ease: "sine.inOut", transformOrigin: "50% 50%" }, S.s5.start);
+
+  /* ================================================================= S6  CTA: glowing PROMPT card + robot */
+  const s6i = $("s6i"); el(s6i, "bgs6", "", "position:absolute;inset:0;background:#050506");
+  const st6 = studio(s6i, "st6", 1080, 1920, false); tl.set(st6.root, { opacity: 0.55 }, 0); studioMotion(st6, S.s6.start, S.s6.len);
+  const wm = el(s6i, "wm6", "", "left:0;right:0;top:230px;text-align:center;font:800 76px/1 var(--body);letter-spacing:-.03em;color:#fff", ""); wm.innerHTML = 'agentoon<span style="color:#60CDFF">.ai</span>';
+  tl.from(wm, { opacity: 0, y: -30, duration: 0.35 }, S.s6.start + 0.1);
+  const pcd = el(s6i, "pcd", "metal", "left:130px;top:450px;width:820px;height:470px;border-radius:34px;border:3px solid #E5262B;background:linear-gradient(160deg,#2F3138,#0F1013)");
+  el(pcd, "pcdt", "", "left:0;right:0;top:110px;text-align:center;font:900 168px/1 var(--body);letter-spacing:-.04em;color:#fff;text-shadow:0 0 50px rgba(229,38,43,.9)", "PROMPT");
+  el(pcd, "pcds", "", "left:0;right:0;top:320px;text-align:center;font:700 36px/1.2 var(--mono);color:#C9CED6", "cinematic product-ad prompt");
+  el(pcd, "pcdk", "", "left:40px;top:30px;font:800 22px/1 var(--mono);letter-spacing:.1em;color:#E5262B", "COPY & PASTE");
+  tl.fromTo(pcd, { scale: 0.4, opacity: 0, rotation: -8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(1.8)", transformOrigin: "50% 50%" }, S.s6.start + 0.15);
+  tl.to(pcd, { boxShadow: "0 0 140px rgba(229,38,43,.95), inset 0 0 50px rgba(229,38,43,.3)", duration: 0.5, yoyo: true, repeat: 5, ease: "sine.inOut" }, S.s6.start + 0.6);
+  const cta1 = el(s6i, "cta1", "", "left:60px;top:990px;font:900 100px/1 var(--body);letter-spacing:-.03em;color:#fff;white-space:nowrap", "DM “PROMPT”"), cta2 = el(s6i, "cta2", "", "left:60px;top:1110px;font:800 54px/1 var(--body);color:#E5262B;white-space:nowrap", "I'll send it to you!");
+  tl.from(cta1, { opacity: 0, x: -120, duration: 0.3, ease: "power3.out" }, PW("p6", "DM") - 0.1); tl.from(cta2, { opacity: 0, x: -120, duration: 0.3, ease: "power3.out" }, PW("p6", "PROMPT", 1) + 0.15);
+  tl.to(cta1, { scale: 1.06, duration: 0.18, yoyo: true, repeat: 3, transformOrigin: "0 50%" }, PW("p6", "PROMPT", 1));
+  const bot6 = botAt(s6i, "bot6", 810, 980, 220); bot6.face(tl, 0, -1, 0.01); bot6.introduce(tl, S.s6.start + 0.4, { fromX: 1250, toX: 810, y: 980, hops: 1 }); bot6.face(tl, S.s6.start + 1.6, -1, 0.1); bot6.blinks(tl, S.s6.start, S.s6.end, 1.1);
+  bot6.aimPoint(tl, PW("p6", "Want") + 0.1, { x: 810, y: 980, scale: 1, target: [700, 700], hand: "L", hold: 0.9 }); bot6.react(tl, PW("p6", "PROMPT", 1) + 0.3, "celebrate");
+
+  /* ---------- gentle jump-cut punches (no zoom-out so the set never shows edges); S1 and S4 have their own camera ---------- */
+  const cams = {};
+  ["s2", "s3", "s5"].forEach(k => {
+    const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform");
+    Array.from(inn.children).filter(c => c !== w && !/^bg/.test(c.id)).forEach(c => w.appendChild(c));
+    Cam.frame(w, 540, 960, 1); cams[k] = w;
+  });
+  const sceneOf = t => { let r = "s1"; Object.keys(S).forEach(k => { if (t >= S[k].b) r = k; }); return r; };
+  const bounds = Object.keys(S).map(k => S[k].b); let n = 0;
+  for (let t = 1.0; t < S.s5.end - 0.4; t += 1.25) {
+    if (bounds.some(b => t > b - 0.2 && t < b + 0.6)) continue;
+    const k = sceneOf(t); if (!cams[k]) continue;
+    const s = [1.12, 0.94, 1.07, 0.92][n % 4], cx = [540, 500, 580, 540][n % 4], cy = [980, 900, 1020, 960][n % 4];
+    tl.set(cams[k], { x: 540 - cx * s, y: 960 - cy * s, scale: s }, t);
+    if (n % 3 === 0) { const f = el($("fx"), "fl" + n, "", "inset:0;position:absolute;opacity:0;background:#E5262B"); tl.set(f, { opacity: 0.3 }, t); tl.set(f, { opacity: 0 }, t + 0.09); }
+    n++;
+  }
+  /* ---------- scan beams: a red/silver light sweep across the set about every 1.3 s (all scenes) ---------- */
+  let bn = 0;
+  for (let t = 0.9; t < 24.2; t += 1.3) {
+    if (bounds.some(b => t > b - 0.25 && t < b + 0.6)) continue;
+    const dir = bn % 2 ? -1 : 1, b2 = el($("fx"), "bm" + bn, "", "left:-460px;top:0;width:420px;height:1920px;opacity:0;mix-blend-mode:screen;background:linear-gradient(90deg,transparent," + (bn % 2 ? "rgba(235,238,245,.75)" : "rgba(255,70,70,.85)") + ",transparent)");
+    tl.set(b2, { opacity: 1, x: dir > 0 ? 0 : 1560 }, t); tl.to(b2, { x: dir > 0 ? 1560 : 0, duration: 0.5, ease: "power2.inOut" }, t); tl.set(b2, { opacity: 0 }, t + 0.55); bn++;
+  }
+  /* ---------- transitions: orbit-whip, zoom-through, whip, iris, whip ---------- */
+  Cam.whip(tl, S.s2.b, 0.5, { out: "#s1i", inn: "#s2i", dir: 1, blur: 28 });
+  Cam.push(tl, S.s3.b, 0.5, { out: "#s2i", inn: "#s3i", ox: 540, oy: 620, scale: 4 });
+  Cam.whip(tl, S.s4.b, 0.5, { out: "#s3i", inn: "#s4i", dir: -1, blur: 28 });
+  Cam.iris(tl, S.s5.b, 0.7, { inn: "#s5i", cx: 540, cy: 810, ring: "#E5262B", host: $("fx"), id: "ir5" });
+  Cam.whip(tl, S.s6.b, 0.5, { out: "#s5i", inn: "#s6i", dir: 1, blur: 28 });
+
+  /* ---------- subtitles: dark pill, red word block ---------- */
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 330, active: "#FFFFFF", block: "#D61F26", maxWords: 4, maxChars: 24 });
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "_readme": "Real items are SLOTS. status 'placeholder' renders clearly labeled stand-ins. To replace: put the file in assets/, set file + source, status 'verified', then follow REPLACE.md. Never mark verified without the real file on disk. The user's own product photo and the real Veo 3.1 output are required.",
+  "preview_banner": true,
+  "slots": {
+    "product_photo": { "scene": "s2,s4,s5", "type": "image",     "status": "placeholder", "source": null, "file": null, "note": "The user's real product photo (perfume or other). Must appear clearly." },
+    "gemini_rec":    { "scene": "s3,s4", "type": "recording", "status": "placeholder", "source": null, "file": null, "note": "Real Gemini screen recording: choose Veo 3.1, upload photo, paste prompt. Hide account info." },
+    "veo_output":    { "scene": "s1,s5", "type": "video",     "status": "placeholder", "source": null, "file": null, "note": "The real generated Veo 3.1 commercial. Needs user authorization and approved credits." }
+  }
+}

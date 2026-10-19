@@ -1,0 +1,26 @@
+{
+ "music": [
+  {"from": "p0", "to": "p3", "mood": "hook", "fo": -0.1, "to_off": 0.1},
+  {"from": "p3", "to": "p5", "mood": "demo", "to_off": 0.1},
+  {"from": "p5", "to": "p6.end", "mood": "result", "to_off": 0.9}
+ ],
+ "sfx": [
+  {"name": "pop", "at": "p0:photo", "off": 0.1, "gain": 0.55},
+  {"name": "whoosh", "at": "S:s2", "gain": 0.5},
+  {"name": "pop", "at": "p1:photo", "off": 0.0, "gain": 0.4},
+  {"name": "whoosh", "at": "S:s3", "gain": 0.5},
+  {"name": "tick", "at": "p2:Veo", "off": 0.0, "gain": 0.8},
+  {"name": "whoosh", "at": "S:s4", "gain": 0.45},
+  {"name": "pop", "at": "p3:Upload", "off": 0.3, "gain": 0.45},
+  {"name": "type", "at": "p3", "off": 1.7, "dur": 1.2, "cps": 40, "gain": 0.22},
+  {"name": "tick", "at": "p4:strict", "off": -0.1, "gain": 0.6},
+  {"name": "tick", "at": "p4:set", "off": -0.1, "gain": 0.6},
+  {"name": "tick", "at": "p4:camera", "off": -0.1, "gain": 0.6},
+  {"name": "tick", "at": "p4:lighting", "off": -0.1, "gain": 0.6},
+  {"name": "whoosh", "at": "S:s5", "gain": 0.5},
+  {"name": "pop", "at": "p5b:Same", "off": 0.0, "gain": 0.4},
+  {"name": "whoosh", "at": "S:s6", "gain": 0.45},
+  {"name": "sparkle", "at": "p6", "off": 0.1, "gain": 0.5},
+  {"name": "pop", "at": "p6:me", "off": 0.1, "gain": 0.55}
+ ]
+}

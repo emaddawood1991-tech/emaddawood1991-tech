@@ -53,6 +53,7 @@ Built with HTML, CSS, SVG, canvas and GSAP: flat colour paper fields, halftone-d
 | Engine Test01 "New engine" (reference, do not modify) | GitHub scroll → terminal → perspective collapse into yellow paper collage → iris | cream / dark / yellow / navy | bold sans titles | scroll dolly, 3D collapse, stop-motion assembly | karaoke pill | reference (old LIKE·FOLLOW·SHARE ending, retired) |
 | 02 Vibe Prospecting (preview, placeholders) | "Night Ops": dark AI operations room, glass dashboards, Dubai emirate map, hand-drawn callouts, hazard-stripe placeholders; radar scan beam + camera tour every ~2.3 s | dark ops / light repo card / dark / light export / teal-blue-purple value / navy | Inter caps + Fraunces italic + JetBrains Mono | iris, whip, push-through, card grow, sheet drop; camera tours with scan beams | karaoke pill, blue word block | 2026-10-18 |
 | 03 ChatCut 40 s Reel (preview, placeholders) | "Cut Room": cream editor desk, lime playhead, razor-line wipes, hard jump-cut punches with ink flashes, timeline schematics | cream / dark terminal / cream / navy | Inter 900 caps + JetBrains Mono | razor wipe, jump-cut scale snaps, flash cuts | white tag, coral active word | 2026-10-19 |
+| 04 Veo product ad 25 s (preview, placeholders) | "Ad Studio": charcoal set, silver C structure, red rim light, smoke, orbit; red scan beams + camera snaps | dark charcoal/red throughout | Inter 900 + JetBrains Mono | whip, push-through, iris, jump punches, light sweeps | dark pill, red word block | 2026-10-19 |
 | _next episode_ | | | | | | |
 
 ## Anti-patterns

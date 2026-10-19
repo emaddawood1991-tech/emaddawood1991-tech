@@ -1,0 +1,43 @@
+AGENTOON.AI — REUSABLE PRODUCT-AD PROMPT (Gemini + Veo 3.1)
+Works for a perfume bottle or any single product with a clear, well-lit photo.
+
+HOW TO USE
+1. Open Gemini and choose video generation with Veo 3.1 (menu names and plan access change; check what your account shows).
+2. Upload ONE sharp, front-facing product photo (plain background, no hands, no props).
+3. Paste everything between the two lines below.
+4. Replace [PRODUCT] with a plain description, e.g. "the perfume bottle in the uploaded photo".
+5. Generate, review, then regenerate with small edits if needed. Video generation may use your plan's credits.
+
+------------------------------ COPY FROM HERE ------------------------------
+Create a premium cinematic product commercial, vertical 9:16, one continuous shot, ending on a hero shot.
+
+PRODUCT (STRICT):
+The product is [PRODUCT] exactly as shown in the uploaded photo. Preserve its exact shape, proportions, colors, materials, glass, cap, label and any markings. Do not redesign, restyle, recolor, add, remove or distort any detail. The product is the only hero object. Keep it sharp, centered and upright.
+
+CINEMATIC SET:
+A futuristic, minimal luxury studio with a seamless deep charcoal floor and backdrop. Behind and around the product stands a large polished metallic C-shaped architectural structure in brushed silver chrome, open on one side, with clean machined edges and subtle reflections. The product sits on a glossy dark pedestal at the center of the C. Nothing else is in the scene.
+
+ATMOSPHERE:
+Realistic, slow-moving volumetric smoke rolls low along the floor and drifts softly through the light beams. A few fine dust particles glint in the air. The smoke never covers the product.
+
+LIGHTING:
+Controlled, dramatic lighting: a deep red rim light from behind-left and behind-right tracing the product's edges, a soft neutral key light from the front to keep the product details clearly visible, subtle red reflections on the silver structure and the glossy floor. High contrast, deep blacks, no blown highlights, accurate product colors.
+
+CAMERA MOVEMENT:
+Start with a wide establishing view through the smoke. Smooth, stable cinematic orbit of about 180 degrees around the product, slowly pushing in with gentle parallax against the metallic C-shape. No shaking, no sudden cuts. Finish on a locked, perfectly framed hero shot of the product, centered, with a slow final settle.
+
+ENDING:
+Hold the hero shot for the last moment: product glowing under the red rim light, smoke softly lapping the base, metallic structure framing it.
+
+AUDIO:
+Subtle deep cinematic whoosh and a low bass swell that resolves on the hero shot. No speech, no music with lyrics.
+
+AVOID (STRICT):
+No text, no captions, no logos, no watermarks, no brand names, no extra labels. No hands, no people, no animals, no extra bottles or objects, no packaging boxes, no props. No product deformation, no melting or warping glass, no changing the label, no color shift. No flicker, no jump cuts, no lens dirt, no cartoon or illustration style.
+------------------------------ COPY TO HERE --------------------------------
+
+TIPS
+- If the product changes shape: strengthen PRODUCT (STRICT) with "keep the label and cap identical in every frame".
+- If smoke covers the product: add "smoke stays below the product's base".
+- For a different look change only the colors in CINEMATIC SET and LIGHTING; keep PRODUCT (STRICT) and AVOID untouched.
+- Send this file to anyone who DMs the word PROMPT.
