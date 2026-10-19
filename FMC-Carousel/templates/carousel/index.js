@@ -73,8 +73,9 @@ const renderers = {
     <div style="flex:1"></div>${s.note ? `<div class="urgent">${icon('alert')}<div><b>${md(s.noteTitle || 'تنبيه طبي')}</b><span>${md(s.note)}</span></div></div>` : ''}`,
 
   closing2: (s) => `
-    <div class="c2-top"><div class="c2-text"><h1 class="arabic-title" style="font-size:68px">${md(s.title)}</h1><p class="lead arabic-body" style="font-size:31px;margin-top:10px">${md(s.lead)}</p></div>
+    <div class="c2-top"><div class="c2-text"><h1 class="arabic-title" style="font-size:64px">${md(s.title)}</h1><p class="lead arabic-body" style="font-size:29px;margin-top:8px;line-height:1.6">${md(s.lead)}</p></div>
       <div class="c2-art">${childSvg(s.pose || 'walk')}</div></div>
+    ${s.machine ? `<div class="card machine"><span class="mchip">${icon('check')}${md(s.machineLabel)}</span><img src="../../../assets/medical/foot-scanner-extracted.png" alt=""></div>` : ''}
     ${note(md(s.caution), { warn: true })}
     <div class="cta-btn">${icon('calendar')}<span>${md(s.cta)}</span></div>
     <div class="brandcard"><div class="logo"><img src="${LOGO}" alt="${BRAND_AR}"></div><div><h3>${BRAND_AR}</h3><p>${icon('pin')}<span>${md(s.location)}</span></p></div></div>`,
