@@ -73,7 +73,7 @@ const renderers = {
 
   dash: (s) => `
     ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
-    <h2 class="arabic-title one" style="margin:14px 0 14px;font-size:54px">${md(s.title)}</h2>
+    <h2 class="arabic-title" style="margin:14px 0 14px;font-size:54px;line-height:1.3">${md(s.title)}</h2>
     <div class="dgrid">${s.items.map((it) => `<div class="card dcard"><div class="dscreen">${viz(it.viz)}<span class="dtag">${md(s.exampleLabel)}</span>${(it.chips || []).map((c) => `<span class="dchip" style="left:${c.x}%;top:${c.y}%">${md(c.t)}</span>`).join('')}</div><h3>${md(it.title)}</h3><p>${md(it.text)}</p></div>`).join('')}</div>
     <div style="flex:1"></div>${s.note ? note(md(s.note)) : ''}`,
 
