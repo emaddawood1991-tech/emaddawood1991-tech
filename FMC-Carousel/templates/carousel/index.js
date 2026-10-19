@@ -2,7 +2,7 @@ import { icon } from '../../src/components/icons.js';
 import { illustrations, labels } from '../../src/components/illustrations.js';
 import { slide, tag, note, rowCard, LOGO, BRAND_AR } from '../../src/components/layout.js';
 import { md } from '../../src/components/text.js';
-import { scene, tile, childSvg } from '../../src/components/pedi.js';
+import { badge } from '../../src/components/badges.js';
 
 const BG = ['a', 'b', 'c'];
 
@@ -47,36 +47,40 @@ const renderers = {
 
 
   /* ---- pediatric gait set ---- */
-  scene: (s) => `
+  hero: (s) => `
     ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
-    <h1 class="arabic-title" style="margin:14px 0 6px;font-size:70px">${md(s.title)}</h1>
-    <p class="sub arabic-body">${md(s.sub)}</p>
-    <div class="art-frame scene-frame fill" style="margin-top:18px"><div class="illus">${scene(s.pose || 'walk')}${labels(s.labels || [], { w: 860, h: 600 })}</div>
-      <div class="glass">${md(s.lead)}</div></div>`,
+    <h1 class="arabic-title" style="margin:14px 0 8px;font-size:68px">${md(s.title)}</h1>
+    <p class="sub arabic-body" style="font-size:30px;font-weight:600;color:var(--ink-soft)">${md(s.lead)}</p>
+    <div class="hero-row">
+      <div class="hero-machine"><span class="mchip">${icon('check')}${md(s.machineLabel)}</span>
+        <img class="mimg" src="../../../assets/medical/machine-photo.png" alt="">
+        <div class="hero-badge"><img src="../../../assets/medical/badge-pressure.png" alt=""></div></div>
+      <div class="hero-photo"><img src="../../../assets/medical/child-walking-photo.jpg" alt=""></div>
+    </div>`,
 
   quad: (s) => `
     ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
     <h2 class="arabic-title one" style="margin:16px 0 20px">${md(s.title)}</h2>
-    <div class="quad">${s.items.map((it, i) => `<div class="card qcard"><div class="qtile">${tile(it.tile)}<span class="qn">${String(i + 1).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d])}</span></div><h3>${md(it.title)}</h3><p>${md(it.text)}</p></div>`).join('')}</div>
+    <div class="quad">${s.items.map((it, i) => `<div class="card qcard"><div class="qtile">${badge(it.tile)}<span class="qn">${String(i + 1).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d])}</span></div><h3>${md(it.title)}</h3><p>${md(it.text)}</p></div>`).join('')}</div>
     <div style="flex:1"></div>${s.note ? note(md(s.note)) : ''}`,
 
   illcards: (s) => `
     ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
     <h2 class="arabic-title one" style="margin:16px 0 18px;font-size:56px">${md(s.title)}</h2>
-    <div class="stack" style="gap:14px">${s.items.map((it) => `<div class="card icard"><div class="itile">${tile(it.tile)}</div><div><h3>${md(it.title)}</h3><p>${md(it.text)}</p></div></div>`).join('')}</div>
+    <div class="stack" style="gap:14px">${s.items.map((it) => `<div class="card icard"><div class="itile">${badge(it.tile)}</div><div><h3>${md(it.title)}</h3><p>${md(it.text)}</p></div></div>`).join('')}</div>
     <div style="flex:1"></div>${s.note ? note(md(s.note)) : ''}`,
 
   signs: (s) => `
     ${s.tag ? `<div>${tag(md(s.tag), 'red')}</div>` : ''}
     <h2 class="arabic-title one" style="margin:16px 0 20px;font-size:60px">${md(s.title)}</h2>
-    <div class="signs">${s.items.map((it, i) => `<div class="card sign ${i === s.items.length - 1 ? 'wide' : ''}"><div class="stile">${tile(it.tile)}</div><p>${md(it.text)}</p></div>`).join('')}</div>
+    <div class="signs">${s.items.map((it, i) => `<div class="card sign ${i === s.items.length - 1 ? 'wide' : ''}"><div class="stile">${badge(it.tile)}</div><p>${md(it.text)}</p></div>`).join('')}</div>
     <div style="flex:1"></div>${s.note ? `<div class="urgent">${icon('alert')}<div><b>${md(s.noteTitle || 'تنبيه طبي')}</b><span>${md(s.note)}</span></div></div>` : ''}`,
 
   closing2: (s) => `
-    <div class="c2-top"><div class="c2-text"><h1 class="arabic-title" style="font-size:64px">${md(s.title)}</h1><p class="lead arabic-body" style="font-size:29px;margin-top:8px;line-height:1.6">${md(s.lead)}</p></div>
-      <div class="c2-art">${childSvg(s.pose || 'walk')}</div></div>
-    ${s.machine ? `<div class="card machine"><span class="mchip">${icon('check')}${md(s.machineLabel)}</span><img src="../../../assets/medical/foot-scanner-extracted.png" alt=""></div>` : ''}
-    ${note(md(s.caution), { warn: true })}
+    <h1 class="arabic-title" style="font-size:60px;margin-top:4px">${md(s.title)}</h1>
+    <div class="c2-top"><div class="c2-text"><p class="lead arabic-body" style="font-size:31px;line-height:1.7">${md(s.lead)}</p>
+        <div class="c2-chips">${(s.chips || []).map((c) => `<span class="mchip" style="position:static">${icon('check')}${md(c)}</span>`).join('')}</div></div>
+      <div class="c2-photo"><img src="../../../assets/medical/child-walking-photo.jpg" alt=""></div></div>
     <div class="cta-btn">${icon('calendar')}<span>${md(s.cta)}</span></div>
     <div class="brandcard"><div class="logo"><img src="${LOGO}" alt="${BRAND_AR}"></div><div><h3>${BRAND_AR}</h3><p>${icon('pin')}<span>${md(s.location)}</span></p></div></div>`,
 

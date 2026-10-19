@@ -79,3 +79,33 @@
 .mchip svg{width:26px;height:26px}
 .c2-top{margin-bottom:14px;flex:none}.cta-btn{margin:14px 0;flex:none;padding:16px 30px}.note{padding:12px 24px;flex:none}.brandcard{flex:none;padding:12px 26px}.brandcard .logo{width:96px;height:96px}.brandcard .logo img{height:78px}.brandcard h3{font-size:40px}
 .c2-text{max-width:600px;margin-right:0}.c2-art{margin-left:0}.c2-art::before{left:-10px;right:-10px}
+
+/* ---- v3: supplied badges + hero ---- */
+.bimg{height:100%;width:auto;display:block}
+.ib{width:100%;height:100%;border-radius:50%;background:#D5F1FE;display:grid;place-items:center;color:var(--fmc-navy)}
+.ib svg{width:58%;height:58%}
+.qtile{height:128px;margin-bottom:0}.qtile .bimg,.qtile .ib{height:124px;width:124px}
+.itile{width:116px;height:116px}.itile .bimg,.itile .ib{width:116px;height:116px}
+.stile{width:124px;height:124px}.stile .bimg,.stile .ib{width:124px;height:124px}
+.hero-row{display:flex;gap:18px;flex:1;min-height:0;margin-top:16px}
+.hero-machine{position:relative;flex:1;border-radius:36px;background:radial-gradient(circle at 55% 45%,#fff 0%,#E4F1FB 62%,#D5E9F8 100%);border:2px solid rgba(46,90,180,.12);box-shadow:var(--shadow);overflow:hidden;display:grid;place-items:center}
+.hero-machine .mimg{width:92%;height:auto;max-height:86%;object-fit:contain;filter:drop-shadow(0 22px 22px rgba(11,36,85,.28));margin-top:34px}
+.hero-machine .mchip{top:16px;right:18px;left:auto}
+.hero-badge{position:absolute;left:14px;bottom:14px;width:178px;height:178px;border-radius:50%;background:#fff;padding:5px;box-shadow:0 16px 30px -14px rgba(11,36,85,.5);border:2px solid rgba(46,90,180,.14)}
+.hero-badge img{width:100%;height:100%;display:block;border-radius:50%}
+.hero-photo{flex:none;width:208px;border-radius:36px;overflow:hidden;box-shadow:var(--shadow);border:2px solid rgba(46,90,180,.12);background:#EAF3FB}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
+.c2-photo{flex:none;width:240px;height:430px;border-radius:36px;overflow:hidden;box-shadow:var(--shadow);border:2px solid rgba(46,90,180,.12);margin-left:6px}
+.c2-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;display:block}
+.c2-chips{display:flex;flex-direction:column;gap:10px;margin-top:16px;align-items:flex-start}
+.c2-top{margin-bottom:18px}.c2-text{max-width:none;flex:1}
+.brandcard{margin-top:0}
+.cta-btn{margin:12px 0}.c2-top{margin-bottom:12px}
+
+.c2-top{display:flex;gap:26px;align-items:stretch;margin:18px 0 6px;flex:none}
+.c2-photo{width:250px;height:400px;margin:0}
+.c2-chips{flex-direction:row;flex-wrap:wrap;gap:10px;margin-top:18px}
+.c2-text{display:flex;flex-direction:column;justify-content:center}
+.qcard h3{font-size:32px}.qcard p{font-size:25px}.qtile{height:118px}.qtile .bimg,.qtile .ib{height:114px;width:114px}
+.c2-photo{width:168px;height:528px}.c2-photo img{object-position:50% 50%}.c2-top{margin:14px 0 4px}
+.c2-photo{width:156px;height:490px}.c2-top{margin:10px 0 2px}

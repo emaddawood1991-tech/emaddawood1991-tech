@@ -40,3 +40,6 @@ Accurate, hedged (قد، غالبًا), patient-friendly, ≤ ~12 words per line
 ## Slide structure
 1 hook (short headline + large illustration) · 2 explain (diagram with HTML labels) · 3 symptoms/causes (icon cards) · 4 treatment (steps; FMC service badge only when relevant) · 5 advice + red flags + FMC branding/CTA · optional 6 extra value.
 Layout: 1080×1350, 110px side margins, content ends y=1200, footer 130px, ≤4 items/slide.
+
+## Supplied-asset workflow (v3)
+Reference images live in `assets/medical/source/` (ref-*). `process_assets.py` produces `badge-{scan,gait,pressure,posture}.png` (recoloured to one ice-blue tint), `machine-photo.png` (real photograph, background removed, 2.4x Lanczos + sharpen; source is only 300x300 so show it at <=~600 px) and `extract_machine.py` makes the poster cut-out. `child-walking-photo.jpg` is cropped from the client poster. Slide types `hero`, `quad`, `illcards`, `signs`, `closing2` use them via `src/components/badges.js` (`tile` values: scan|gait|pressure|posture|ib:<icon>). Never redraw the equipment.
