@@ -73,7 +73,8 @@
       const r = document.createElement("div"); r.id = o.id || ("iris-" + Math.round(at * 100));
       r.style.cssText = "position:absolute;z-index:55;pointer-events:none;border-radius:50%;opacity:0;border:10px solid " + o.ring + ";box-shadow:0 0 60px " + o.ring + ",inset 0 0 60px " + o.ring + "66;left:" + cx + "px;top:" + cy + "px;width:0;height:0";
       (o.host || document.getElementById("fx")).appendChild(r);
-      tl.fromTo(r, { opacity: 1, width: 0, height: 0, x: 0, y: 0 }, { width: R * 2, height: R * 2, x: -R, y: -R, duration: dur, ease: "power3.inOut" }, at);
+      tl.set(r, { opacity: 1 }, at);   /* ring is hidden until its own moment (was visible from t=0 as a stray dot) */
+      tl.fromTo(r, { width: 0, height: 0, x: 0, y: 0 }, { width: R * 2, height: R * 2, x: -R, y: -R, duration: dur, ease: "power3.inOut" }, at);
       tl.to(r, { opacity: 0, duration: 0.18 }, at + dur * 0.85);
     }
     return at + dur;
