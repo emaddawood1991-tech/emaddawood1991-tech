@@ -1,0 +1,24 @@
+{
+ "music": [
+  {"from": "p0", "to": "p1", "mood": "hook", "fo": -0.1, "to_off": 0.1},
+  {"from": "p1", "to": "p4", "mood": "demo", "to_off": 0.1},
+  {"from": "p4", "to": "p4.end", "mood": "result", "to_off": 0.9}
+ ],
+ "sfx": [
+  {"name": "pop", "at": "p0:Three", "off": 0.4, "gain": 0.4},
+  {"name": "pop", "at": "p0:check", "off": 0.0, "gain": 0.4},
+  {"name": "tick", "at": "p0b:read-only", "off": 0.1, "gain": 0.7},
+  {"name": "whoosh", "at": "S:s2", "gain": 0.5},
+  {"name": "type", "at": "p1", "off": 0.5, "dur": 2.4, "cps": 36, "gain": 0.2},
+  {"name": "tick", "at": "p1:Unexpected", "off": -0.1, "gain": 0.5},
+  {"name": "whoosh", "at": "S:s3", "gain": 0.5},
+  {"name": "type", "at": "p2", "off": 0.5, "dur": 2.0, "cps": 36, "gain": 0.2},
+  {"name": "tick", "at": "p2b:ProtectionStatus", "off": 0.0, "gain": 0.5},
+  {"name": "whoosh", "at": "S:s4", "gain": 0.5},
+  {"name": "type", "at": "p3", "off": 0.5, "dur": 2.6, "cps": 36, "gain": 0.2},
+  {"name": "tick", "at": "p3b:recent", "off": 0.0, "gain": 0.5},
+  {"name": "whoosh", "at": "S:s5", "gain": 0.45},
+  {"name": "pop", "at": "p4:Save", "off": 0.0, "gain": 0.5},
+  {"name": "sparkle", "at": "p4:follow", "off": 0.1, "gain": 0.5}
+ ]
+}

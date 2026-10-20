@@ -1,0 +1,9 @@
+{
+  "_readme": "Each PowerShell check is a SLOT fed by REAL output from a Windows PC (verbatim text from deliverables/collect-outputs.ps1, or a screen recording). status 'placeholder' renders a labeled stand-in with NO output text. To verify: put the exact lines in `lines`, set `source` (e.g. 'Windows 11, PowerShell 5.1, <date>'), set status 'verified', run `python3 build.py`. Never edit or invent output lines. Mask sensitive values only by masking them in the file and listing the mask in `masked`.",
+  "preview_banner": true,
+  "slots": {
+    "ps_dns":       { "scene": "s2", "status": "placeholder", "source": null, "lines": [], "masked": null, "recording": null, "note": "Real Get-DnsClientServerAddress output (IPv4)." },
+    "ps_bitlocker": { "scene": "s3", "status": "placeholder", "source": null, "lines": [], "masked": null, "recording": null, "note": "Real Get-BitLockerVolume output. Usually needs an ADMIN PowerShell; if unavailable, put the real error text and the video shows an honest note." },
+    "ps_hotfix":    { "scene": "s4", "status": "placeholder", "source": null, "lines": [], "masked": null, "recording": null, "note": "Real Get-HotFix output (latest 10 by InstalledOn)." }
+  }
+}

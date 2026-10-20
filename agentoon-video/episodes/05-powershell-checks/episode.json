@@ -1,0 +1,12 @@
+{ "title": "3 PowerShell Commands Every Windows User Should Know (PREVIEW, real outputs pending)", "voice": "am_michael", "speed": 1.15, "total": 33.0, "music": [], "sfx": [],
+  "phrases": [
+    {"id": "p0", "speak": "Three PowerShell commands to check your Windows security!", "show": "Three PowerShell commands to check your Windows security!", "map": null},
+    {"id": "p0b", "speak": "All three are read-only, so they change nothing.", "show": "All three are read-only, so they change nothing.", "map": null},
+    {"id": "p1", "speak": "First, check which DNS servers your computer uses. Unexpected addresses deserve a closer look.", "show": "First, check which DNS servers your computer uses. Unexpected addresses deserve a closer look.", "map": null},
+    {"id": "p1b", "speak": "Run it, then read the addresses for each adapter.", "show": "Run it, then read the addresses for each adapter.", "map": null},
+    {"id": "p2", "speak": "Second, check BitLocker. Is your drive encryption protection enabled?", "show": "Second, check BitLocker. Is your drive encryption protection enabled?", "map": null},
+    {"id": "p2b", "speak": "ProtectionStatus and VolumeStatus show what Windows reports.", "show": "ProtectionStatus and VolumeStatus show what Windows reports.", "map": null},
+    {"id": "p3", "speak": "Third, see your latest Windows updates and when they were installed.", "show": "Third, see your latest Windows updates and when they were installed.", "map": null},
+    {"id": "p3b", "speak": "It lists recent hotfixes, not your full update history.", "show": "It lists recent hotfixes, not your full update history.", "map": null},
+    {"id": "p4", "speak": "Save these commands, and follow Agentoon dot A I for more Windows tips!", "show": "Save these commands, and follow Agentoon.ai for more Windows tips!", "map": [["Save","Save"],["these","these"],["commands,","commands,"],["and","and"],["follow","follow"],["Agentoon.ai","Agentoon dot A I"],["for","for"],["more","more"],["Windows","Windows"],["tips!","tips!"]]}
+  ] }

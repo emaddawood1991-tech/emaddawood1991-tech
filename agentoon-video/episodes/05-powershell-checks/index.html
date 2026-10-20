@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 05 PowerShell checks (PREVIEW)</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Fluent HUD". Deep-blue cyber desk, frosted-glass panels, classic PowerShell navy terminal, cyan scan beams, shield/lock/clock graphics.
+     No Windows logo, no green SAFE badges. Terminal OUTPUT is never invented: a slot is a labeled placeholder until real output is supplied. */
+  :root { --bg: #040B1F; --cy: #3DD6FF; --bl: #2F6BFF; --ps: #012456; }
+  .chip { position: absolute; white-space: nowrap; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .glass { position: absolute; border-radius: 26px; background: linear-gradient(160deg,rgba(40,80,170,.38),rgba(10,24,60,.72)); border: 2px solid rgba(120,200,255,.45); box-shadow: 0 0 50px rgba(61,214,255,.18), inset 0 0 30px rgba(255,255,255,.05); }
+  .ps { position: absolute; border-radius: 18px; overflow: hidden; background: #012456; border: 3px solid #5B8DEF; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 50px rgba(61,214,255,.25); }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .t1 { position: absolute; font: 900 120px/1 var(--body); letter-spacing: -.04em; color: #fff; white-space: nowrap; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/nightops.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+<script src="slots.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="33.5">
+  <section id="s1" class="clip scene" data-start="0.0" data-duration="6.57"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="5.77" data-duration="8.87"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="13.84" data-duration="8.45"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="21.49" data-duration="7.76"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="28.25" data-duration="5.25"><div id="s5i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="33.5" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, SL = window.SLOTS, S = E.scenes, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + pid + " " + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#CFF3FF") + ";background:" + (o.bg || "rgba(61,214,255,.12)") + ";border:2px solid " + (o.bd || "#3DD6FF"), text); };
+  const AMB = { fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.14)" };
+  const fadeIn = (e, at, d, y) => tl.from(e, { opacity: 0, y: y == null ? 40 : y, duration: d || 0.3, ease: "power3.out" }, at);
+  const isPh = k => SL[k].status !== "verified";
+  const hud = (host, id, label, t0) => {
+    const k = chip(host, id + "k", 60, 196, label); tl.from(k, { opacity: 0, x: -30, duration: 0.25 }, t0);
+    if (SL.banner) { const b = chip(host, id + "b", 60, 128, "PREVIEW · UNFINISHED · NO REAL OUTPUT YET", Object.assign({ size: 19, pad: "8px 16px 9px" }, AMB)); tl.from(b, { opacity: 0, duration: 0.25 }, t0 + 0.1); }
+  };
+  const base = (k) => {
+    const inn = $(k + "i");
+    el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#0C2A66 0%,#061433 55%,#030816 100%)");
+    const gr = el(inn, "bgg" + k, "", "position:absolute;inset:0;background-image:linear-gradient(rgba(61,214,255,.10) 2px,transparent 2px),linear-gradient(90deg,rgba(61,214,255,.10) 2px,transparent 2px);background-size:100px 100px");
+    tl.to(gr, { backgroundPosition: "200px 400px", duration: S[k].len, ease: "none" }, S[k].start);
+    for (let i = 0; i < 14; i++) { const d = el(inn, "bgp" + k + i, "", "left:" + ((i * 149 + 40) % 1040) + "px;top:" + (260 + (i * 233) % 1400) + "px;width:6px;height:6px;border-radius:50%;background:#3DD6FF;opacity:.55;box-shadow:0 0 12px #3DD6FF"); tl.fromTo(d, { y: 0 }, { y: -130 - (i % 5) * 50, duration: S[k].len, ease: "none" }, S[k].start); }
+    return inn;
+  };
+  const CMDS = {
+    dns: ["Get-DnsClientServerAddress -AddressFamily IPv4", "| Select-Object InterfaceAlias,ServerAddresses"],
+    bl: ["Get-BitLockerVolume", "| Select-Object MountPoint,ProtectionStatus,VolumeStatus"],
+    hf: ["Get-HotFix | Sort-Object InstalledOn -Descending", "| Select-Object -First 10", "  HotFixID,Description,InstalledOn"]
+  };
+  /* PowerShell-style window. Output = verbatim real lines if the slot is verified, otherwise an honest placeholder (no invented text). */
+  function terminal(host, id, y, cmd, slot, cols, tType, hiAt) {
+    const W = 1000, f = 26, cw = f * 0.6;
+    const card = el(host, id, "ps", "left:40px;top:" + y + "px;width:" + W + "px;height:700px");
+    el(card, id + "b", "", "left:0;top:0;width:" + W + "px;height:62px;background:#0B1F4D;border-bottom:2px solid #5B8DEF");
+    ["#7FA4FF", "#7FA4FF", "#7FA4FF"].forEach((c, i) => el(card, id + "d" + i, "", "left:" + (24 + i * 30) + "px;top:22px;width:18px;height:18px;border-radius:50%;background:" + c + ";opacity:" + (0.9 - i * 0.2)));
+    el(card, id + "t", "", "left:130px;top:0;font:700 26px/62px var(--body);color:#DDE8FF", "Windows PowerShell");
+    const lines = cmd.map((t, i) => { const d = el(card, id + "c" + i, "mono", "left:30px;top:" + (84 + i * 44) + "px;font:600 " + f + "px/44px var(--mono);color:#F9F1A5", (i === 0 ? "PS> " : "    ") + t); d.dataset.chars = d.textContent.length; d.style.clipPath = "inset(0 100% 0 0)"; return d; });
+    let t = tType; lines.forEach(d => { const n = +d.dataset.chars, dur = n / 38; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + n + ")" }, t); t += dur + 0.05; });
+    const oy = 84 + cmd.length * 44 + 30, out = { card, end: t, rects: [] };
+    if (isPh(slot)) {
+      cols.forEach((c, i) => { const x = 30 + i * Math.floor(940 / cols.length), h = el(card, id + "h" + i, "", "left:" + x + "px;top:" + oy + "px;padding:6px 14px 8px;border-radius:8px;border:2px dashed #7FA4FF;font:800 22px/1 var(--mono);color:#BFD6FF", c); out.rects.push([h, x]); tl.from(h, { opacity: 0, y: 14, duration: 0.25 }, t + 0.1 + i * 0.1); });
+      for (let r = 0; r < 5; r++) cols.forEach((c, i) => { const x = 30 + i * Math.floor(940 / cols.length), b = el(card, id + "k" + r + i, "", "left:" + x + "px;top:" + (oy + 56 + r * 52) + "px;width:" + (160 + ((r * 41 + i * 67) % 150)) + "px;height:22px;border-radius:11px;background:linear-gradient(90deg,#5B8DEF44,#9CC1FF88,#5B8DEF44)"); tl.from(b, { opacity: 0, x: 30, duration: 0.2 }, t + 0.25 + r * 0.08); });
+      const rb = NO.ribbon(card, { id: id + "rb", x: 150, y: oy + 330, w: 700, text: "PLACEHOLDER · REAL POWERSHELL OUTPUT" }); tl.from(rb, { opacity: 0, duration: 0.25 }, t + 0.5);
+    } else {
+      const L = SL[slot].lines, maxLen = Math.max.apply(null, L.map(s => s.length)), fo = Math.min(28, Math.floor(920 / (0.6 * maxLen))), ow = fo * 0.6;
+      L.forEach((s, i) => { const d = el(card, id + "o" + i, "mono", "left:30px;top:" + (oy + i * fo * 1.5) + "px;font:500 " + fo + "px/" + fo * 1.5 + "px var(--mono);color:#fff", s); d.style.clipPath = "inset(0 100% 0 0)"; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "none" }, t + 0.15 + i * 0.07); });
+      const hi = L.findIndex(s => cols.some(c => s.indexOf(c) >= 0));
+      cols.forEach(c => { const idx = hi >= 0 ? L[hi].indexOf(c) : -1; if (idx >= 0) out.rects.push([null, 30 + idx * ow, c.length * ow, oy + hi * fo * 1.5, (L.length - hi) * fo * 1.5]); });
+      if (/^ERROR/i.test(L[0])) chip(card, id + "er", 30, 640, "COMMAND UNAVAILABLE ON THIS PC · REAL ERROR SHOWN", Object.assign({ size: 18, pad: "6px 12px 7px" }, AMB));
+      chip(card, id + "vb", 560, 650, "VERBATIM OUTPUT", { size: 18, pad: "6px 12px 7px" });
+    }
+    return out;
+  }
+  const callouts = (host, tm, card, y, cols, name, at) => {
+    /* draw-on boxes around the real columns (placeholder mode: around the column labels) */
+    tm.rects.forEach((r, i) => { const hx = r[0] ? 40 + r[1] - 8 : 40 + r[1] - 6, hy = r[0] ? y + 84 + (CMDN[name]) * 44 + 30 - 8 : y + r[3] - 4, hw = r[0] ? r[0].textContent.length * 13.4 + 36 : r[2] + 12, hh = r[0] ? 46 : r[4] + 8; const c = NO.callout(host, { id: "co" + name + i, x: hx, y: hy, w: hw, h: hh, color: "#FFC83D" }); c.draw(tl, at + i * 0.25, 0.4); c.hide(tl, at + 2.6); });
+  };
+  const CMDN = { dns: 2, bl: 2, hf: 3 };
+  const wrapScene = (k) => { const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Array.from(inn.children).filter(c => c !== w && !/^bg/.test(c.id)).forEach(c => w.appendChild(c)); Cam.frame(w, 540, 960, 1); return w; };
+
+  /* ================================================================= S1  HOOK + read-only */
+  const s1i = base("s1"); hud(s1i, "h1", "EP 05 · WINDOWS SECURITY", 0.05);
+  const bw = el(s1i, "bw1", "ps", "left:110px;top:560px;width:860px;height:520px;opacity:.35;transform:rotate(-4deg)"); el(bw, "bw1b", "", "left:0;top:0;width:860px;height:56px;background:#0B1F4D");
+  [0, 1, 2, 3].forEach(i => el(bw, "bw1l" + i, "", "left:30px;top:" + (90 + i * 70) + "px;width:" + (420 + i * 80) + "px;height:20px;border-radius:10px;background:#9CC1FF55"));
+  tl.fromTo(bw, { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 0.35, duration: 0.5, ease: "power3.out" }, 0.1);
+  const a1 = el(s1i, "a1", "t1", "left:60px;top:250px", "3 WINDOWS"), a2 = el(s1i, "a2", "t1", "left:60px;top:380px;font-size:104px;color:#3DD6FF;text-shadow:0 0 40px rgba(61,214,255,.8)", "SECURITY CHECKS");
+  tl.from(a1, { opacity: 0, x: -200, scale: 0.7, duration: 0.35, ease: "back.out(2)", transformOrigin: "0 50%" }, 0.15); tl.from(a2, { opacity: 0, x: 220, duration: 0.3, ease: "power3.out" }, 0.45);
+  const iconDefs = [["DNS", 60], ["BITLOCKER", 425], ["UPDATES", 790]], inds = [];
+  iconDefs.forEach(([lab, x], i) => {
+    const g = el(s1i, "ind" + i, "glass", "left:" + x + "px;top:640px;width:230px;height:260px;text-align:center");
+    const sv = svgEl(el(g, "indi" + i, "", "left:55px;top:34px;width:120px;height:130px"), "svg", { viewBox: "0 0 100 110", width: 120, height: 130 });
+    if (i === 0) { [[50, 22, 10], [18, 80, 10], [82, 80, 10]].forEach(([cx, cy, r]) => svgEl(sv, "circle", { cx, cy, r, fill: "none", stroke: "#3DD6FF", "stroke-width": 5 })); svgEl(sv, "path", { d: "M50 32 L22 72 M50 32 L78 72 M28 80 L72 80", stroke: "#3DD6FF", "stroke-width": 4, fill: "none" }); }
+    if (i === 1) { svgEl(sv, "path", { d: "M50 6 L90 20 L90 56 C90 80 70 98 50 106 C30 98 10 80 10 56 L10 20 Z", fill: "none", stroke: "#3DD6FF", "stroke-width": 5 }); svgEl(sv, "rect", { x: 34, y: 50, width: 32, height: 26, rx: 4, fill: "#3DD6FF" }); svgEl(sv, "path", { d: "M40 50 V42 A10 10 0 0 1 60 42 V50", fill: "none", stroke: "#3DD6FF", "stroke-width": 5 }); }
+    if (i === 2) { svgEl(sv, "circle", { cx: 50, cy: 56, r: 38, fill: "none", stroke: "#3DD6FF", "stroke-width": 5 }); svgEl(sv, "path", { d: "M50 32 V58 L68 68", fill: "none", stroke: "#3DD6FF", "stroke-width": 5, "stroke-linecap": "round" }); svgEl(sv, "path", { d: "M12 24 L12 6 M12 24 L30 24", fill: "none", stroke: "#3DD6FF", "stroke-width": 5 }); }
+    el(g, "indl" + i, "", "left:0;right:0;top:196px;font:800 28px/1 var(--mono);color:#CFF3FF;letter-spacing:.06em", lab);
+    gsap.set(g, { opacity: 0.35 }); tl.from(g, { y: 120, duration: 0.45, ease: "back.out(1.6)" }, 0.5 + i * 0.12);
+    const tA = 1.0 + i * 0.75; tl.to(g, { opacity: 1, scale: 1.08, borderColor: "#3DD6FF", boxShadow: "0 0 70px rgba(61,214,255,.8)", duration: 0.25, ease: "back.out(2)" }, tA); tl.to(g, { scale: 1, duration: 0.25 }, tA + 0.3);
+    inds.push([g, x + 115, tA]);
+  });
+  const ro = chip(s1i, "ro", 130, 960, "READ-ONLY · NO CHANGES", { size: 40, pad: "16px 30px 18px", bg: "rgba(47,107,255,.25)", bd: "#7FA4FF", fg: "#fff" });
+  tl.fromTo(ro, { opacity: 0, scale: 2, rotation: -6 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.3, ease: "back.out(2)" }, PW("p0b", "read-only") - 0.15);
+  const bot1 = botAt(s1i, "bot1", 440, 1010, 200); bot1.rise(tl, 0.4, 450, 0.4); bot1.blinks(tl, 1, 5.5, 1.1);
+  inds.forEach(([g, x, t], i) => bot1.aimPoint(tl, t - 0.35, { x: 440, y: 1010, scale: 1, target: [x, 900], hand: i === 0 ? "L" : "R", hold: 0.45 }));
+  bot1.react(tl, PW("p0b", "read-only") + 0.3, "think");
+
+  /* ================================================================= S2/S3/S4  the three checks */
+  const checks = [];
+  function checkScene(k, o) {
+    const inn = base(k); hud(inn, "h" + k, o.hud, S[k].start + 0.15);
+    const big = el(inn, "bn" + k, "t1", "left:60px;top:268px;font-size:70px", o.num + " — " + o.title); tl.from(big, { opacity: 0, x: -160, duration: 0.3, ease: "power3.out" }, S[k].start + 0.1);
+    const y = 380, tm = terminal(inn, "ps" + k, y, CMDS[o.cmd], o.slot, o.cols, S[k].start + 0.55, 0);
+    tl.from(tm.card, { opacity: 0, y: 90, scale: 0.94, duration: 0.35, ease: "power3.out" }, S[k].start + 0.05);
+    const gy = 1100, gp = el(inn, "gp" + k, "glass", "left:40px;top:" + gy + "px;width:830px;height:330px"); tl.from(gp, { opacity: 0, x: -80, duration: 0.35 }, S[k].start + 0.4);
+    o.gfx(inn, gp);
+    const bot = botAt(inn, "bot" + k, 880, 1090, 170); bot.face(tl, 0, -1, 0.01); bot.rise(tl, S[k].start + 0.5, 420, 0.4); bot.blinks(tl, S[k].start, S[k].end, 1.1);
+    checks.push({ k, y, tm, o });
+    callouts(inn, tm, tm.card, y, o.cols, o.cmd, o.hiAt());
+    bot.aimPoint(tl, o.hiAt() - 0.3, { x: 880, y: 1090, scale: 1, target: [700, 700], hand: "L", hold: 0.7 }); o.react(bot);
+    return inn;
+  }
+  /* graphic: DNS lookup path */
+  const gfxDns = (inn, gp) => {
+    const sv = svgEl(el(gp, "gdn", "", "left:0;top:0;width:830px;height:330px"), "svg", { viewBox: "0 0 830 330", width: 830, height: 330 });
+    const n = (x, y, r, lab) => { svgEl(sv, "circle", { cx: x, cy: y, r, fill: "rgba(61,214,255,.14)", stroke: "#3DD6FF", "stroke-width": 4 }); const t = svgEl(sv, "text", { x, y: y + r + 30, "text-anchor": "middle", fill: "#CFF3FF", "font-size": 22, "font-family": "JetBrains Mono", "font-weight": 800 }); t.textContent = lab; };
+    n(110, 150, 46, "ADAPTER"); n(470, 80, 38, "DNS 1"); n(470, 230, 38, "DNS 2"); n(740, 150, 46, "INTERNET");
+    [[156, 130, 432, 90], [156, 170, 432, 220], [508, 90, 696, 140], [508, 220, 696, 160]].forEach(([a, b, c, d], i) => { const l = svgEl(sv, "path", { d: "M" + a + " " + b + " L" + c + " " + d, stroke: "#3DD6FF", "stroke-width": 3, "stroke-dasharray": "10 8", fill: "none" }); gsap.set(l, { opacity: 0 }); tl.to(l, { opacity: 1, duration: 0.3 }, S.s2.start + 1.2 + i * 0.2); });
+    for (let i = 0; i < 6; i++) { const pk = svgEl(sv, "circle", { cx: 156, cy: 150, r: 9, fill: "#FFC83D" }); gsap.set(pk, { opacity: 0 }); const top = i % 2 === 0; tl.fromTo(pk, { attr: { cx: 156, cy: 150 }, opacity: 1 }, { attr: { cx: 470, cy: top ? 80 : 230 }, duration: 0.7, ease: "power1.inOut" }, S.s2.start + 2.0 + i * 0.9); tl.to(pk, { opacity: 0, duration: 0.1 }, S.s2.start + 2.7 + i * 0.9); }
+  };
+  const gfxBl = (inn, gp) => {
+    const sv = svgEl(el(gp, "gbl", "", "left:0;top:0;width:830px;height:330px"), "svg", { viewBox: "0 0 830 330", width: 830, height: 330 });
+    const sh = svgEl(sv, "path", { d: "M415 20 L520 58 L520 150 C520 210 470 255 415 280 C360 255 310 210 310 150 L310 58 Z", fill: "rgba(61,214,255,.1)", stroke: "#3DD6FF", "stroke-width": 6 });
+    svgEl(sv, "rect", { x: 385, y: 140, width: 60, height: 50, rx: 8, fill: "#3DD6FF" }); svgEl(sv, "path", { d: "M395 140 V122 A20 20 0 0 1 435 122 V140", fill: "none", stroke: "#3DD6FF", "stroke-width": 8 });
+    const ring = svgEl(sv, "circle", { cx: 415, cy: 150, r: 135, fill: "none", stroke: "#3DD6FF", "stroke-width": 3, "stroke-dasharray": "14 18" });
+    tl.fromTo(ring, { rotation: 0, transformOrigin: "415px 150px" }, { rotation: 360, duration: S.s3.len, ease: "none" }, S.s3.start);
+    tl.from(sh, { opacity: 0, scale: 0.6, transformOrigin: "415px 150px", duration: 0.5, ease: "back.out(1.8)" }, S.s3.start + 1.0);
+    [["MountPoint", 60, 60], ["ProtectionStatus", 450, 292], ["VolumeStatus", 560, 292]].forEach(([t, x, y], i) => { });
+    ["MountPoint", "ProtectionStatus", "VolumeStatus"].forEach((t, i) => { const c = chip(gp, "gblc" + i, [30, 30, 30][i], [20, 150, 200][i], t, { size: 21, pad: "7px 14px 8px" }); c.style.left = (i === 0 ? 30 : 30) + "px"; c.style.top = (24 + i * 62) + "px"; tl.from(c, { opacity: 0, x: -40, duration: 0.25 }, [S.s3.start + 1.4, PW("p2b", "ProtectionStatus") - 0.05, PW("p2b", "VolumeStatus") - 0.05][i]); });
+  };
+  const gfxHf = (inn, gp) => {
+    const sv = svgEl(el(gp, "ghf", "", "left:0;top:0;width:830px;height:330px"), "svg", { viewBox: "0 0 830 330", width: 830, height: 330 });
+    const ln = svgEl(sv, "path", { d: "M50 170 L780 170", stroke: "#3DD6FF", "stroke-width": 5, fill: "none" }); gsap.set(ln, { strokeDasharray: 800, strokeDashoffset: 800 }); tl.to(ln, { strokeDashoffset: 0, duration: 0.8, ease: "power2.out" }, S.s4.start + 1.0);
+    for (let i = 0; i < 5; i++) { const x = 90 + i * 160, c = svgEl(sv, "circle", { cx: x, cy: 170, r: 16, fill: "#061433", stroke: "#3DD6FF", "stroke-width": 5 }); gsap.set(c, { opacity: 0 }); tl.to(c, { opacity: 1, duration: 0.2 }, S.s4.start + 1.5 + i * 0.35); const b = svgEl(sv, "rect", { x: x - 52, y: i % 2 ? 196 : 98, width: 104, height: 38, rx: 8, fill: "rgba(91,141,239,.25)", stroke: "#7FA4FF", "stroke-width": 2, "stroke-dasharray": "6 5" }); gsap.set(b, { opacity: 0 }); tl.to(b, { opacity: 1, duration: 0.2 }, S.s4.start + 1.6 + i * 0.35); }
+    const mk = svgEl(sv, "path", { d: "M0 -26 L14 -6 L-14 -6 Z", fill: "#FFC83D" }); mk.setAttribute("transform", "translate(90 150)"); tl.fromTo(mk, { x: 0 }, { x: 640, duration: 3.4, ease: "power1.inOut" }, S.s4.start + 1.5);
+    ["HotFixID", "InstalledOn"].forEach((t, i) => { const c = chip(gp, "ghfc" + i, 30 + i * 0, 24 + i * 0, t, { size: 21, pad: "7px 14px 8px" }); c.style.left = (30 + i * 160) + "px"; c.style.top = "262px"; tl.from(c, { opacity: 0, y: 20, duration: 0.25 }, [PW("p3", "installed") - 0.2, PW("p3", "installed") + 0.1][i]); });
+  };
+  const s2i = checkScene("s2", { cmd: "dns", slot: "ps_dns", cols: ["InterfaceAlias", "ServerAddresses"], num: "01", title: "DNS SERVERS", hud: "CHECK 1 · NETWORK", gfx: gfxDns, hiAt: () => PW("p1", "Unexpected") - 0.1, react: b => b.react(tl, PW("p1b", "addresses") + 0.2, "think") });
+  const s3i = checkScene("s3", { cmd: "bl", slot: "ps_bitlocker", cols: ["ProtectionStatus", "VolumeStatus"], num: "02", title: "DRIVE ENCRYPTION", hud: "CHECK 2 · BITLOCKER", gfx: gfxBl, hiAt: () => PW("p2", "protection") - 0.2, react: b => b.nod(tl, PW("p2b", "Windows") - 0.2) });
+  const s4i = checkScene("s4", { cmd: "hf", slot: "ps_hotfix", cols: ["HotFixID", "InstalledOn"], num: "03", title: "RECENT UPDATES", hud: "CHECK 3 · HOTFIXES", gfx: gfxHf, hiAt: () => PW("p3", "installed") - 0.3, react: b => b.shake(tl, PW("p3b", "not") + 0.1) });
+  chip(s4i, "nc4", 60, 1450, "RECENT HOTFIXES ONLY · NOT THE FULL UPDATE HISTORY", { size: 18, pad: "7px 14px 8px" }); tl.from("#nc4", { opacity: 0, duration: 0.25 }, PW("p3b", "recent") - 0.2);
+  chip(s2i, "nc2", 60, 1450, "AN UNFAMILIAR ADDRESS IS A REASON TO CHECK · NOT PROOF OF A PROBLEM", { size: 17, pad: "7px 14px 8px" }); tl.from("#nc2", { opacity: 0, duration: 0.25 }, PW("p1", "Unexpected") + 0.5);
+  chip(s3i, "nc3", 60, 1450, "STATUS SHOWN EXACTLY AS WINDOWS REPORTS IT", { size: 18, pad: "7px 14px 8px" }); tl.from("#nc3", { opacity: 0, duration: 0.25 }, PW("p2b", "show") - 0.2);
+
+  /* ================================================================= S5  summary + signature ending */
+  const s5i = base("s5"); hud(s5i, "h5", "RECAP", S.s5.start + 0.1);
+  const rows = [["01", "DNS SERVERS", "Get-DnsClientServerAddress"], ["02", "DRIVE ENCRYPTION", "Get-BitLockerVolume"], ["03", "RECENT UPDATES", "Get-HotFix"]], rowEls = [];
+  rows.forEach(([n, t, c], i) => { const r = el(s5i, "rw" + i, "glass", "left:40px;top:" + (330 + i * 190) + "px;width:1000px;height:160px"); el(r, "rwn" + i, "", "left:30px;top:40px;font:900 70px/1 var(--body);color:#3DD6FF", n); el(r, "rwt" + i, "", "left:170px;top:36px;font:900 46px/1 var(--body);color:#fff", t); el(r, "rwc" + i, "", "left:170px;top:100px;font:700 28px/1 var(--mono);color:#BFD6FF", c); tl.from(r, { x: -1100, duration: 0.4, ease: "power3.out" }, S.s5.start + 0.1 + i * 0.15); rowEls.push(r); });
+  const sv5 = chip(s5i, "save5", 60, 930, "SAVE", { size: 44, pad: "16px 34px 18px", bg: "rgba(61,214,255,.2)" }); tl.from(sv5, { opacity: 0, scale: 0.5, duration: 0.3, ease: "back.out(2)" }, PW("p4", "Save") - 0.1);
+  const bk = svgEl(el(s5i, "bk5", "", "left:260px;top:934px;width:44px;height:56px"), "svg", { viewBox: "0 0 44 56", width: 44, height: 56 }); svgEl(bk, "path", { d: "M6 4 H38 V52 L22 40 L6 52 Z", fill: "none", stroke: "#3DD6FF", "stroke-width": 5 }); tl.from("#bk5", { opacity: 0, duration: 0.3 }, PW("p4", "Save") + 0.1);
+  const bot5 = botAt(s5i, "bot5", 700, 900, 220); bot5.face(tl, 0, -1, 0.01); bot5.rise(tl, S.s5.start + 0.4, 450, 0.4); bot5.blinks(tl, S.s5.start, 30.0, 1.1);
+  bot5.aimPoint(tl, PW("p4", "Save") - 0.3, { x: 700, y: 900, scale: 1, target: [300, 960], hand: "L", hold: 0.7 }); bot5.react(tl, PW("p4", "commands") + 0.1, "wow");
+  const tOut = PW("p4", "follow") - 0.25;
+  tl.to([].concat(rowEls, [sv5, "#bk5", bot5.P.wrap, "#h5k", "#h5b"]), { opacity: 0, duration: 0.2 }, tOut + 0.05);
+  const botO = botAt(s5i, "botO", -400, 470, 300);
+  Outro.build(tl, s5i, tOut, { bot: botO, cx: 390, y: 470, fromX: -400 });
+
+  /* ---------- camera: jump-cut punches + zoom into the real output, light sweeps ---------- */
+  const cams = { s2: wrapScene("s2"), s3: wrapScene("s3"), s4: wrapScene("s4") };
+  const zooms = [["s2", PW("p1", "Unexpected") - 0.1], ["s3", PW("p2", "protection") - 0.2], ["s4", PW("p3", "installed") - 0.3]];
+  zooms.forEach(([k, t]) => { tl.set(cams[k], { scale: 1.12, x: 540 - 545 * 1.12, y: 640 - 880 * 1.12 }, t); tl.set(cams[k], { scale: 1, x: 0, y: 0 }, t + 2.4); });
+  const sceneOf = t => { let r = "s1"; Object.keys(S).forEach(k => { if (t >= S[k].b) r = k; }); return r; };
+  const bounds = Object.keys(S).map(k => S[k].b); let n = 0;
+  for (let t = 1.0; t < S.s4.end - 0.4; t += 1.3) {
+    const k = sceneOf(t); if (!cams[k]) continue;
+    if (bounds.some(b => t > b - 0.2 && t < b + 0.6) || zooms.some(z => t > z[1] - 0.3 && t < z[1] + 2.8)) continue;
+    const s = [1.07, 1.0, 1.1, 0.95][n % 4], cx = [540, 510, 570, 540][n % 4], cy = [980, 900, 1020, 960][n % 4];
+    tl.set(cams[k], { x: 540 - cx * s, y: 960 - cy * s, scale: s }, t); n++;
+  }
+  let bn = 0;
+  for (let t = 0.9; t < 29.5; t += 1.25) {
+    if (bounds.some(b => t > b - 0.25 && t < b + 0.6)) continue;
+    const dir = bn % 2 ? -1 : 1, b2 = el($("fx"), "bm" + bn, "", "left:-460px;top:0;width:420px;height:1920px;opacity:0;mix-blend-mode:screen;background:linear-gradient(90deg,transparent," + (bn % 2 ? "rgba(235,248,255,.7)" : "rgba(61,214,255,.85)") + ",transparent)");
+    tl.set(b2, { opacity: 1, x: dir > 0 ? 0 : 1560 }, t); tl.to(b2, { x: dir > 0 ? 1560 : 0, duration: 0.5, ease: "power2.inOut" }, t); tl.set(b2, { opacity: 0 }, t + 0.55); bn++;
+  }
+  /* ---------- transitions ---------- */
+  Cam.push(tl, S.s2.b, 0.5, { out: "#s1i", inn: "#s2i", ox: 540, oy: 820, scale: 4 });
+  Cam.whip(tl, S.s3.b, 0.5, { out: "#s2i", inn: "#s3i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s4.b, 0.5, { out: "#s3i", inn: "#s4i", dir: -1, blur: 28 });
+  Cam.iris(tl, S.s5.b, 0.7, { inn: "#s5i", cx: 540, cy: 760, ring: "#3DD6FF", host: $("fx"), id: "ir5" });
+  /* ---------- subtitles ---------- */
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 330, active: "#FFFFFF", block: "#2F6BFF", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

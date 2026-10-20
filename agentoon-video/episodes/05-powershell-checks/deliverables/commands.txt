@@ -1,0 +1,15 @@
+THE THREE COMMANDS (all read-only; copy exactly)
+
+1) DNS servers
+Get-DnsClientServerAddress -AddressFamily IPv4 | Select-Object InterfaceAlias,ServerAddresses
+
+2) BitLocker (usually needs PowerShell opened as Administrator)
+Get-BitLockerVolume | Select-Object MountPoint,ProtectionStatus,VolumeStatus
+
+3) Latest hotfixes
+Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 10 HotFixID,Description,InstalledOn
+
+Notes
+- Unfamiliar DNS addresses are worth checking (your router, ISP, or a public DNS you chose are normal). They do not prove anything is wrong.
+- ProtectionStatus / VolumeStatus are what Windows reports for each volume; read them as-is.
+- Get-HotFix lists installed hotfixes Windows reports, not the full Windows Update history.
