@@ -1,0 +1,55 @@
+{
+ "music": [
+  {
+   "from": "p0",
+   "to": "p0.end",
+   "mood": "hook",
+   "fo": -0.1,
+   "to_off": 0.3
+  }
+ ],
+ "sfx": [
+  {
+   "name": "whoosh",
+   "at": "p0:First",
+   "off": -0.05,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "at": "p0:Windows",
+   "off": 0.05,
+   "gain": 0.9
+  },
+  {
+   "name": "tick",
+   "at": "p0:X",
+   "off": 0.0,
+   "gain": 0.9
+  },
+  {
+   "name": "pop",
+   "at": "p0:then",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "tick",
+   "at": "p0:Terminal",
+   "off": 0.1,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "p0:launch",
+   "off": -0.1,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "at": "p0:PowerShell",
+   "off": 0.0,
+   "gain": 0.45
+  }
+ ]
+}

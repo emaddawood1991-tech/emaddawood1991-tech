@@ -1,0 +1,1 @@
+window.SLOTS = {"banner": true, "winx_recording": {"scene": "s1", "status": "placeholder", "source": null, "file": null, "note": "Real screen recording on your Windows PC: desktop, press WIN+X, the Quick Link menu opens, Terminal or Terminal (Admin) selected, Windows Terminal opens on a PowerShell tab."}};

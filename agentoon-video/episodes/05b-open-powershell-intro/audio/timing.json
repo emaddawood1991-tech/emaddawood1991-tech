@@ -1,0 +1,73 @@
+{
+ "voice": "am_michael",
+ "speed": 1.222,
+ "wpm": 167,
+ "total": 4.096,
+ "phrases": [
+  {
+   "id": "p0",
+   "start": 0.15,
+   "end": 4.096,
+   "show": "First, press Windows plus X, then open Terminal to launch PowerShell.",
+   "speak": "First, press Windows plus X, then open Terminal to launch PowerShell.",
+   "map": null
+  }
+ ],
+ "words": [
+  {
+   "w": "First,",
+   "s": 0.15,
+   "e": 0.54
+  },
+  {
+   "w": "press",
+   "s": 0.54,
+   "e": 0.881
+  },
+  {
+   "w": "Windows",
+   "s": 0.881,
+   "e": 1.319
+  },
+  {
+   "w": "plus",
+   "s": 1.319,
+   "e": 1.611
+  },
+  {
+   "w": "X,",
+   "s": 1.611,
+   "e": 1.806
+  },
+  {
+   "w": "then",
+   "s": 1.806,
+   "e": 2.098
+  },
+  {
+   "w": "open",
+   "s": 2.098,
+   "e": 2.391
+  },
+  {
+   "w": "Terminal",
+   "s": 2.391,
+   "e": 2.878
+  },
+  {
+   "w": "to",
+   "s": 2.878,
+   "e": 3.073
+  },
+  {
+   "w": "launch",
+   "s": 3.073,
+   "e": 3.462
+  },
+  {
+   "w": "PowerShell.",
+   "s": 3.462,
+   "e": 4.096
+  }
+ ]
+}

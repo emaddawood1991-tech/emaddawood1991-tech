@@ -1,0 +1,47 @@
+{
+ "total": 4.43,
+ "music": [
+  {
+   "t0": 0.05,
+   "t1": 4.4,
+   "mood": "hook"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "whoosh",
+   "gain": 0.4,
+   "t": 0.1
+  },
+  {
+   "name": "tick",
+   "gain": 0.9,
+   "t": 0.93
+  },
+  {
+   "name": "tick",
+   "gain": 0.9,
+   "t": 1.61
+  },
+  {
+   "name": "pop",
+   "gain": 0.45,
+   "t": 1.81
+  },
+  {
+   "name": "tick",
+   "gain": 0.6,
+   "t": 2.49
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 2.97
+  },
+  {
+   "name": "pop",
+   "gain": 0.45,
+   "t": 3.46
+  }
+ ]
+}

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 05 insert: open PowerShell (PREVIEW)</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Fluent HUD". Deep-blue cyber desk, frosted-glass panels, classic PowerShell navy terminal, cyan scan beams, shield/lock/clock graphics.
+     No Windows logo, no green SAFE badges. Terminal OUTPUT is never invented: a slot is a labeled placeholder until real output is supplied. */
+  :root { --bg: #040B1F; --cy: #3DD6FF; --bl: #2F6BFF; --ps: #012456; }
+  .chip { position: absolute; white-space: nowrap; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .glass { position: absolute; border-radius: 26px; background: linear-gradient(160deg,rgba(40,80,170,.38),rgba(10,24,60,.72)); border: 2px solid rgba(120,200,255,.45); box-shadow: 0 0 50px rgba(61,214,255,.18), inset 0 0 30px rgba(255,255,255,.05); }
+  .ps { position: absolute; border-radius: 18px; overflow: hidden; background: #012456; border: 3px solid #5B8DEF; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 50px rgba(61,214,255,.25); }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .t1 { position: absolute; font: 900 120px/1 var(--body); letter-spacing: -.04em; color: #fff; white-space: nowrap; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/nightops.js"></script>
+<script src="timeline.js"></script>
+<script src="slots.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="{{TOTAL}}">
+  <section id="s1" class="clip scene" data-start="{{s1.start}}" data-duration="{{s1.len}}"><div id="s1i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, SL = window.SLOTS, S = E.scenes, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + pid + " " + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#CFF3FF") + ";background:" + (o.bg || "rgba(61,214,255,.12)") + ";border:2px solid " + (o.bd || "#3DD6FF"), text); };
+  const AMB = { fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.14)" };
+  const fadeIn = (e, at, d, y) => tl.from(e, { opacity: 0, y: y == null ? 40 : y, duration: d || 0.3, ease: "power3.out" }, at);
+  const isPh = k => SL[k].status !== "verified";
+  const hud = (host, id, label, t0) => {
+    const k = chip(host, id + "k", 60, 196, label); tl.from(k, { opacity: 0, x: -30, duration: 0.25 }, t0);
+    if (SL.banner) { const b = chip(host, id + "b", 60, 128, "PREVIEW · UNFINISHED · SCHEMATIC · REAL RECORDING PENDING", Object.assign({ size: 19, pad: "8px 16px 9px" }, AMB)); tl.from(b, { opacity: 0, duration: 0.25 }, t0 + 0.1); }
+  };
+  const base = (k) => {
+    const inn = $(k + "i");
+    el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#0C2A66 0%,#061433 55%,#030816 100%)");
+    const gr = el(inn, "bgg" + k, "", "position:absolute;inset:0;background-image:linear-gradient(rgba(61,214,255,.10) 2px,transparent 2px),linear-gradient(90deg,rgba(61,214,255,.10) 2px,transparent 2px);background-size:100px 100px");
+    tl.to(gr, { backgroundPosition: "200px 400px", duration: S[k].len, ease: "none" }, S[k].start);
+    for (let i = 0; i < 14; i++) { const d = el(inn, "bgp" + k + i, "", "left:" + ((i * 149 + 40) % 1040) + "px;top:" + (260 + (i * 233) % 1400) + "px;width:6px;height:6px;border-radius:50%;background:#3DD6FF;opacity:.55;box-shadow:0 0 12px #3DD6FF"); tl.fromTo(d, { y: 0 }, { y: -130 - (i % 5) * 50, duration: S[k].len, ease: "none" }, S[k].start); }
+    return inn;
+  };
+
+  /* ===== Insert: how to open PowerShell (Win+X -> Terminal -> PowerShell tab). Same Fluent HUD look as Ep 05. ===== */
+  const W = (txt, n) => { let c = 0; for (const w of E.words) { if (w.w.replace(/[.,]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error(txt); };
+  const s1i = base("s1"); hud(s1i, "h1", "OPEN POWERSHELL", 0.05);
+  const ttl = el(s1i, "ttl", "t1", "left:60px;top:268px;font-size:84px", "OPEN POWERSHELL"); tl.from(ttl, { opacity: 0, x: -160, duration: 0.3, ease: "power3.out" }, 0.1);
+  /* schematic desktop (NOT a real screenshot) */
+  const mon = el(s1i, "mon", "", "left:40px;top:380px;width:1000px;height:700px;border-radius:22px;overflow:hidden;border:4px solid #7FA4FF;background:radial-gradient(120% 120% at 30% 20%,#2F6BFF,#0B2A7A 60%,#071636);box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 50px rgba(61,214,255,.25)");
+  [[60, 60], [60, 200], [60, 340]].forEach(([x, y], i) => { el(mon, "ic" + i, "", "left:" + x + "px;top:" + y + "px;width:84px;height:84px;border-radius:18px;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.35)"); el(mon, "icl" + i, "", "left:" + (x - 6) + "px;top:" + (y + 92) + "px;width:96px;height:14px;border-radius:7px;background:rgba(255,255,255,.3)"); });
+  const tb = el(mon, "tb", "", "left:0;top:640px;width:1000px;height:60px;background:rgba(6,16,45,.85);border-top:2px solid rgba(120,200,255,.4)");
+  [0, 1, 2, 3].forEach(i => el(tb, "tbi" + i, "", "left:" + (400 + i * 62) + "px;top:12px;width:36px;height:36px;border-radius:9px;background:" + (i === 0 ? "#3DD6FF" : "rgba(255,255,255,.35)")));
+  chip(s1i, "sch", 60, 1100, "WINDOWS DESKTOP · SCHEMATIC · REPLACE WITH REAL RECORDING", Object.assign({ size: 17, pad: "7px 14px 8px" }, AMB)); tl.from("#sch", { opacity: 0, duration: 0.25 }, 0.3);
+  tl.from(mon, { opacity: 0, y: 120, scale: 0.94, duration: 0.4, ease: "power3.out" }, 0.1);
+  /* keyboard: WIN + X, big, pressed on the spoken words */
+  const key = (id, x, w, label, at) => { const k = el(s1i, id, "", "left:" + x + "px;top:1180px;width:" + w + "px;height:230px;border-radius:30px;background:linear-gradient(180deg,#27406F,#13224A);border:4px solid #7FA4FF;box-shadow:0 14px 0 #0A1432;color:#fff;font:900 " + (label.length > 2 ? 78 : 130) + "px/224px var(--body);text-align:center;letter-spacing:-.02em", label); tl.from(k, { opacity: 0, y: 180, duration: 0.3, ease: "back.out(1.8)" }, at - 0.35); tl.to(k, { y: 12, boxShadow: "0 2px 0 #0A1432, 0 0 70px rgba(61,214,255,.95)", borderColor: "#3DD6FF", color: "#3DD6FF", duration: 0.08 }, at); tl.to(k, { y: 0, duration: 0.14 }, at + 0.1); return k; };
+  const kw = key("kw", 120, 330, "WIN", W("Windows")), kx = key("kx", 600, 230, "X", W("X"));
+  el(s1i, "kp", "", "left:482px;top:1250px;font:900 100px/1 var(--body);color:#3DD6FF", "+"); tl.from("#kp", { opacity: 0, scale: 0.4, duration: 0.25, ease: "back.out(2)" }, W("plus") - 0.1);
+  /* Quick Link menu opens (schematic; real item names Terminal / Terminal (Admin) depend on the Windows version) */
+  const menu = el(mon, "menu", "", "left:20px;top:150px;width:430px;height:480px;border-radius:16px;background:rgba(10,22,58,.96);border:2px solid rgba(120,200,255,.55);box-shadow:0 20px 50px rgba(0,0,0,.6);transform-origin:0 100%");
+  const rowsM = [["", 150], ["", 200], ["", 120], ["Terminal", 0], ["Terminal (Admin)", 0], ["", 180], ["", 140]];
+  rowsM.forEach(([t, w], i) => { const r = el(menu, "mr" + i, "", "left:0;top:" + (14 + i * 64) + "px;width:430px;height:60px"); if (t) el(r, "mrt" + i, "", "left:24px;top:0;font:800 28px/60px var(--body);color:#fff", t); else el(r, "mrs" + i, "", "left:24px;top:20px;width:" + w + "px;height:20px;border-radius:10px;background:rgba(150,190,255,.3)"); });
+  tl.fromTo(menu, { scale: 0.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.32, ease: "back.out(1.5)" }, W("then") - 0.1);
+  const hl = el(menu, "hl", "", "left:8px;top:" + (14 + 3 * 64) + "px;width:414px;height:60px;border-radius:10px;background:rgba(61,214,255,.28);border:3px solid #3DD6FF"); tl.from(hl, { opacity: 0, scaleX: 0.2, transformOrigin: "0 50%", duration: 0.25 }, W("Terminal") - 0.1);
+  const co = NO.callout(s1i, { id: "co1", x: 62, y: 380 + 150 + 14 + 3 * 64 - 2, w: 420, h: 128, color: "#FFC83D", label: "TERMINAL (ADMIN) ON SOME VERSIONS" }); co.draw(tl, W("Terminal") + 0.05, 0.35); co.hide(tl, W("launch") - 0.15);
+  /* Windows Terminal opens on a PowerShell tab */
+  const wt = el(mon, "wt", "ps", "left:60px;top:110px;width:880px;height:500px;transform-origin:20% 80%");
+  el(wt, "wtb", "", "left:0;top:0;width:880px;height:56px;background:#0B1F4D;border-bottom:2px solid #5B8DEF");
+  const tab = el(wt, "wtt", "", "left:16px;top:8px;width:250px;height:48px;border-radius:10px 10px 0 0;background:#012456;border:2px solid #5B8DEF;border-bottom:0;font:700 24px/46px var(--body);color:#fff;padding-left:16px;box-sizing:border-box", "PowerShell");
+  el(wt, "wtp", "mono", "left:26px;top:96px;font:600 30px/1 var(--mono);color:#F9F1A5", "PS> ");
+  const cur = el(wt, "wtc", "", "left:100px;top:96px;width:16px;height:32px;background:#F9F1A5"); tl.to(cur, { opacity: 0, duration: 0.25, repeat: 4, yoyo: true }, W("launch"));
+  tl.fromTo(wt, { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "power3.out" }, W("launch") - 0.15); tl.to(menu, { opacity: 0, scale: 0.9, duration: 0.2 }, W("launch") - 0.1);
+  chip(s1i, "cmdnote", 60, 1650, "OPENS COMMAND PROMPT? CHOOSE THE POWERSHELL PROFILE", { size: 19, pad: "8px 16px 9px" }); tl.from("#cmdnote", { opacity: 0, y: 20, duration: 0.25 }, W("PowerShell") - 0.05);
+  const bot = botAt(s1i, "bot1", 880, 1120, 160); bot.face(tl, 0, -1, 0.01); bot.rise(tl, 0.3, 380, 0.4); bot.blinks(tl, 0.5, S.s1.len, 1.1);
+  bot.press(tl, W("Windows") - 0.55, { x: 880, y: 1120, scale: 1, target: [640, 1250], hand: "L" }); bot.react(tl, W("launch") + 0.2, "wow");
+  /* light sweeps like the rest of Ep 05 */
+  [[0.7, 1], [1.7, -1], [2.7, 1]].forEach(([t, d], i) => { const b2 = el($("fx"), "bm" + i, "", "left:-460px;top:0;width:420px;height:1920px;opacity:0;mix-blend-mode:screen;background:linear-gradient(90deg,transparent," + (i % 2 ? "rgba(235,248,255,.7)" : "rgba(61,214,255,.85)") + ",transparent)"); tl.set(b2, { opacity: 1, x: d > 0 ? 0 : 1560 }, t); tl.to(b2, { x: d > 0 ? 1560 : 0, duration: 0.5, ease: "power2.inOut" }, t); tl.set(b2, { opacity: 0 }, t + 0.55); });
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 330, active: "#FFFFFF", block: "#2F6BFF", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>
