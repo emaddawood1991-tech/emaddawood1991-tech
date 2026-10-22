@@ -1,0 +1,12 @@
+feature,area,priority,original,clone,notes
+Public booking page with open slots,booking page,must,yes,yes,5 days x 9 slots
+Pick a day then a time,booking page,must,yes,yes,
+Book as a guest without an account,booking page,must,yes,yes,name + email only
+Block a slot that is already taken,booking page,must,yes,yes,tested mid-booking
+Show the guest's time zone,booking page,must,yes,yes,
+Confirmation message after booking,notifications,must,yes,yes,on screen only
+Confirmation email to both sides,notifications,should,yes,no,not built in this slice
+Host sets weekly availability,availability,must,yes,no,fixed demo slots
+Connect a calendar to read busy times,onboarding,should,yes,no,not built
+Reschedule or cancel a booking,booking page,should,yes,no,not built
+Paid bookings,payments,could,yes,no,out of scope

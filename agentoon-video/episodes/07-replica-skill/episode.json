@@ -1,0 +1,111 @@
+{
+ "title": "Replica Skill for Claude Code (PREVIEW: some real footage pending)",
+ "voice": "am_michael",
+ "speed": 1.1,
+ "total": 49.0,
+ "music": [],
+ "sfx": [],
+ "phrases": [
+  {
+   "id": "p0",
+   "speak": "What if Claude Code could help you rebuild your favorite app?",
+   "show": "What if Claude Code could help you rebuild your favorite app?",
+   "map": null
+  },
+  {
+   "id": "p0b",
+   "speak": "Not copy it. Rebuild what it does, in your own brand.",
+   "show": "Not copy it. Rebuild what it does, in your own brand.",
+   "map": null
+  },
+  {
+   "id": "p1",
+   "speak": "Meet Replica Skill. Eleven Claude skills that research, build, and test apps.",
+   "show": "Meet Replica Skill. Eleven Claude skills that research, build, and test apps.",
+   "map": null
+  },
+  {
+   "id": "p1b",
+   "speak": "Free, MIT licensed, nothing to connect.",
+   "show": "Free, MIT licensed, nothing to connect.",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "speak": "Open Claude Code, add the GitHub marketplace, and install the plugin.",
+   "show": "Open Claude Code, add the GitHub marketplace, and install the plugin.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "speak": "Give it an app to study. It maps the screens, features, and user flows.",
+   "show": "Give it an app to study. It maps the screens, features, and user flows.",
+   "map": null
+  },
+  {
+   "id": "p3b",
+   "speak": "It only reads public pages and your own account.",
+   "show": "It only reads public pages and your own account.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "speak": "Then it helps build your own version, and test the booking experience.",
+   "show": "Then it helps build your own version, and test the booking experience.",
+   "map": null
+  },
+  {
+   "id": "p4b",
+   "speak": "In our demo, the tests caught a bug, then passed eight of eight.",
+   "show": "In our demo, the tests caught a bug, then passed eight of eight.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "speak": "It can even find customer complaints, and suggest what to improve.",
+   "show": "It can even find customer complaints, and suggest what to improve.",
+   "map": null
+  },
+  {
+   "id": "p5b",
+   "speak": "But it never invents reviews. Every quote needs a real link.",
+   "show": "But it never invents reviews. Every quote needs a real link.",
+   "map": null
+  },
+  {
+   "id": "p6",
+   "speak": "Follow Agentoon dot A I for more Claude Code skills!",
+   "show": "Follow Agentoon.ai for more Claude Code skills!",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai",
+     "Agentoon dot A I"
+    ],
+    [
+     "for",
+     "for"
+    ],
+    [
+     "more",
+     "more"
+    ],
+    [
+     "Claude",
+     "Claude"
+    ],
+    [
+     "Code",
+     "Code"
+    ],
+    [
+     "skills!",
+     "skills!"
+    ]
+   ]
+  }
+ ]
+}

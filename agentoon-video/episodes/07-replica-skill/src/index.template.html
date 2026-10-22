@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 07 Replica Skill (PREVIEW)</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Fluent HUD". Deep-blue cyber desk, frosted-glass panels, classic PowerShell navy terminal, cyan scan beams, shield/lock/clock graphics.
+     No Windows logo, no green SAFE badges. Terminal OUTPUT is never invented: a slot is a labeled placeholder until real output is supplied. */
+  :root { --bg: #08051A; --cy: #A78BFA; --bl: #8B5CF6; --ps: #1A0F3A; }
+  .chip { position: absolute; white-space: nowrap; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .glass { position: absolute; border-radius: 26px; background: linear-gradient(160deg,rgba(90,60,170,.40),rgba(24,12,56,.80)); border: 2px solid rgba(190,170,255,.45); box-shadow: 0 0 50px rgba(167,139,250,.2), inset 0 0 30px rgba(255,255,255,.05); }
+  .ps { position: absolute; border-radius: 18px; overflow: hidden; background: #150C33; border: 3px solid #8B5CF6; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 50px rgba(61,214,255,.25); }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .t1 { position: absolute; font: 900 120px/1 var(--body); letter-spacing: -.04em; color: #fff; white-space: nowrap; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/nightops.js"></script>
+<script src="kit/outro.js"></script>
+<script src="kit/term.js"></script>
+<script src="timeline.js"></script>
+<script src="slots.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="{{TOTAL}}">
+  <section id="s1" class="clip scene" data-start="{{s1.start}}" data-duration="{{s1.len}}"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="{{s2.start}}" data-duration="{{s2.len}}"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="{{s3.start}}" data-duration="{{s3.len}}"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="{{s4.start}}" data-duration="{{s4.len}}"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="{{s5.start}}" data-duration="{{s5.len}}"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="{{s6.start}}" data-duration="{{s6.len}}"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="{{s7.start}}" data-duration="{{s7.len}}"><div id="s7i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, SL = window.SLOTS, S = E.scenes, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + pid + " " + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#E9E1FF") + ";background:" + (o.bg || "rgba(167,139,250,.14)") + ";border:2px solid " + (o.bd || "#A78BFA"), text); };
+  const AMB = { fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.14)" };
+  const fadeIn = (e, at, d, y) => tl.from(e, { opacity: 0, y: y == null ? 40 : y, duration: d || 0.3, ease: "power3.out" }, at);
+  const isPh = k => SL[k].status !== "verified";
+  const hud = (host, id, label, t0) => {
+    const k = chip(host, id + "k", 60, 196, label); tl.from(k, { opacity: 0, x: -30, duration: 0.25 }, t0);
+    if (SL.banner) { const b = chip(host, id + "b", 60, 128, "PREVIEW · SOME REAL FOOTAGE PENDING", Object.assign({ size: 19, pad: "8px 16px 9px" }, AMB)); tl.from(b, { opacity: 0, duration: 0.25 }, t0 + 0.1); }
+  };
+  const base = (k) => {
+    const inn = $(k + "i");
+    el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#2A1766 0%,#120A33 55%,#05030D 100%)");
+    const gr = el(inn, "bgg" + k, "", "position:absolute;inset:0;background-image:linear-gradient(rgba(167,139,250,.10) 2px,transparent 2px),linear-gradient(90deg,rgba(167,139,250,.10) 2px,transparent 2px);background-size:100px 100px");
+    tl.to(gr, { backgroundPosition: "200px 400px", duration: S[k].len, ease: "none" }, S[k].start);
+    for (let i = 0; i < 14; i++) { const d = el(inn, "bgp" + k + i, "", "left:" + ((i * 149 + 40) % 1040) + "px;top:" + (260 + (i * 233) % 1400) + "px;width:6px;height:6px;border-radius:50%;background:#C4B5FD;opacity:.55;box-shadow:0 0 12px #A78BFA"); tl.fromTo(d, { y: 0 }, { y: -130 - (i % 5) * 50, duration: S[k].len, ease: "none" }, S[k].start); }
+    return inn;
+  };
+  const wrapScene = (k) => { const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Array.from(inn.children).filter(c => c !== w && !/^bg/.test(c.id)).forEach(c => w.appendChild(c)); Cam.frame(w, 540, 960, 1); return w; };
+  const VIO = "#A78BFA", PINK = "#F0ABFC";
+  /* terminal window with typed lines. rows: [text, color, typeSpeed(chars/s)|0 = appear]. Returns {card,end,ys} */
+  function term(host, id, x, y, w, h, title, rows, t0, fs, lh) {
+    const card = el(host, id, "ps", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px");
+    el(card, id + "b", "", "left:0;top:0;width:" + w + "px;height:62px;background:#2B1A63;border-bottom:2px solid #8B5CF6");
+    [0, 1, 2].forEach(i => el(card, id + "d" + i, "", "left:" + (24 + i * 30) + "px;top:22px;width:18px;height:18px;border-radius:50%;background:#C4B5FD;opacity:" + (0.9 - i * 0.2)));
+    el(card, id + "t", "", "left:130px;top:0;font:700 26px/62px var(--body);color:#EDE6FF", title);
+    const ys = []; let t = t0;
+    rows.forEach((r, i) => {
+      const yy = 86 + i * lh; ys.push(yy);
+      const d = el(card, id + "r" + i, "mono", "left:28px;top:" + yy + "px;font:600 " + fs + "px/" + lh + "px var(--mono);color:" + (r[1] || "#fff"), r[0]);
+      const at = r[3] != null ? r[3] : t;
+      if (r[2]) { const n = r[0].length, dur = n / r[2]; d.style.clipPath = "inset(0 100% 0 0)"; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + n + ")" }, at); t = at + dur + 0.05; }
+      else { tl.from(d, { opacity: 0, x: -14, duration: 0.14 }, at); t = at + 0.1; }
+    });
+    return { card, end: t, ys };
+  }
+  const phone = (host, id, x, y, w, imgs) => {
+    const h = Math.round(w * 2532 / 1170) , fr = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + (w + 20) + "px;height:" + (h + 20) + "px;border-radius:44px;background:#0B0620;border:4px solid #C4B5FD;box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 50px rgba(167,139,250,.35);overflow:hidden");
+    const ims = imgs.map((f, i) => { const im = document.createElement("img"); im.src = "assets/" + f; im.id = id + "i" + i; im.style.cssText = "position:absolute;left:10px;top:10px;width:" + w + "px;height:" + h + "px;border-radius:34px;opacity:" + (i ? 0 : 1); fr.appendChild(im); return im; });
+    return { fr, ims, h: h + 20 };
+  };
+  const swapTo = (ph, i, at) => { tl.to(ph.ims[i], { opacity: 1, duration: 0.18 }, at); if (i) tl.to(ph.ims[i - 1], { opacity: 0, duration: 0.01 }, at + 0.2); };
+  const stat = (host, id, x, y, w, big, lab, col) => { const g = el(host, id, "glass", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:150px"); const b = el(g, id + "n", "", "left:22px;top:18px;font:900 64px/1 var(--body);color:" + (col || "#fff"), big); el(g, id + "l", "", "left:22px;top:100px;font:800 21px/1 var(--mono);letter-spacing:.05em;color:#D9CCFF", lab); return { g, b }; };
+
+  /* ================================================================= S1 HOOK */
+  const s1i = base("s1"); hud(s1i, "h1", "EP 07 · CLAUDE CODE SKILL", 0.05);
+  const a1 = el(s1i, "a1", "t1", "left:60px;top:250px;font-size:112px", "REBUILD AN APP"), a2 = el(s1i, "a2", "t1", "left:60px;top:380px;font-size:120px;color:#C4B5FD;text-shadow:0 0 40px rgba(167,139,250,.9)", "WITH CLAUDE?!");
+  tl.from(a1, { opacity: 0, x: -220, scale: 0.7, duration: 0.35, ease: "back.out(2)", transformOrigin: "0 50%" }, 0.1); tl.from(a2, { opacity: 0, x: 240, duration: 0.3, ease: "power3.out" }, 0.4);
+  const ob = el(s1i, "ob", "ps", "left:50px;top:610px;width:460px;height:560px;transform:rotate(-5deg)"); el(ob, "obh", "", "left:0;top:0;width:460px;height:50px;background:#2B1A63");
+  [0, 1, 2, 3, 4].forEach(i => el(ob, "obl" + i, "", "left:26px;top:" + (84 + i * 76) + "px;width:" + (300 + (i % 3) * 40) + "px;height:20px;border-radius:10px;background:#C4B5FD55"));
+  const orb = NO.ribbon(ob, { id: "orb", x: 20, y: 470, w: 420, text: "ORIGINAL · PLACEHOLDER" }); tl.from(orb, { opacity: 0, duration: 0.2 }, 0.9);
+  tl.fromTo(ob, { scale: 0.6, opacity: 0, x: -200 }, { scale: 1, opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 0.15);
+  const ph1 = phone(s1i, "ph1", 640, 580, 330, ["04-booked.png"]); tl.from(ph1.fr, { opacity: 0, y: 200, rotation: 8, duration: 0.5, ease: "back.out(1.5)" }, 0.9);
+  chip(s1i, "ph1c", 600, 1370, "TIDYTIME DEMO · REAL", { size: 19, pad: "7px 14px 8px" }); tl.from("#ph1c", { opacity: 0, duration: 0.25 }, 1.4);
+  const ar = el(s1i, "ar1", "", "left:500px;top:820px;font:900 110px/1 var(--body);color:#FFC83D", "→"); tl.from(ar, { opacity: 0, scale: 0.3, duration: 0.3, ease: "back.out(3)" }, 1.1);
+  const bot1 = botAt(s1i, "bot1", 130, 1190, 210); bot1.face(tl, 0, -1, 0.01); bot1.rise(tl, 0.3, 450, 0.4); bot1.blinks(tl, 1, 3.6, 1.1);
+  bot1.aimPoint(tl, 1.0, { x: 130, y: 1190, scale: 1, target: [300, 880], hand: "R", hold: 0.6 }); bot1.react(tl, 2.2, "think");
+
+  /* ================================================================= S2 MEET REPLICA SKILL */
+  const s2i = base("s2"); hud(s2i, "h2", "THE REPO", S.s2.start + 0.15);
+  const gh = el(s2i, "gh", "glass", "left:40px;top:290px;width:1000px;height:330px");
+  el(gh, "ghn", "", "left:34px;top:30px;font:900 44px/1 var(--body);color:#fff", "Jakeschincariol / replica-skill");
+  el(gh, "ght", "", "left:34px;top:100px;width:930px;font:600 31px/1.35 var(--body);color:#E9E1FF", "Eleven Claude skills that clone any app. Free, MIT, no signup, no API key, nothing to connect.");
+  ["MIT", "11 SKILLS", "PLUGIN"].forEach((c, i) => chip(gh, "ghc" + i, 34 + i * 190, 250, c, { size: 22, pad: "8px 16px 9px" }));
+  const rbh = NO.ribbon(s2i, { id: "rbh", x: 40, y: 628, w: 640, text: "REBUILT FROM THE REAL README" }); rbh.style.zIndex = 5;
+  tl.from(gh, { opacity: 0, y: 80, scale: 0.94, duration: 0.4, ease: "power3.out" }, S.s2.start + 0.15); tl.from(rbh, { opacity: 0, duration: 0.2 }, S.s2.start + 0.55);
+  const tS_early = PW("p1", "Eleven") - 0.1;
+  [["NOT A COPY", 40, "#FCA5A5"], ["REBUILD WHAT IT DOES", 40, "#E9E1FF"], ["IN YOUR OWN BRAND", 40, "#FFE08A"]].forEach(([tx, x, fg], i) => { const c = chip(s2i, "ear" + i, x, 760 + i * 120, tx, { size: 42, pad: "18px 32px 20px", fg }); const tt = PW("p0b", ["copy", "rebuild", "brand"][i]); tl.from(c, { opacity: 0, x: -400, duration: 0.3, ease: "back.out(1.7)" }, tt - 0.2); tl.to(c, { opacity: 0, x: 300, duration: 0.25 }, tS_early); });
+  const SK = ["recon", "architect", "design", "build", "backend", "test", "diff", "entrepreneur", "brand", "launch", "deploy"];
+  const tS = tS_early, tE = PW("p1", "apps"), stp = (tE - tS) / 11, skEls = [];
+  SK.forEach((s, i) => { const c = el(s2i, "sk" + i, "glass", "left:" + (40 + (i % 2) * 510) + "px;top:" + (700 + Math.floor(i / 2) * 100) + "px;width:490px;height:88px;border-radius:20px");
+    el(c, "skn" + i, "", "left:20px;top:22px;font:900 40px/1 var(--body);color:#C4B5FD", String(i + 1).padStart(2, "0")); el(c, "skt" + i, "", "left:96px;top:26px;font:800 32px/1 var(--mono);color:#fff", "replica-" + s);
+    tl.from(c, { opacity: 0, x: i % 2 ? 300 : -300, scale: 0.8, duration: 0.3, ease: "back.out(1.6)" }, tS + i * stp); skEls.push(c); });
+  const fr = chip(s2i, "fr2", 40, 1340, "FREE", { size: 30, pad: "12px 26px 14px", bg: "rgba(255,200,61,.16)", bd: "#FFC83D", fg: "#FFE08A" });
+  const mt = chip(s2i, "mt2", 205, 1340, "MIT LICENSED", { size: 30, pad: "12px 26px 14px" }), nc = chip(s2i, "nc2", 510, 1340, "NOTHING TO CONNECT", { size: 30, pad: "12px 26px 14px" });
+  [fr, mt, nc].forEach((c, i) => tl.from(c, { opacity: 0, scale: 0.4, rotation: -5, duration: 0.3, ease: "back.out(2.4)" }, PW("p1b", ["free", "mit", "nothing"][i]) - 0.1));
+  const bot2 = botAt(s2i, "bot2", 850, 1300, 190); bot2.face(tl, 0, -1, 0.01); bot2.rise(tl, S.s2.start + 0.6, 420, 0.4); bot2.blinks(tl, S.s2.start, S.s2.end, 1.1);
+  bot2.aimPoint(tl, PW("p1", "Eleven") - 0.3, { x: 850, y: 1300, scale: 1, target: [700, 800], hand: "L", hold: 0.8 }); bot2.react(tl, PW("p1b", "free") + 0.1, "celebrate");
+
+  /* ================================================================= S3 INSTALL */
+  const s3i = base("s3"); hud(s3i, "h3", "INSTALL · REAL OUTPUT", S.s3.start + 0.15);
+  const tI = PW("p2", "install"), t3 = S.s3.start + 0.4;
+  const T3 = term(s3i, "t3", 40, 300, 1000, 860, "claude · terminal", [
+    ["$ claude plugin marketplace add", "#F5E7A5", 30, t3], ["    Jakeschincariol/replica-skill", "#F5E7A5", 30],
+    ["√ Successfully added marketplace:", "#9CF2B6", 0, t3 + 2.3], ["  replica-skill", "#9CF2B6", 0, t3 + 2.4],
+    ["", "#fff", 0, t3 + 2.5],
+    ["$ claude plugin install", "#F5E7A5", 30, tI - 0.2], ["    replica-skill@replica-skill", "#F5E7A5", 30],
+    ["√ Successfully installed plugin:", "#9CF2B6", 0, tI + 1.4], ["  replica-skill@replica-skill", "#9CF2B6", 0, tI + 1.5], ["  (scope: user)", "#9CF2B6", 0, tI + 1.6],
+    ["Status: √ enabled", "#9CF2B6", 0, tI + 1.9], ["Skills (11)", "#FFE08A", 0, tI + 2.2]
+  ], t3, 34, 60);
+  tl.from(T3.card, { opacity: 0, y: 90, scale: 0.94, duration: 0.35, ease: "power3.out" }, S.s3.start + 0.05);
+  const co3 = NO.callout(s3i, { id: "co3", x: 60, y: 300 + T3.ys[11] - 6, w: 340, h: 62, color: "#FFC83D" }); co3.draw(tl, tI + 2.3, 0.4);
+  chip(s3i, "vb3", 40, 1190, "VERBATIM · ISOLATED TEST PROFILE · MIT LICENSE", { size: 19, pad: "7px 14px 8px" }); tl.from("#vb3", { opacity: 0, duration: 0.25 }, tI + 0.6);
+  const bot3 = botAt(s3i, "bot3", 800, 1240, 200); bot3.face(tl, 0, -1, 0.01); bot3.rise(tl, S.s3.start + 0.5, 420, 0.4); bot3.blinks(tl, S.s3.start, S.s3.end, 1.1);
+  bot3.aimPoint(tl, tI - 0.3, { x: 800, y: 1240, scale: 1, target: [700, 1000], hand: "L", hold: 0.7 }); bot3.nod(tl, tI + 2.0);
+
+  /* ================================================================= S4 RESEARCH */
+  const s4i = base("s4"); hud(s4i, "h4", "STEP 1 · RESEARCH", S.s4.start + 0.15);
+  const bw = el(s4i, "bw4", "ps", "left:40px;top:290px;width:560px;height:520px"); el(bw, "bw4h", "", "left:0;top:0;width:560px;height:50px;background:#2B1A63");
+  el(bw, "bw4u", "", "left:70px;top:8px;width:440px;height:34px;border-radius:17px;background:#150C33;font:700 20px/34px var(--mono);color:#C4B5FD;text-align:center", "scheduling-app.example");
+  [0, 1, 2, 3, 4, 5].forEach(i => el(bw, "bw4l" + i, "", "left:" + (30 + (i % 3) * 170) + "px;top:" + (90 + Math.floor(i / 3) * 90) + "px;width:150px;height:70px;border-radius:12px;background:#C4B5FD33;border:2px solid #C4B5FD66"));
+  [0, 1, 2].forEach(i => el(bw, "bw4t" + i, "", "left:30px;top:" + (300 + i * 50) + "px;width:" + (420 - i * 60) + "px;height:18px;border-radius:9px;background:#C4B5FD44"));
+  const rb4 = NO.ribbon(bw, { id: "rb4", x: 40, y: 450, w: 480, text: "PLACEHOLDER · ORIGINAL SITE" });
+  tl.from(bw, { opacity: 0, x: -300, duration: 0.4, ease: "power3.out" }, S.s4.start + 0.1);
+  const fe = [["Public booking page with open slots", "must"], ["Pick a day then a time", "must"], ["Book as a guest without an account", "must"], ["Block a slot that is already taken", "must"], ["Show the guest's time zone", "must"], ["Reschedule or cancel a booking", "should"]];
+  const fcard = el(s4i, "fc4", "glass", "left:40px;top:850px;width:1000px;height:430px");
+  el(fcard, "fc4t", "", "left:30px;top:20px;font:800 24px/1 var(--mono);color:#FFE08A", "replica/features.csv · TIDYTIME DEMO ROWS");
+  const tF = PW("p3", "features") - 0.2, fstep = 0.32;
+  fe.forEach(([f, p], i) => { const r = el(fcard, "fc4r" + i, "", "left:24px;top:" + (70 + i * 56) + "px;width:950px;height:46px"); el(r, "fc4a" + i, "", "left:0;top:0;font:700 27px/46px var(--body);color:#fff", f); el(r, "fc4b" + i, "", "right:0;top:6px;padding:0 14px;font:800 20px/34px var(--mono);border-radius:17px;color:" + (p === "must" ? "#FFE08A" : "#D9CCFF") + ";border:2px solid " + (p === "must" ? "#FFC83D" : "#A78BFA"), p.toUpperCase()); tl.from(r, { opacity: 0, x: 120, duration: 0.22 }, tF + i * fstep); });
+  const arr = el(s4i, "ar4", "", "left:300px;top:790px;font:900 84px/1 var(--body);color:#FFC83D", "↓"); tl.from(arr, { opacity: 0, y: -30, duration: 0.25 }, PW("p3", "maps") - 0.1);
+  const pc = [["PUBLIC PAGES ✓", 40], ["YOUR OWN ACCOUNT ✓", 400]], tP = PW("p3b", "public");
+  pc.forEach(([t, x], i) => { const c = chip(s4i, "pc" + i, x, 1330, t, { size: 27, pad: "14px 24px 16px", bg: "rgba(34,197,94,.14)", bd: "#4ADE80", fg: "#BBF7D0" }); tl.from(c, { opacity: 0, scale: 0.4, duration: 0.3, ease: "back.out(2.4)" }, tP + i * 0.35 - 0.1); });
+  chip(s4i, "pc2", 40, 1410, "NOTHING ELSE · NO PROPRIETARY CODE COPIED", { size: 21, pad: "8px 16px 9px" }); tl.from("#pc2", { opacity: 0, duration: 0.25 }, PW("p3b", "account") + 0.1);
+  const bot4 = botAt(s4i, "bot4", 780, 330, 200); bot4.face(tl, 0, -1, 0.01); bot4.rise(tl, S.s4.start + 0.5, -420, 0.4); bot4.blinks(tl, S.s4.start, S.s4.end, 1.1);
+  bot4.aimPoint(tl, PW("p3", "screens") - 0.3, { x: 780, y: 330, scale: 1, target: [300, 600], hand: "L", hold: 0.7 }); bot4.react(tl, tP + 0.3, "think");
+
+  /* ================================================================= S5 BUILD + TEST */
+  const s5i = base("s5"); hud(s5i, "h5", "STEP 2 · BUILD + TEST", S.s5.start + 0.15);
+  const ph5 = phone(s5i, "ph5", 40, 290, 300, ["01-days.png", "02-times.png", "03-form.png", "04-booked.png"]);
+  tl.from(ph5.fr, { opacity: 0, x: -300, rotation: -6, duration: 0.45, ease: "back.out(1.4)" }, S.s5.start + 0.1);
+  const tB = PW("p4", "build"), tT = PW("p4", "test"), tBk = PW("p4", "booking");
+  swapTo(ph5, 1, tB + 0.2); swapTo(ph5, 2, tT); swapTo(ph5, 3, tBk + 0.3);
+  chip(s5i, "ph5c", 40, 960, "TIDYTIME DEMO · MY OWN BRAND", { size: 18, pad: "6px 12px 7px" }); tl.from("#ph5c", { opacity: 0, duration: 0.25 }, S.s5.start + 0.6);
+  const st1 = stat(s5i, "st1", 390, 290, 650, "PARITY 64.3 / 100", "parity.py · 1 MUST-HAVE MISSING", "#FFE08A");
+  const st2 = stat(s5i, "st2", 390, 460, 315, "9 / 9", "CONTRAST PAIRS · AA", "#9CF2B6"), st3 = stat(s5i, "st3", 725, 460, 315, "CLEAN", "BRAND SWEEP", "#9CF2B6");
+  const st4 = stat(s5i, "st4", 390, 630, 650, "TESTS  3/8", "PLAYWRIGHT · 8 BOOKING TESTS", "#FCA5A5");
+  [st1, st2, st3].forEach((s, i) => tl.from(s.g, { opacity: 0, x: 200, scale: 0.9, duration: 0.3, ease: "power3.out" }, tB + 0.4 + i * 0.4));
+  /* failing run (verbatim) -> passing run */
+  const FAILS = ["FAIL  4 empty form shows a validation message", "FAIL  5 double-clicking Confirm creates exactly one", "FAIL  6 confirmation message is shown", "FAIL  7 a booked slot is disabled for the next guest", "FAIL  8 slot taken mid-booking is refused…"];
+  const tC = PW("p4b", "caught"), tN = PW("p4b", "eight");
+  const T5 = term(s5i, "t5", 40, 1010, 1000, 400, "node tests/booking.test.mjs", [["RUN 1 · 3/8 passed", "#FCA5A5", 0, tC - 0.5]].concat(FAILS.map((f, i) => [f, "#FCA5A5", 0, tC - 0.3 + i * 0.18])), tC, 24, 52);
+  tl.from(T5.card, { opacity: 0, y: 80, duration: 0.3 }, tC - 0.7);
+  const p2 = el(T5.card, "t5p", "mono", "left:28px;top:86px;width:944px;height:300px;background:#150C33;font:700 40px/1.7 var(--mono);color:#9CF2B6", "RUN 2 · FIX APPLIED\n\nPASS  1 … PASS  8\n8/8 passed √");
+  tl.from(p2, { opacity: 0, duration: 0.01 }, tN - 0.05);
+  tl.to(st4.b, { duration: 0.01, onStart: () => {}, onReverseComplete: () => {} }, tN);
+  const st4n = el(st4.g, "st4n2", "", "left:22px;top:18px;font:900 64px/1 var(--body);color:#9CF2B6;background:#25173F;width:600px", "TESTS  8/8  √"); tl.from(st4n, { opacity: 0, scale: 1.4, duration: 0.25, ease: "back.out(2)" }, tN);
+  tl.from(st4.g, { opacity: 0, x: 200, duration: 0.3 }, tC - 0.6);
+  chip(s5i, "bg5", 390, 800, "BUG: A REAL ONE IN MY DEMO CODE · FOUND BY THE TESTS", { size: 18, pad: "6px 12px 7px" }); tl.from("#bg5", { opacity: 0, duration: 0.25 }, tC + 0.9);
+  chip(s5i, "tn5", 40, 1430, "RUN BY ME ON THE DEMO · NOT A CALENDLY CLONE CLAIM", { size: 19, pad: "7px 14px 8px", fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.14)" }); tl.from("#tn5", { opacity: 0, duration: 0.25 }, tB + 1.0);
+  const bot5 = botAt(s5i, "bot5", 840, 800, 170); bot5.face(tl, 0, -1, 0.01); bot5.rise(tl, S.s5.start + 0.5, 420, 0.4); bot5.blinks(tl, S.s5.start, S.s5.end, 1.1);
+  bot5.aimPoint(tl, tC - 0.3, { x: 840, y: 800, scale: 1, target: [700, 1100], hand: "L", hold: 0.7 }); bot5.shake(tl, tC + 0.2); bot5.react(tl, tN + 0.1, "celebrate");
+
+  /* ================================================================= S6 IMPROVE */
+  const s6i = base("s6"); hud(s6i, "h6", "STEP 3 · IMPROVE", S.s6.start + 0.15);
+  const nx = el(s6i, "nx", "glass", "left:40px;top:290px;width:1000px;height:520px");
+  el(nx, "nxt", "", "left:30px;top:22px;font:800 24px/1 var(--mono);color:#FFE08A", "MISSING, IN BUILD ORDER · parity.py");
+  const MS = [["must", "Host sets weekly availability"], ["should", "Reschedule or cancel a booking"], ["should", "Confirmation email to both sides"], ["should", "Connect a calendar to read busy times"], ["could", "Paid bookings"]];
+  const tMs = PW("p5", "suggest") - 1.2;
+  MS.forEach(([p, f], i) => { const r = el(nx, "nxr" + i, "", "left:24px;top:" + (74 + i * 86) + "px;width:950px;height:70px"); el(r, "nxp" + i, "", "left:0;top:14px;padding:0 14px;font:800 20px/38px var(--mono);border-radius:19px;color:" + (p === "must" ? "#FFE08A" : "#D9CCFF") + ";border:2px solid " + (p === "must" ? "#FFC83D" : "#A78BFA"), p.toUpperCase()); el(r, "nxf" + i, "", "left:150px;top:0;font:700 31px/70px var(--body);color:#fff", f); tl.from(r, { opacity: 0, x: 140, duration: 0.25 }, tMs + i * 0.38); });
+  const T6 = term(s6i, "t6", 40, 850, 1000, 330, "python3 replica-entrepreneur/reviews.py", [["$ python3 reviews.py reviews.csv", "#F5E7A5", 40, PW("p5b", "never") - 0.5], ["reviews: no usable rows.", "#FCA5A5", 0, PW("p5b", "invents") - 0.1], ["Every row needs a url (http...)", "#FCA5A5", 0], ["and the review text.", "#FCA5A5", 0]], PW("p5b", "never") - 0.5, 30, 52);
+  tl.from(T6.card, { opacity: 0, y: 90, duration: 0.35 }, PW("p5", "complaints") - 0.2);
+  const rl = [["NEVER INVENTS REVIEWS", "invents"], ["EVERY QUOTE NEEDS A REAL LINK", "link"], ["THIN THEMES (<3 REVIEWS) FLAGGED", null]];
+  rl.forEach(([t, w], i) => { const c = chip(s6i, "rl" + i, 40, 1260 + i * 64, t, { size: 26, pad: "11px 22px 13px", bg: i < 2 ? "rgba(34,197,94,.14)" : "rgba(255,200,61,.14)", bd: i < 2 ? "#4ADE80" : "#FFC83D", fg: i < 2 ? "#BBF7D0" : "#FFE08A" }); tl.from(c, { opacity: 0, x: -200, duration: 0.3, ease: "back.out(1.7)" }, (w ? PW("p5b", w) : PW("p5b", "link") + 0.7) - 0.15 + 0.0); });
+  const rbr = NO.ribbon(s6i, { id: "rbr", x: 40, y: 1195, w: 700, text: "PLACEHOLDER · NO LINKED REVIEWS COLLECTED" }); tl.from(rbr, { opacity: 0, duration: 0.2 }, PW("p5b", "invents") + 0.3);
+  const bot6 = botAt(s6i, "bot6", 800, 1250, 190); bot6.face(tl, 0, -1, 0.01); bot6.rise(tl, S.s6.start + 0.5, 420, 0.4); bot6.blinks(tl, S.s6.start, S.s6.end, 1.1);
+  bot6.aimPoint(tl, PW("p5", "suggest") - 0.3, { x: 800, y: 1250, scale: 1, target: [700, 600], hand: "L", hold: 0.7 }); bot6.shake(tl, PW("p5b", "invents") + 0.1);
+
+  /* ================================================================= S7 CTA */
+  const s7i = base("s7"); hud(s7i, "h7", "REPLICA SKILL", S.s7.start + 0.1);
+  const g7 = el(s7i, "g7", "glass", "left:40px;top:300px;width:1000px;height:150px"); el(g7, "g7t", "", "left:30px;top:40px;font:800 36px/1.1 var(--mono);color:#E9E1FF", "github.com/Jakeschincariol/replica-skill"); tl.from(g7, { opacity: 0, y: 40, duration: 0.3 }, S.s7.start + 0.1);
+  const tOut = PW("p6", "Follow") - 0.35;
+  tl.to([g7, "#h7k", "#h7b"], { opacity: 0, duration: 0.2 }, tOut + 0.05);
+  const botO = botAt(s7i, "botO", -400, 470, 300);
+  Outro.build(tl, s7i, tOut, { bot: botO, cx: 390, y: 470, fromX: -400 });
+
+  /* ---------- camera: zoom into the narrated detail, jump-cut punches, light sweeps ---------- */
+  const cams = { s2: wrapScene("s2"), s3: wrapScene("s3"), s4: wrapScene("s4"), s5: wrapScene("s5"), s6: wrapScene("s6") };
+  const zooms = [["s3", tI + 0.9, 540, 560], ["s5", tC - 0.1, 540, 1150], ["s6", PW("p5b", "invents") - 0.1, 540, 1000], ["s2", PW("p1", "Eleven") + 1.5, 540, 900]];
+  zooms.forEach(([k, t, cx, cy]) => { tl.set(cams[k], { scale: 1.08, x: 540 - 540 * 1.08, y: 900 - cy * 1.08 }, t); tl.set(cams[k], { scale: 1, x: 0, y: 0 }, t + 2.2); });
+  const sceneOf = t => { let r = "s1"; Object.keys(S).forEach(k => { if (t >= S[k].b) r = k; }); return r; };
+  const bounds = Object.keys(S).map(k => S[k].b); let n = 0;
+  for (let t = 1.0; t < S.s6.end - 0.4; t += 1.3) {
+    const k = sceneOf(t); if (!cams[k]) continue;
+    if (bounds.some(b => t > b - 0.2 && t < b + 0.6) || zooms.some(z => t > z[1] - 0.3 && t < z[1] + 2.6)) continue;
+    const s = [1.06, 1.0, 1.08, 0.97][n % 4], cx = [540, 510, 570, 540][n % 4], cy = [980, 900, 1020, 960][n % 4];
+    tl.set(cams[k], { x: 540 - cx * s, y: 960 - cy * s, scale: s }, t); n++;
+  }
+  let bn = 0;
+  for (let t = 0.9; t < S.s6.end - 0.3; t += 1.25) {
+    if (bounds.some(b => t > b - 0.25 && t < b + 0.6)) continue;
+    const dir = bn % 2 ? -1 : 1, b2 = el($("fx"), "bm" + bn, "", "left:-460px;top:0;width:420px;height:1920px;opacity:0;mix-blend-mode:screen;background:linear-gradient(90deg,transparent," + (bn % 2 ? "rgba(245,238,255,.7)" : "rgba(167,139,250,.85)") + ",transparent)");
+    tl.set(b2, { opacity: 1, x: dir > 0 ? 0 : 1560 }, t); tl.to(b2, { x: dir > 0 ? 1560 : 0, duration: 0.5, ease: "power2.inOut" }, t); tl.set(b2, { opacity: 0 }, t + 0.55); bn++;
+  }
+  /* ---------- transitions ---------- */
+  Cam.push(tl, S.s2.b, 0.5, { out: "#s1i", inn: "#s2i", ox: 760, oy: 900, scale: 4 });
+  Cam.whip(tl, S.s3.b, 0.5, { out: "#s2i", inn: "#s3i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s4.b, 0.5, { out: "#s3i", inn: "#s4i", dir: -1, blur: 28 });
+  Cam.whip(tl, S.s5.b, 0.5, { out: "#s4i", inn: "#s5i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s6.b, 0.5, { out: "#s5i", inn: "#s6i", dir: -1, blur: 28 });
+  Cam.iris(tl, S.s7.b, 0.7, { inn: "#s7i", cx: 540, cy: 760, ring: "#A78BFA", host: $("fx"), id: "ir7" });
+  /* ---------- subtitles ---------- */
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 330, active: "#FFFFFF", block: "#7C3AED", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

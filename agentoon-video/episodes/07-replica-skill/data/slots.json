@@ -1,0 +1,34 @@
+{
+ "_readme": "REAL items are verbatim/measured (install transcript, tool outputs, test log, screenshots of the demo app TidyTime). PLACEHOLDERS: the original scheduling website footage (calendly.com is unreachable from this sandbox), the GitHub page screenshot (rebuilt from the real README), a real replica-recon run on that site, and real linked reviews. Replace by setting status verified + file.",
+ "preview_banner": true,
+ "slots": {
+  "scheduling_site": {
+   "scene": "s1,s4",
+   "status": "placeholder",
+   "file": null,
+   "source": null,
+   "note": "Real screenshots/recording of a public scheduling website (e.g. Calendly's public pages)."
+  },
+  "github_page": {
+   "scene": "s2",
+   "status": "placeholder",
+   "file": null,
+   "source": null,
+   "note": "Real screenshot of github.com/Jakeschincariol/replica-skill (README text is real, page is rebuilt)."
+  },
+  "recon_run": {
+   "scene": "s4",
+   "status": "placeholder",
+   "file": null,
+   "source": null,
+   "note": "Real /replica-recon run in Claude Code on the chosen site (needs your Claude Code session, and it uses your Claude usage)."
+  },
+  "reviews": {
+   "scene": "s6",
+   "status": "placeholder",
+   "file": null,
+   "source": null,
+   "note": "Real, linked reviews in replica/reviews.csv -> real reviews.py ranking."
+  }
+ }
+}

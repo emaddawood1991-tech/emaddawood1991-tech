@@ -1,0 +1,11 @@
+$ node tests/booking.test.mjs   (Playwright, Chromium, 390x844)
+PASS  1 page shows 5 bookable days
+PASS  2 time zone is shown to the guest
+PASS  3 picking a day shows 9 time slots
+FAIL  4 empty form shows a validation message -> 
+FAIL  5 double-clicking Confirm creates exactly one booking -> page.evaluate: TypeError: Cannot read properties of null (reading 'length')
+FAIL  6 confirmation message is shown -> locator.waitFor: Timeout 30000ms exceeded.
+FAIL  7 a booked slot is disabled for the next guest -> 10:00 disabled: expected true, got false
+FAIL  8 slot taken mid-booking is refused with a clear message -> 
+
+3/8 passed

@@ -63,3 +63,5 @@ Built with HTML, CSS, SVG, canvas and GSAP: flat colour paper fields, halftone-d
 - A sequence of cards that fade in and out.
 - A decorative robot in the corner.
 - Effects chosen because they are available (glitch, whoosh, zoom) rather than because they explain something.
+
+| Ep 07 Replica Skill | Violet Lab (violet/amber, glass + terminal) | real transcripts, phone screenshots, test/parity stat tiles | whip + push + iris | dark lab, no scan-beam repeats of ep05 look |

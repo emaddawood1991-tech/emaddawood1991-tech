@@ -1,0 +1,43 @@
+$ python3 replica-design/contrast.py replica/design/tokens.json
+  AAA   15.25:1  text                     on bg                   
+  AAA   14.10:1  text                     on surface              
+  AA     6.31:1  text-muted               on bg                   
+  AA     5.84:1  text-muted               on surface              
+  AA     5.36:1  on-accent                on accent               
+  AA     5.19:1  accent                   on bg                   
+  AA     6.37:1  danger                   on bg                   
+  AA     4.86:1  success                  on bg                   
+  PASS   4.56:1  border-input             on bg                   ui
+
+  9 pairs, 0 failing AA
+
+$ python3 replica-brand/sweep.py . --avoid "Calendly"
+Clean. Nothing of the original's name, domain or colours found.
+
+$ python3 replica-diff/parity.py replica/features.csv
+Parity: 64.3 / 100
+
+features 64.3  (11 counted, must-haves 6 of 7 done)
+
+Not shippable yet: 1 must-have features are not done.
+
+By area, weakest first
+- availability                   0.0  (1 features)
+- onboarding                     0.0  (1 features)
+- payments                       0.0  (1 features)
+- notifications                 60.0  (2 features)
+- booking page                  88.2  (6 features)
+
+Missing, in build order
+- [must] availability: Host sets weekly availability, no  (fixed demo slots)
+- [should] booking page: Reschedule or cancel a booking, no  (not built)
+- [should] notifications: Confirmation email to both sides, no  (not built in this slice)
+- [should] onboarding: Connect a calendar to read busy times, no  (not built)
+- [could] payments: Paid bookings, no  (out of scope)
+
+$ python3 -m unittest discover -s tests   (in the replica-skill repo)
+.........................................................
+----------------------------------------------------------------------
+Ran 57 tests in 0.825s
+
+OK

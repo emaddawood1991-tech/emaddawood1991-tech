@@ -1,0 +1,129 @@
+{
+ "music": [
+  {
+   "from": "p0",
+   "to": "p0b",
+   "mood": "hook",
+   "fo": -0.1,
+   "to_off": 0.1
+  },
+  {
+   "from": "p0b",
+   "to": "p5",
+   "mood": "demo",
+   "to_off": 0.1
+  },
+  {
+   "from": "p5",
+   "to": "p6.end",
+   "mood": "result",
+   "to_off": 1.9
+  }
+ ],
+ "sfx": [
+  {
+   "name": "pop",
+   "at": "p0:rebuild",
+   "off": 0.0,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s2",
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "at": "p1:Replica",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "tick",
+   "at": "p1:Eleven",
+   "off": 0.0,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s3",
+   "gain": 0.5
+  },
+  {
+   "name": "type",
+   "at": "p2",
+   "off": 0.2,
+   "dur": 2.2,
+   "cps": 30,
+   "gain": 0.3
+  },
+  {
+   "name": "tick",
+   "at": "p2:install",
+   "off": 0.0,
+   "gain": 0.8
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s4",
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "at": "p3:maps",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "tick",
+   "at": "p3b:public",
+   "off": 0.0,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s5",
+   "gain": 0.5
+  },
+  {
+   "name": "tick",
+   "at": "p4:test",
+   "off": 0.0,
+   "gain": 0.8
+  },
+  {
+   "name": "tick",
+   "at": "p4b:caught",
+   "off": 0.0,
+   "gain": 0.8
+  },
+  {
+   "name": "sparkle",
+   "at": "p4b:eight",
+   "off": 0.0,
+   "gain": 0.35
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s6",
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "at": "p5b:invents",
+   "off": 0.0,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s7",
+   "gain": 0.4
+  },
+  {
+   "name": "sparkle",
+   "at": "p6:follow",
+   "off": 0.1,
+   "gain": 0.5
+  }
+ ]
+}

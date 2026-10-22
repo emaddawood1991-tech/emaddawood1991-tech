@@ -1,0 +1,2 @@
+$ python3 replica-entrepreneur/reviews.py replica/reviews.csv
+reviews: no usable rows. Every row needs a url (http...) and the review text.

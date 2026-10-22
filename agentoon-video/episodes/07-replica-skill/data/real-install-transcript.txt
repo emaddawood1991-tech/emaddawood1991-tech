@@ -1,0 +1,52 @@
+$ claude plugin marketplace add Jakeschincariol/replica-skill
+Adding marketplace…Cloning via HTTPS: https://github.com/Jakeschincariol/replica-skill.git
+Refreshing marketplace cache (timeout: 120s)…
+Cloning repository (timeout: 120s): https://github.com/Jakeschincariol/replica-skill.git
+Clone complete, validating marketplace…
+Cleaning up old marketplace cache…
+√ Successfully added marketplace: replica-skill (declared in user settings)
+
+$ claude plugin install replica-skill@replica-skill
+Installing plugin "replica-skill@replica-skill"...√ Successfully installed plugin: replica-skill@replica-skill (scope: user)
+
+
+$ claude plugin list
+Installed plugins:
+
+  > replica-skill@replica-skill
+    Version: 1.0.0
+    Scope: user
+    Status: √ enabled
+
+
+$ claude plugin details replica-skill@replica-skill
+replica-skill 1.0.0
+  Description: Eleven Claude skills that clone any app: recon, architecture, design, build, backend, test, parity diff, a review-reading Entrepreneur skill, brand, launch and deploy.
+  Source: replica-skill@replica-skill
+
+Component inventory
+  Skills (11)  replica-architect, replica-backend, replica-brand, replica-build, replica-deploy, replica-design, replica-diff, replica-entrepreneur, replica-launch, replica-recon, replica-test
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~1,806 tok   added to every session
+
+Per-component (rounded)
+  component             always-on  on-invoke
+  replica-architect          ~170      ~1.5k
+  replica-design             ~170      ~1.3k
+  replica-backend            ~150      ~1.3k
+  replica-recon              ~170      ~1.8k
+  replica-test               ~160        ~1k
+  replica-deploy             ~170      ~1.4k
+  replica-launch             ~150      ~1.3k
+  replica-diff               ~160      ~1.3k
+  replica-brand              ~170      ~1.4k
+  replica-entrepreneur       ~200      ~1.5k
+  replica-build              ~150      ~1.2k
+
+  On-invoke cost is paid each time a skill or agent fires.
+  Token counts are estimates and may differ from actual usage.

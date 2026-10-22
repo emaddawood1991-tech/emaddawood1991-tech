@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TidyTime · Book a time</title>
+<style>
+:root{--bg:#FFFBF2;--surface:#FFF1D6;--border:#E8D9B8;--text:#2B2118;--muted:#6B5B4A;--accent:#E8590C;--on-accent:#FFFFFF;--danger:#B42318;--success:#1A7F4B}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+main{max-width:430px;margin:0 auto;padding:20px 18px 40px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px}.dot{width:26px;height:26px;border-radius:8px;background:var(--accent)}
+h1{font-size:28px;line-height:34px;margin:18px 0 4px}p.sub{color:var(--muted);margin:0 0 16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+button{font:inherit;cursor:pointer}
+.day,.slot{border:2px solid var(--border);background:#fff;border-radius:12px;padding:10px 4px;text-align:center}
+.day[aria-pressed=true],.slot[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.slot:disabled{opacity:.45;text-decoration:line-through;cursor:not-allowed}
+label{display:block;font-weight:600;margin:10px 0 4px}input{width:100%;font:inherit;padding:12px;border:2px solid var(--border);border-radius:10px;background:#fff}
+.go{width:100%;margin-top:14px;padding:14px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);font-weight:800;font-size:18px}.go:disabled{opacity:.5}
+.tz{font-size:14px;color:var(--muted)}.ok{border-color:var(--success)}.ok h2{color:var(--success);margin:0 0 6px}
+.err{color:var(--danger);font-weight:600;margin-top:8px}[hidden]{display:none!important}
+</style></head><body><main>
+<div class="brand"><span class="dot"></span>TidyTime</div>
+<h1>Book a 30-minute chat</h1><p class="sub">Pick a day, then a time.</p>
+<section class="card" id="pick"><div class="days" id="days" role="group" aria-label="Days"></div>
+<p class="tz" id="tz"></p><div class="slots" id="slots" role="group" aria-label="Times"></div></section>
+<section class="card" id="form" hidden><label for="name">Your name</label><input id="name" autocomplete="name">
+<label for="email">Email</label><input id="email" type="email" autocomplete="email"><div class="err" id="err" role="alert"></div>
+<button class="go" id="confirm" type="button">Confirm booking</button></section>
+<section class="card ok" id="done" hidden role="status"><h2>You're booked</h2><p id="summary"></p></section>
+</main><script>
+const KEY="tidytime.bookings";const store=()=>JSON.parse(localStorage.getItem(KEY)||"[]");
+const times=["09:00","09:30","10:00","10:30","11:00","11:30","14:00","14:30","15:00"];
+const tz=Intl.DateTimeFormat().resolvedOptions().timeZone;document.getElementById("tz").textContent="Times shown in "+tz;
+let day=null,time=null,busy=false;
+const days=[];for(let d=new Date(2026,9,26);days.length<5;d.setDate(d.getDate()+1)){if(d.getDay()%6)days.push(new Date(d))}
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function renderDays(){const el=document.getElementById("days");el.innerHTML="";days.forEach(d=>{const b=document.createElement("button");b.className="day";b.type="button";b.dataset.date=iso(d);b.setAttribute("aria-pressed",day===iso(d));b.innerHTML=d.toLocaleDateString("en",{weekday:"short"})+"<br><b>"+d.getDate()+"</b>";b.onclick=()=>{day=iso(d);time=null;renderDays();renderSlots();sync()};el.appendChild(b)})}
+function renderSlots(){const el=document.getElementById("slots");el.innerHTML="";if(!day)return;const taken=store().filter(b=>b.date===day).map(b=>b.time);times.forEach(t=>{const b=document.createElement("button");b.className="slot";b.type="button";b.dataset.time=t;b.textContent=t;b.disabled=taken.includes(t);b.setAttribute("aria-pressed",time===t);b.onclick=()=>{time=t;renderSlots();sync()};el.appendChild(b)})}
+function sync(){document.getElementById("form").hidden=!(day&&time)}
+document.getElementById("confirm").onclick=()=>{if(busy)return;const n=document.getElementById("name").value.trim(),e=document.getElementById("email").value.trim(),err=document.getElementById("err");err.textContent="";
+if(!n||!/^\S+@\S+\.\S+$/.test(e)){err.textContent="Enter your name and a valid email.";return}
+busy=true;confirm_.disabled=true;const all=store();
+if(all.some(b=>b.date===day&&b.time===time)){err.textContent="Sorry, that time was just taken. Pick another.";busy=false;confirm_.disabled=false;time=null;renderSlots();sync();return}
+all.push({date:day,time,name:n,email:e,tz});localStorage.setItem(KEY,JSON.stringify(all));
+document.getElementById("pick").hidden=true;document.getElementById("form").hidden=true;document.getElementById("done").hidden=false;
+document.getElementById("summary").textContent=n+", you're booked for "+day+" at "+time+" ("+tz+").";};
+const confirm_=document.getElementById("confirm");renderDays();
+</script></body></html>
