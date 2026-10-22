@@ -1,0 +1,41 @@
+{
+ "_readme": "Each tool is a SLOT fed by a REAL screen recording from a Windows PC (see deliverables/recording-workflow.md). status 'placeholder' renders a labeled schematic. To verify: save the clip in assets/, set file (e.g. assets/power.mp4), source, status 'verified', run python3 build.py. Never mark verified without the real clip. SAFETY: never click Next/Finish in System Restore, never click Restart now in Memory Diagnostic.",
+ "preview_banner": true,
+ "slots": {
+  "win_r": {
+   "scene": "s1",
+   "status": "placeholder",
+   "file": null,
+   "source": null,
+   "note": "Real desktop, press WIN+R, the Run dialog opens."
+  },
+  "power": {
+   "scene": "s2",
+   "status": "placeholder",
+   "file": null,
+   "source": null,
+   "note": "Type powercfg.cpl in Run, Enter, Power Options window with plans visible."
+  },
+  "reliability": {
+   "scene": "s3",
+   "status": "placeholder",
+   "file": null,
+   "source": null,
+   "note": "perfmon /rel -> Reliability Monitor with stability chart and failure reports."
+  },
+  "restore": {
+   "scene": "s4",
+   "status": "placeholder",
+   "file": null,
+   "source": null,
+   "note": "rstrui.exe -> System Restore wizard; CANCEL out, never start a restore."
+  },
+  "memdiag": {
+   "scene": "s5",
+   "status": "placeholder",
+   "file": null,
+   "source": null,
+   "note": "mdsched.exe -> Windows Memory Diagnostic dialog; CLOSE it, never click Restart now."
+  }
+ }
+}

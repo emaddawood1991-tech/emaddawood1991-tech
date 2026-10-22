@@ -1,0 +1,14 @@
+{ "title": "Windows Run commands Part 3 (PREVIEW, real recordings pending)", "voice": "am_michael", "speed": 1.2, "total": 32.0, "music": [], "sfx": [],
+  "phrases": [
+    {"id": "p0", "speak": "Four hidden Windows tools you can open in seconds!", "show": "Four hidden Windows tools you can open in seconds!", "map": null},
+    {"id": "p0b", "speak": "Press Windows plus R first.", "show": "Press Windows plus R first.", "map": null},
+    {"id": "p1", "speak": "Check your computer's power settings.", "show": "Check your computer's power settings.", "map": null},
+    {"id": "p1b", "speak": "Type the command, then pick a plan.", "show": "Type the command, then pick a plan.", "map": null},
+    {"id": "p2", "speak": "Find out why Windows or your apps crashed.", "show": "Find out why Windows or your apps crashed.", "map": null},
+    {"id": "p2b", "speak": "Type it to see your stability history.", "show": "Type it to see your stability history.", "map": null},
+    {"id": "p3", "speak": "Open System Restore when you need recovery options.", "show": "Open System Restore when you need recovery options.", "map": null},
+    {"id": "p3b", "speak": "Browse recovery points. Don't start a restore.", "show": "Browse recovery points. Don't start a restore.", "map": null},
+    {"id": "p4", "speak": "And check your RAM for memory problems.", "show": "And check your RAM for memory problems.", "map": null},
+    {"id": "p4b", "speak": "It can restart your PC, so save your work first.", "show": "It can restart your PC, so save your work first.", "map": null},
+    {"id": "p5", "speak": "Save these commands and follow Agentoon dot A I!", "show": "Save these commands and follow Agentoon.ai!", "map": [["Save","Save"],["these","these"],["commands","commands"],["and","and"],["follow","follow"],["Agentoon.ai!","Agentoon dot A I!"]]}
+  ] }

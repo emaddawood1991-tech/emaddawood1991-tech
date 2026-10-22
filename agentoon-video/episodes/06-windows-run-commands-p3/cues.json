@@ -1,0 +1,136 @@
+{
+ "music": [
+  {
+   "from": "p0",
+   "to": "p1",
+   "mood": "hook",
+   "fo": -0.1,
+   "to_off": 0.1
+  },
+  {
+   "from": "p1",
+   "to": "p5",
+   "mood": "demo",
+   "to_off": 0.1
+  },
+  {
+   "from": "p5",
+   "to": "p5.end",
+   "mood": "result",
+   "to_off": 0.8
+  }
+ ],
+ "sfx": [
+  {
+   "name": "pop",
+   "at": "p0:Four",
+   "off": 0.1,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "at": "p0b:Windows",
+   "off": 0.0,
+   "gain": 0.9
+  },
+  {
+   "name": "tick",
+   "at": "p0b:R",
+   "off": 0.0,
+   "gain": 0.9
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s2",
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "p1",
+   "off": 0.3,
+   "dur": 1.0,
+   "cps": 14,
+   "gain": 0.3
+  },
+  {
+   "name": "tick",
+   "at": "p1b:command",
+   "off": 0.4,
+   "gain": 0.8
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s3",
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "p2",
+   "off": 0.3,
+   "dur": 1.0,
+   "cps": 12,
+   "gain": 0.3
+  },
+  {
+   "name": "tick",
+   "at": "p2b:it",
+   "off": 0.2,
+   "gain": 0.8
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s4",
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "p3",
+   "off": 0.3,
+   "dur": 1.0,
+   "cps": 11,
+   "gain": 0.3
+  },
+  {
+   "name": "tick",
+   "at": "p3b:Browse",
+   "off": 0.0,
+   "gain": 0.8
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s5",
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "p4",
+   "off": 0.3,
+   "dur": 1.0,
+   "cps": 11,
+   "gain": 0.3
+  },
+  {
+   "name": "tick",
+   "at": "p4b:It",
+   "off": 0.1,
+   "gain": 0.8
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s6",
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "at": "p5:Save",
+   "off": 0.0,
+   "gain": 0.5
+  },
+  {
+   "name": "sparkle",
+   "at": "p5:follow",
+   "off": 0.1,
+   "gain": 0.5
+  }
+ ]
+}

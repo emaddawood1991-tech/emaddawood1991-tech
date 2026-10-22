@@ -1,0 +1,9 @@
+WINDOWS RUN COMMANDS — PART 3 (press WIN + R, type, Enter)
+
+27  Power Options ............ powercfg.cpl
+28  Reliability Monitor ...... perfmon /rel
+29  System Restore ........... rstrui.exe     (opens the wizard; do NOT click Next/Finish unless you really want a restore)
+30  Memory Diagnostic ........ mdsched.exe    (do NOT click "Restart now" unless you want to restart and test)
+
+All four only OPEN a window. Closing the System Restore wizard with Cancel and the Memory Diagnostic window with the X changes nothing.
+Admin rights: System Restore and Memory Diagnostic may ask for administrator approval (UAC); choose Yes only if you want to proceed to that point.

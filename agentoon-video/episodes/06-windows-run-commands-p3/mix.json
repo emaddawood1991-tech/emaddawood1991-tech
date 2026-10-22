@@ -1,0 +1,120 @@
+{
+ "total": 30.2,
+ "music": [
+  {
+   "t0": 0.05,
+   "t1": 5.44,
+   "mood": "hook"
+  },
+  {
+   "t0": 5.34,
+   "t1": 26.35,
+   "mood": "demo"
+  },
+  {
+   "t0": 26.25,
+   "t1": 30.33,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "pop",
+   "gain": 0.4,
+   "t": 0.25
+  },
+  {
+   "name": "tick",
+   "gain": 0.9,
+   "t": 3.82
+  },
+  {
+   "name": "tick",
+   "gain": 0.9,
+   "t": 4.63
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 5.26
+  },
+  {
+   "name": "type",
+   "dur": 1.0,
+   "cps": 14,
+   "gain": 0.3,
+   "t": 5.64
+  },
+  {
+   "name": "tick",
+   "gain": 0.8,
+   "t": 8.21
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 9.26
+  },
+  {
+   "name": "type",
+   "dur": 1.0,
+   "cps": 12,
+   "gain": 0.3,
+   "t": 9.64
+  },
+  {
+   "name": "tick",
+   "gain": 0.8,
+   "t": 12.18
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 13.74
+  },
+  {
+   "name": "type",
+   "dur": 1.0,
+   "cps": 11,
+   "gain": 0.3,
+   "t": 14.12
+  },
+  {
+   "name": "tick",
+   "gain": 0.8,
+   "t": 17.36
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 20.27
+  },
+  {
+   "name": "type",
+   "dur": 1.0,
+   "cps": 11,
+   "gain": 0.3,
+   "t": 20.65
+  },
+  {
+   "name": "tick",
+   "gain": 0.8,
+   "t": 23.17
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.4,
+   "t": 26.17
+  },
+  {
+   "name": "pop",
+   "gain": 0.5,
+   "t": 26.25
+  },
+  {
+   "name": "sparkle",
+   "gain": 0.5,
+   "t": 28.02
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+Ep 06 Windows Run commands Part 3 (30.2 s, ~167 wpm). (+) added to keep the voice continuous; the rest is your exact text.
+[0:00] Four hidden Windows tools you can open in seconds!
+[0:03] (+) Press Windows plus R first.
+[0:05] Check your computer's power settings.
+[0:07] (+) Type the command, then pick a plan.
+[0:09] Find out why Windows or your apps crashed.
+[0:12] (+) Type it to see your stability history.
+[0:14] Open System Restore when you need recovery options.
+[0:17] (+) Browse recovery points. Don't start a restore.
+[0:20] And check your RAM for memory problems.
+[0:23] (+) It can restart your PC, so save your work first.
+[0:26] Save these commands and follow Agentoon.ai!

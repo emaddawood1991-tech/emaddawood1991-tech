@@ -55,6 +55,7 @@ Built with HTML, CSS, SVG, canvas and GSAP: flat colour paper fields, halftone-d
 | 03 ChatCut 40 s Reel (preview, placeholders) | "Cut Room": cream editor desk, lime playhead, razor-line wipes, hard jump-cut punches with ink flashes, timeline schematics | cream / dark terminal / cream / navy | Inter 900 caps + JetBrains Mono | razor wipe, jump-cut scale snaps, flash cuts | white tag, coral active word | 2026-10-19 |
 | 04 Veo product ad 25 s (preview, placeholders) | "Ad Studio": charcoal set, silver C structure, red rim light, smoke, orbit; red scan beams + camera snaps | dark charcoal/red throughout | Inter 900 + JetBrains Mono | whip, push-through, iris, jump punches, light sweeps | dark pill, red word block | 2026-10-19 |
 | 05 PowerShell checks 33 s (preview, outputs pending) | "Fluent HUD": deep-blue cyber desk, glass panels, navy PowerShell window, cyan scan beams, shield/DNS/timeline graphics | blue-black throughout | Inter 900 + JetBrains Mono | push-through, whips, iris, zoom into output, light sweeps | dark pill, blue word block | 2026-10-20 |
+| 06 Windows Run commands P3 30 s (preview, recordings pending) | "Hidden Tools": ink-green desk, mint grid, keycaps, light Run/Windows schematics, mint scan beams | green-black throughout | Inter 900 + JetBrains Mono | whips, iris, punches, light sweeps | dark pill, green word block | 2026-10-22 |
 | _next episode_ | | | | | | |
 
 ## Anti-patterns
