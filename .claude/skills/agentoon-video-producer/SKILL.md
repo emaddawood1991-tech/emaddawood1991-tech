@@ -66,6 +66,8 @@ When the user provides Instagram/TikTok numbers, analyse retention drop points m
 | OneTake | Continuous-camera transition inspiration | PolyForm Noncommercial | **Ideas only. Never install, copy code or assets.** |
 | gbro-collage-broll | Paper-collage B-roll idea | MIT, but needs paid Gemini API | **Skip the workflow.** Build the collage effect locally. |
 | Local TTS | Narration | Kokoro (free, on-device) or edge-tts | Confirm availability first; no paid TTS. |
+| Remotion (optional) | Extra shots: kinetic subtitles, terminal/command animation, data graphics, clip embedding | Free for individuals / up to 3 employees, else company licence | Existing projects: remotion-video, remotion-studio, remotion-claude. Render shots to MP4 and place them in HyperFrames. See `references/remotion-blender.md`. Never the primary engine. |
+| Blender (optional) | True 3D shots (orbits, turntables) | Free (GPL) | Only if a Blender MCP is connected; render to video and composite into HyperFrames. |
 
 **Kit in this repo:** `agentoon-video/kit/` (`robot.js`, `outro.js`, `captions.js`, `camera.js`, `collage.js`, `term.js`, `agentoon.css`, `py/build_audio.py`; docs in `kit/README.md`, licences in `kit/LICENSES.md`). Scaffold a new episode with `agentoon-video/new-episode.sh <NN-slug>`; `episodes/00-quality-test/` is the reference build (rendered, validated). Never reuse its look for a real episode. Render with `npx hyperframes check` then `render --quality delivery --fps 30` inside the episode folder. If the user's own kit (`track.js`, `termplayer.js`, `looks.json`, `engine/hf.sh`) is also present, use it; if a file is missing, say so and build it; never pretend it exists.
 
@@ -78,5 +80,6 @@ When the user provides Instagram/TikTok numbers, analyse retention drop points m
 - `references/robot-acting.md` — expressive mascot performance
 - `references/retention-editing.md` — hooks, pacing, storytelling, narration
 - `references/reference-analysis.md` — techniques from the approved reference videos, measured benchmarks, technique↔topic table, kit backlog
+- `references/remotion-blender.md` — optional Remotion and Blender tools: status, render command for this sandbox, licence, where they help
 - `scripts/validate-render.sh` — automated post-render checks and phone-size contact sheet
 - `scripts/motion-profile.sh` — motion energy, hard cuts, static stretches, longest gap between motion bursts (read-only)
