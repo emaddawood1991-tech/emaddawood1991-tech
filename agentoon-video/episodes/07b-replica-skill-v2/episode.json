@@ -1,0 +1,125 @@
+{
+ "title": "Replica Skill for Claude Code (v2, real demos)",
+ "voice": "am_michael",
+ "speed": 1.1,
+ "total": 70.0,
+ "music": [],
+ "sfx": [],
+ "phrases": [
+  {
+   "id": "p0",
+   "speak": "What if Claude Code could rebuild an entire app?",
+   "show": "What if Claude Code could rebuild an entire app?",
+   "map": null
+  },
+  {
+   "id": "p0b",
+   "speak": "Same booking flow. Brand new app. Built by Claude Code.",
+   "show": "Same booking flow. Brand new app. Built by Claude Code.",
+   "map": null
+  },
+  {
+   "id": "p1",
+   "speak": "It starts with Replica Skill. Eleven free Claude skills, MIT licensed, on GitHub.",
+   "show": "It starts with Replica Skill. Eleven free Claude skills, MIT licensed, on GitHub.",
+   "map": null
+  },
+  {
+   "id": "p1b",
+   "speak": "They research, design, build, test, and rebrand an app.",
+   "show": "They research, design, build, test, and rebrand an app.",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "speak": "Install it in two commands: add the marketplace, then install the plugin.",
+   "show": "Install it in two commands: add the marketplace, then install the plugin.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "speak": "Step one, recon. Claude Code studies the app, and maps its screens, flows, and features.",
+   "show": "Step one, recon. Claude Code studies the app, and maps its screens, flows, and features.",
+   "map": null
+  },
+  {
+   "id": "p3b",
+   "speak": "Here, four screens, and a nineteen row feature matrix.",
+   "show": "Here, four screens, and a nineteen row feature matrix.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "speak": "Step two, build. It writes a fresh app called SlotNest, with its own colors and its own words.",
+   "show": "Step two, build. It writes a fresh app called SlotNest, with its own colors and its own words.",
+   "map": null
+  },
+  {
+   "id": "p4b",
+   "speak": "Then the real test. We ran nine browser checks, and all nine passed.",
+   "show": "Then the real test. We ran nine browser checks, and all nine passed.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "speak": "The parity check scores one hundred out of one hundred, and the brand sweep found nothing from the original.",
+   "show": "The parity check scores one hundred out of one hundred, and the brand sweep found nothing from the original.",
+   "map": null
+  },
+  {
+   "id": "p5b",
+   "speak": "It is not magic. Shared bookings still need a real server, and a perfect clone is never guaranteed.",
+   "show": "It is not magic. Shared bookings still need a real server, and a perfect clone is never guaranteed.",
+   "map": null
+  },
+  {
+   "id": "p6",
+   "speak": "It can read customer reviews too, but it never invents one. Every quote needs a real link.",
+   "show": "It can read customer reviews too, but it never invents one. Every quote needs a real link.",
+   "map": null
+  },
+  {
+   "id": "p7",
+   "speak": "Follow Agentoon dot A I, for real AI tools, skills, and automation.",
+   "show": "Follow Agentoon.ai, for real AI tools, skills, and automation.",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai,",
+     "Agentoon dot A I,"
+    ],
+    [
+     "for",
+     "for"
+    ],
+    [
+     "real",
+     "real"
+    ],
+    [
+     "AI",
+     "AI"
+    ],
+    [
+     "tools,",
+     "tools,"
+    ],
+    [
+     "skills,",
+     "skills,"
+    ],
+    [
+     "and",
+     "and"
+    ],
+    [
+     "automation.",
+     "automation."
+    ]
+   ]
+  }
+ ]
+}

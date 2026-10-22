@@ -33,7 +33,7 @@ Apply this standard automatically. Do not ask production questions it already an
 6. Show the plan (logline, beats, concept, acting) to the user only if they asked for approval gates; otherwise proceed.
 
 ### 2. Real demonstrations
-Record genuine footage: real terminal sessions, real GitHub pages and dashboards captured at phone size, real logs and results. Close-ups on the exact line, row or badge being discussed. Keep terminals at full card width so lines are not cropped.
+Follow `references/real-demo-standard.md` first (real material before scenes; no placeholders in a deliverable). Record genuine footage: real terminal sessions, real GitHub pages and dashboards captured at phone size, real logs and results. Close-ups on the exact line, row or badge being discussed. Keep terminals at full card width so lines are not cropped.
 
 ### 3. Narration
 Confident, energetic tech-creator voice, measured **155–170 wpm**, natural rhythm, no artificial dramatic pauses, no silent gap > ~1 s, narration flows through transitions. Save word timings for subtitles. Remove repeated sentences. Free local TTS only (see tool map).
@@ -47,7 +47,7 @@ Primary engine: **HyperFrames** (Apache-2.0), local render only. Compose one con
 Word-timed kinetic subtitles, style chosen per episode, never over code or key UI, inside platform safe areas. Voice clearly above music; music 18–24 dB under with ducking and subtle changes between discovery, demo and result; small SFX only on meaningful actions; whooshes/glitches/impacts sparingly. About −15 LUFS, true peak ≤ −1 dBTP, no clipping.
 
 ### 6. Validate, review, deliver
-1. Run the pre-render list in `references/quality-checklist.md`.
+1. Run the pre-render list in `references/quality-checklist.md` and `bash /home/user/emaddawood1991-tech/.claude/skills/agentoon-video-producer/scripts/no-placeholders.sh <episode-dir>`.
 2. Render the MP4, then run `bash ${CLAUDE_SKILL_DIR}/scripts/validate-render.sh <video.mp4> [word_count]` and `bash ${CLAUDE_SKILL_DIR}/scripts/motion-profile.sh <video.mp4>` (details in `references/technical-validation.md`). Fix dead holds and a motion gap longer than ~3 s before delivery.
 3. Review the actual MP4: contact sheets at every scene and seam, the phone-size sheet, audio, timing, spelling, robot acting, branding. Fix significant problems, re-render to a new filename, re-check.
 4. Deliver the file path, a short summary, sources, and anything unverified or version-dependent.
@@ -80,6 +80,7 @@ When the user provides Instagram/TikTok numbers, analyse retention drop points m
 - `references/robot-acting.md` — expressive mascot performance
 - `references/retention-editing.md` — hooks, pacing, storytelling, narration
 - `references/reference-analysis.md` — techniques from the approved reference videos, measured benchmarks, technique↔topic table, kit backlog
+- `references/real-demo-standard.md` — real demos only (no placeholders), truth labels, claim tracing, hook/structure, current CTA, automatic checks
 - `references/remotion-blender.md` — optional Remotion and Blender tools: status, render command for this sandbox, licence, where they help
 - `scripts/validate-render.sh` — automated post-render checks and phone-size contact sheet
 - `scripts/motion-profile.sh` — motion energy, hard cuts, static stretches, longest gap between motion bursts (read-only)

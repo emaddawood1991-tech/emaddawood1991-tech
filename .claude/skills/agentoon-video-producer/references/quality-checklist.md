@@ -95,6 +95,10 @@ Permanent principle: **SAME BRAND. DIFFERENT VISUAL EXPERIENCE. EVERY VIDEO.**
 - [ ] **Motion profile passes** (`scripts/motion-profile.sh`): mean energy ≥ 4, alive time ≥ 55 %, no static stretch ≥ 2.5 s before the last 3 s, no gap between motion bursts longer than about 3 s. Compare with the reference bar in `reference-analysis.md`.
 - [ ] **Subtitles:** word-block karaoke mechanic (active word in a filled block or equivalent), below all UI and code.
 
+- [ ] **No placeholders** (`scripts/no-placeholders.sh`): no PLACEHOLDER/PREVIEW chips, every slot verified, every on-screen number traceable to `data/` (see `real-demo-standard.md`).
+- [ ] **Zoom/crop safe:** camera zooms keep all text inside the frame; subtitles never cover text, UI or code.
+- [ ] **CTA:** Outro with "Follow @agentoon.ai" + "Real AI Tools • Skills • Automation".
+
 ## Delivery note template
 ```
 Video: <path>   (1080x1920, <fps> fps, <duration>)

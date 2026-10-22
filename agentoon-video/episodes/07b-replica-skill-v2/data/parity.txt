@@ -1,0 +1,21 @@
+Parity: 100.0 / 100
+
+features 100.0  (10 counted, must-haves 7 of 7 done)
+
+By area, weakest first
+- booking page                 100.0  (9 features)
+- persistence                  100.0  (1 features)
+
+Missing, in build order
+- nothing. Every counted feature is done.
+
+Yours, not in the original (not scored)
+- Shared persistence so two guests cannot double-book
+- Real time zone conversion of slots
+- Store guest name and email with the booking
+- Real calendar dates and past-slot hiding
+- Confirmation email
+- Reschedule or cancel
+- Host login and availability settings
+- Calendar sync
+- Payments

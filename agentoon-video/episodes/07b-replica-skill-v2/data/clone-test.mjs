@@ -1,0 +1,27 @@
+import {createRequire} from "module"; const pw=createRequire("/tmp/pw/")("playwright");
+const out=[]; const T=async(n,f)=>{try{await f();out.push("PASS  "+n)}catch(e){out.push("FAIL  "+n+" -> "+String(e.message).split("\n")[0])}};
+const b=await pw.chromium.launch(); const ctx=await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:3}); const p=await ctx.newPage();
+await p.goto("http://localhost:8124/index.html"); await p.waitForSelector("#days input");
+await p.screenshot({path:"shots/c1.png"});
+const ok=async(c,m)=>{if(!c)throw new Error(m)};
+await T("1 page shows 5 bookable days",async()=>ok(await p.locator("#days input").count()==5,"days"));
+await T("2 time zone is shown to the guest",async()=>ok((await p.textContent("#tz")).length>2,"tz"));
+await p.check("#days input[value=Wed]",{force:true}); await p.screenshot({path:"shots/c2.png"});
+await T("3 picking a day shows 9 time slots",async()=>ok(await p.locator("#slots input").count()==9,"slots"));
+await p.check("#slots input[value='10:00']",{force:true}); await p.screenshot({path:"shots/c3.png"});
+await p.click("#go"); 
+await T("4 empty form shows a validation message",async()=>ok((await p.textContent("#msg")).length>3,"msg"));
+await p.fill("#name","Sam Rivera"); await p.fill("#email","bad"); await p.click("#go");
+await T("5 invalid email is refused",async()=>ok(/email/i.test(await p.textContent("#msg")),"email"));
+await p.fill("#email","sam@example.com"); await p.click("#go"); await p.waitForTimeout(800); await p.screenshot({path:"shots/c4.png"});
+await T("6 confirmation message is shown",async()=>ok(/reserved/i.test(await p.textContent("#msg")),"conf"));
+await T("7 booked slot is disabled afterwards",async()=>ok(await p.locator("#slots input[value='10:00']").isDisabled(),"dis"));
+await p.reload(); await p.waitForSelector("#days input"); await p.check("#days input[value=Wed]",{force:true});
+await T("8 booking persists across reload",async()=>ok(await p.locator("#slots input[value='10:00']").isDisabled(),"persist"));
+// slot taken mid-booking from another tab
+const p2=await ctx.newPage(); await p2.goto("http://localhost:8124/index.html"); await p2.waitForSelector("#days input");
+await p.check("#slots input[value='11:00']",{force:true}); await p.fill("#name","Ana"); await p.fill("#email","ana@example.com");
+await p2.check("#days input[value=Wed]",{force:true}); await p2.check("#slots input[value='11:00']",{force:true}); await p2.fill("#name","Lee"); await p2.fill("#email","lee@example.com"); await p2.click("#go"); await p2.waitForTimeout(800);
+await p.click("#go"); await p.waitForTimeout(800); await p.screenshot({path:"shots/c5.png"});
+await T("9 slot taken mid-booking is refused with a clear message",async()=>ok(/first|taken/i.test(await p.textContent("#msg")),"mid"));
+await b.close(); out.push("\n"+out.filter(x=>x.startsWith("PASS")).length+"/"+out.length+" passed"); console.log(out.join("\n"));

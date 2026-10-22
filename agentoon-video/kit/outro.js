@@ -19,7 +19,7 @@
     scene.appendChild(line); gsap.set(line, { scaleX: 0 });
     const cta = document.createElement("div"); cta.id = "outro-cta";
     cta.style.cssText = "position:absolute;left:0;right:0;top:" + (o.y + bw * 1.4 + 270) + "px;display:flex;justify-content:center;opacity:0";
-    cta.innerHTML = '<div style="padding:26px 54px 30px;border-radius:999px;background:#60CDFF;color:#0B1630;font:800 58px/1 var(--body)">+ Follow Agentoon.ai</div>';
+    cta.innerHTML = '<div style="padding:26px 54px 30px;border-radius:999px;background:#60CDFF;color:#0B1630;font:800 58px/1 var(--body)">' + (o.cta || "+ Follow Agentoon.ai") + '</div>' + (o.tag ? '<div style="position:absolute;left:0;right:0;top:130px;text-align:center;font:700 34px/1 var(--body);letter-spacing:.04em;color:#DDEBFF">' + o.tag + '</div>' : "");
     scene.appendChild(cta);
 
     tl.fromTo(bg, { opacity: 0 }, { opacity: 1, duration: 0.3 }, at);

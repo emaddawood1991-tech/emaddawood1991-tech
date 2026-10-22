@@ -1,0 +1,20 @@
+feature,area,priority,original,clone,notes
+Weekday picker (Mon-Fri),booking page,must,yes,yes,five buttons; selecting one clears the chosen slot
+Fixed 30 min slot grid (9 slots/day),booking page,must,yes,yes,09:00-11:30 and 14:00-15:00; hard-coded
+Booked slots shown disabled,booking page,must,yes,yes,"disabled at 35% opacity | clone: disabled, struck through, 40% opacity"
+Guest details form (name and email),booking page,must,yes,yes,form appears only after a slot is chosen
+Validation of name and email,booking page,must,yes,yes,name required; email must match ^[^@\s]+@[^@\s]+$ | clone: regex tightened to need a dot in the domain
+Success message with slot and time zone,booking page,must,yes,yes,text: Booked! <day> <time> (<tz>) | clone: own wording
+Slot-taken check at submit,booking page,must,yes,yes,original checks an in-memory list loaded at page load | clone: re-reads the store at submit so other tabs are caught
+Shared persistence so two guests cannot double-book,persistence,must,no,partial,gap in the original; needs a server | clone: localStorage only (one browser); real fix in replica-backend
+Detected time zone shown in subtitle,booking page,should,yes,yes,display only; slot times are not converted
+Bookings persist across reloads,persistence,should,yes,yes,original uses localStorage key mn in the guest's own browser only | clone: key slotnest.bookings.v1
+Responsive single column layout (max 420px),booking page,should,yes,yes,clone: max 440px
+Real time zone conversion of slots,booking page,should,no,no,gap in the original
+Store guest name and email with the booking,persistence,should,no,yes,original discards them after validation | clone: stored locally; names listed under Your reservations
+Real calendar dates and past-slot hiding,availability,could,no,no,gap in the original
+Confirmation email,notifications,could,no,no,gap in the original
+Reschedule or cancel,booking page,could,no,no,gap in the original
+Host login and availability settings,availability,skip,no,skip,not in the original; out of this slice
+Calendar sync,integrations,skip,no,skip,not in the original; out of this slice
+Payments,payments,skip,no,skip,not in the original; out of this slice

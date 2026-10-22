@@ -1,0 +1,11 @@
+PASS  1 page shows 5 bookable days
+PASS  2 time zone is shown to the guest
+PASS  3 picking a day shows 9 time slots
+PASS  4 empty form shows a validation message
+PASS  5 invalid email is refused
+PASS  6 confirmation message is shown
+FAIL  7 booked slot is disabled afterwards -> dis
+PASS  8 booking persists across reload
+PASS  9 slot taken mid-booking is refused with a clear message
+
+8/9 passed

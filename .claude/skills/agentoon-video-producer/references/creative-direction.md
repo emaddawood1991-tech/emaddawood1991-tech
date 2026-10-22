@@ -65,3 +65,4 @@ Built with HTML, CSS, SVG, canvas and GSAP: flat colour paper fields, halftone-d
 - Effects chosen because they are available (glitch, whoosh, zoom) rather than because they explain something.
 
 | Ep 07 Replica Skill | Violet Lab (violet/amber, glass + terminal) | real transcripts, phone screenshots, test/parity stat tiles | whip + push + iris | dark lab, no scan-beam repeats of ep05 look |
+| Ep 07b Replica Skill v2 | Violet Lab (same look as 07, real footage only) | real transcripts, Playwright phone screenshots, stat tiles | whip + push + iris | verified-demo rebuild; new CTA text |

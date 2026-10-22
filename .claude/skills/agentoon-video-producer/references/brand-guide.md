@@ -15,7 +15,7 @@ Principle: **SAME BRAND. DIFFERENT VISUAL EXPERIENCE. EVERY VIDEO.** The brand e
 - Handle for captions and CTAs: **@agentoon.ai**.
 
 ### Signature ending
-- Logo + robot (soft glow, wave) + **one** clear CTA: "+ Follow Agentoon.ai".
+- Logo + robot (soft glow, wave) + **one** clear CTA: "Follow @agentoon.ai" with the line "Real AI Tools • Skills • Automation" (current standard from Ep 07b; older episodes keep "+ Follow Agentoon.ai").
 - No separate Like / Follow / Share buttons.
 - Concise: about 1.5–2 s on short tests; on full videos keep it short and let the narration continue through it.
 - Arrive with a smooth seam (for example the page tilts away while a navy field rises and the robot walks to centre), not a hard cut.
