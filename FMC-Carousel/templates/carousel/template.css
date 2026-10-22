@@ -125,3 +125,15 @@
 .sign2{min-height:186px}.sign2 .cl{width:156px;height:156px}.sign2 .cl svg{width:150px;height:150px}.sign2.wide{min-height:170px}
 .dgrid{gap:14px}.dcard p{font-size:24px;line-height:1.45}.dcard h3{font-size:32px}.dcard{gap:2px;padding-bottom:12px}
 .dscreen{height:156px;background:#0E2A63}.dscreen svg{height:100%;width:100%}.dchip{top:auto}
+/* proofreading pass: readability on slides 2-3 */
+.qcard h3{font-size:34px;line-height:1.25}.qcard p{font-size:27px;line-height:1.45}
+.dcard h3{font-size:34px}.dcard p{font-size:26px;line-height:1.45}
+.dscreen{height:122px}.dcard{padding:10px 10px 12px}.dcard h3{font-size:33px;line-height:1.25}.dcard p{font-size:25px;line-height:1.4}.dtag{font-size:24px;top:6px;left:6px}
+.dscreen{height:150px}.dcard h3{font-size:29px;line-height:1.3;white-space:nowrap}.dcard p{font-size:25px}.dtag{font-size:24px;top:8px;left:8px}
+.dgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dcard h3{font-size:28px;padding:0 4px;letter-spacing:0}.sign2{min-height:180px}.sign2.wide{min-height:164px}
+.hero-machine .mimg{object-fit:contain;width:92%;height:84%;max-height:none}
+.hero-row{margin-top:12px}
+.sub{text-wrap:balance}
+.dcard h3{font-size:27px;padding:0 6px}
+.sign2{min-height:176px}.sign2.wide{min-height:160px}.sign2 .cl{width:150px;height:150px}.sign2 .cl svg{width:144px;height:144px}

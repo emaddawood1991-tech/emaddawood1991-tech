@@ -51,7 +51,7 @@ const renderers = {
   hero: (s) => `
     ${s.tag ? `<div>${tag(md(s.tag))}</div>` : ''}
     <h1 class="arabic-title" style="margin:14px 0 8px;font-size:68px">${md(s.title)}</h1>
-    <p class="sub arabic-body" style="font-size:30px;font-weight:600;color:var(--ink-soft)">${md(s.lead)}</p>
+    <p class="sub arabic-body" style="font-size:29px;font-weight:600;color:var(--ink-soft);line-height:1.6">${md(s.lead)}</p>
     <div class="hero-row">
       <div class="hero-machine"><span class="mchip">${icon('check')}${md(s.machineLabel)}</span>
         <img class="mimg" src="../../../assets/medical/machine-photo.png" alt="">
