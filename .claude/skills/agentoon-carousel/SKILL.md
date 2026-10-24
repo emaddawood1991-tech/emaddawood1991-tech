@@ -45,6 +45,13 @@ Instagram's editor and grid can cover or crop the edges of a 4:5 image. Every sl
 - **Never claim margins fix a wrong aspect ratio.** They only reduce clipping risk. If Instagram's editor offers a crop control, tell the user to keep the original 4:5 (not 1:1). Say this in the hand-off when showing the crop preview.
 - Older carousels built before these rules can be reproduced with `"legacyMargins": true` in `carousel.json`; never use it for new posts.
 
+## Real screenshots / third-party visuals
+
+- If the topic is about real software, **use real screenshots, never drawn fake UI**. Put downloaded files in `carousels/<slug>/assets/` (JPEG, ≤1800px wide); `build.mjs` copies them to `source/assets/media/`. Show them in a window frame, crop **insets** from the same image (fractions of the source) and label them; keep a record of every image URL + licence/credit in `sources.md`.
+- Take images only from official sources (project README/docs); download the image file only, never install or run the software. If the official website is unreachable (DNS/proxy), say so, use the official GitHub README images, and do not claim the site was inspected.
+- Label conceptual mock-ups "Concept mock-up"; never present them as real. Tools still alpha/beta must be called that, with the project's own status wording. Don't call early software a full replacement.
+- Per-app slide pattern (see `carousels/artcraft-adobe-alternatives/extras.mjs`: `collage`, `appShot`, `moreTools`, `toolkit`): compare row (old tool → alternative), window + zoom inset, 3 check bullets, status chip + short URL. Pills/chips need ≥30px and `white-space:nowrap`; window-bar labels use class `src` (26px).
+
 ## Variation rules (same brand, different look every time)
 
 Brand stays fixed: palette, Fraunces/Inter/JetBrains Mono, footer, mascot, 72px grid, badges, type scale, QA thresholds. What must change per topic:

@@ -1,0 +1,365 @@
+{
+  "slug": "artcraft-adobe-alternatives",
+  "title": "Free Adobe Alternatives Built With AI \u2014 Meet ArtCraft",
+  "handle": "@agentoon.ai",
+  "recipe": "toolkit",
+  "slides": [
+    {
+      "layout": "collage",
+      "theme": "dark",
+      "kicker": "Open-source \u00b7 AI-assisted",
+      "title": "7 FREE Adobe *Alternatives?!*",
+      "sub": "Meet the open-source ArtCraft tools built with AI assistance.",
+      "swipe": "Swipe \u00b7 real screenshots \u2192",
+      "chip": "Alpha software"
+    },
+    {
+      "layout": "story",
+      "theme": "paper",
+      "mood": "proud",
+      "kicker": "The story",
+      "title": "One Developer. *An Entire Creative Suite.*",
+      "lede": "Open-source apps built with AI assistance.",
+      "watch": "Open-source alternatives under development. Not guaranteed replacements for Adobe software."
+    },
+    {
+      "layout": "appShot",
+      "theme": "coral",
+      "mood": "happy",
+      "kicker": "Photo editing",
+      "title": "Photoshop *Alternative*",
+      "app": {
+        "key": "photocraft",
+        "name": "PhotoCraft",
+        "adobe": "Adobe Photoshop",
+        "statusShort": "Early Alpha",
+        "status": "Early Alpha",
+        "kind": "hot",
+        "url": "getartcraft.com/apps/photocraft"
+      },
+      "view": {
+        "w": 780,
+        "stageH": 520,
+        "insets": [
+          {
+            "crop": {
+              "fx": 0.82,
+              "fy": 0.56,
+              "fw": 0.18,
+              "fh": 0.38
+            },
+            "w": 250,
+            "label": "Layers",
+            "css": "right:0;top:150px"
+          }
+        ]
+      },
+      "points": [
+        "Layers, masks and adjustment layers like Curves and Vibrance.",
+        "Opens and saves layered PSD files.",
+        "Project says: not yet a daily-pro Photoshop replacement."
+      ]
+    },
+    {
+      "layout": "appShot",
+      "theme": "dark",
+      "mood": "wink",
+      "kicker": "Vector graphics",
+      "title": "Illustrator *Alternative*",
+      "app": {
+        "key": "vectorcraft",
+        "name": "VectorCraft",
+        "adobe": "Adobe Illustrator",
+        "statusShort": "In Development",
+        "status": "In Development",
+        "kind": "hot",
+        "url": "getartcraft.com/apps/vectorcraft"
+      },
+      "view": {
+        "w": 780,
+        "winSide": "right",
+        "stageH": 520,
+        "insets": [
+          {
+            "crop": {
+              "fx": 0.57,
+              "fy": 0.12,
+              "fw": 0.19,
+              "fh": 0.27
+            },
+            "w": 300,
+            "label": "Live Outer Glow",
+            "css": "left:0;top:210px"
+          }
+        ]
+      },
+      "points": [
+        "Draw with paths and shapes; combine them with Pathfinder.",
+        "Live effects such as Outer Glow stay editable.",
+        "Imports and exports SVG, PDF and `.ai` files."
+      ]
+    },
+    {
+      "layout": "appShot",
+      "theme": "mint",
+      "mood": "focus",
+      "kicker": "Video editing",
+      "title": "Premiere Pro *Alternative*",
+      "app": {
+        "key": "filmcraft",
+        "name": "FilmCraft",
+        "adobe": "Adobe Premiere Pro",
+        "statusShort": "Alpha",
+        "status": "Alpha",
+        "kind": "hot",
+        "url": "getartcraft.com/apps/filmcraft"
+      },
+      "view": {
+        "w": 840,
+        "stageH": 520,
+        "insets": [
+          {
+            "crop": {
+              "fx": 0.29,
+              "fy": 0.58,
+              "fw": 0.52,
+              "fh": 0.4
+            },
+            "w": 500,
+            "label": "Multitrack timeline",
+            "css": "right:0;bottom:0"
+          }
+        ]
+      },
+      "points": [
+        "Preview monitors, project bins and a multitrack timeline.",
+        "Trim, color, keyframes, titles and export.",
+        "Alpha: the project estimates ~56% ready for real production."
+      ]
+    },
+    {
+      "layout": "appShot",
+      "theme": "paper",
+      "mood": "think",
+      "kicker": "Photo organizing",
+      "title": "Lightroom *Alternative*",
+      "app": {
+        "key": "lightcraft",
+        "name": "LightCraft",
+        "adobe": "Adobe Lightroom",
+        "statusShort": "Alpha",
+        "status": "Alpha",
+        "kind": "hot",
+        "url": "getartcraft.com/apps/lightcraft"
+      },
+      "view": {
+        "w": 780,
+        "stageH": 520,
+        "insets": [
+          {
+            "crop": {
+              "fx": 0.805,
+              "fy": 0.176,
+              "fw": 0.165,
+              "fh": 0.43
+            },
+            "w": 230,
+            "label": "Light",
+            "css": "right:0;top:60px"
+          }
+        ]
+      },
+      "points": [
+        "Browse a photo library and develop RAW and JPEG files.",
+        "Light, color and curve sliders on every photo.",
+        "Alpha: raw support varies by camera brand."
+      ]
+    },
+    {
+      "layout": "appShot",
+      "theme": "dark",
+      "mood": "wow",
+      "kicker": "Motion graphics",
+      "title": "After Effects *Alternative*",
+      "app": {
+        "key": "effectcraft",
+        "name": "EffectCraft",
+        "adobe": "Adobe After Effects",
+        "statusShort": "Alpha",
+        "status": "Alpha",
+        "kind": "hot",
+        "url": "getartcraft.com/apps/effectcraft"
+      },
+      "view": {
+        "w": 780,
+        "winSide": "right",
+        "stageH": 520,
+        "insets": [
+          {
+            "crop": {
+              "fx": 0,
+              "fy": 0.62,
+              "fw": 0.5,
+              "fh": 0.25
+            },
+            "w": 520,
+            "label": "Layers + timeline",
+            "css": "left:0;bottom:0"
+          }
+        ]
+      },
+      "points": [
+        "Compositions with layers, keyframes and a timeline.",
+        "Hundreds of built-in effects (306 per its README).",
+        "Alpha: the project says it is not yet for production client work."
+      ]
+    },
+    {
+      "layout": "moreTools",
+      "theme": "mint",
+      "mood": "cheer",
+      "kicker": "More ArtCraft tools",
+      "title": "Two more. *And counting.*",
+      "tools": [
+        {
+          "key": "pdfcraft",
+          "name": "PdfCraft",
+          "adobe": "Adobe Acrobat",
+          "text": "View, comment, fill forms and organize pages.",
+          "status": "Alpha",
+          "url": "getartcraft.com/apps/pdfcraft",
+          "pos": "50% 0"
+        },
+        {
+          "key": "designcraft",
+          "name": "DesignCraft",
+          "adobe": "Adobe InDesign",
+          "text": "Page layout with threaded text and spreads.",
+          "status": "Pre-alpha",
+          "url": "getartcraft.com/apps/designcraft",
+          "pos": "50% 0"
+        }
+      ],
+      "more": "WordCraft \u00b7 DeckCraft \u00b7 GridCraft \u00b7 CADCraft \u00b7 SoundCraft \u00b7 FigCraft",
+      "watch": "Features and stability vary a lot between apps. Test with copies of your files."
+    },
+    {
+      "layout": "toolkit",
+      "theme": "dark",
+      "mood": "cheer",
+      "kicker": "Save the toolkit",
+      "title": "Your Free *Creative Toolkit.*",
+      "rows": [
+        [
+          "Photoshop",
+          "PhotoCraft",
+          "early alpha"
+        ],
+        [
+          "Illustrator",
+          "VectorCraft",
+          "in development"
+        ],
+        [
+          "Premiere Pro",
+          "FilmCraft",
+          "alpha"
+        ],
+        [
+          "Lightroom",
+          "LightCraft",
+          "alpha"
+        ],
+        [
+          "After Effects",
+          "EffectCraft",
+          "alpha"
+        ],
+        [
+          "Acrobat",
+          "PdfCraft",
+          "alpha"
+        ],
+        [
+          "InDesign",
+          "DesignCraft",
+          "pre-alpha"
+        ]
+      ],
+      "steps": [
+        "Visit `getartcraft.com/apps`",
+        "Choose an app and open its page",
+        "Find its download links for your system",
+        "Pick the Windows, macOS or Linux installer"
+      ],
+      "launcherLabel": "Or manage many apps with the ArtCraft Launcher",
+      "launcher": "github.com/storytold/craft-launcher/releases",
+      "cta": [
+        "Save this guide.",
+        "Explore getartcraft.com",
+        "Follow @agentoon.ai"
+      ]
+    }
+  ],
+  "spellAllow": [
+    "artcraft",
+    "photocraft",
+    "vectorcraft",
+    "filmcraft",
+    "lightcraft",
+    "effectcraft",
+    "pdfcraft",
+    "designcraft",
+    "wordcraft",
+    "deckcraft",
+    "gridcraft",
+    "cadcraft",
+    "soundcraft",
+    "figcraft",
+    "storytold",
+    "getartcraft",
+    "pathfinder",
+    "lightroom",
+    "indesign",
+    "photoshop",
+    "illustrator",
+    "acrobat",
+    "premiere",
+    "rust",
+    "psd",
+    "raw",
+    "svg",
+    "mcp",
+    "msi",
+    "dmg",
+    "appimage",
+    "dng",
+    "keyframes",
+    "multitrack",
+    "agentoon",
+    "brandon",
+    "clean",
+    "room",
+    "crop",
+    "wip",
+    "pre",
+    "alpha",
+    "claude",
+    "md",
+    "mit",
+    "apache",
+    "jpeg",
+    "ai",
+    "pdf",
+    "ui",
+    "screenshots",
+    "screenshot",
+    "apps",
+    "app",
+    "vibrance",
+    "readme",
+    "macos",
+    "windows",
+    "linux"
+  ]
+}

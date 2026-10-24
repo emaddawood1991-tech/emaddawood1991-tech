@@ -16,6 +16,12 @@ fs.mkdirSync(path.join(src, "assets", "fonts"), { recursive: true });
 fs.copyFileSync(path.join(skillRoot, "assets", "base.css"), path.join(src, "assets", "base.css"));
 for (const f of fs.readdirSync(path.join(skillRoot, "assets", "fonts")))
   fs.copyFileSync(path.join(skillRoot, "assets", "fonts", f), path.join(src, "assets", "fonts", f));
+// Real screenshots / photos: put them in <carousel-dir>/assets/ and reference them as assets/media/<file> in extras.mjs.
+const mediaSrc = path.join(dir, "assets");
+if (fs.existsSync(mediaSrc)) {
+  fs.mkdirSync(path.join(src, "assets", "media"), { recursive: true });
+  for (const f of fs.readdirSync(mediaSrc)) fs.copyFileSync(path.join(mediaSrc, f), path.join(src, "assets", "media", f));
+}
 const sprite = fs.readFileSync(path.join(skillRoot, "assets", "sprite.svg"), "utf8");
 
 // Per-carousel bespoke illustrations/layouts: <carousel-dir>/extras.mjs may export { diagrams, layouts, css }.
