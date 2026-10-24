@@ -1,0 +1,167 @@
+{
+ "music": [
+  {
+   "from": "p0",
+   "to": "p0b",
+   "mood": "hook",
+   "fo": -0.1,
+   "to_off": 0.1
+  },
+  {
+   "from": "p0b",
+   "to": "p5",
+   "mood": "demo",
+   "to_off": 0.1
+  },
+  {
+   "from": "p5",
+   "to": "p7.end",
+   "mood": "result",
+   "to_off": 1.9
+  }
+ ],
+ "sfx": [
+  {
+   "name": "pop",
+   "at": "p0:rebuild",
+   "off": 0.0,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s2",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "at": "p0b:brand",
+   "off": 0.0,
+   "gain": 0.4
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s3",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "sparkle",
+   "at": "p1:Eleven",
+   "off": 0.0,
+   "gain": 0.4
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s4",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "p2",
+   "off": 0.2,
+   "gain": 0.3,
+   "dur": 2.0,
+   "cps": 30
+  },
+  {
+   "name": "tick",
+   "at": "p2:install",
+   "off": 0.0,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s5",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "tick",
+   "at": "p3:maps",
+   "off": 0.0,
+   "gain": 0.6
+  },
+  {
+   "name": "pop",
+   "at": "p3b:four",
+   "off": 0.0,
+   "gain": 0.4
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s6",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "tick",
+   "at": "p4",
+   "off": 0.4,
+   "gain": 0.6
+  },
+  {
+   "name": "tick",
+   "at": "p4:fresh",
+   "off": 0.0,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s7",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "tick",
+   "at": "p4b:nine",
+   "off": 0.0,
+   "gain": 0.6
+  },
+  {
+   "name": "sparkle",
+   "at": "p4b:passed",
+   "off": 0.0,
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "at": "p5:hundred",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s8",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "at": "p5b:magic",
+   "off": 0.0,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "at": "p6:invents",
+   "off": 0.0,
+   "gain": 0.6
+  },
+  {
+   "name": "sparkle",
+   "at": "p7:Follow",
+   "off": 0.0,
+   "gain": 0.5
+  },
+  {
+   "name": "type",
+   "at": "p2:install",
+   "off": -0.3,
+   "dur": 1.6,
+   "cps": 30,
+   "gain": 0.3
+  }
+ ]
+}

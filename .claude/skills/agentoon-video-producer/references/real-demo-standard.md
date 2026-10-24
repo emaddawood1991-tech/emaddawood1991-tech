@@ -28,3 +28,10 @@ Existing Outro animation with `Outro.build(..., {cta: "Follow @agentoon.ai", tag
 - `validate-render.sh` + `motion-profile.sh` (the final-hold gap at the CTA is expected).
 - Read the final MP4 frames at every scene and seam; captions must not cover text or UI; zoom moves must keep content inside the frame (zoom about the content: `y = cy*(1-s)`, not toward the screen centre).
 - Environment gotchas (this sandbox): Kokoro TTS and the mix need `/tmp/kokoro/venv/bin/python` with `KOKORO_MODEL`/`KOKORO_VOICES` set; `soundfile`/`scipy` may need `pip install`; `type` SFX cues need `dur` and `cps`.
+
+## 7. Presentation standard for real software (added after Ep 07c)
+- **Put real software inside a computer**, not in small floating panels: a laptop illustration whose screen shows the real screenshot (capture at 720x500 @2x, app zoomed so text stays legible) or the real terminal text; two apps side by side get purposeful camera moves into each screen. Snippet: `kit/snippets/laptop-screen.js`. Code and its running result share one laptop (code fades into the app).
+- **Zoom into the interface instead of shrinking a desktop**: camera zoom toward the screen about the narrated word, then back; keep text inside the frame (check the left/right edges at the zoom peak).
+- **Explain with relations**: states that follow the narration (step chips 1-2-3 lighting as the screen changes), arrows for direction (push/pull), timelines for versions.
+- **No moving light sweeps.** The vertical "scan beam" (`mix-blend-mode:screen` gradient crossing the frame every ~1.25 s) is retired: viewers found it distracting. Do not use any repeated full-height sweep or flash. Transitions (whip/push/iris), purposeful glows (active chip, callout, HEAD marker) stay. Energy now comes from camera moves, typing, state changes and robot acting; the motion-profile bar for the dark Agentoon look is: no static stretch >= 2.5 s, mean energy about 2+ (the old 4+ bar assumed the beams).
+- Honest labels stay on every capture (`VERBATIM`, `ORIGINAL · LOCAL TEST APP`, `RUN ON MY BUILD`).

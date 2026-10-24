@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 07b Replica Skill v2</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Fluent HUD". Deep-blue cyber desk, frosted-glass panels, classic PowerShell navy terminal, cyan scan beams, shield/lock/clock graphics.
+     No Windows logo, no green SAFE badges. Terminal OUTPUT is never invented: every capture on screen is real or verbatim. */
+  :root { --bg: #08051A; --cy: #A78BFA; --bl: #8B5CF6; --ps: #1A0F3A; }
+  .chip { position: absolute; white-space: nowrap; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .glass { position: absolute; border-radius: 26px; background: linear-gradient(160deg,rgba(90,60,170,.40),rgba(24,12,56,.80)); border: 2px solid rgba(190,170,255,.45); box-shadow: 0 0 50px rgba(167,139,250,.2), inset 0 0 30px rgba(255,255,255,.05); }
+  .ps { position: absolute; border-radius: 18px; overflow: hidden; background: #150C33; border: 3px solid #8B5CF6; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 50px rgba(61,214,255,.25); }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .t1 { position: absolute; font: 900 120px/1 var(--body); letter-spacing: -.04em; color: #fff; white-space: nowrap; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/nightops.js"></script>
+<script src="kit/outro.js"></script>
+<script src="kit/term.js"></script>
+<script src="timeline.js"></script>
+<script src="slots.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="{{TOTAL}}">
+  <section id="s1" class="clip scene" data-start="{{s1.start}}" data-duration="{{s1.len}}"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="{{s2.start}}" data-duration="{{s2.len}}"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="{{s3.start}}" data-duration="{{s3.len}}"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="{{s4.start}}" data-duration="{{s4.len}}"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="{{s5.start}}" data-duration="{{s5.len}}"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="{{s6.start}}" data-duration="{{s6.len}}"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="{{s7.start}}" data-duration="{{s7.len}}"><div id="s7i" class="inner"></div></section>
+  <section id="s8" class="clip scene" data-start="{{s8.start}}" data-duration="{{s8.len}}"><div id="s8i" class="inner"></div></section>
+  <section id="s9" class="clip scene" data-start="{{s9.start}}" data-duration="{{s9.len}}"><div id="s9i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, SL = window.SLOTS, S = E.scenes, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + pid + " " + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#E9E1FF") + ";background:" + (o.bg || "rgba(167,139,250,.14)") + ";border:2px solid " + (o.bd || "#A78BFA"), text); };
+  const AMB = { fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.14)" };
+  const fadeIn = (e, at, d, y) => tl.from(e, { opacity: 0, y: y == null ? 40 : y, duration: d || 0.3, ease: "power3.out" }, at);
+  const isPh = k => SL[k].status !== "verified";
+  const hud = (host, id, label, t0) => {
+    const k = chip(host, id + "k", 60, 196, label); tl.from(k, { opacity: 0, x: -30, duration: 0.25 }, t0);
+  };
+  const base = (k) => {
+    const inn = $(k + "i");
+    el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#2A1766 0%,#120A33 55%,#05030D 100%)");
+    const gr = el(inn, "bgg" + k, "", "position:absolute;inset:0;background-image:linear-gradient(rgba(167,139,250,.10) 2px,transparent 2px),linear-gradient(90deg,rgba(167,139,250,.10) 2px,transparent 2px);background-size:100px 100px");
+    tl.to(gr, { backgroundPosition: "200px 400px", duration: S[k].len, ease: "none" }, S[k].start);
+    for (let i = 0; i < 14; i++) { const d = el(inn, "bgp" + k + i, "", "left:" + ((i * 149 + 40) % 1040) + "px;top:" + (260 + (i * 233) % 1400) + "px;width:6px;height:6px;border-radius:50%;background:#C4B5FD;opacity:.55;box-shadow:0 0 12px #A78BFA"); tl.fromTo(d, { y: 0 }, { y: -130 - (i % 5) * 50, duration: S[k].len, ease: "none" }, S[k].start); }
+    return inn;
+  };
+  const wrapScene = (k) => { const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Array.from(inn.children).filter(c => c !== w && !/^bg/.test(c.id)).forEach(c => w.appendChild(c)); Cam.frame(w, 540, 960, 1); return w; };
+  const GRN = "#9CF2B6", YEL = "#F5E7A5", RED = "#FCA5A5";
+  const G = { fg: "#BBF7D0", bd: "#4ADE80", bg: "rgba(34,197,94,.14)" };
+  function term(host, id, x, y, w, h, title, rows, t0, fs, lh) {
+    const card = el(host, id, "ps", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px");
+    el(card, id + "b", "", "left:0;top:0;width:" + w + "px;height:62px;background:#2B1A63;border-bottom:2px solid #8B5CF6");
+    [0, 1, 2].forEach(i => el(card, id + "d" + i, "", "left:" + (24 + i * 30) + "px;top:22px;width:18px;height:18px;border-radius:50%;background:#C4B5FD;opacity:" + (0.9 - i * 0.2)));
+    el(card, id + "t", "", "left:130px;top:0;font:700 26px/62px var(--body);color:#EDE6FF", title);
+    const ys = []; let t = t0;
+    rows.forEach((r, i) => {
+      const yy = 86 + i * lh; ys.push(yy);
+      const d = el(card, id + "r" + i, "mono", "left:28px;top:" + yy + "px;font:600 " + fs + "px/" + lh + "px var(--mono);color:" + (r[1] || "#fff"), r[0]);
+      const at = r[3] != null ? r[3] : t;
+      if (r[2]) { const n = Math.max(1, r[0].length), dur = n / r[2]; d.style.clipPath = "inset(0 100% 0 0)"; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + n + ")" }, at); t = at + dur + 0.05; }
+      else { tl.from(d, { opacity: 0, x: -14, duration: 0.14 }, at); t = at + 0.1; }
+    });
+    return { card, end: t, ys };
+  }
+  /* phone with real screenshots; crop = visible fraction of the screenshot height */
+  const phone = (host, id, x, y, w, imgs, crop) => {
+    const h = Math.round(w * 2532 / 1170), vh = Math.round(h * (crop || 1)), fr = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + (w + 20) + "px;height:" + (vh + 20) + "px;border-radius:44px;background:#0B0620;border:4px solid #C4B5FD;box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 50px rgba(167,139,250,.35);overflow:hidden");
+    const ims = imgs.map((f, i) => { const im = document.createElement("img"); im.src = "assets/" + f; im.id = id + "i" + i; im.style.cssText = "position:absolute;left:10px;top:10px;width:" + w + "px;height:" + h + "px;border-radius:34px;opacity:" + (i ? 0 : 1); fr.appendChild(im); return im; });
+    return { fr, ims, h: vh + 20 };
+  };
+  const swapTo = (ph, i, at) => { tl.to(ph.ims[i], { opacity: 1, duration: 0.18 }, at); if (i) tl.to(ph.ims[i - 1], { opacity: 0, duration: 0.01 }, at + 0.2); };
+  const stat = (host, id, x, y, w, big, lab, col) => { const g = el(host, id, "glass", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:150px"); el(g, id + "n", "", "left:22px;top:18px;font:900 58px/1 var(--body);color:" + (col || "#fff"), big); el(g, id + "l", "", "left:22px;top:100px;font:800 20px/1 var(--mono);letter-spacing:.05em;color:#D9CCFF", lab); return g; };
+
+  /* ---------- v3: real software shown inside laptop illustrations (screens are real screenshots / real terminal text) ---------- */
+  const laptop = (host, id, x, y, w, o) => {
+    o = o || {}; const sw = w - 44, sh = Math.round(sw * 500 / 720), lidH = sh + 44;
+    const g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + (lidH + 34) + "px");
+    const lid = el(g, id + "lid", "", "left:0;top:0;width:" + w + "px;height:" + lidH + "px;border-radius:22px 22px 8px 8px;background:linear-gradient(180deg,#2A2150,#120B2C);border:3px solid #6F5BD0;box-shadow:0 34px 70px rgba(0,0,0,.6),0 0 50px rgba(139,92,246,.35)");
+    const scr = el(lid, id + "scr", "", "left:19px;top:19px;width:" + sw + "px;height:" + sh + "px;overflow:hidden;border-radius:6px;background:#0B0620");
+    el(g, id + "base", "", "left:" + (-w * 0.04) + "px;top:" + lidH + "px;width:" + (w * 1.08) + "px;height:22px;border-radius:0 0 22px 22px;background:linear-gradient(180deg,#8E7DE0,#4B3C99);box-shadow:0 14px 30px rgba(0,0,0,.5)");
+    el(g, id + "nt", "", "left:" + (w * 0.5 - 60) + "px;top:" + lidH + "px;width:120px;height:9px;border-radius:0 0 10px 10px;background:#2A2150");
+    const ims = (o.imgs || []).map((f, i) => { const im = document.createElement("img"); im.src = "assets/" + f; im.id = id + "i" + i; im.style.cssText = "position:absolute;left:0;top:0;width:" + sw + "px;height:" + sh + "px;opacity:" + (i || o.hideFirst ? 0 : 1); scr.appendChild(im); return im; });
+    return { g, scr, ims, sw, sh, cx: x + w / 2, cy: y + 19 + sh / 2, bottom: y + lidH + 34 };
+  };
+  const zwin = []; /* windows used by purposeful zooms (the drift below keeps clear of them) */
+  const zoomTo = (cam, cx, cy, s, at, dur) => (zwin.push([cam.id, at - 0.2, at + (dur || 0.7) + 0.1]), tl.to(cam, { scale: s, x: 540 - cx * s, y: 860 - cy * s, duration: dur || 0.7, ease: "power2.inOut" }, at));
+  const zoomOut = (cam, at, dur) => (zwin.push([cam.id, at - 0.2, at + (dur || 0.7) + 0.1]), tl.to(cam, { scale: 1, x: 0, y: 0, duration: dur || 0.7, ease: "power2.inOut" }, at));
+  const zmv = [];   /* purposeful camera moves, applied after the scenes are wrapped */
+
+  /* ================================================================= S1 HOOK (real result first) */
+  const s1i = base("s1"); hud(s1i, "h1", "EP 07 · CLAUDE CODE SKILL", 0.05);
+  const a1 = el(s1i, "a1", "t1", "left:60px;top:250px;font-size:116px", "REBUILD AN APP"), a2 = el(s1i, "a2", "t1", "left:60px;top:380px;font-size:84px;color:#C4B5FD;text-shadow:0 0 40px rgba(167,139,250,.9)", "WITH CLAUDE CODE?!");
+  tl.from(a1, { opacity: 0, x: -220, scale: 0.7, duration: 0.35, ease: "back.out(2)", transformOrigin: "0 50%" }, 0.1); tl.from(a2, { opacity: 0, x: 240, duration: 0.3, ease: "power3.out" }, 0.4);
+  const L1o = laptop(s1i, "l1o", 40, 520, 560, { imgs: ["desk-o-form.png"] }), L1c = laptop(s1i, "l1c", 480, 900, 560, { imgs: ["desk-c-booked.png"] });
+  L1o.g.style.transform = "rotate(-3deg)"; L1c.g.style.transform = "rotate(3deg)";
+  tl.from(L1o.g, { opacity: 0, x: -400, duration: 0.45, ease: "power3.out" }, 0.3); tl.from(L1c.g, { opacity: 0, x: 400, scale: 0.8, duration: 0.5, ease: "back.out(1.6)" }, 0.9);
+  const ar = el(s1i, "ar1", "", "left:560px;top:690px;font:900 150px/1 var(--body);color:#FFC83D;text-shadow:0 0 30px rgba(255,200,61,.6)", "↘"); tl.from(ar, { opacity: 0, scale: 0.3, duration: 0.3, ease: "back.out(3)" }, 0.8);
+  chip(s1i, "p1ol", 40, 985, "ORIGINAL · LOCAL TEST APP", { size: 20, pad: "8px 14px 9px" }); chip(s1i, "p1cl", 480, 1365, "REBUILT BY CLAUDE CODE", Object.assign({ size: 20, pad: "8px 14px 9px" }, G));
+  tl.from("#p1ol", { opacity: 0, duration: 0.25 }, 0.8); tl.from("#p1cl", { opacity: 0, duration: 0.25 }, 1.3);
+  const bot1 = botAt(s1i, "bot1", 150, 1090, 200); bot1.face(tl, 0, -1, 0.01); bot1.rise(tl, 0.3, 450, 0.4); bot1.blinks(tl, 1, 3.4, 1.1); bot1.react(tl, 1.6, "wow");
+
+  /* ================================================================= S2 SAME FLOW, NEW BRAND (two real apps, side by side) */
+  const s2i = base("s2"); hud(s2i, "h2", "SAME FLOW · NEW BRAND", S.s2.start + 0.15);
+  const L2o = laptop(s2i, "l2o", 24, 400, 510, { imgs: ["desk-o-days.png", "desk-o-times.png", "desk-o-form.png"] }), L2c = laptop(s2i, "l2c", 546, 400, 510, { imgs: ["desk-c-days.png", "desk-c-times.png", "desk-c-form.png"] });
+  tl.from(L2o.g, { opacity: 0, x: -400, duration: 0.45, ease: "power3.out" }, S.s2.start + 0.1); tl.from(L2c.g, { opacity: 0, x: 400, duration: 0.45, ease: "power3.out" }, S.s2.start + 0.25);
+  const tSame = PW("p0b", "flow"), tBr = PW("p0b", "brand");
+  [L2o, L2c].forEach((p, k) => { swapTo(p, 1, tSame - 0.1 + k * 0.15); swapTo(p, 2, tBr - 0.2 + k * 0.15); });
+  const vs = el(s2i, "vs2", "", "left:462px;top:560px;font:900 80px/1 var(--body);color:#FFC83D;text-shadow:0 0 30px rgba(255,200,61,.8);z-index:5", "VS"); tl.from(vs, { opacity: 0, scale: 0.2, rotation: -40, duration: 0.35, ease: "back.out(3)" }, S.s2.start + 0.5);
+  const lb2 = L2o.bottom + 14;
+  chip(s2i, "p2ol", 24, lb2, "ORIGINAL · LOCAL TEST APP", { size: 20, pad: "8px 14px 9px" }); chip(s2i, "p2cl", 546, lb2, "SLOTNEST · REBUILT", Object.assign({ size: 20, pad: "8px 14px 9px" }, G));
+  tl.from("#p2ol", { opacity: 0, duration: 0.25 }, S.s2.start + 0.6); tl.from("#p2cl", { opacity: 0, duration: 0.25 }, S.s2.start + 0.8);
+  [["1 · PICK A DAY", S.s2.start + 0.7], ["2 · PICK A TIME", tSame - 0.1], ["3 · ENTER DETAILS", tBr - 0.2]].forEach(([t, at], i) => { const c = chip(s2i, "st2" + i, 24 + i * 345, lb2 + 70, t, { size: 24, pad: "12px 16px 14px" }); tl.from(c, { opacity: 0, y: 40, duration: 0.3, ease: "back.out(1.7)" }, at); });
+  const bot2 = botAt(s2i, "bot2", 440, 1290, 160); bot2.face(tl, 0, -1, 0.01); bot2.rise(tl, S.s2.start + 0.5, 420, 0.4); bot2.blinks(tl, S.s2.start, S.s2.end, 1.1); bot2.react(tl, tBr + 0.1, "celebrate");
+  zmv.push(["s2", () => { zoomTo(cams.s2, L2o.cx, L2o.cy + 70, 1.4, S.s2.start + 0.9, 0.7); zoomTo(cams.s2, L2c.cx, L2c.cy + 70, 1.4, tBr - 0.5, 0.8); zoomOut(cams.s2, S.s2.end - 1.1, 0.6); }]);
+
+  /* ================================================================= S3 MEET REPLICA SKILL (real README text, in a computer) */
+  const s3i = base("s3"); hud(s3i, "h3", "THE REPO", S.s3.start + 0.15);
+  const L3 = laptop(s3i, "l3", 230, 280, 620, { imgs: ["desk-readme.png"] });
+  tl.from(L3.g, { opacity: 0, y: 80, scale: 0.92, duration: 0.45, ease: "power3.out" }, S.s3.start + 0.1);
+  chip(s3i, "rd3", 230, 780 - 12 - 0, "README.md · github.com/Jakeschincariol/replica-skill", { size: 17, pad: "6px 12px 7px" }); tl.from("#rd3", { opacity: 0, duration: 0.25 }, S.s3.start + 0.7);
+  const SK = ["recon", "architect", "design", "build", "backend", "test", "diff", "entrepreneur", "brand", "launch", "deploy"];
+  const tS = PW("p1", "Eleven") - 0.1, tE = PW("p1", "github"), stp = (tE - tS) / 11, skEls = [];
+  SK.forEach((s, i) => { const c = el(s3i, "sk" + i, "glass", "left:" + (40 + (i % 2) * 510) + "px;top:" + (830 + Math.floor(i / 2) * 86) + "px;width:490px;height:76px;border-radius:20px");
+    el(c, "skn" + i, "", "left:20px;top:18px;font:900 38px/1 var(--body);color:#C4B5FD", String(i + 1).padStart(2, "0")); el(c, "skt" + i, "", "left:96px;top:24px;font:800 28px/1 var(--mono);color:#fff", "replica-" + s);
+    tl.from(c, { opacity: 0, x: i % 2 ? 300 : -300, scale: 0.8, duration: 0.3, ease: "back.out(1.6)" }, tS + i * stp); skEls.push(c); });
+  [["research", 0], ["design", 2], ["build", 3], ["test", 5], ["rebrand", 8]].forEach(([w, i]) => { const t = PW("p1b", w); tl.to(skEls[i], { borderColor: "#FFC83D", boxShadow: "0 0 50px rgba(255,200,61,.8)", scale: 1.06, duration: 0.2, ease: "back.out(2)" }, t - 0.05); tl.to(skEls[i], { scale: 1, duration: 0.25 }, t + 0.3); });
+  chip(s3i, "mit3", 40, 1370, "FREE", Object.assign({ size: 26, pad: "10px 22px 12px" }, AMB)); chip(s3i, "mit3b", 180, 1370, "MIT LICENSED", { size: 26, pad: "10px 22px 12px" });
+  tl.from("#mit3", { opacity: 0, scale: 0.4, duration: 0.3, ease: "back.out(2.4)" }, PW("p1", "free") - 0.1); tl.from("#mit3b", { opacity: 0, scale: 0.4, duration: 0.3, ease: "back.out(2.4)" }, PW("p1", "mit") - 0.1);
+  const bot3 = botAt(s3i, "bot3", 870, 1250, 170); bot3.face(tl, 0, -1, 0.01); bot3.rise(tl, S.s3.start + 0.6, 420, 0.4); bot3.blinks(tl, S.s3.start, S.s3.end, 1.1);
+  bot3.aimPoint(tl, tS - 0.2, { x: 870, y: 1250, scale: 1, target: [700, 900], hand: "L", hold: 0.8 }); bot3.react(tl, PW("p1b", "rebrand") + 0.2, "celebrate");
+  zmv.push(["s3", () => { tl.set(cams.s3, { scale: 1.55, x: 540 - L3.cx * 1.55, y: 760 - L3.cy * 1.55 }, S.s3.start); zoomOut(cams.s3, tS - 0.5, 0.7); }]);
+
+  /* ================================================================= S4 INSTALL (verbatim, inside a computer) */
+  const s4i = base("s4"); hud(s4i, "h4", "INSTALL · REAL OUTPUT", S.s4.start + 0.15);
+  const tI = PW("p2", "install"), t4 = S.s4.start + 0.3;
+  const L4 = laptop(s4i, "l4", 40, 290, 1000, {}); tl.from(L4.g, { opacity: 0, y: 90, scale: 0.94, duration: 0.4, ease: "power3.out" }, S.s4.start + 0.05);
+  const T4 = term(L4.scr, "t4", 0, 0, L4.sw, L4.sh, "claude · terminal", [
+    ["$ claude plugin marketplace add", YEL, 30, t4], ["    Jakeschincariol/replica-skill", YEL, 30],
+    ["√ Successfully added marketplace:", GRN, 0, t4 + 2.0], ["  replica-skill", GRN, 0, t4 + 2.1], ["", "#fff", 0, t4 + 2.2],
+    ["$ claude plugin install", YEL, 30, tI - 0.3], ["    replica-skill@replica-skill", YEL, 30],
+    ["√ Successfully installed plugin:", GRN, 0, tI + 1.2], ["  replica-skill@replica-skill", GRN, 0, tI + 1.3], ["  (scope: user)", GRN, 0, tI + 1.4],
+    ["Status: √ enabled", GRN, 0, tI + 1.7], ["Skills (11)", "#FFE08A", 0, tI + 2.0]
+  ], t4, 30, 47);
+  T4.card.style.borderRadius = "0"; T4.card.style.border = "0"; T4.card.style.boxShadow = "none";
+  const co4 = NO.callout(L4.scr, { id: "co4", x: 22, y: T4.ys[11] - 6, w: 280, h: 50, color: "#FFC83D" }); co4.draw(tl, tI + 2.1, 0.4);
+  chip(s4i, "vb4", 40, L4.bottom + 26, "VERBATIM TERMINAL OUTPUT · ISOLATED TEST PROFILE", { size: 19, pad: "7px 14px 8px" }); tl.from("#vb4", { opacity: 0, duration: 0.25 }, tI + 0.4);
+  const bot4 = botAt(s4i, "bot4", 860, 1080, 150); bot4.face(tl, 0, -1, 0.01); bot4.rise(tl, S.s4.start + 0.5, 420, 0.4); bot4.blinks(tl, S.s4.start, S.s4.end, 1.1);
+  bot4.aimPoint(tl, tI - 0.3, { x: 860, y: 1080, scale: 1, target: [700, 800], hand: "L", hold: 0.7 }); bot4.nod(tl, tI + 2.0);
+  zmv.push(["s4", () => { zoomTo(cams.s4, 540, 330 + 330, 1.08, tI + 0.8, 0.7); zoomOut(cams.s4, S.s4.end - 1.3, 0.6); }]);
+
+  /* ================================================================= S5 RECON (the original app, then the real run, in one computer) */
+  const s5i = base("s5"); hud(s5i, "h5", "STEP 1 · RECON · REAL RUN", S.s5.start + 0.15);
+  const L5 = laptop(s5i, "l5", 160, 290, 760, { imgs: ["desk-o-days.png", "desk-o-times.png"] }); tl.from(L5.g, { opacity: 0, x: -300, duration: 0.4, ease: "power3.out" }, S.s5.start + 0.1);
+  const tMap = PW("p3", "maps"), t5 = S.s5.start + 0.5;
+  swapTo(L5, 1, S.s5.start + 1.4);
+  const T5 = term(L5.scr, "t5", 0, 0, L5.sw, L5.sh, "claude -p /replica-recon", [
+    ["● Bash   curl -sS -i :8123/index.html", YEL, 0, tMap - 0.2], ["● Read   replica-recon/recon-map.md", YEL, 0, tMap + 0.2], ["● Read   replica-recon/features.csv", YEL, 0, tMap + 0.6],
+    ["● Write  replica/features.csv", GRN, 0, tMap + 1.1], ["● Write  replica/recon.md", GRN, 0, tMap + 1.5], ["", "#fff", 0, tMap + 1.6], ["√ 9 turns · recon map written", GRN, 0, PW("p3", "features") - 0.1]
+  ], tMap, 24, 54);
+  T5.card.style.borderRadius = "0"; T5.card.style.border = "0"; T5.card.style.boxShadow = "none"; tl.from(T5.card, { opacity: 0, duration: 0.3 }, tMap - 0.4);
+  chip(s5i, "p5l", 160, L5.bottom + 14, "ORIGINAL · LOCAL TEST APP, THEN claude -p /replica-recon", { size: 17, pad: "6px 11px 7px" }); tl.from("#p5l", { opacity: 0, duration: 0.25 }, S.s5.start + 0.5);
+  const fe = [["Weekday picker (Mon-Fri)", "must"], ["Fixed 30 min slot grid (9 slots/day)", "must"], ["Booked slots shown disabled", "must"], ["Guest details form (name and email)", "must"], ["Validation of name and email", "must"], ["Success message with slot and time zone", "must"], ["Bookings persist across reloads", "should"], ["Reschedule or cancel", "could"]];
+  const fcard = el(s5i, "fc5", "glass", "left:40px;top:960px;width:1000px;height:440px");
+  el(fcard, "fc5t", "", "left:30px;top:16px;font:800 22px/1 var(--mono);color:#FFE08A", "replica/features.csv · FIRST 8 OF 19 ROWS");
+  const tF = PW("p3", "features") - 0.2;
+  fe.forEach(([f, p], i) => { const r = el(fcard, "fc5r" + i, "", "left:24px;top:" + (52 + i * 47) + "px;width:950px;height:42px"); el(r, "fc5a" + i, "", "left:0;top:0;font:700 25px/42px var(--body);color:#fff", f); el(r, "fc5b" + i, "", "right:0;top:5px;padding:0 14px;font:800 19px/32px var(--mono);border-radius:16px;color:" + (p === "must" ? "#FFE08A" : "#D9CCFF") + ";border:2px solid " + (p === "must" ? "#FFC83D" : "#A78BFA"), p.toUpperCase()); tl.from(r, { opacity: 0, x: 120, duration: 0.2 }, tF + i * 0.28); });
+  const cnt = [["4 SCREENS", 40], ["2 FLOWS", 300], ["19 FEATURE ROWS", 520]], tC = PW("p3b", "four");
+  cnt.forEach(([t, x], i) => { const c = chip(s5i, "cn" + i, x, 1415, t, { size: 24, pad: "10px 20px 12px" }); tl.from(c, { opacity: 0, scale: 0.4, duration: 0.3, ease: "back.out(2.4)" }, tC + i * 0.55 - 0.1); });
+  const bot5 = botAt(s5i, "bot5", 925, 640, 120); bot5.face(tl, 0, -1, 0.01); bot5.rise(tl, S.s5.start + 0.5, 420, 0.4); bot5.blinks(tl, S.s5.start, S.s5.end, 1.1);
+  bot5.aimPoint(tl, tMap - 0.4, { x: 925, y: 640, scale: 1, target: [600, 560], hand: "L", hold: 0.7 }); bot5.react(tl, tC + 0.3, "think");
+  zmv.push(["s5", () => { zoomTo(cams.s5, L5.cx, L5.cy, 1.15, S.s5.start + 0.5, 0.7); zoomOut(cams.s5, tF - 0.4, 0.6); }]);
+
+  /* ================================================================= S6 BUILD (real run; code turns into the running app in one computer) */
+  const s6i = base("s6"); hud(s6i, "h6", "STEP 2 · BUILD · REAL RUN", S.s6.start + 0.15);
+  const t6 = S.s6.start + 0.4;
+  const T6 = term(s6i, "t6", 40, 290, 1000, 280, "claude -p /replica-build", [
+    ["● Read   replica/recon.md", YEL, 0, t6], ["● Write  clone/index.html", GRN, 0, PW("p4", "fresh") - 0.3], ["● Write  replica/build-log.md", GRN, 0, PW("p4", "fresh") + 0.3], ["√ 11 turns · 4 of 4 screens built", GRN, 0, PW("p4", "colors") + 0.2]
+  ], t6, 26, 46);
+  tl.from(T6.card, { opacity: 0, y: 60, duration: 0.3 }, S.s6.start + 0.2);
+  const L6 = laptop(s6i, "l6", 110, 610, 860, { imgs: ["desk-c-days.png", "desk-c-times.png", "desk-c-form.png", "desk-c-booked.png"], hideFirst: true });
+  tl.from(L6.g, { opacity: 0, y: 100, duration: 0.4, ease: "power3.out" }, S.s6.start + 0.4);
+  const tCol = PW("p4", "colors"), tWd = PW("p4", "words");
+  const code = el(L6.scr, "cd6", "", "left:0;top:0;width:" + L6.sw + "px;height:" + L6.sh + "px;background:#0F0A24"); el(code, "cd6t", "", "left:24px;top:14px;font:800 22px/1 var(--mono);color:#FFE08A", "clone/index.html · :root");
+  const CL = ["--ink:#10302b;", "--muted:#5a726d;", "--bg:#eef4f1;", "--card:#ffffff;", "--brand:#0f766e;", "--accent:#f59e0b;", "--r-card:20px;", "--r-ctl:12px;"];
+  CL.forEach((l, i) => { const d = el(code, "cd6l" + i, "mono", "left:24px;top:" + (56 + i * 58) + "px;font:600 32px/1 var(--mono);color:" + (i == 4 ? "#5EEAD4" : "#E9E1FF"), l); tl.from(d, { opacity: 0, x: -20, duration: 0.14 }, tCol - 1.3 + i * 0.14); });
+  tl.to(code, { opacity: 0, duration: 0.3 }, tCol + 0.1); tl.to(L6.ims[0], { opacity: 1, duration: 0.3 }, tCol + 0.1);
+  swapTo(L6, 1, tWd - 0.3); swapTo(L6, 2, tWd + 0.5); swapTo(L6, 3, S.s6.end - 1.2);
+  chip(s6i, "bl6", 40, L6.bottom + 20, "CLEAN ROOM · OWN COLOURS · OWN WORDS", { size: 20, pad: "7px 14px 8px" }); tl.from("#bl6", { opacity: 0, duration: 0.25 }, tCol + 0.3);
+  const bot6 = botAt(s6i, "bot6", 860, 1290, 150); bot6.face(tl, 0, -1, 0.01); bot6.rise(tl, S.s6.start + 0.5, 420, 0.4); bot6.blinks(tl, S.s6.start, S.s6.end, 1.1);
+  bot6.aimPoint(tl, tCol - 0.4, { x: 860, y: 1290, scale: 1, target: [700, 800], hand: "L", hold: 0.7 }); bot6.react(tl, tWd + 0.2, "wow");
+  zmv.push(["s6", () => { zoomTo(cams.s6, L6.cx, L6.cy, 1.22, tCol - 0.6, 0.7); zoomOut(cams.s6, S.s6.end - 1.0, 0.6); }]);
+
+  /* ================================================================= S7 TEST + PARITY + SWEEP (verbatim) */
+  const s7i = base("s7"); hud(s7i, "h7", "STEP 3 · TEST · REAL RESULTS", S.s7.start + 0.15);
+  const TS = ["PASS  1 page shows 5 bookable days", "PASS  2 time zone is shown to the guest", "PASS  3 picking a day shows 9 time slots", "PASS  4 empty form shows a validation message", "PASS  5 invalid email is refused", "PASS  6 confirmation message is shown", "PASS  7 booked slot is disabled afterwards", "PASS  8 booking persists across reload", "PASS  9 slot taken mid-booking is refused…"];
+  const tN = PW("p4b", "nine"), tP = PW("p4b", "passed");
+  const T7 = term(s7i, "t7", 40, 290, 1000, 470, "node clone-test.mjs · Playwright", TS.map((s, i) => [s, GRN, 0, S.s7.start + 0.5 + (tP - S.s7.start - 0.5) * i / 9]), S.s7.start + 0.5, 24, 40);
+  tl.from(T7.card, { opacity: 0, y: 60, duration: 0.3 }, S.s7.start + 0.2);
+  const st1 = stat(s7i, "st1", 40, 790, 310, "9 / 9", "BROWSER CHECKS", "#9CF2B6"), st2 = stat(s7i, "st2", 385, 790, 310, "100/100", "PARITY · 10 FEATURES", "#9CF2B6"), st3 = stat(s7i, "st3", 730, 790, 310, "CLEAN", "BRAND SWEEP", "#9CF2B6");
+  tl.from(st1, { opacity: 0, scale: 0.6, duration: 0.3, ease: "back.out(2)" }, tP - 0.05); tl.from(st2, { opacity: 0, x: 200, duration: 0.3 }, PW("p5", "hundred") - 0.3); tl.from(st3, { opacity: 0, x: 200, duration: 0.3 }, PW("p5", "sweep") - 0.2);
+  const L7 = laptop(s7i, "l7", 40, 970, 500, { imgs: ["desk-c-taken.png"] }); tl.from(L7.g, { opacity: 0, y: 200, duration: 0.4 }, PW("p4b", "ran") - 0.1);
+  el(s7i, "p7t", "", "left:590px;top:1000px;width:450px;font:700 28px/1.3 var(--body);color:#fff", "Test 9: a second tab books 11:00 first. SlotNest refuses the late booking with a clear message.");
+  tl.from("#p7t", { opacity: 0, x: 80, duration: 0.3 }, tN + 0.2);
+  chip(s7i, "tn7", 590, 1230, "RUN ON MY SLOTNEST BUILD", { size: 17, pad: "6px 12px 7px" }); tl.from("#tn7", { opacity: 0, duration: 0.25 }, tN + 0.5);
+  const bot7 = botAt(s7i, "bot7", 880, 1290, 130); bot7.face(tl, 0, -1, 0.01); bot7.rise(tl, S.s7.start + 0.5, 420, 0.4); bot7.blinks(tl, S.s7.start, S.s7.end, 1.1);
+  bot7.aimPoint(tl, tN - 0.3, { x: 880, y: 1290, scale: 1, target: [700, 700], hand: "L", hold: 0.7 }); bot7.react(tl, tP + 0.1, "celebrate");
+  
+
+  /* ================================================================= S8 HONEST LIMITS + REVIEWS (verbatim) */
+  const s8i = base("s8"); hud(s8i, "h8", "THE FINE PRINT", S.s8.start + 0.15);
+  const lm = el(s8i, "lm8", "glass", "left:40px;top:290px;width:1000px;height:420px");
+  el(lm, "lm8t", "", "left:30px;top:20px;font:800 22px/1 var(--mono);color:#FFE08A", "replica/build-log.md · NOT DONE / PARTIAL");
+  ["Double-booking prevention is partial.", "Bookings live in this browser's localStorage,", "so two guests can still book the same slot.", "A real fix needs a server."].forEach((s, i) => { const d = el(lm, "lm8r" + i, "", "left:30px;top:" + (74 + i * 74) + "px;width:940px;font:700 34px/1.2 var(--body);color:" + (i === 0 ? "#FCA5A5" : "#fff"), s); tl.from(d, { opacity: 0, x: -40, duration: 0.25 }, PW("p5b", ["magic", "shared", "bookings", "server"][i]) - 0.1); });
+  tl.from(lm, { opacity: 0, y: 70, duration: 0.35 }, S.s8.start + 0.1);
+  chip(s8i, "ng8", 40, 740, "NO GUARANTEE OF A PERFECT CLONE · README", Object.assign({ size: 24, pad: "11px 20px 13px" }, AMB)); tl.from("#ng8", { opacity: 0, scale: 0.5, duration: 0.3, ease: "back.out(2)" }, PW("p5b", "perfect") - 0.15);
+  const tR = PW("p6", "invents") - 0.7;
+  const T8 = term(s8i, "t8", 40, 840, 1000, 330, "python3 replica-entrepreneur/reviews.py", [["$ python3 reviews.py reviews.csv", YEL, 40, tR], ["reviews: no usable rows.", RED, 0, PW("p6", "invents") - 0.1], ["Every row needs a url (http...)", RED, 0], ["and the review text.", RED, 0]], tR, 30, 52);
+  tl.from(T8.card, { opacity: 0, y: 80, duration: 0.35 }, tR - 0.4);
+  const rl = [["NEVER INVENTS REVIEWS", "invents"], ["EVERY QUOTE NEEDS A REAL LINK", "link"]];
+  rl.forEach(([t, w], i) => { const c = chip(s8i, "rl" + i, 40, 1210 + i * 66, t, Object.assign({ size: 26, pad: "11px 22px 13px" }, G)); tl.from(c, { opacity: 0, x: -200, duration: 0.3, ease: "back.out(1.7)" }, PW("p6", w) - 0.15); });
+  chip(s8i, "rv8", 40, 1350, "REAL REFUSAL · EMPTY reviews.csv · NOTHING INVENTED", { size: 18, pad: "7px 14px 8px" }); tl.from("#rv8", { opacity: 0, duration: 0.25 }, PW("p6", "invents") + 0.4);
+  const bot8 = botAt(s8i, "bot8", 820, 1330, 170); bot8.face(tl, 0, -1, 0.01); bot8.rise(tl, S.s8.start + 0.5, 420, 0.4); bot8.blinks(tl, S.s8.start, S.s8.end, 1.1);
+  bot8.aimPoint(tl, PW("p5b", "perfect") - 0.4, { x: 820, y: 1330, scale: 1, target: [700, 740], hand: "L", hold: 0.7 }); bot8.shake(tl, PW("p6", "invents") + 0.1);
+
+  /* ================================================================= S9 CTA */
+  const s9i = base("s9"); hud(s9i, "h9", "REPLICA SKILL", S.s9.start + 0.1);
+  const g9 = el(s9i, "g9", "glass", "left:40px;top:300px;width:1000px;height:150px"); el(g9, "g9t", "", "left:30px;top:44px;font:800 36px/1.1 var(--mono);color:#E9E1FF", "github.com/Jakeschincariol/replica-skill"); tl.from(g9, { opacity: 0, y: 40, duration: 0.3 }, S.s9.start + 0.1);
+  const tOut = PW("p7", "Follow") - 0.35;
+  tl.to([g9, "#h9k", "#h9b"], { opacity: 0, duration: 0.2 }, tOut + 0.05);
+  const botO = botAt(s9i, "botO", -400, 470, 300);
+  Outro.build(tl, s9i, tOut, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" });
+
+  /* ---------- camera: purposeful zooms into the real interfaces + gentle drift; NO moving light sweeps (removed in v3) ---------- */
+  const cams = {}; ["s2", "s3", "s4", "s5", "s6", "s7", "s8"].forEach(k => cams[k] = wrapScene(k));
+  zmv.forEach(([k, f]) => f());
+  zoomTo(cams.s8, 540, 1000, 1.08, PW("p6", "invents") - 0.1, 0.5); zoomOut(cams.s8, PW("p6", "invents") + 2.0, 0.5);
+  /* gentle eased camera drift between framings: real camera motion that keeps every hold alive without any moving light */
+  const sceneOf2 = t => { let r = "s1"; Object.keys(S).forEach(k => { if (t >= S[k].b) r = k; }); return r; };
+  const bounds2 = Object.keys(S).map(k => S[k].b); let dn = 0;
+  const heldZoom = (id, t0, t1) => zwin.some(w => w[0] === id && t0 < w[2] && t1 > w[1]);
+  for (let t0 = 1.0; t0 < S.s8.end - 0.9; t0 += 1.3) {
+    const k = sceneOf2(t0), cam = cams[k]; if (!cam) continue;
+    const t1 = t0 + 0.45;
+    if (bounds2.some(b => t0 > b - 0.5 && t0 < b + 0.7) || sceneOf2(t1) !== k || heldZoom("cam" + k, t0, t1)) continue;
+    const A = [[1.0, 0, 0], [1.07, -30, -42], [1.0, 0, 0], [1.06, 26, -36]][dn % 4], B = [[1.07, -30, -42], [1.0, 0, 0], [1.06, 26, -36], [1.0, 0, 0]][dn % 4]; dn++;
+    tl.fromTo(cam, { scale: A[0], x: A[1], y: A[2] }, { scale: B[0], x: B[1], y: B[2], duration: 0.4, ease: "power3.out", immediateRender: false }, t0);
+  }
+  /* ---------- transitions ---------- */
+  Cam.push(tl, S.s2.b, 0.5, { out: "#s1i", inn: "#s2i", ox: 790, oy: 900, scale: 4 });
+  Cam.whip(tl, S.s3.b, 0.5, { out: "#s2i", inn: "#s3i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s4.b, 0.5, { out: "#s3i", inn: "#s4i", dir: -1, blur: 28 });
+  Cam.whip(tl, S.s5.b, 0.5, { out: "#s4i", inn: "#s5i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s6.b, 0.5, { out: "#s5i", inn: "#s6i", dir: -1, blur: 28 });
+  Cam.whip(tl, S.s7.b, 0.5, { out: "#s6i", inn: "#s7i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s8.b, 0.5, { out: "#s7i", inn: "#s8i", dir: -1, blur: 28 });
+  Cam.iris(tl, S.s9.b, 0.7, { inn: "#s9i", cx: 540, cy: 760, ring: "#A78BFA", host: $("fx"), id: "ir9" });
+  /* ---------- subtitles ---------- */
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 330, active: "#FFFFFF", block: "#7C3AED", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

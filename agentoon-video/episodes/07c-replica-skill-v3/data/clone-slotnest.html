@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SlotNest – reserve a time</title>
+<style>
+:root{
+  --ink:#10302b; --muted:#5a726d; --bg:#eef4f1; --card:#ffffff;
+  --brand:#0f766e; --brand-ink:#ffffff; --accent:#f59e0b; --line:#c9dad5;
+  --ok:#15803d; --ok-bg:#e7f6ec; --err:#b42318; --err-bg:#fdecea;
+  --shadow:0 8px 30px rgba(16,48,43,.1);
+  --r-card:20px; --r-ctl:12px; --sp-1:6px; --sp-2:12px; --sp-3:20px; --sp-4:28px;
+  --font:system-ui,-apple-system,"Segoe UI",sans-serif; --dim:.4;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:start center;padding:var(--sp-4) 16px;background:var(--bg);color:var(--ink);font-family:var(--font)}
+.card{width:100%;max-width:440px;background:var(--card);border-radius:var(--r-card);padding:var(--sp-4);box-shadow:var(--shadow)}
+h1{margin:0;font-size:1.5rem;display:flex;align-items:center;gap:var(--sp-1)}
+h1::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--accent)}
+h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:var(--sp-3) 0 var(--sp-2)}
+.sub{color:var(--muted);margin:var(--sp-1) 0 0;font-size:.9rem}
+.grid{display:grid;gap:var(--sp-2);border:0;padding:0;margin:0;min-width:0}
+.days{grid-template-columns:repeat(5,1fr)}
+.slots{grid-template-columns:repeat(3,1fr)}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opt span{display:block;text-align:center;padding:10px 4px;border:1.5px solid var(--brand);color:var(--brand);border-radius:var(--r-ctl);font-weight:600}
+.opt input:checked+span{background:var(--brand);color:var(--brand-ink)}
+.opt input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.opt input:disabled{cursor:not-allowed}
+.opt input:disabled+span{opacity:var(--dim);text-decoration:line-through}
+label{display:block;font-size:.85rem;font-weight:600;margin-bottom:var(--sp-1)}
+input[type=text],input[type=email]{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:var(--r-ctl);font:inherit;margin-bottom:var(--sp-2)}
+input[type=text]:focus,input[type=email]:focus{outline:3px solid var(--accent);border-color:var(--brand)}
+input[aria-invalid=true]{border-color:var(--err)}
+button.go{width:100%;padding:13px;border:0;border-radius:var(--r-ctl);background:var(--brand);color:var(--brand-ink);font:inherit;font-weight:700;cursor:pointer}
+button.go:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button.go:disabled{opacity:var(--dim);cursor:wait}
+.msg{margin-top:var(--sp-2);padding:var(--sp-2);border-radius:var(--r-ctl);font-size:.9rem;overflow-wrap:anywhere}
+.msg:empty{display:none}
+.msg.err{background:var(--err-bg);color:var(--err)}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}
+.hint{color:var(--muted);font-size:.9rem;margin:0}
+.skel{height:42px;border-radius:var(--r-ctl);background:var(--line);animation:p 1s infinite alternate}
+@keyframes p{to{opacity:.4}}
+[hidden]{display:none!important}
+.mine{margin-top:var(--sp-4);border-top:1px solid var(--line);padding-top:var(--sp-2)}
+.mine ul{list-style:none;padding:0;margin:0}
+.mine li{padding:var(--sp-1) 0;font-size:.9rem;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>SlotNest</h1>
+  <p class="sub">Reserve a 30-minute chat. Times shown in <strong id="tz"></strong>.</p>
+
+  <form id="form" novalidate>
+    <h2 id="dh">1 · Choose a day</h2>
+    <fieldset class="grid days" id="days" aria-labelledby="dh"></fieldset>
+
+    <section id="slotsec" hidden>
+      <h2 id="sh">2 · Choose a time</h2>
+      <fieldset class="grid slots" id="slots" aria-labelledby="sh"></fieldset>
+      <p class="hint" id="full" hidden>Everything is taken this day. Try another one.</p>
+    </section>
+
+    <section id="detsec" hidden>
+      <h2>3 · Your details</h2>
+      <label for="name">Full name</label>
+      <input type="text" id="name" autocomplete="name" maxlength="120">
+      <label for="email">Email</label>
+      <input type="email" id="email" autocomplete="email" maxlength="200">
+      <button class="go" id="go" type="submit">Reserve this time</button>
+    </section>
+    <div class="msg" id="msg" role="status" aria-live="polite"></div>
+  </form>
+
+  <section class="mine" id="mine" hidden>
+    <h2>Your reservations</h2>
+    <ul id="mylist"></ul>
+  </section>
+</main>
+
+<script>
+/* Data layer: async functions shaped like a real backend would be.
+   Swap the bodies, keep the signatures. */
+const store = (() => {
+  const KEY = "slotnest.bookings.v1";
+  const read = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } };
+  const write = v => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+  const wait = () => new Promise(r => setTimeout(r, 250));
+  return {
+    async listDays() { return ["Mon", "Tue", "Wed", "Thu", "Fri"]; },
+    async listSlots() { return ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "14:00", "14:30", "15:00"]; },
+    async listBookings() { await wait(); return read(); },
+    async createBooking(b) {
+      await wait();
+      const all = read(); // fresh read, so a booking from another tab is caught
+      if (all.some(x => x.day === b.day && x.time === b.time)) throw new Error("taken");
+      all.push(Object.assign({}, b, { createdAt: Date.now() }));
+      write(all);
+      return b;
+    }
+  };
+})();
+
+const $ = id => document.getElementById(id);
+const state = { day: null, time: null, bookings: [], days: [], slots: [] };
+const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "your local time";
+$("tz").textContent = tz.replace(/_/g, " ");
+
+function opt(group, value, label, disabled) {
+  const l = document.createElement("label"); l.className = "opt";
+  const i = document.createElement("input");
+  i.type = "radio"; i.name = group; i.value = value; i.disabled = !!disabled;
+  const s = document.createElement("span"); s.textContent = label;
+  if (disabled) s.title = "Already reserved";
+  l.append(i, s); return l;
+}
+const isTaken = (d, t) => state.bookings.some(b => b.day === d && b.time === t);
+const say = (text, kind) => { const m = $("msg"); m.textContent = text || ""; m.className = "msg " + (kind || ""); };
+
+function drawDays() {
+  const box = $("days"); box.replaceChildren();
+  state.days.forEach(d => box.append(opt("day", d, d)));
+  if (state.day) box.querySelector('[value="' + state.day + '"]').checked = true;
+}
+function drawSlots() {
+  const box = $("slots"); box.replaceChildren();
+  let free = 0;
+  state.slots.forEach(t => {
+    const taken = isTaken(state.day, t); if (!taken) free++;
+    const o = opt("slot", t, t, taken);
+    if (t === state.time && !taken) o.querySelector("input").checked = true;
+    box.append(o);
+  });
+  $("full").hidden = free > 0;
+}
+function drawMine() {
+  $("mine").hidden = !state.bookings.length;
+  $("mylist").replaceChildren(...state.bookings.map(b => {
+    const li = document.createElement("li");
+    li.textContent = b.day + " " + b.time + " · " + b.name; return li;
+  }));
+}
+
+$("days").addEventListener("change", e => {
+  state.day = e.target.value; state.time = null;
+  say(""); $("detsec").hidden = true; $("slotsec").hidden = false; drawSlots();
+});
+$("slots").addEventListener("change", e => {
+  state.time = e.target.value; say(""); $("detsec").hidden = false; $("name").focus();
+});
+
+$("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!state.time) return;
+  const name = $("name").value.trim(), email = $("email").value.trim();
+  $("name").removeAttribute("aria-invalid"); $("email").removeAttribute("aria-invalid");
+  if (!name) { $("name").setAttribute("aria-invalid", "true"); $("name").focus(); return say("Please tell us your name.", "err"); }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { $("email").setAttribute("aria-invalid", "true"); $("email").focus(); return say("That email doesn't look right.", "err"); }
+  $("go").disabled = true;
+  try {
+    await store.createBooking({ day: state.day, time: state.time, name: name, email: email, tz: tz });
+    say("You're in! " + state.day + " at " + state.time + " (" + tz + ") is reserved for " + name + ".", "ok");
+  } catch (err) {
+    say(err.message === "taken" ? "Someone grabbed that time first. Please choose another." : "Something went wrong. Please try again.", "err");
+  }
+  state.time = null; $("detsec").hidden = true; $("go").disabled = false;
+  try { state.bookings = await store.listBookings(); } catch (err) {}
+  drawSlots(); drawMine();
+});
+
+(async function init() {
+  $("days").innerHTML = '<div class="skel"></div>'.repeat(5);
+  try {
+    [state.days, state.slots, state.bookings] = await Promise.all([store.listDays(), store.listSlots(), store.listBookings()]);
+    drawDays(); drawMine();
+  } catch (err) { $("days").replaceChildren(); say("Couldn't load availability. Reload to retry.", "err"); }
+})();
+</script>
+</body>
+</html>

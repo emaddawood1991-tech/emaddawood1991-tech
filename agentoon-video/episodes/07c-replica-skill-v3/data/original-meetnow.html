@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MeetNow — book a 30 min call</title>
+<style>
+:root{--ink:#0f172a;--bg:#f1f5f9;--card:#fff;--blue:#2563eb;--mut:#64748b}
+*{box-sizing:border-box}body{margin:0;font:16px/1.4 system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:420px;margin:0 auto;padding:20px}.card{background:var(--card);border-radius:16px;padding:20px;box-shadow:0 4px 18px #0f172a14}
+h1{font-size:22px;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 16px}.days,.slots{display:grid;gap:8px}.days{grid-template-columns:repeat(5,1fr)}.slots{grid-template-columns:repeat(3,1fr);margin-top:12px}
+button{font:inherit;border:1.5px solid var(--blue);background:#fff;color:var(--blue);border-radius:10px;padding:10px 4px;cursor:pointer}button.on{background:var(--blue);color:#fff}button:disabled{opacity:.35;cursor:not-allowed}
+input{width:100%;padding:12px;margin:6px 0;border:1.5px solid #cbd5e1;border-radius:10px;font:inherit}.go{width:100%;background:var(--blue);color:#fff;margin-top:8px}.msg{margin-top:10px;font-weight:600}.err{color:#b91c1c}.ok{color:#15803d}
+</style></head><body><div class="wrap"><div class="card" id="app">
+<h1>MeetNow</h1><p class="sub">30 min intro call · Time zone: <span id="tz"></span></p>
+<div class="days" id="days"></div><div class="slots" id="slots"></div>
+<form id="f" hidden><input id="n" placeholder="Your name"><input id="e" placeholder="Email"><button class="go" id="go" type="submit">Confirm booking</button></form>
+<div class="msg" id="m"></div></div></div>
+<script>
+const taken=JSON.parse(localStorage.getItem("mn")||"[]");let day=null,slot=null;
+document.getElementById("tz").textContent=Intl.DateTimeFormat().resolvedOptions().timeZone;
+const D=["Mon","Tue","Wed","Thu","Fri"],T=["09:00","09:30","10:00","10:30","11:00","11:30","14:00","14:30","15:00"];
+const days=document.getElementById("days"),slots=document.getElementById("slots"),f=document.getElementById("f"),m=document.getElementById("m");
+D.forEach(d=>{const b=document.createElement("button");b.textContent=d;b.onclick=()=>{day=d;slot=null;[...days.children].forEach(x=>x.classList.toggle("on",x==b));draw()};days.appendChild(b)});
+function draw(){slots.innerHTML="";f.hidden=true;T.forEach(t=>{const b=document.createElement("button"),k=day+" "+t;b.textContent=t;b.disabled=taken.includes(k);b.onclick=()=>{slot=t;[...slots.children].forEach(x=>x.classList.toggle("on",x==b));f.hidden=false};slots.appendChild(b)})}
+f.onsubmit=e=>{e.preventDefault();m.className="msg err";if(!n.value.trim()||!/.+@.+/.test(e0.value)){}};
+f.onsubmit=ev=>{ev.preventDefault();const nm=document.getElementById("n").value.trim(),em=document.getElementById("e").value.trim();m.className="msg err";
+if(!nm||!/^[^@\s]+@[^@\s]+$/.test(em)){m.textContent="Please enter your name and a valid email.";return}
+const k=day+" "+slot;if(taken.includes(k)){m.textContent="That time was just taken. Pick another.";return}
+taken.push(k);localStorage.setItem("mn",JSON.stringify(taken));m.className="msg ok";m.textContent="Booked! "+k+" ("+document.getElementById("tz").textContent+")";f.hidden=true;draw()};
+</script></body></html>

@@ -1,0 +1,16 @@
+import {createRequire} from "module"; const pw=createRequire("/tmp/pw/")("playwright");
+const out="/tmp/ep10/shots"; import fs from "fs"; fs.mkdirSync(out,{recursive:true});
+const b=await pw.chromium.launch(); const ctx=await b.newContext({viewport:{width:720,height:500},deviceScaleFactor:2});
+let p=await ctx.newPage(); await p.goto("http://localhost:8133/index.html"); await p.addStyleTag({content:"body{zoom:.86}"});
+await p.screenshot({path:out+"/o-days.png"}); await p.click("text=Wed"); await p.screenshot({path:out+"/o-times.png"});
+await p.click("text=10:00"); await p.fill("#n","Sam Rivera"); await p.fill("#e","sam@example.com"); await p.screenshot({path:out+"/o-form.png"}); await p.close();
+const ctx2=await b.newContext({viewport:{width:720,height:500},deviceScaleFactor:2}); p=await ctx2.newPage();
+await p.goto("http://localhost:8134/index.html"); await p.waitForSelector("#days input"); await p.addStyleTag({content:"body{zoom:.66}"});
+await p.screenshot({path:out+"/c-days.png"}); await p.check("#days input[value=Wed]",{force:true}); await p.screenshot({path:out+"/c-times.png"});
+await p.check("#slots input[value='10:00']",{force:true}); await p.fill("#name","Sam Rivera"); await p.fill("#email","sam@example.com"); await p.screenshot({path:out+"/c-form.png"});
+await p.click("#go"); await p.waitForTimeout(900); await p.screenshot({path:out+"/c-booked.png"});
+const p2=await ctx2.newPage(); await p2.goto("http://localhost:8134/index.html"); await p2.waitForSelector("#days input"); await p2.addStyleTag({content:"body{zoom:.66}"});
+await p.check("#slots input[value='11:00']",{force:true}); await p.fill("#name","Ana"); await p.fill("#email","ana@example.com");
+await p2.check("#days input[value=Wed]",{force:true}); await p2.check("#slots input[value='11:00']",{force:true}); await p2.fill("#name","Lee"); await p2.fill("#email","lee@example.com"); await p2.click("#go"); await p2.waitForTimeout(900);
+await p.click("#go"); await p.waitForTimeout(900); await p.screenshot({path:out+"/c-taken.png"});
+await b.close();
