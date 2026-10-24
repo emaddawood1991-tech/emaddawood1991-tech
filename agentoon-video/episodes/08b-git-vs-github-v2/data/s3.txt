@@ -1,4 +1,4 @@
 $ git log --oneline
-9684c36 Add menu cards
-ac122b6 Style the design
-197c7ee Add homepage
+6ef85ff Add menu cards
+c3e6f6d Style the design
+ff48bf8 Add homepage
