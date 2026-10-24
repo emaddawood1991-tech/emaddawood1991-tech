@@ -1,0 +1,2 @@
+{"name":"agentoon-git-timeline","private":true,"version":"1.0.0","scripts":{"render:a":"remotion render src/index.ts GitTimelineA out/timeline-a.mp4","render:b":"remotion render src/index.ts GitTimelineB out/timeline-b.mp4"},
+"dependencies":{"remotion":"4.0.505","@remotion/cli":"4.0.505","react":"19.2.3","react-dom":"19.2.3"},"devDependencies":{"typescript":"5.9.3","@types/react":"19.2.2"}}

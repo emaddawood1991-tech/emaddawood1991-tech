@@ -1,0 +1,10 @@
+Think Git and GitHub are the same thing? They're not!
+Imagine you're building a website. You write some code, change the design, and add new features.
+Git keeps track of those changes, so you have a history of your project.
+If something goes wrong, Git helps you find and recover an earlier version.
+GitHub is different. It's an online platform where you can store and share Git repositories.
+Use git push to send your commits to GitHub, and git pull to bring remote changes back.
+With git clone, you can copy a repository onto another computer.
+And git add and git commit let you stage and save a snapshot of your changes.
+So remember: Git tracks your project's history. GitHub hosts and shares repositories online.
+Follow Agentoon.ai for more!

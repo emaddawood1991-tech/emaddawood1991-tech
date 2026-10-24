@@ -1,0 +1,97 @@
+{
+ "title": "Git vs GitHub",
+ "voice": "am_michael",
+ "speed": 1.1,
+ "total": 59.0,
+ "music": [],
+ "sfx": [],
+ "phrases": [
+  {
+   "id": "p1",
+   "speak": "Think Git and GitHub are the same thing? They're not!",
+   "show": "Think Git and GitHub are the same thing? They're not!",
+   "map": null,
+   "pad": 0.8
+  },
+  {
+   "id": "p2",
+   "speak": "Imagine you're building a website. You write some code, change the design, and add new features.",
+   "show": "Imagine you're building a website. You write some code, change the design, and add new features.",
+   "map": null,
+   "pad": 0.8
+  },
+  {
+   "id": "p3",
+   "speak": "Git keeps track of those changes, so you have a history of your project.",
+   "show": "Git keeps track of those changes, so you have a history of your project.",
+   "map": null,
+   "pad": 0.8
+  },
+  {
+   "id": "p4",
+   "speak": "If something goes wrong, Git helps you find and recover an earlier version.",
+   "show": "If something goes wrong, Git helps you find and recover an earlier version.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p5",
+   "speak": "GitHub is different. It's an online platform where you can store and share Git repositories.",
+   "show": "GitHub is different. It's an online platform where you can store and share Git repositories.",
+   "map": null,
+   "pad": 0.8
+  },
+  {
+   "id": "p6",
+   "speak": "Use git push to send your commits to GitHub, and git pull to bring remote changes back.",
+   "show": "Use git push to send your commits to GitHub, and git pull to bring remote changes back.",
+   "map": null,
+   "pad": 0.8
+  },
+  {
+   "id": "p7",
+   "speak": "With git clone, you can copy a repository onto another computer.",
+   "show": "With git clone, you can copy a repository onto another computer.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p8",
+   "speak": "And git add and git commit let you stage and save a snapshot of your changes.",
+   "show": "And git add and git commit let you stage and save a snapshot of your changes.",
+   "map": null,
+   "pad": 0.8
+  },
+  {
+   "id": "p9",
+   "speak": "So remember: Git tracks your project's history. GitHub hosts and shares repositories online.",
+   "show": "So remember: Git tracks your project's history. GitHub hosts and shares repositories online.",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p10",
+   "speak": "Follow Agentoon dot A I for more!",
+   "show": "Follow Agentoon.ai for more!",
+   "map": [
+    [
+     "Follow",
+     "Follow"
+    ],
+    [
+     "Agentoon.ai",
+     "Agentoon dot A I"
+    ],
+    [
+     "for",
+     "for"
+    ],
+    [
+     "more!",
+     "more!"
+    ]
+   ],
+   "pad": 0
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+$ git status --short
+ M index.html
+$ git add .
+$ git commit -m Update website
+[main 617fec8] Update website
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git log --oneline --graph --decorate
+* 617fec8 (HEAD -> main) Update website
+* 9a29f8b (origin/main) Tweak colours on laptop 2
+* 9684c36 Add menu cards
+* ac122b6 Style the design
+* 197c7ee Add homepage

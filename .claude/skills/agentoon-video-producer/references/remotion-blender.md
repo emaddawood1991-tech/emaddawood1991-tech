@@ -13,3 +13,8 @@ HyperFrames stays the primary engine and the Agentoon.ai look, robot, transition
 ## Blender (status 2026-10-22: not installed or connected in this sandbox)
 - If a Blender MCP is connected (blender-mcp), verify with a scene inspection first. Use it for true 3D shots (product turntables, orbiting objects, camera orbits) rendered to PNG sequence or MP4, then composite into HyperFrames as a muted video layer.
 - Keep Blender output on the Agentoon palette; label concept renders as concept, never as a tool's real output.
+
+## Update (Ep 08, 2026-10-24)
+- Remotion was used for real in Ep 08: a React timeline composition rendered to two 1000x620 MP4s (props from `audio/timing.json` + real git log), placed in HyperFrames as muted `<video>` layers with `data-media-start` so one render spans two scenes. Project source kept in `episodes/08-git-vs-github/remotion/` (no node_modules). `npm install` in a scratch dir, render with the headless-shell flag above.
+- Blender, Pexels, Shotcut: still unavailable in this sandbox (checked again). Do not claim them; say so in the production report.
+- `kit/py/build_audio.py tts` accepts an optional per-phrase `"pad": seconds` of extra silence after a phrase (keeps gaps under ~1 s; used to hit a 55-60 s length without changing the script).

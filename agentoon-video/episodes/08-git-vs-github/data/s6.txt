@@ -1,0 +1,13 @@
+$ git remote add origin ../remote.git
+$ git push -u origin main
+To ../remote.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+$ git pull origin main
+From ../remote
+ * branch            main       -> FETCH_HEAD
+   9684c36..9a29f8b  main       -> origin/main
+Updating 9684c36..9a29f8b
+Fast-forward
+ style.css | 1 +
+ 1 file changed, 1 insertion(+)

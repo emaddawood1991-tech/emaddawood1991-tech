@@ -37,14 +37,14 @@ def tts(ep_path):
     for attempt in range(4):
         chunks, phrases, t = [], [], 0.15
         lead = np.zeros(int(0.15 * SR), dtype=np.float32); chunks.append(lead)
-        n_spoken = 0
+        n_spoken = 0; pads = 0.0
         for p in ep["phrases"]:
             x, sr = k.create(p["speak"], voice=voice, speed=speed, lang="en-us"); assert sr == SR
             x = trim(x.astype(np.float32)); dur = len(x) / SR
             phrases.append({"id": p["id"], "start": round(t, 3), "end": round(t + dur, 3), "show": p["show"], "speak": p["speak"], "map": p.get("map")})
-            chunks.append(x); chunks.append(np.zeros(int(GAP * SR), dtype=np.float32)); t += dur + GAP
+            chunks.append(x); chunks.append(np.zeros(int((GAP + p.get("pad", 0)) * SR), dtype=np.float32)); t += dur + GAP + p.get("pad", 0); pads += p.get("pad", 0)
             n_spoken += len(p["speak"].split())
-        voice_secs = t - 0.15 - GAP
+        voice_secs = t - 0.15 - GAP - pads
         wpm = n_spoken / (voice_secs / 60)
         print(f"speed {speed:.3f}: {n_spoken} spoken words / {voice_secs:.2f}s = {wpm:.0f} wpm")
         if 156 <= wpm <= 168:

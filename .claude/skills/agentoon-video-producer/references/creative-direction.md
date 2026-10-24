@@ -66,3 +66,4 @@ Built with HTML, CSS, SVG, canvas and GSAP: flat colour paper fields, halftone-d
 
 | Ep 07 Replica Skill | Violet Lab (violet/amber, glass + terminal) | real transcripts, phone screenshots, test/parity stat tiles | whip + push + iris | dark lab, no scan-beam repeats of ep05 look |
 | Ep 07b Replica Skill v2 | Violet Lab (same look as 07, real footage only) | real transcripts, Playwright phone screenshots, stat tiles | whip + push + iris | verified-demo rebuild; new CTA text |
+| Ep 08 Git vs GitHub | Violet Lab + Git orange accents (kept approved style) | real git transcripts, Playwright site shots, Remotion perspective commit timeline | whip + push + iris | first episode with a Remotion shot in the final cut |
