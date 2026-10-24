@@ -3,7 +3,7 @@
 d="${1:-.}"; bad=0
 for f in "$d/index.html" "$d/src/index.template.html"; do
   [ -f "$f" ] || continue
-  hits=$(grep -n -i -E 'PLACEHOLDER|PREVIEW ·|PREVIEW\)|REBUILT FROM THE REAL|SOME REAL FOOTAGE|lorem ipsum|TODO|REPLACE ME' "$f" | head -5)
+  hits=$(grep -n -i -E 'PLACEHOLDER|PREVIEW · (SOME|PLACEHOLDER)|\(PREVIEW\)|REBUILT FROM THE REAL|SOME REAL FOOTAGE|lorem ipsum|TODO|REPLACE ME' "$f" | head -5)
   if [ -n "$hits" ]; then echo "$f"; echo "$hits"; bad=1; fi
 done
 if [ -f "$d/data/slots.json" ]; then

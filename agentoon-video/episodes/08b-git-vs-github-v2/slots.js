@@ -1,0 +1,1 @@
+window.SLOTS = {"banner": false};

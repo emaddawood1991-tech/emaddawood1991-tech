@@ -1,0 +1,217 @@
+{
+ "music": [
+  {
+   "from": "p1",
+   "to": "p2",
+   "mood": "hook",
+   "fo": -0.1,
+   "to_off": 0.1
+  },
+  {
+   "from": "p2",
+   "to": "p9",
+   "mood": "demo",
+   "to_off": 0.1
+  },
+  {
+   "from": "p9",
+   "to": "p10.end",
+   "mood": "result",
+   "to_off": 1.9
+  }
+ ],
+ "sfx": [
+  {
+   "name": "pop",
+   "at": "p1:not",
+   "off": -0.2,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s2",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "tick",
+   "at": "p2:write",
+   "off": 0,
+   "gain": 0.5
+  },
+  {
+   "name": "tick",
+   "at": "p2:design",
+   "off": 0,
+   "gain": 0.5
+  },
+  {
+   "name": "sparkle",
+   "at": "p2:features",
+   "off": 0,
+   "gain": 0.4
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s3",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "at": "p3:keeps",
+   "off": -0.1,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "at": "p3:changes",
+   "off": -0.3,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s4",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "p4:recover",
+   "off": -0.6,
+   "gain": 0.3,
+   "dur": 1.0,
+   "cps": 34
+  },
+  {
+   "name": "sparkle",
+   "at": "p4:recover",
+   "off": 0.5,
+   "gain": 0.45
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s5",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "at": "p5:online",
+   "off": 0,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "at": "p5:store",
+   "off": 0,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s6",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "p6:push",
+   "off": -0.4,
+   "gain": 0.3,
+   "dur": 1.0,
+   "cps": 36
+  },
+  {
+   "name": "tick",
+   "at": "p6:push",
+   "off": 0,
+   "gain": 0.5
+  },
+  {
+   "name": "type",
+   "at": "p6:pull",
+   "off": -0.5,
+   "gain": 0.3,
+   "dur": 1.0,
+   "cps": 36
+  },
+  {
+   "name": "tick",
+   "at": "p6:pull",
+   "off": 0,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s7",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "p7:copy",
+   "off": 0.2,
+   "gain": 0.3,
+   "dur": 1.6,
+   "cps": 38
+  },
+  {
+   "name": "sparkle",
+   "at": "p7:copy",
+   "off": 1.0,
+   "gain": 0.4
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s8",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "p8:add",
+   "off": -0.25,
+   "gain": 0.3,
+   "dur": 0.5,
+   "cps": 40
+  },
+  {
+   "name": "type",
+   "at": "p8:commit",
+   "off": -0.5,
+   "gain": 0.3,
+   "dur": 1.1,
+   "cps": 36
+  },
+  {
+   "name": "sparkle",
+   "at": "p8:commit",
+   "off": 0.8,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s9",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "at": "p9:tracks",
+   "off": 0,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "at": "p9:hosts",
+   "off": 0,
+   "gain": 0.4
+  },
+  {
+   "name": "sparkle",
+   "at": "p10:Follow",
+   "off": 0,
+   "gain": 0.5
+  }
+ ]
+}

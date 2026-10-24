@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 08 Git vs GitHub</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Fluent HUD". Deep-blue cyber desk, frosted-glass panels, classic PowerShell navy terminal, cyan scan beams, shield/lock/clock graphics.
+     No Windows logo, no green SAFE badges. Terminal OUTPUT is never invented: every capture on screen is real or verbatim. */
+  :root { --bg: #08051A; --cy: #A78BFA; --bl: #8B5CF6; --ps: #1A0F3A; }
+  .chip { position: absolute; white-space: nowrap; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .glass { position: absolute; border-radius: 26px; background: linear-gradient(160deg,rgba(90,60,170,.40),rgba(24,12,56,.80)); border: 2px solid rgba(190,170,255,.45); box-shadow: 0 0 50px rgba(167,139,250,.2), inset 0 0 30px rgba(255,255,255,.05); }
+  .ps { position: absolute; border-radius: 18px; overflow: hidden; background: #150C33; border: 3px solid #8B5CF6; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 50px rgba(61,214,255,.25); }
+  .rv { position: absolute; width: 1000px; height: 620px; border-radius: 28px; object-fit: cover; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 50px rgba(167,139,250,.3); }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .t1 { position: absolute; font: 900 120px/1 var(--body); letter-spacing: -.04em; color: #fff; white-space: nowrap; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/nightops.js"></script>
+<script src="kit/outro.js"></script>
+<script src="kit/term.js"></script>
+<script src="timeline.js"></script>
+<script src="slots.js"></script>
+<script src="src/data.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="56.5">
+  <section id="s1" class="clip scene" data-start="0.0" data-duration="4.62"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="3.82" data-duration="7.53"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="10.55" data-duration="5.94"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="15.69" data-duration="6.01"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="20.9" data-duration="7.64"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="27.74" data-duration="7.16"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="34.1" data-duration="5.84"><div id="s7i" class="inner"></div></section>
+  <section id="s8" class="clip scene" data-start="39.14" data-duration="6.39"><div id="s8i" class="inner"></div></section>
+  <section id="s9" class="clip scene" data-start="44.73" data-duration="7.96"><div id="s9i" class="inner"></div></section>
+  <section id="s10" class="clip scene" data-start="51.69" data-duration="4.81"><div id="s10i" class="inner"></div></section>
+  <video id="vA3" class="rv" src="assets/timeline-a.mp4" muted playsinline data-start="10.55" data-duration="5.94" data-media-start="0" data-track-index="2"></video>
+  <video id="vA4" class="rv" src="assets/timeline-a.mp4" muted playsinline data-start="15.69" data-duration="6.01" data-media-start="5.14" data-track-index="3"></video>
+  <video id="vB8" class="rv" src="assets/timeline-b.mp4" muted playsinline data-start="39.14" data-duration="6.39" data-media-start="0" data-track-index="4"></video>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="56.5" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, SL = window.SLOTS, S = E.scenes, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + pid + " " + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#E9E1FF") + ";background:" + (o.bg || "rgba(167,139,250,.14)") + ";border:2px solid " + (o.bd || "#A78BFA"), text); };
+  const AMB = { fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.14)" };
+  const fadeIn = (e, at, d, y) => tl.from(e, { opacity: 0, y: y == null ? 40 : y, duration: d || 0.3, ease: "power3.out" }, at);
+  const isPh = k => SL[k].status !== "verified";
+  const hud = (host, id, label, t0) => {
+    const k = chip(host, id + "k", 60, 196, label); tl.from(k, { opacity: 0, x: -30, duration: 0.25 }, t0);
+  };
+  const base = (k) => {
+    const inn = $(k + "i");
+    el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#2A1766 0%,#120A33 55%,#05030D 100%)");
+    const gr = el(inn, "bgg" + k, "", "position:absolute;inset:0;background-image:linear-gradient(rgba(167,139,250,.10) 2px,transparent 2px),linear-gradient(90deg,rgba(167,139,250,.10) 2px,transparent 2px);background-size:100px 100px");
+    tl.to(gr, { backgroundPosition: "200px 400px", duration: S[k].len, ease: "none" }, S[k].start);
+    for (let i = 0; i < 14; i++) { const d = el(inn, "bgp" + k + i, "", "left:" + ((i * 149 + 40) % 1040) + "px;top:" + (260 + (i * 233) % 1400) + "px;width:6px;height:6px;border-radius:50%;background:#C4B5FD;opacity:.55;box-shadow:0 0 12px #A78BFA"); tl.fromTo(d, { y: 0 }, { y: -130 - (i % 5) * 50, duration: S[k].len, ease: "none" }, S[k].start); }
+    return inn;
+  };
+  const wrapScene = (k) => { const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Array.from(inn.children).filter(c => c !== w && !/^bg/.test(c.id)).forEach(c => w.appendChild(c)); Cam.frame(w, 540, 960, 1); return w; };
+  const GRN = "#9CF2B6", YEL = "#F5E7A5", RED = "#FCA5A5", GITC = "#F05032";
+  const G = { fg: "#BBF7D0", bd: "#4ADE80", bg: "rgba(34,197,94,.14)" };
+  const D = window.DATA;
+  /* official brand marks (simple-icons, CC0 artwork of the Git and GitHub logos) */
+  const logo = (host, id, x, y, size, kind) => { const d = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + size + "px;height:" + size + "px"); const sv = svgEl(d, "svg", { viewBox: "0 0 24 24", width: size, height: size }); svgEl(sv, "path", { d: kind === "git" ? D.gitPath : D.ghPath, fill: kind === "git" ? GITC : "#FFFFFF" }); return d; };
+  function term(host, id, x, y, w, h, title, rows, t0, fs, lh) {
+    const card = el(host, id, "ps", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px");
+    el(card, id + "b", "", "left:0;top:0;width:" + w + "px;height:62px;background:#2B1A63;border-bottom:2px solid #8B5CF6");
+    [0, 1, 2].forEach(i => el(card, id + "d" + i, "", "left:" + (24 + i * 30) + "px;top:22px;width:18px;height:18px;border-radius:50%;background:#C4B5FD;opacity:" + (0.9 - i * 0.2)));
+    el(card, id + "t", "", "left:130px;top:0;font:700 26px/62px var(--body);color:#EDE6FF", title);
+    const ys = []; let t = t0;
+    rows.forEach((r, i) => {
+      const yy = 86 + i * lh; ys.push(yy);
+      const d = el(card, id + "r" + i, "mono", "left:28px;top:" + yy + "px;font:600 " + fs + "px/" + lh + "px var(--mono);color:" + (r[1] || "#fff"), r[0]);
+      const at = r[3] != null ? r[3] : t;
+      if (r[2]) { const n = Math.max(1, r[0].length), dur = n / r[2]; d.style.clipPath = "inset(0 100% 0 0)"; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + n + ")" }, at); t = at + dur + 0.05; }
+      else { tl.from(d, { opacity: 0, x: -14, duration: 0.14 }, at); t = at + 0.1; }
+    });
+    return { card, end: t, ys };
+  }
+  const browser = (host, id, x, y, w, imgs, label) => {
+    const h = Math.round(w * 520 / 480), fr = el(host, id, "ps", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + (h + 56) + "px");
+    el(fr, id + "b", "", "left:0;top:0;width:" + w + "px;height:56px;background:#2B1A63"); el(fr, id + "u", "", "left:70px;top:10px;width:" + (w - 90) + "px;height:36px;border-radius:18px;background:#150C33;font:700 20px/36px var(--mono);color:#C4B5FD;text-align:center", label || "localhost · Bean Bar");
+    [0, 1, 2].forEach(i => el(fr, id + "d" + i, "", "left:" + (18 + i * 16) + "px;top:20px;width:12px;height:12px;border-radius:50%;background:#C4B5FD;opacity:" + (0.9 - i * 0.2)));
+    const ims = imgs.map((f, i) => { const im = document.createElement("img"); im.src = "assets/" + f; im.id = id + "i" + i; im.style.cssText = "position:absolute;left:0;top:56px;width:" + w + "px;height:" + h + "px;opacity:" + (i ? 0 : 1); fr.appendChild(im); return im; });
+    return { fr, ims };
+  };
+  const swapTo = (ph, i, at) => { tl.to(ph.ims[i], { opacity: 1, duration: 0.2 }, at); if (i) tl.to(ph.ims[i - 1], { opacity: 0, duration: 0.01 }, at + 0.22); };
+  const laptop = (host, id, x, y, w, label) => { const g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + Math.round(w * 0.72) + "px");
+    el(g, id + "s", "", "left:" + w * 0.08 + "px;top:0;width:" + w * 0.84 + "px;height:" + w * 0.52 + "px;border-radius:16px;background:linear-gradient(160deg,#2B1A63,#150C33);border:4px solid #C4B5FD;box-shadow:0 0 40px rgba(167,139,250,.4)");
+    el(g, id + "k", "", "left:0;top:" + w * 0.54 + "px;width:" + w + "px;height:" + w * 0.06 + "px;border-radius:0 0 18px 18px;background:#C4B5FD");
+    el(g, id + "l", "", "left:0;width:" + w + "px;top:" + w * 0.66 + "px;text-align:center;font:800 22px/1 var(--mono);color:#E9E1FF", label); return g; };
+  const cloud = (host, id, x, y, w) => { const g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + w * 0.7 + "px");
+    const sv = svgEl(g, "svg", { viewBox: "0 0 200 140", width: w, height: w * 0.7 }); svgEl(sv, "path", { d: "M52 118 C20 118 12 78 40 68 C38 36 80 22 98 46 C112 20 160 28 160 66 C192 66 196 118 160 118 Z", fill: "rgba(167,139,250,.18)", stroke: "#C4B5FD", "stroke-width": 5 });
+    const lg = logo(g, id + "g", w * 0.34, w * 0.2, w * 0.32, "gh"); return g; };
+
+  /* ================================================================= S1 GIT != GITHUB */
+  const s1i = base("s1"); hud(s1i, "h1", "EP 08 · GIT vs GITHUB", 0.05);
+  const gL = el(s1i, "gL", "glass", "left:70px;top:330px;width:380px;height:380px;border-radius:50%;display:block"), gR = el(s1i, "gR", "glass", "left:630px;top:330px;width:380px;height:380px;border-radius:50%");
+  logo(gL, "lgG", 90, 90, 200, "git"); logo(gR, "lgH", 90, 90, 200, "gh");
+  tl.from(gL, { opacity: 0, x: -400, rotation: -20, duration: 0.5, ease: "back.out(1.6)" }, 0.15); tl.from(gR, { opacity: 0, x: 400, rotation: 20, duration: 0.5, ease: "back.out(1.6)" }, 0.3);
+  const eq1 = el(s1i, "eq1", "", "left:480px;top:480px;width:120px;height:22px;border-radius:11px;background:#fff"), eq2 = el(s1i, "eq2", "", "left:480px;top:530px;width:120px;height:22px;border-radius:11px;background:#fff");
+  const sl = el(s1i, "sl1", "", "left:510px;top:420px;width:26px;height:200px;border-radius:13px;background:#FF5C6C;box-shadow:0 0 30px #FF5C6C;transform:rotate(25deg)");
+  tl.from([eq1, eq2], { scaleX: 0, duration: 0.3, ease: "back.out(2)", stagger: 0.08 }, 0.7);
+  const tNo = PW("p1", "not") - 0.2;
+  tl.fromTo(sl, { opacity: 0, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.25, ease: "back.out(3)" }, tNo); tl.to([eq1, eq2], { backgroundColor: "#FF8FA0", duration: 0.2 }, tNo);
+  const big1 = el(s1i, "big1", "t1", "left:0;right:0;text-align:center;top:800px;font-size:120px", "GIT ≠ GITHUB");
+  tl.from(big1, { opacity: 0, scale: 2.2, duration: 0.35, ease: "back.out(2)" }, PW("p1", "same") + 0.1);
+  chip(s1i, "k1a", 70, 740, "VERSION CONTROL", { size: 24, pad: "10px 18px 12px", fg: "#FFB199", bd: GITC, bg: "rgba(240,80,50,.14)" }); chip(s1i, "k1b", 630, 740, "ONLINE PLATFORM", { size: 24, pad: "10px 18px 12px" });
+  tl.from("#k1a", { opacity: 0, y: 30, duration: 0.3 }, 1.4); tl.from("#k1b", { opacity: 0, y: 30, duration: 0.3 }, 1.6);
+  const bot1 = botAt(s1i, "bot1", 440, 1000, 210); bot1.face(tl, 0, -1, 0.01); bot1.rise(tl, 0.3, 450, 0.4); bot1.blinks(tl, 1, 3.6, 1.1); bot1.react(tl, tNo + 0.1, "wow");
+
+  /* ---------- v2: real software inside laptop illustrations + purposeful camera zooms (no moving light sweeps) ---------- */
+  const lap = (host, id, x, y, w, o) => {
+    o = o || {}; const sw = w - 44, sh = Math.round(sw * 500 / 720), lidH = sh + 44;
+    const g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + (lidH + 34) + "px");
+    const lid = el(g, id + "lid", "", "left:0;top:0;width:" + w + "px;height:" + lidH + "px;border-radius:22px 22px 8px 8px;background:linear-gradient(180deg,#2A2150,#120B2C);border:3px solid #6F5BD0;box-shadow:0 34px 70px rgba(0,0,0,.6),0 0 50px rgba(139,92,246,.35)");
+    const scr = el(lid, id + "scr", "", "left:19px;top:19px;width:" + sw + "px;height:" + sh + "px;overflow:hidden;border-radius:6px;background:#120a33");
+    el(g, id + "base", "", "left:" + (-w * 0.04) + "px;top:" + lidH + "px;width:" + (w * 1.08) + "px;height:22px;border-radius:0 0 22px 22px;background:linear-gradient(180deg,#8E7DE0,#4B3C99);box-shadow:0 14px 30px rgba(0,0,0,.5)");
+    el(g, id + "nt", "", "left:" + (w * 0.5 - 60) + "px;top:" + lidH + "px;width:120px;height:9px;border-radius:0 0 10px 10px;background:#2A2150");
+    const ims = (o.imgs || []).map((f, i) => { const im = document.createElement("img"); im.src = "assets/" + f; im.id = id + "i" + i; im.style.cssText = "position:absolute;left:0;top:0;width:" + sw + "px;height:" + sh + "px;opacity:" + (i ? 0 : 1); scr.appendChild(im); return im; });
+    return { g, scr, ims, sw, sh, cx: x + w / 2, cy: y + 19 + sh / 2, bottom: y + lidH + 34 };
+  };
+  const vidIn = (v, scr, sw, sh) => { scr.appendChild(v); v.style.cssText = "left:0;top:0;width:" + sw + "px;height:" + sh + "px;border-radius:0;box-shadow:none;object-fit:contain;background:#120a33"; };
+  const zwin = [];
+  const zoomTo = (cam, cx, cy, s, at, dur) => (zwin.push([cam.id, at - 0.2, at + (dur || 0.7) + 0.1]), tl.to(cam, { scale: s, x: 540 - cx * s, y: cy * (1 - s), duration: dur || 0.7, ease: "power2.inOut" }, at));
+  const zoomOut = (cam, at, dur) => (zwin.push([cam.id, at - 0.2, at + (dur || 0.7) + 0.1]), tl.to(cam, { scale: 1, x: 0, y: 0, duration: dur || 0.7, ease: "power2.inOut" }, at));
+  const zmv = [];
+  const vArrow = (id, x, y, dir, col, at) => { const a = el(s6i_host, id, "", "left:" + x + "px;top:" + y + "px;width:90px;height:150px"); const sv = svgEl(a, "svg", { viewBox: "0 0 90 150", width: 90, height: 150 }); svgEl(sv, "path", { d: dir < 0 ? "M45 140 V20 M15 55 L45 18 L75 55" : "M45 10 V130 M15 95 L45 132 L75 95", stroke: col, "stroke-width": 11, fill: "none", "stroke-linecap": "round", "stroke-linejoin": "round" }); tl.from(a, { opacity: 0, y: dir < 0 ? 60 : -60, duration: 0.35, ease: "back.out(1.8)" }, at); tl.to(a, { y: dir < 0 ? -22 : 22, duration: 0.45, yoyo: true, repeat: 3, ease: "sine.inOut" }, at + 0.4); return a; };
+  let s6i_host = null;
+
+  /* ================================================================= S2 BUILDING A WEBSITE (real files + real site in a laptop) */
+  const s2i = base("s2"); hud(s2i, "h2", "A REAL WEBSITE PROJECT", S.s2.start + 0.15);
+  const tW = PW("p2", "write"), tD = PW("p2", "design"), tF = PW("p2", "features");
+  const cc = el(s2i, "cc2", "ps", "left:40px;top:290px;width:1000px;height:236px"); el(cc, "cc2b", "", "left:0;top:0;width:1000px;height:50px;background:#2B1A63"); el(cc, "cc2t", "", "left:24px;top:0;font:700 21px/50px var(--body);color:#EDE6FF", "bean-bar/ · index.html + style.css");
+  D.code1.forEach((l, i) => { const d = el(cc, "c2a" + i, "mono", "left:24px;top:" + (64 + i * 40) + "px;font:600 20px/1.2 var(--mono);color:#E9E1FF;width:950px;white-space:pre-wrap;word-break:break-all", l); tl.from(d, { opacity: 0, x: -20, duration: 0.14 }, tW - 0.2 + i * 0.12); });
+  D.code2.forEach((l, i) => { const d = el(cc, "c2b" + i, "mono", "left:24px;top:" + (64 + D.code1.length * 40 + i * 52) + "px;font:600 20px/1.2 var(--mono);color:#FFE08A;width:950px;white-space:pre-wrap;word-break:break-all", l); tl.from(d, { opacity: 0, x: -20, duration: 0.14 }, tD - 0.1 + i * 0.12); });
+  tl.from(cc, { opacity: 0, y: 70, duration: 0.35 }, S.s2.start + 0.1);
+  const L2 = lap(s2i, "l2", 110, 560, 860, { imgs: ["desk-site-v1.png", "desk-site-v2.png", "desk-site-v3.png"] });
+  tl.from(L2.g, { opacity: 0, y: 120, scale: 0.94, duration: 0.45, ease: "power3.out" }, tW - 0.4);
+  swapTo(L2, 1, tD + 0.1); swapTo(L2, 2, tF + 0.1);
+  [["1 · WRITE CODE", tW, 40], ["2 · CHANGE THE DESIGN", tD, 300], ["3 · ADD NEW FEATURES", tF, 650]].forEach(([t, at, x], i) => { const c = chip(s2i, "st2" + i, x, L2.bottom + 22, t, { size: 22, pad: "12px 16px 14px" }); tl.from(c, { opacity: 0, y: 40, duration: 0.3, ease: "back.out(1.7)" }, at - 0.1); });
+  chip(s2i, "tr2", 40, L2.bottom + 90, "REAL FILES · REAL BROWSER PREVIEW", { size: 17, pad: "7px 14px 8px" }); tl.from("#tr2", { opacity: 0, duration: 0.25 }, tW);
+  const bot2 = botAt(s2i, "bot2", 900, 1250, 120); bot2.face(tl, 0, -1, 0.01); bot2.rise(tl, S.s2.start + 0.6, 420, 0.4); bot2.blinks(tl, S.s2.start, S.s2.end, 1.1);
+  bot2.aimPoint(tl, tD - 0.3, { x: 900, y: 1250, scale: 1, target: [700, 900], hand: "L", hold: 0.7 }); bot2.react(tl, tF + 0.3, "wow");
+  zmv.push(() => { zoomTo(cams.s2, L2.cx, L2.cy, 1.18, tD - 0.3, 0.7); zoomOut(cams.s2, S.s2.end - 1.2, 0.6); });
+
+  /* ================================================================= S3 GIT TRACKS CHANGES (Remotion timeline inside a computer) */
+  const s3i = base("s3"); hud(s3i, "h3", "GIT · VERSION HISTORY", S.s3.start + 0.15);
+  logo(s3i, "g3", 44, 280, 90, "git"); el(s3i, "g3t", "t1", "left:150px;top:290px;font-size:78px;color:#FFB199", "GIT");
+  tl.from("#g3", { opacity: 0, scale: 0.3, rotation: -40, duration: 0.45, ease: "back.out(2)" }, S.s3.start + 0.1); tl.from("#g3t", { opacity: 0, x: -80, duration: 0.3 }, S.s3.start + 0.25);
+  const L3 = lap(s3i, "l3", 90, 410, 900, {}); vidIn($("vA3"), L3.scr, L3.sw, L3.sh); tl.from(L3.g, { opacity: 0, y: 80, scale: 0.95, duration: 0.4, ease: "power3.out" }, S.s3.start + 0.1);
+  const T3 = term(s3i, "t3", 40, 1110, 1000, 250, "terminal", [["$ git log --oneline", YEL, 36, PW("p3", "keeps") - 0.3], ["9684c36 Add menu cards", GRN, 0], ["ac122b6 Style the design", GRN, 0], ["197c7ee Add homepage", GRN, 0]], PW("p3", "keeps") - 0.3, 24, 38);
+  tl.from(T3.card, { opacity: 0, y: 60, duration: 0.3 }, S.s3.start + 0.5);
+  chip(s3i, "vb3", 40, 1380, "VERBATIM · REAL git log OF THE PROJECT", { size: 17, pad: "7px 14px 8px" }); tl.from("#vb3", { opacity: 0, duration: 0.25 }, PW("p3", "history"));
+  const bot3 = botAt(s3i, "bot3", 890, 1130, 150); bot3.face(tl, 0, -1, 0.01); bot3.rise(tl, S.s3.start + 0.6, 420, 0.4); bot3.blinks(tl, S.s3.start, S.s3.end, 1.1);
+  bot3.aimPoint(tl, PW("p3", "changes") - 0.2, { x: 890, y: 1130, scale: 1, target: [640, 700], hand: "L", hold: 0.7 }); bot3.nod(tl, PW("p3", "project") - 0.1);
+  zmv.push(() => { zoomTo(cams.s3, L3.cx, L3.cy, 1.14, PW("p3", "changes") - 0.4, 0.7); zoomOut(cams.s3, S.s3.end - 1.4, 0.6); });
+
+  /* ================================================================= S4 RETURN TO A PREVIOUS VERSION (website in a laptop + timeline) */
+  const s4i = base("s4"); hud(s4i, "h4", "RECOVER AN EARLIER VERSION", S.s4.start + 0.15);
+  const tRec = PW("p4", "recover");
+  const L4 = lap(s4i, "l4", 190, 290, 700, { imgs: ["desk-site-v3.png", "desk-site-recovered.png"] }); tl.from(L4.g, { opacity: 0, y: 80, duration: 0.4, ease: "power3.out" }, S.s4.start + 0.1); swapTo(L4, 1, tRec + 0.5);
+  chip(s4i, "bp4", 190, L4.bottom + 8, "WEBSITE PREVIEW · BEFORE → AFTER git restore", { size: 17, pad: "6px 12px 7px" }); tl.from("#bp4", { opacity: 0, duration: 0.25 }, S.s4.start + 0.5);
+  const vA4 = $("vA4"); s4i.appendChild(vA4); vA4.style.cssText = "left:210px;top:995px;width:660px;height:409px"; tl.from(vA4, { opacity: 0, y: 60, duration: 0.35 }, S.s4.start + 0.2);
+  const T4 = term(s4i, "t4", 40, 868, 1000, 112, "terminal", [["$ git restore --source=ac122b6 .", YEL, 34, tRec - 0.6]], tRec - 0.6, 26, 40); tl.from(T4.card, { opacity: 0, y: 40, duration: 0.3 }, S.s4.start + 0.4);
+  const bot4 = botAt(s4i, "bot4", 920, 560, 110); bot4.face(tl, 0, -1, 0.01); bot4.rise(tl, S.s4.start + 0.6, 420, 0.4); bot4.blinks(tl, S.s4.start, S.s4.end, 1.1);
+  bot4.aimPoint(tl, tRec - 0.5, { x: 920, y: 560, scale: 1, target: [600, 1100], hand: "L", hold: 0.9 }); bot4.react(tl, tRec + 0.7, "celebrate");
+  zmv.push(() => { zoomTo(cams.s4, L4.cx, 700, 1.08, tRec + 0.3, 0.7); zoomOut(cams.s4, S.s4.end - 1.3, 0.6); });
+
+  /* ================================================================= S5 WHAT IS GITHUB (real clone data on a laptop screen) */
+  const s5i = base("s5"); hud(s5i, "h5", "GITHUB · ONLINE PLATFORM", S.s5.start + 0.15);
+  logo(s5i, "g5", 44, 280, 100, "gh"); el(s5i, "g5t", "t1", "left:170px;top:292px;font-size:76px", "GitHub");
+  tl.from("#g5", { opacity: 0, scale: 0.3, duration: 0.45, ease: "back.out(2)" }, S.s5.start + 0.1); tl.from("#g5t", { opacity: 0, x: -80, duration: 0.3 }, S.s5.start + 0.25);
+  const tG = PW("p5", "online"), tS = PW("p5", "store");
+  const L5 = lap(s5i, "l5", 110, 410, 860, {}); tl.from(L5.g, { opacity: 0, y: 80, scale: 0.94, duration: 0.4, ease: "power3.out" }, S.s5.start + 0.3);
+  const sc5 = L5.scr; sc5.style.background = "linear-gradient(160deg,#241455,#120a33)";
+  el(sc5, "rp5n", "", "left:36px;top:28px;font:900 52px/1 var(--body);color:#fff", "octocat / Hello-World"); el(sc5, "rp5p", "", "left:36px;top:96px;font:800 22px/1 var(--mono);color:#C4B5FD", "public repository · cloned from github.com");
+  el(sc5, "rp5h", "", "left:36px;top:160px;font:800 24px/1 var(--mono);color:#FFE08A", "FILES"); el(sc5, "rp5f", "", "left:36px;top:204px;font:700 40px/1 var(--mono);color:#fff", "📄 README");
+  el(sc5, "rp5c", "", "left:36px;top:300px;font:800 24px/1 var(--mono);color:#FFE08A", "COMMIT HISTORY");
+  D.hw.forEach((l, i) => { const d = el(sc5, "rp5l" + i, "mono", "left:36px;top:" + (348 + i * 64) + "px;font:600 28px/1 var(--mono);color:#E9E1FF;width:760px;overflow:hidden;white-space:nowrap", l); tl.from(d, { opacity: 0, x: -40, duration: 0.25 }, tS + i * 0.3); });
+  tl.from(["#rp5h", "#rp5f"], { opacity: 0, x: -40, duration: 0.25, stagger: 0.1 }, tG);
+  cloud(s5i, "cl5", 60, L5.bottom + 20, 260); const cu = el(s5i, "cu5", "", "left:350px;top:" + (L5.bottom + 90) + "px;font:800 30px/1.2 var(--mono);color:#E9E1FF;width:650px", "STORE · SHARE · COLLABORATE"); tl.from("#cl5", { opacity: 0, scale: 0.5, duration: 0.4, ease: "back.out(1.8)" }, tS - 0.1); tl.from(cu, { opacity: 0, y: 30, duration: 0.3 }, PW("p5", "share") - 0.1);
+  chip(s5i, "vb5", 40, 1440, "REAL REPOSITORY DATA · git clone + git log OF octocat/Hello-World", { size: 15, pad: "6px 12px 7px" }); tl.from("#vb5", { opacity: 0, duration: 0.25 }, tS);
+  const bot5 = botAt(s5i, "bot5", 910, 1160, 130); bot5.face(tl, 0, -1, 0.01); bot5.rise(tl, S.s5.start + 0.6, 420, 0.4); bot5.blinks(tl, S.s5.start, S.s5.end, 1.1);
+  bot5.aimPoint(tl, tS - 0.3, { x: 910, y: 1160, scale: 1, target: [700, 700], hand: "L", hold: 0.8 }); bot5.react(tl, PW("p5", "different") + 0.1, "think");
+  zmv.push(() => { zoomTo(cams.s5, L5.cx, L5.cy, 1.18, tS - 0.3, 0.7); zoomOut(cams.s5, S.s5.end - 1.4, 0.6); });
+
+  /* ================================================================= S6 PUSH + PULL (GitHub above, your computer below, arrows between) */
+  const s6i = base("s6"); hud(s6i, "h6", "PUSH · PULL", S.s6.start + 0.15); s6i_host = s6i;
+  cloud(s6i, "cl6", 390, 280, 300); el(s6i, "cl6l", "", "left:340px;width:400px;top:500px;text-align:center;font:800 22px/1 var(--mono);color:#E9E1FF", "GITHUB · REMOTE");
+  const tPu = PW("p6", "push"), tPl = PW("p6", "pull");
+  vArrow("ar6a", 300, 545, -1, "#FFC83D", tPu - 0.15); vArrow("ar6b", 690, 545, 1, "#7DD3FC", tPl - 0.15);
+  const c6a = chip(s6i, "c6a", 60, 600, "git push", { size: 30, pad: "10px 18px 12px", fg: "#FFE08A" }), c6b = chip(s6i, "c6b", 780, 600, "git pull", { size: 30, pad: "10px 18px 12px", fg: "#BFE6FF" });
+  tl.from(c6a, { opacity: 0, scale: 0.4, duration: 0.3, ease: "back.out(2.4)" }, tPu - 0.05); tl.from(c6b, { opacity: 0, scale: 0.4, duration: 0.3, ease: "back.out(2.4)" }, tPl - 0.05);
+  const L6 = lap(s6i, "l6", 90, 710, 900, {}); tl.from(L6.g, { opacity: 0, y: 100, duration: 0.4, ease: "power3.out" }, S.s6.start + 0.2);
+  const T6 = term(L6.scr, "t6", 0, 0, L6.sw, L6.sh, "terminal · YOUR COMPUTER", [
+    ["$ git push -u origin main", YEL, 36, tPu - 0.4], ["To ../remote.git", GRN, 0], [" * [new branch]  main -> main", GRN, 0], ["branch 'main' set up to track 'origin/main'.", GRN, 0],
+    ["$ git pull origin main", YEL, 36, tPl - 0.5], ["Updating 9684c36..9a29f8b", GRN, 0], ["Fast-forward", GRN, 0], [" style.css | 1 +", GRN, 0]], S.s6.start + 0.3, 25, 56);
+  T6.card.style.borderRadius = "0"; T6.card.style.border = "0"; T6.card.style.boxShadow = "none";
+  chip(s6i, "vb6", 40, L6.bottom + 10, "REAL RUN · REMOTE = LOCAL BARE REPO · SAME COMMANDS WORK WITH GITHUB", { size: 15, pad: "6px 12px 7px" }); tl.from("#vb6", { opacity: 0, duration: 0.25 }, tPu);
+  const bot6 = botAt(s6i, "bot6", 940, 300, 100); bot6.face(tl, 0, -1, 0.01); bot6.rise(tl, S.s6.start + 0.6, 420, 0.4); bot6.blinks(tl, S.s6.start, S.s6.end, 1.1);
+  bot6.aimPoint(tl, tPu - 0.4, { x: 940, y: 300, scale: 1, target: [350, 640], hand: "L", hold: 0.7 }); bot6.react(tl, tPl + 0.4, "nod");
+  zmv.push(() => { zoomTo(cams.s6, L6.cx, L6.cy - 40, 1.12, tPu - 0.5, 0.7); zoomOut(cams.s6, S.s6.end - 1.4, 0.6); });
+
+  /* ================================================================= S7 CLONE */
+  const s7i = base("s7"); hud(s7i, "h7", "GIT CLONE", S.s7.start + 0.15); s6i_host = s7i;
+  cloud(s7i, "cl7", 410, 270, 260); el(s7i, "cl7l", "", "left:340px;width:400px;top:462px;text-align:center;font:800 22px/1 var(--mono);color:#E9E1FF", "GITHUB REPOSITORY");
+  const tCl = PW("p7", "clone"), tCp = PW("p7", "copy");
+  vArrow("ar7", 495, 570, 1, "#FFC83D", tCl - 0.2);
+  const big7 = el(s7i, "big7", "mono", "left:40px;width:1000px;text-align:center;top:505px;font:800 38px/1.2 var(--mono);color:#FFE08A", "git clone <repository-url>"); tl.from(big7, { opacity: 0, y: 40, duration: 0.3 }, tCl - 0.3);
+  const pk = el(s7i, "pk7", "glass", "left:395px;top:330px;width:290px;height:96px;border-radius:18px;z-index:5"); el(pk, "pk7t", "", "left:0;right:0;top:30px;text-align:center;font:800 30px/1 var(--mono);color:#FFE08A", "📁 repo");
+  tl.set(pk, { opacity: 0 }, 0); tl.to(pk, { opacity: 1, duration: 0.01 }, tCp - 0.1); tl.to(pk, { y: 440, scale: 0.7, duration: 0.8, ease: "power2.inOut" }, tCp - 0.05); tl.to(pk, { opacity: 0, duration: 0.25 }, tCp + 0.85);
+  const L7 = lap(s7i, "l7", 90, 740, 900, {}); tl.from(L7.g, { opacity: 0, y: 100, duration: 0.4, ease: "power3.out" }, S.s7.start + 0.2);
+  const T7 = term(L7.scr, "t7", 0, 0, L7.sw, L7.sh, "terminal · ANOTHER COMPUTER", [["$ git clone https://github.com/", YEL, 38, tCp + 0.2], ["    octocat/Hello-World.git", YEL, 38], ["Cloning into 'Hello-World'...", GRN, 0], ["$ git log --oneline", YEL, 38, S.s7.end - 3.0], ["7fd1a60 Merge pull request #6 from…", GRN, 0], ["7629413 New line at end of file.", GRN, 0]], tCp + 0.2, 28, 60);
+  T7.card.style.borderRadius = "0"; T7.card.style.border = "0"; T7.card.style.boxShadow = "none";
+  chip(s7i, "vb7", 40, L7.bottom + 10, "REAL RUN · A REAL PUBLIC GITHUB REPOSITORY", { size: 16, pad: "6px 12px 7px" }); tl.from("#vb7", { opacity: 0, duration: 0.25 }, tCp + 0.3);
+  const bot7 = botAt(s7i, "bot7", 940, 300, 100); bot7.face(tl, 0, -1, 0.01); bot7.rise(tl, S.s7.start + 0.6, 420, 0.4); bot7.blinks(tl, S.s7.start, S.s7.end, 1.1);
+  bot7.aimPoint(tl, tCp - 0.4, { x: 940, y: 300, scale: 1, target: [560, 700], hand: "L", hold: 0.8 }); bot7.react(tl, tCp + 1.0, "celebrate");
+  zmv.push(() => { zoomTo(cams.s7, L7.cx, L7.cy - 40, 1.12, tCp + 0.5, 0.7); zoomOut(cams.s7, S.s7.end - 1.2, 0.6); });
+
+  /* ================================================================= S8 ADD + COMMIT (terminal in a laptop + Remotion timeline) */
+  const s8i = base("s8"); hud(s8i, "h8", "STAGE · COMMIT", S.s8.start + 0.15);
+  const tAd = PW("p8", "add"), tCm = PW("p8", "commit");
+  const L8 = lap(s8i, "l8", 190, 290, 700, {}); tl.from(L8.g, { opacity: 0, y: 60, duration: 0.35 }, S.s8.start + 0.1);
+  const T8 = term(L8.scr, "t8", 0, 0, L8.sw, L8.sh, "terminal · real run", [["$ git status --short", YEL, 0, S.s8.start + 0.3], [" M index.html", RED, 0], ["$ git add .", YEL, 40, tAd - 0.25], ["$ git commit -m \"Update website\"", YEL, 36, tCm - 0.5], ["[main 617fec8] Update website", GRN, 0], [" 1 file changed, 1 insertion(+), 1 deletion(-)", GRN, 0]], S.s8.start + 0.3, 21, 50);
+  T8.card.style.borderRadius = "0"; T8.card.style.border = "0"; T8.card.style.boxShadow = "none";
+  const vB8 = $("vB8"); s8i.appendChild(vB8); vB8.style.cssText = "left:110px;top:870px;width:860px;height:533px"; tl.from(vB8, { opacity: 0, y: 80, scale: 0.95, duration: 0.4 }, S.s8.start + 0.1);
+  chip(s8i, "vb8", 40, 1425, "REAL RUN · git add STAGES · git commit SAVES THE SNAPSHOT", { size: 16, pad: "6px 12px 7px" }); tl.from("#vb8", { opacity: 0, duration: 0.25 }, tCm);
+  const bot8 = botAt(s8i, "bot8", 930, 520, 100); bot8.face(tl, 0, -1, 0.01); bot8.rise(tl, S.s8.start + 0.6, 420, 0.4); bot8.blinks(tl, S.s8.start, S.s8.end, 1.1);
+  bot8.press(tl, tAd - 0.3, { x: 930, y: 520, scale: 1, target: [640, 500], hand: "L" }); bot8.react(tl, tCm + 0.8, "celebrate");
+  zmv.push(() => { zoomTo(cams.s8, L8.cx, 800, 1.12, tAd - 0.5, 0.7); zoomOut(cams.s8, tCm + 1.2, 0.6); });
+
+  /* ================================================================= S9 FINAL COMPARISON */
+  const s9i = base("s9"); hud(s9i, "h9", "SO REMEMBER", S.s9.start + 0.15);
+  const mk = (id, x, kind, title, sub, at, col) => { const g = el(s9i, id, "glass", "left:" + x + "px;top:330px;width:490px;height:640px;text-align:center;border-color:" + col); const lg = logo(g, id + "l", 145, 50, 200, kind); el(g, id + "t", "", "left:0;right:0;top:290px;font:900 62px/1 var(--body);color:#fff", title); el(g, id + "s", "", "left:20px;right:20px;top:380px;font:800 34px/1.25 var(--body);color:" + (kind === "git" ? "#FFB199" : "#C4B5FD"), sub); tl.from(g, { opacity: 0, y: 140, scale: 0.9, duration: 0.45, ease: "back.out(1.5)" }, at); return g; };
+  mk("cmpA", 40, "git", "Git", "Version control", PW("p9", "tracks") - 0.4, GITC); mk("cmpB", 550, "gh", "GitHub", "Repository hosting & collaboration", PW("p9", "hosts") - 0.4, "#C4B5FD");
+  chip(s9i, "k9a", 40, 1010, "TRACKS YOUR PROJECT'S HISTORY", { size: 24, pad: "10px 18px 12px", fg: "#FFB199", bd: GITC, bg: "rgba(240,80,50,.14)" }); chip(s9i, "k9b", 40, 1090, "HOSTS + SHARES REPOSITORIES ONLINE", { size: 24, pad: "10px 18px 12px" });
+  tl.from("#k9a", { opacity: 0, x: -200, duration: 0.3 }, PW("p9", "tracks")); tl.from("#k9b", { opacity: 0, x: -200, duration: 0.3 }, PW("p9", "hosts"));
+  const bot9 = botAt(s9i, "bot9", 440, 1170, 190); bot9.face(tl, 0, -1, 0.01); bot9.rise(tl, S.s9.start + 0.6, 420, 0.4); bot9.blinks(tl, S.s9.start, S.s9.end, 1.1); bot9.react(tl, PW("p9", "remember") + 0.2, "think"); bot9.nod(tl, PW("p9", "online") - 0.1);
+
+  /* ================================================================= S10 CTA */
+  const s10i = base("s10"); hud(s10i, "h10", "GIT vs GITHUB", S.s10.start + 0.1);
+  const tOut = PW("p10", "Follow") - 0.35, botO = botAt(s10i, "botO", -400, 470, 300);
+  Outro.build(tl, s10i, tOut, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" });
+  tl.to(["#h10k"], { opacity: 0, duration: 0.2 }, tOut);
+
+  /* ---------- camera: purposeful zooms into the real interfaces + small eased camera punches; NO moving light sweeps ---------- */
+  const cams = {}; ["s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"].forEach(k => cams[k] = wrapScene(k));
+  zmv.forEach(f => f());
+  const sceneOf2 = t => { let r = "s1"; Object.keys(S).forEach(k => { if (t >= S[k].b) r = k; }); return r; };
+  const bounds2 = Object.keys(S).map(k => S[k].b); let dn = 0;
+  const heldZoom = (id, t0, t1) => zwin.some(w => w[0] === id && t0 < w[2] && t1 > w[1]);
+  for (let t0 = 1.0; t0 < S.s9.end - 0.9; t0 += 1.3) {
+    const k = sceneOf2(t0), cam = cams[k]; if (!cam) continue;
+    const t1 = t0 + 0.45;
+    if (bounds2.some(b => t0 > b - 0.5 && t0 < b + 0.7) || sceneOf2(t1) !== k || heldZoom("cam" + k, t0, t1)) continue;
+    const A = [[1.0, 0, 0], [1.05, -26, -36], [1.0, 0, 0], [1.045, 22, -30]][dn % 4], B = [[1.05, -26, -36], [1.0, 0, 0], [1.045, 22, -30], [1.0, 0, 0]][dn % 4]; dn++;
+    tl.fromTo(cam, { scale: A[0], x: A[1], y: A[2] }, { scale: B[0], x: B[1], y: B[2], duration: 0.4, ease: "power3.out", immediateRender: false }, t0);
+  }
+  /* ---------- transitions ---------- */
+  Cam.push(tl, S.s2.b, 0.5, { out: "#s1i", inn: "#s2i", ox: 540, oy: 520, scale: 4 });
+  [["s3", "s2", 1], ["s4", "s3", -1], ["s5", "s4", 1], ["s6", "s5", -1], ["s7", "s6", 1], ["s8", "s7", -1], ["s9", "s8", 1]].forEach(([a, b, d]) => Cam.whip(tl, S[a].b, 0.5, { out: "#" + b + "i", inn: "#" + a + "i", dir: d, blur: 28 }));
+  Cam.iris(tl, S.s10.b, 0.7, { inn: "#s10i", cx: 540, cy: 760, ring: "#A78BFA", host: $("fx"), id: "ir10" });
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 330, active: "#FFFFFF", block: "#7C3AED", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

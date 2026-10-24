@@ -1,0 +1,184 @@
+{
+ "total": 56.5,
+ "music": [
+  {
+   "t0": 0.05,
+   "t1": 4.0,
+   "mood": "hook"
+  },
+  {
+   "t0": 3.9,
+   "t1": 44.91,
+   "mood": "demo"
+  },
+  {
+   "t0": 44.81,
+   "t1": 55.82,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "pop",
+   "gain": 0.5,
+   "t": 2.51
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 3.82
+  },
+  {
+   "name": "tick",
+   "gain": 0.5,
+   "t": 6.21
+  },
+  {
+   "name": "tick",
+   "gain": 0.5,
+   "t": 7.91
+  },
+  {
+   "name": "sparkle",
+   "gain": 0.4,
+   "t": 9.15
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 10.55
+  },
+  {
+   "name": "pop",
+   "gain": 0.4,
+   "t": 10.78
+  },
+  {
+   "name": "tick",
+   "gain": 0.5,
+   "t": 11.79
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 15.69
+  },
+  {
+   "name": "type",
+   "gain": 0.3,
+   "dur": 1.0,
+   "cps": 34,
+   "t": 18.04
+  },
+  {
+   "name": "sparkle",
+   "gain": 0.45,
+   "t": 19.14
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 20.9
+  },
+  {
+   "name": "pop",
+   "gain": 0.4,
+   "t": 22.84
+  },
+  {
+   "name": "tick",
+   "gain": 0.5,
+   "t": 24.76
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 27.74
+  },
+  {
+   "name": "type",
+   "gain": 0.3,
+   "dur": 1.0,
+   "cps": 36,
+   "t": 27.94
+  },
+  {
+   "name": "tick",
+   "gain": 0.5,
+   "t": 28.34
+  },
+  {
+   "name": "type",
+   "gain": 0.3,
+   "dur": 1.0,
+   "cps": 36,
+   "t": 30.64
+  },
+  {
+   "name": "tick",
+   "gain": 0.5,
+   "t": 31.14
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 34.1
+  },
+  {
+   "name": "type",
+   "gain": 0.3,
+   "dur": 1.6,
+   "cps": 38,
+   "t": 36.03
+  },
+  {
+   "name": "sparkle",
+   "gain": 0.4,
+   "t": 36.83
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 39.14
+  },
+  {
+   "name": "type",
+   "gain": 0.3,
+   "dur": 0.5,
+   "cps": 40,
+   "t": 39.47
+  },
+  {
+   "name": "type",
+   "gain": 0.3,
+   "dur": 1.1,
+   "cps": 36,
+   "t": 39.97
+  },
+  {
+   "name": "sparkle",
+   "gain": 0.5,
+   "t": 41.27
+  },
+  {
+   "name": "whoosh",
+   "gain": 0.45,
+   "t": 44.73
+  },
+  {
+   "name": "pop",
+   "gain": 0.4,
+   "t": 46.01
+  },
+  {
+   "name": "pop",
+   "gain": 0.4,
+   "t": 48.58
+  },
+  {
+   "name": "sparkle",
+   "gain": 0.5,
+   "t": 51.77
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+$ git log --oneline
+9684c36 Add menu cards
+ac122b6 Style the design
+197c7ee Add homepage
+$ git restore --source=ac122b6 .
+$ git status --short
+ M index.html
+ M style.css

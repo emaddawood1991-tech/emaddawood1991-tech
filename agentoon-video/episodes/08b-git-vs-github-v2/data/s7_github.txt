@@ -1,0 +1,9 @@
+$ git clone https://github.com/octocat/Hello-World.git
+Cloning into 'Hello-World'...
+$ cd Hello-World
+$ git log --oneline
+7fd1a60 Merge pull request #6 from Spaceghost/patch-1
+7629413 New line at end of file. --Signed off by Spaceghost
+553c207 first commit
+$ ls
+README

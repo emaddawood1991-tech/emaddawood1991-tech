@@ -1,0 +1,73 @@
+{
+ "A": {
+  "label": "git log --oneline",
+  "dur": 11.55,
+  "commits": [
+   {
+    "hash": "197c7ee",
+    "msg": "Add homepage",
+    "img": "site-v1.png",
+    "at": 0.23
+   },
+   {
+    "hash": "ac122b6",
+    "msg": "Style the design",
+    "img": "site-v2.png",
+    "at": 1.24
+   },
+   {
+    "hash": "9684c36",
+    "msg": "Add menu cards",
+    "img": "site-v3.png",
+    "at": 2.6
+   }
+  ],
+  "headMoves": [
+   {
+    "to": 1,
+    "at": 7.89
+   }
+  ]
+ },
+ "B": {
+  "label": "git log --oneline --graph --decorate",
+  "dur": 6.79,
+  "commits": [
+   {
+    "hash": "197c7ee",
+    "msg": "Add homepage",
+    "img": "site-v1.png",
+    "at": 0.1
+   },
+   {
+    "hash": "ac122b6",
+    "msg": "Style the design",
+    "img": "site-v2.png",
+    "at": 0.32
+   },
+   {
+    "hash": "9684c36",
+    "msg": "Add menu cards",
+    "img": "site-v3.png",
+    "at": 0.54
+   },
+   {
+    "hash": "9a29f8b",
+    "msg": "Tweak colours on laptop 2",
+    "img": "site-v3.png",
+    "at": 0.76,
+    "tag": "origin/main"
+   },
+   {
+    "hash": "617fec8",
+    "msg": "Update website",
+    "img": "site-v5.png",
+    "at": 1.28,
+    "tag": "HEAD -> main"
+   }
+  ],
+  "headMoves": []
+ },
+ "a0": 10.55,
+ "b0": 39.14
+}
