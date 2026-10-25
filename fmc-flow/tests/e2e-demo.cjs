@@ -1,0 +1,35 @@
+// Single-file demo smoke test: node tests/e2e-demo.cjs path/to/fmc-demo.html [outDir]
+const { chromium } = require('playwright');
+const file = require('path').resolve(process.argv[2]); const out = process.argv[3] || '/tmp';
+const PW = 'Demo-Passw0rd!';
+const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.exitCode = 1; };
+(async () => {
+  const b = await chromium.launch(); const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } }); const page = await ctx.newPage();
+  const errors = []; page.on('pageerror', (e) => errors.push(e.message)); page.on('console', (m) => m.type() === 'error' && !/fonts|ERR_|Failed to load/.test(m.text()) && errors.push(m.text()));
+  const login = async (u) => { await page.fill('input[autocomplete=username]', u); await page.fill('input[type=password]', PW); await page.click('button.btn:has-text("Sign in")'); await page.waitForSelector('.shell'); };
+  await page.goto(`file://${file}`); await page.waitForSelector('form.box');
+  await page.screenshot({ path: `${out}/d0-login.png` });
+  await login('reception');
+  await page.click('.nav a:has-text("Visits")');
+  await page.fill('input[placeholder^="Search name"]', 'Patient B'); await page.click('button.btn.ghost:has-text("Sample Patient B")');
+  await page.selectOption('label:has-text("Appointment") select', { index: 1 }); await page.click('button.btn:has-text("Check in")');
+  await page.waitForSelector('tr:has-text("Sample Patient B")'); ok(true, 'check-in works in the single-file demo');
+  await page.click('tr:has-text("Sample Patient B") button:has-text("Assign room")');
+  const opts = await page.locator('.modal select').first().locator('option').allTextContents();
+  await page.locator('.modal select').first().selectOption({ label: opts.find((o) => o.includes('PT-HALL-01')) });
+  await page.locator('.modal select').nth(1).selectOption({ label: 'BED-02' }); await page.click('.modal button:has-text("Confirm")');
+  await page.click('tr:has-text("Sample Patient B") button:has-text("Confirm entry")'); await page.waitForSelector('tr:has-text("Sample Patient B") button:has-text("Transfer")');
+  await page.click('button:has-text("Sign out")'); await page.waitForSelector('form.box');
+  await login('pt.one'); await page.click('.nav a:has-text("Visits")');
+  await page.click('tr:has-text("Sample Patient B") button:has-text("Start treatment")'); await page.locator('.modal select').selectOption({ label: 'PT Treatment' }); await page.click('.modal button:has-text("Confirm")');
+  await page.waitForSelector('tr:has-text("Sample Patient B") button:has-text("Pause")'); await page.waitForTimeout(2200);
+  await page.reload(); await page.waitForSelector('.shell'); ok(true, 'still signed in after refresh');
+  await page.click('.nav a:has-text("Sessions")'); await page.waitForSelector('.card > h2:has-text("Sessions")'); await page.waitForSelector('.timer');
+  const t = await page.locator('.timer').first().textContent(); ok(/0:0[2-9]|0:[1-5]\d/.test(t), `session survived refresh with timer ${t}`);
+  await page.screenshot({ path: `${out}/d1-sessions.png` });
+  await page.click('button:has-text("Sign out")'); await login('admin');
+  await page.click('.nav a:has-text("System")'); await page.waitForSelector('text=System health'); await page.screenshot({ path: `${out}/d2-system.png` });
+  await page.click('.nav a:has-text("Reports")'); await page.waitForSelector('.kpis'); await page.screenshot({ path: `${out}/d3-reports.png` });
+  ok(errors.length === 0, `no console errors ${errors.slice(0, 3).join(' | ')}`);
+  await b.close();
+})().catch((e) => { console.error(e); process.exit(1); });

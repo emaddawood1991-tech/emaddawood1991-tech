@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api, useNet, usePoll, useTicker, serverNow } from './api.js';
 import { useI18n } from './i18n.jsx';
 import { Icon, useAction } from './ui.jsx';
+import logo from './assets/logo.webp';
 import Dashboard from './pages/Dashboard.jsx';
 import Visits from './pages/Visits.jsx';
 import Queue from './pages/Queue.jsx';
@@ -30,7 +31,7 @@ function Login({ onDone }) {
   return (
     <div className="login">
       <form className="glass box" onSubmit={submit}>
-        <img src="/logo.webp" alt="FMC Ideal Care" />
+        <img src={logo} alt="FMC Ideal Care" />
         <h1>{t('appName')}</h1>
         <label>{t('username')}<input autoFocus autoComplete="username" value={f.username} onChange={(e) => setF({ ...f, username: e.target.value })} /></label>
         <label>{t('password')}<input type="password" autoComplete="current-password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} /></label>
@@ -38,6 +39,7 @@ function Login({ onDone }) {
         <button className="btn" disabled={!f.username || !f.password}>{t('signIn')}</button>
         <button type="button" className="btn ghost sm" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t('lang')}</button>
         <small className="muted">{t('demoNote')}</small>
+        {window.__FMC_DEMO__ && <button type="button" className="btn ghost sm" onClick={() => window.__resetDemo()}>Reset demo data</button>}
       </form>
     </div>
   );
@@ -68,7 +70,7 @@ export default function App() {
   return (
     <div className="shell">
       <aside className="glass side">
-        <div className="brand"><img src="/logo.webp" alt="" /><div><b>{t('appName')}</b><small>{t('tagline')}</small></div></div>
+        <div className="brand"><img src={logo} alt="" /><div><b>{t('appName')}</b><small>{t('tagline')}</small></div></div>
         <nav className="nav" aria-label="Main">
           {allowed.map(([k]) => <a key={k} className={(page || 'dashboard') === k ? 'on' : ''} onClick={() => go(k)} role="link" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && go(k)}><Icon n={k} />{t(k)}</a>)}
         </nav>
@@ -83,7 +85,7 @@ export default function App() {
         </div>
       </aside>
       <main className="main">
-        <div className="glass top"><h1>{t(allowed.find(([k]) => k === page) ? page : 'dashboard')}</h1><span className="sp" /><span className="chip ok">{t('serverTime')}</span><Clock /></div>
+        <div className="glass top"><h1>{t(allowed.find(([k]) => k === page) ? page : 'dashboard')}</h1><span className="sp" />{window.__FMC_DEMO__ && <span className="chip warn">DEMO</span>}<span className="chip ok">{t('serverTime')}</span><Clock /></div>
         {net.offline && <div className="banner bad" role="alert">{t('offline')} {net.lastSync && <small>({t('stale')}: {new Intl.DateTimeFormat(lang === 'ar' ? 'ar-AE' : 'en-GB', { timeStyle: 'medium' }).format(net.lastSync)})</small>}</div>}
         <Page user={user} staff={staff.data || []} reloadStaff={staff.reload} go={go} />
       </main>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { usePoll } from '../api.js';
+import { api, usePoll } from '../api.js';
 import { useI18n } from '../i18n.jsx';
 
 export default function Reports() {
@@ -10,7 +10,7 @@ export default function Reports() {
     <>
       <div className="card row"><label>{t('from')}<input type="date" value={f.from} onChange={(e) => setF({ ...f, from: e.target.value })} /></label>
         <label>{t('to')}<input type="date" value={f.to} onChange={(e) => setF({ ...f, to: e.target.value })} /></label>
-        <a className="btn ghost" href={`/api/reports/sessions.csv?${qs}`} style={{ textDecoration: 'none' }}>{t('export')}</a></div>
+        <button className="btn ghost" onClick={async () => { const r = await fetch(`/api/reports/sessions.csv?${qs}`, { credentials: 'same-origin' }); const u = URL.createObjectURL(await r.blob()); const a = document.createElement('a'); a.href = u; a.download = 'sessions.csv'; a.click(); URL.revokeObjectURL(u); }}>{t('export')}</button></div>
       {!d ? <p className="muted">{t('loading')}</p> : <>
         <div className="kpis">{[[t('visits'), d.visits], [t('sessions'), d.sessions], [t('avgWait'), d.avg_wait_minutes ?? '—'], [t('transfers'), d.transfers], [t('corrections'), `${d.corrections.approved}/${d.corrections.total}`], [t('maintEvents'), d.maintenance_events]]
           .map(([l, v]) => <div key={l} className="card kpi"><b>{v}</b><span>{l}</span></div>)}</div>
