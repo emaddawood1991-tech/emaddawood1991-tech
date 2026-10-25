@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "express": "^5.3.0",
+    "framer-motion": "^14.6.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "name": "fmc-patient-flow",
+  "private": "true",
+  "type": "module",
+  "version": "0.1.0",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.2",
+    "vite": "^8.3.5"
+  },
+  "scripts": {
+    "dev:api": "node --disable-warning=ExperimentalWarning server/index.js",
+    "dev:web": "vite",
+    "build": "vite build",
+    "start": "node --disable-warning=ExperimentalWarning server/index.js",
+    "seed": "node --disable-warning=ExperimentalWarning server/seed.js",
+    "backup": "node --disable-warning=ExperimentalWarning server/backup.js",
+    "test": "node --disable-warning=ExperimentalWarning --test tests/*.test.js"
+  }
+}
