@@ -1,0 +1,33 @@
+[FINDING] P1 patient search not department-scoped — pt.one (Physiotherapy) found an Orthopedics-only patient: {"name":"Sample Patient A","dob":"1970-01-10","phone":"+971500000001"}
+[FINDING] P1b wildcard dumps the directory — General Medicine clinician queried "%" and received 8 patients (name, DOB, phone, MRN)
+[FINDING] P1c phone lookup works for any role — clinician looked a patient up by phone number → 1 result(s)
+[FINDING] P1d search not recorded per patient — audit entry for patients.search stores only the query length, not which patient records were returned
+[FINDING] P3 usernames visible to every user — GET /api/staff as a clinician returned 10 accounts including usernames: gm.one, dr.ort, nr.one, pt.one…
+[FINDING] P4 login timing reveals valid usernames — unknown user 3.3 ms vs known user 46.4 ms per attempt (hashing only runs for real accounts)
+[FINDING] P5 anyone can lock out any user — 7 bad guesses → 401,401,401,401,401,429,429; the real administrator is then refused (429) for a minute. Limiter keys on IP+username, memory-only, no per-account audit of lockouts
+[FINDING] P6 synchronous password hashing blocks the server — 12 concurrent logins took 234 ms in total; an unrelated /api/time request sent alongside waited 223 ms (scryptSync runs on the main thread)
+[FINDING] P10 no way to change own password — POST /api/account/password → 404; the UI has no account page either (users can never rotate the shared demo password)
+[FINDING] P10b usernames cannot be changed — PATCH with username → 200, username still "pt.one" (field silently ignored)
+[FINDING] P10c weak passwords accepted — admin-created account with password "aaaaaaaaaa" accepted (only a 10-character minimum; no complexity/breach check; no forced change at first login)
+[FINDING] P10d no session list/revoke UI or API — GET /api/sessions/list → 404; there is no way to see or terminate another session except resetting the password
+[FINDING] P10e no MFA — GET /api/account/mfa → 404; administrators sign in with a password only
+[FINDING] P9a default credentials — all 10 seeded accounts share the published demo password "Demo-Passw0rd!" (README, source code and every seeded database). server/index.js seeds them on ANY empty database unless FMC_SEED=0
+[ok]      P9 cookie flags — Set-Cookie: fmc_sid=<token>; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200; Secure — HttpOnly, SameSite=Strict, Secure present; fixed Max-Age=43200 but server only enforces IDLE time, so there is no absolute session lifetime
+[ok]      P13 privilege-escalation attempts (server-side) — clinician self-promotes to admin: 403 | clinician creates account: 403 | reception edits departments: 403 | reception approves correction: 403 | clinician reads audit log: 403 | clinician reads reports: 403 | supervisor reads health: 403 | clinician sets another user status: 403 | clinician changes policy settings: 403 | reception registers patient: 201 | clinician registers patient: 403
+[ok]      P23 CSRF header required on writes — state-changing request without X-Requested-With → 403 (SameSite=Strict cookie as second layer)
+[FINDING] P25 security headers — present: content-security-policy, x-content-type-options, x-frame-options, referrer-policy | missing: strict-transport-security, permissions-policy, cross-origin-opener-policy
+[ok]      P26 error handling leaks nothing — malformed JSON → 400 {"error":{"code":"BAD_JSON","message":"Malformed JSON"}}
+[FINDING] P27 shared hall shows OCCUPIED with 5 free beds — PT-HALL-01 display_status="OCCUPIED" with 1/6 beds used; the dashboard "Rooms free" KPI therefore excludes it
+[ok]      P17b audit coverage of core actions — recorded: login, login.failed, visit.checkin, visit.checkout, room.assign, room.exit, session.start, session.complete, config.staff.create, config.staff.update, timeline.view, patient.create (all present). Gaps by design: which patients a search returned, queue/dashboard/sessions views (names shown), password reset and role change are not distinct events, session revocation does not exist
+[FINDING] P17 audit protection is a database trigger only — with write access to the database file the trigger can be DROPped and audit rows edited or deleted; no hash chain, no off-host copy, no alert when entries disappear (API users cannot do this: UPDATE/DELETE are blocked and no endpoint exists)
+[FINDING] P29 cannot cancel a queue entry / no-show — POST /api/queue/:id/cancel → 404; the schema has a CANCELLED state but there is no endpoint or button, so walk-aways stay "waiting"
+[FINDING] P30 cannot edit patient demographics — PATCH /api/patients/:id → 404; typos in name/DOB/phone cannot be corrected and duplicate records cannot be merged
+[FINDING] P31 one department per staff account — users.department_id is a single column; "pt.one" → department 2 only. Shared staff and multi-department access cannot be modelled
+[ok]      C1 idle sessions expire — session idle since 2020 → 401
+[ok]      C2 admin password reset revokes sessions — old session after reset → 401
+[ok]      C3 disabled accounts are locked out immediately — disabled user: existing session → 401, new login → 429
+[FINDING] P18 department deactivated while patients are queued — PATCH departments {active:0} with an open queue entry → 200; no warning, patient stays queued in an inactive department
+[FINDING] P8 invalid role → server error — PATCH role="wizard" → 500 (should be a 400 validation error)
+[FINDING] P7 last administrator can be disabled — admin deactivated their own (only) admin account → 200; next request 401. Nobody can sign in to Settings again without editing the database
+
+23 findings / 31 probes

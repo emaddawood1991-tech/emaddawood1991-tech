@@ -1,0 +1,402 @@
+[
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "dashboard",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "visits",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "queue",
+  "overflow": 0,
+  "violations": [
+   {
+    "id": "select-name",
+    "impact": "critical",
+    "n": 1,
+    "help": "Select element must have an accessible name",
+    "sample": "<select style=\"width: 220px;\">"
+   }
+  ],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "rooms",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "sessions",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "corrections",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "search",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "reports",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "settings",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "desktop",
+  "page": "system",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "dashboard",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "visits",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "queue",
+  "overflow": 0,
+  "violations": [
+   {
+    "id": "select-name",
+    "impact": "critical",
+    "n": 1,
+    "help": "Select element must have an accessible name",
+    "sample": "<select style=\"width: 220px;\">"
+   }
+  ],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "rooms",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "sessions",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "corrections",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "search",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "reports",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "settings",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "admin",
+  "tag": "mobile",
+  "page": "system",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "desktop",
+  "page": "dashboard",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "desktop",
+  "page": "visits",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "desktop",
+  "page": "queue",
+  "overflow": 0,
+  "violations": [
+   {
+    "id": "select-name",
+    "impact": "critical",
+    "n": 1,
+    "help": "Select element must have an accessible name",
+    "sample": "<select style=\"width: 220px;\">"
+   }
+  ],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "desktop",
+  "page": "rooms",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "desktop",
+  "page": "corrections",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "desktop",
+  "page": "search",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "mobile",
+  "page": "dashboard",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "mobile",
+  "page": "visits",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "mobile",
+  "page": "queue",
+  "overflow": 0,
+  "violations": [
+   {
+    "id": "select-name",
+    "impact": "critical",
+    "n": 1,
+    "help": "Select element must have an accessible name",
+    "sample": "<select style=\"width: 220px;\">"
+   }
+  ],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "mobile",
+  "page": "rooms",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "mobile",
+  "page": "corrections",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "reception",
+  "tag": "mobile",
+  "page": "search",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "desktop",
+  "page": "dashboard",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "desktop",
+  "page": "visits",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "desktop",
+  "page": "queue",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "desktop",
+  "page": "rooms",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "desktop",
+  "page": "sessions",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "desktop",
+  "page": "corrections",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "desktop",
+  "page": "search",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "mobile",
+  "page": "dashboard",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "mobile",
+  "page": "visits",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "mobile",
+  "page": "queue",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "mobile",
+  "page": "rooms",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "mobile",
+  "page": "sessions",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "mobile",
+  "page": "corrections",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ },
+ {
+  "user": "pt.one",
+  "tag": "mobile",
+  "page": "search",
+  "overflow": 0,
+  "violations": [],
+  "errs": 0
+ }
+]
