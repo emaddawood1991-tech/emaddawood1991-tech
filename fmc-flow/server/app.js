@@ -167,12 +167,23 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   });
   app.patch('/api/config/staff/:id', guard('config.manage'), (req, res) => {
     const id = Number(req.params.id);
+    if (!one('SELECT 1 x FROM users WHERE id=?', id)) throw new HttpError(404, 'NOT_FOUND', 'Staff member not found.');
+    let diff = null;
+    if (Array.isArray(req.body.service_ids)) {
+      const ids = [...new Set(req.body.service_ids.map(Number))];
+      const known = new Set(q('SELECT id FROM services').map((x) => x.id));
+      if (ids.some((x) => !known.has(x))) throw new HttpError(400, 'INVALID', 'One of the selected services does not exist.');
+      const before = new Set(q('SELECT service_id FROM staff_services WHERE user_id=?', id).map((x) => x.service_id));
+      diff = { added: ids.filter((x) => !before.has(x)), removed: [...before].filter((x) => !ids.includes(x)) };
+      req.body.service_ids = ids;
+    }
     tx(db, () => {
       for (const c of ['name', 'name_ar', 'role', 'department_id', 'active']) if (req.body[c] !== undefined) run(`UPDATE users SET ${c}=? WHERE id=?`, req.body[c], id);
       if (req.body.password) { if (String(req.body.password).length < 10) throw new HttpError(400, 'WEAK_PASSWORD'); run('UPDATE users SET pass_hash=? WHERE id=?', hashPassword(req.body.password), id); run('DELETE FROM auth_sessions WHERE user_id=?', id); }
-      if (Array.isArray(req.body.service_ids)) { run('DELETE FROM staff_services WHERE user_id=?', id); for (const s of req.body.service_ids) run('INSERT INTO staff_services VALUES (?,?)', id, s); }
+      if (diff) { run('DELETE FROM staff_services WHERE user_id=?', id); for (const s of req.body.service_ids) run('INSERT INTO staff_services VALUES (?,?)', id, s); }
     });
-    audit(req.user, 'config.staff.update', 'user', id, { ...req.body, password: req.body.password ? '***' : undefined });
+    audit(req.user, 'config.staff.update', 'user', id, { ...req.body, service_ids: undefined, password: req.body.password ? '***' : undefined });
+    if (diff && (diff.added.length || diff.removed.length)) audit(req.user, 'config.staff.authorization', 'user', id, diff);
     res.json({ ok: true });
   });
   app.get('/api/staff/:id/schedule', guard(), (req, res) => res.json(q('SELECT weekday,start_time,end_time FROM staff_schedules WHERE user_id=? ORDER BY weekday,start_time', req.params.id)));
@@ -253,6 +264,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
 
   // ---- sessions ----
   app.get('/api/sessions/active', guard('patients.read'), (req, res) => res.json({ server_time: now(), sessions: ops.activeSessions(req.user) }));
+  app.get('/api/visits/:id/treatment-options', guard('session.run'), (req, res) => res.json(ops.treatmentOptions(req.user, Number(req.params.id))));
   app.post('/api/visits/:id/sessions', guard(), (req, res) => res.status(201).json(ops.startSession(req.user, Number(req.params.id), { serviceId: req.body.service_id, clinicianId: req.body.clinician_id, idemKey: req.body.idem_key })));
   app.post('/api/sessions/:id/pause', guard(), (req, res) => res.json(ops.pauseSession(req.user, Number(req.params.id))));
   app.post('/api/sessions/:id/resume', guard(), (req, res) => res.json(ops.resumeSession(req.user, Number(req.params.id))));

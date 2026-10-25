@@ -3,7 +3,7 @@ import { api, usePoll } from '../api.js';
 import { useI18n } from '../i18n.jsx';
 import { Chip, Modal, useAction } from '../ui.jsx';
 
-function Table({ title, endpoint, rows, fields, reload, extra }) {
+function Table({ title, endpoint, rows, fields, reload, extra, extraCols = [] }) {
   const { t } = useI18n(); const { run } = useAction(); const [edit, setEdit] = useState(null);
   const save = async () => {
     const body = Object.fromEntries(fields.map((f) => [f.k, f.type === 'bool' ? (edit[f.k] ? 1 : 0) : f.type === 'num' || f.type === 'ref' ? (edit[f.k] === '' || edit[f.k] == null ? undefined : Number(edit[f.k])) : edit[f.k]]).filter(([, v]) => v !== undefined));
@@ -13,8 +13,9 @@ function Table({ title, endpoint, rows, fields, reload, extra }) {
   const blank = Object.fromEntries(fields.map((f) => [f.k, f.def ?? '']));
   return (
     <div className="card"><h2>{title}<button className="btn sm" onClick={() => setEdit({ ...blank })}>＋ {t('add')}</button></h2>
-      <div className="tbl"><table><thead><tr>{fields.map((f) => <th key={f.k}>{f.label}</th>)}<th /></tr></thead>
+      <div className="tbl"><table><thead><tr>{fields.map((f) => <th key={f.k}>{f.label}</th>)}{extraCols.map((c) => <th key={c.label}>{c.label}</th>)}<th /></tr></thead>
         <tbody>{rows.map((r) => <tr key={r.id}>{fields.map((f) => <td key={f.k}>{f.type === 'bool' ? (r[f.k] ? '✓' : '—') : f.type === 'ref' ? f.opts.find(([v]) => v === r[f.k])?.[1] : r[f.k]}</td>)}
+          {extraCols.map((c) => <td key={c.label}>{c.render(r)}</td>)}
           <td><button className="btn ghost sm" onClick={() => setEdit({ ...r })}>{t('edit')}</button>{extra?.(r)}</td></tr>)}</tbody></table></div>
       {edit && <Modal title={title} onClose={() => setEdit(null)}><div className="stack">
         {fields.map((f) => f.type === 'bool' ? <label key={f.k} className="chk"><input type="checkbox" checked={!!edit[f.k]} onChange={(e) => setEdit({ ...edit, [f.k]: e.target.checked })} />{f.label}</label>
@@ -49,7 +50,12 @@ function StaffAdmin({ staff, config, reload }) {
           <label>{t('department')}<select value={e.department_id ?? ''} onChange={(x) => setE({ ...e, department_id: x.target.value })}><option value="">—</option>{config.departments.map((d) => <option key={d.id} value={d.id}>{loc(d)}</option>)}</select></label></div>
         <label>{t('password')} {e.id && '(leave blank to keep)'}<input type="password" autoComplete="new-password" value={e.password || ''} onChange={(x) => setE({ ...e, password: x.target.value })} /></label>
         <fieldset style={{ border: '1px solid rgba(46,85,178,.2)', borderRadius: 12 }}><legend className="small">{t('authorizedServices')}</legend>
-          {config.services.map((s) => <label key={s.id} className="chk"><input type="checkbox" checked={(e.service_ids || []).includes(s.id)} onChange={(x) => setE({ ...e, service_ids: x.target.checked ? [...(e.service_ids || []), s.id] : e.service_ids.filter((i) => i !== s.id) })} />{loc(s)}</label>)}</fieldset>
+          <p className="small muted" style={{ margin: '0 0 8px' }}>{t('unauthorizedNote')}</p>
+          {config.departments.filter((d) => config.services.some((s) => s.department_id === d.id)).map((d) => (
+            <div key={d.id} style={{ marginBottom: 8 }}>
+              <b className="small">{loc(d)}{d.active ? '' : ' (inactive)'}</b>
+              {config.services.filter((s) => s.department_id === d.id).map((s) => <label key={s.id} className="chk"><input type="checkbox" checked={(e.service_ids || []).includes(s.id)} onChange={(x) => setE({ ...e, service_ids: x.target.checked ? [...(e.service_ids || []), s.id] : e.service_ids.filter((i) => i !== s.id) })} />{loc(s)}{s.active ? '' : ' (inactive)'}</label>)}
+            </div>))}</fieldset>
         {e.id && <label className="chk"><input type="checkbox" checked={!!e.active} onChange={(x) => setE({ ...e, active: x.target.checked })} />{t('active')}</label>}
         <button className="btn" onClick={save}>{t('save')}</button></div></Modal>}
       {sch && <Modal title={`${t('schedule')} — ${loc(sch.u)}`} onClose={() => setSch(null)}><div className="stack">
@@ -97,7 +103,7 @@ export default function Settings({ staff, reloadStaff }) {
         <Table title={t('rooms')} endpoint="rooms" rows={config.rooms} reload={reload} fields={[{ k: 'department_id', label: t('department'), type: 'ref', opts: depOpts }, { k: 'code', label: 'Code' }, { k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'capacity', label: t('capacity'), type: 'num', def: 1 }, { k: 'cleaning_after_use', label: t('cleaningAfter'), type: 'bool' }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />
         <Table title={t('stations')} endpoint="stations" rows={config.rooms.flatMap((r) => r.stations.map((s) => ({ ...s, room_code: r.code })))} reload={reload} fields={[{ k: 'room_id', label: t('room'), type: 'ref', lock: true, opts: config.rooms.map((r) => [r.id, r.code]) }, { k: 'code', label: t('station') }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />
       </>}
-      {tab === 'services' && <Table title={t('services')} endpoint="services" rows={config.services} reload={reload} fields={[{ k: 'department_id', label: t('department'), type: 'ref', opts: depOpts }, { k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'default_minutes', label: t('minutes'), type: 'num', def: 30 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />}
+      {tab === 'services' && <><p className="small muted">{t('authHelp')}</p><Table title={t('services')} endpoint="services" rows={config.services} reload={reload} extraCols={[{ label: t('authorizedClinicians'), render: (r) => { const who = staff.filter((u) => u.active && u.service_ids.includes(r.id)); return who.length ? <span className="small">{who.map((u) => loc(u)).join(', ')}</span> : r.active ? <Chip s="REJECTED" label={t('noAuthorizedChip')} /> : '—'; } }]} fields={[{ k: 'department_id', label: t('department'), type: 'ref', opts: depOpts }, { k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'default_minutes', label: t('minutes'), type: 'num', def: 30 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} /></>}
       {tab === 'staff' && <StaffAdmin staff={staff} config={config} reload={reload} />}
       {tab === 'policy' && <div className="card stack"><h2>{t('policy')}</h2>
         {[['correction_requires_approval', 'policyApproval'], ['transfer_reason_required', 'policyTransfer'], ['registration_require_name_ar', 'policyNameAr'], ['registration_require_phone', 'policyPhone'], ['require_service_at_checkin', 'policyService']].map(([k, label]) => (

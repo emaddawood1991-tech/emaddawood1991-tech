@@ -98,18 +98,73 @@ export function RoomPickerModal({ visit, transfer, config, onClose, onDone }) {
   );
 }
 
-export function StartSessionModal({ visit, config, me, onClose, onDone }) {
+export function StartSessionModal({ visit, user, onClose, onDone }) {
   const { t, loc } = useI18n(); const { run, busy } = useAction();
   const key = useRef(newKey()); // stable across retries/double clicks → server returns the same session
-  const [serviceId, setServiceId] = useState('');
-  const mine = useMemo(() => config.services.filter((s) => s.active && (me?.service_ids || []).includes(s.id)), [config, me]);
-  const submit = async () => { const r = await run(() => api.post(`/visits/${visit.id}/sessions`, { service_id: Number(serviceId), idem_key: key.current }), t('startSession')); if (r) { onDone(); onClose(); } };
+  const { data, error } = usePoll(`/visits/${visit.id}/treatment-options`, 0);
+  const [deptId, setDeptId] = useState(''); const [serviceId, setServiceId] = useState(''); const [clinId, setClinId] = useState(''); const [problem, setProblem] = useState('');
+  const isAdmin = user.role === 'admin';
+  const forOthers = !!data?.viewer.can_start_for_others;
+  const dept = data?.departments.find((d) => String(d.id) === String(deptId)) || data?.departments[0];
+  const services = dept?.services || [];
+  const svc = services.find((x) => String(x.id) === String(serviceId));
+  const authorized = svc?.authorized || [];
+  const iCan = (x) => x.can_start_as_me;
+  const clinician = forOthers ? authorized.find((c) => String(c.id) === String(clinId)) : authorized.find((c) => c.id === user.id);
+  const needSettings = (txt) => (isAdmin ? `${txt.a}` : `${txt.o}`);
+  const pickService = (id) => {
+    setServiceId(id); setProblem('');
+    const sv = services.find((x) => String(x.id) === String(id));
+    const auth = sv?.authorized || [];
+    setClinId(auth.some((c) => c.id === user.id) ? String(user.id) : auth.length === 1 ? String(auth[0].id) : '');
+  };
+  const hasAnyOwn = services.some(iCan);
+  const canConfirm = data?.ready && svc && clinician && !busy;
+  const goSettings = () => { onClose(); try { location.hash = '/settings'; } catch { /* hash unavailable */ } };
+  const submit = async () => {
+    setProblem('');
+    const r = await run(async () => {
+      try { return await api.post(`/visits/${visit.id}/sessions`, { service_id: Number(serviceId), clinician_id: forOthers ? Number(clinId) : undefined, idem_key: key.current }); }
+      catch (e) { if (e.code !== 'NETWORK') setProblem(e.message); throw e; }
+    }, `${t('treatmentStarted')}: ${loc(svc)} — ${loc(clinician)}`);
+    if (r) { onDone(); onClose(); }
+  };
+  const warn = (txt, extra) => <div className="banner warn" role="alert">{txt}{extra}</div>;
   return (
     <Modal title={`${t('startSession')} — ${visit.patient_name}`} onClose={onClose}>
       <div className="stack">
-        <label>{t('service')}<select value={serviceId} onChange={(e) => setServiceId(e.target.value)}><option value="">—</option>{mine.map((s) => <option key={s.id} value={s.id}>{loc(s)}</option>)}</select></label>
-        {mine.length === 0 && <p className="err">{t('unauthorizedNote')}</p>}
-        <div className="row"><button className="btn" disabled={busy || !serviceId} onClick={submit}>{t('confirm')}</button><button className="btn ghost" onClick={onClose}>{t('cancel')}</button></div>
+        {error && <p className="err">{error.message}</p>}
+        {!data ? <p className="muted">{t('loading')}</p> : <>
+          {!data.ready && warn(data.not_ready_reason === 'NO_ROOM' ? t('needRoom') : t('needEntry'))}
+          {data.departments.length === 0 && warn(t('noDeptVisit'))}
+          {data.departments.length > 1 && (
+            <div className="field"><label htmlFor="st-dept">{t('serviceDept')}</label>
+              <select id="st-dept" value={dept?.id ?? ''} onChange={(e) => { setDeptId(e.target.value); setServiceId(''); setClinId(''); }}>{data.departments.map((d) => <option key={d.id} value={d.id}>{loc(d)}</option>)}</select></div>
+          )}
+          {dept && data.departments.length === 1 && <p className="small muted">{t('serviceDept')}: <b>{loc(dept)}</b></p>}
+          {dept && services.length === 0 && warn(t('noServicesFor').replace('{dept}', loc(dept)), <> {needSettings({ a: t('noServicesAdmin'), o: t('noServicesOther') })}</>)}
+          {dept && services.length > 0 && !forOthers && !hasAnyOwn && warn(t('notAuthAny').replace('{dept}', loc(dept)), <> {t('notAuthAnyHelp')}</>)}
+          {services.length > 0 && (
+            <div className="field"><label htmlFor="st-service">{t('service')} <span className="req" aria-hidden="true">*</span><span className="sr-only"> ({t('requiredWord')})</span></label>
+              <select id="st-service" aria-required="true" value={serviceId} onChange={(e) => pickService(e.target.value)}>
+                <option value="">{t('chooseService')}</option>
+                {services.map((x) => {
+                  const blocked = forOthers ? x.authorized.length === 0 : !iCan(x);
+                  return <option key={x.id} value={x.id}>{loc(x)}{blocked ? ` — ${forOthers ? t('noClinicianTag') : t('notAuthorizedTag')}` : ''}</option>;
+                })}
+              </select></div>
+          )}
+          {svc && !forOthers && !iCan(svc) && authorized.length > 0 && warn(t('notAuthSvc').replace('{svc}', loc(svc)), <> {t('notAuthAnyHelp')}</>)}
+          {svc && authorized.length === 0 && warn(t('noAuthClinician'), <> {needSettings({ a: t('noAuthAdmin'), o: t('noAuthOther') })} {isAdmin && <button type="button" className="btn ghost sm" onClick={goSettings}>{t('openSettings')}</button>}</>)}
+          {svc && authorized.length > 0 && (forOthers
+            ? <div className="field"><label htmlFor="st-clin">{t('startOnBehalf')} <span className="req" aria-hidden="true">*</span></label>
+                <select id="st-clin" aria-required="true" value={clinId} onChange={(e) => setClinId(e.target.value)}>
+                  <option value="">—</option>{authorized.map((c) => <option key={c.id} value={c.id}>{loc(c)} · {t(c.availability)}</option>)}</select>
+                <small className="hint">{t('onBehalfNote')} {t('authNote')}</small></div>
+            : <p className="small">{t('startingAs')}: <b>{loc(user)}</b></p>)}
+          {problem && <div className="banner bad" role="alert">{problem}</div>}
+        </>}
+        <div className="row"><button className="btn" disabled={!canConfirm} onClick={submit}>{t('confirm')}</button><button className="btn ghost" onClick={onClose}>{t('cancel')}</button></div>
       </div>
     </Modal>
   );

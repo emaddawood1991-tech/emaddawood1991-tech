@@ -102,7 +102,7 @@ export default function Visits({ user, staff }) {
       </div>
       {modal?.k === 'assign' && <RoomPickerModal visit={modal.v} config={config} onClose={() => setModal(null)} onDone={reload} />}
       {modal?.k === 'transfer' && <RoomPickerModal transfer visit={modal.v} config={config} onClose={() => setModal(null)} onDone={reload} />}
-      {modal?.k === 'start' && <StartSessionModal visit={modal.v} config={config} me={me} onClose={() => setModal(null)} onDone={reload} />}
+      {modal?.k === 'start' && <StartSessionModal visit={modal.v} user={user} onClose={() => setModal(null)} onDone={reload} />}
       {modal?.k === 'timeline' && <TimelineModal visitId={modal.v.id} onClose={() => setModal(null)} onCorrect={(target) => setModal({ k: 'correct', v: modal.v, target })} />}
       {modal?.k === 'correct' && <CorrectionModal target={modal.target} visitId={modal.v.id} onClose={() => setModal(null)} onDone={reload} />}
     </>

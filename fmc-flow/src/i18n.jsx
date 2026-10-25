@@ -33,6 +33,14 @@ const EN = {
   useThisPatient: 'Use this patient', registerAnyway: 'This is a different person — register anyway', possibleDup: 'Possible duplicate', fixErrors: 'Please correct the highlighted fields.',
   noResults: 'No matching patient. Use “New patient” to register one.', openVisitNote: 'Visit open', mrnTaken: 'This MRN already belongs to', genderOptions: 'Gender options', genderCode: 'Code', labelEn: 'English', labelAr: 'Arabic',
   policyNameAr: 'Arabic name required at registration', policyPhone: 'Contact number required at registration', policyService: 'Service required at check-in', patientSelected: 'Selected patient', changePatient: 'Change',
+  notAuthSvc: 'You are not authorized to provide “{svc}”.', noServicesFor: 'No services are configured for {dept}.', noServicesAdmin: 'Add services under Settings → Services.', noServicesOther: 'Ask an administrator to add services under Settings → Services.',
+  noAuthClinician: 'No authorized clinician is available for this service.', noAuthAdmin: 'Please assign an authorized clinician in Settings → Staff.', noAuthOther: 'Ask an administrator to assign an authorized clinician in Settings → Staff.',
+  notAuthAny: 'You are not authorized to provide any service in {dept}.', notAuthAnyHelp: 'Ask an administrator to grant your authorization in Settings → Staff.',
+  needRoom: 'Assign a room to the patient first.', needEntry: 'Confirm that the patient has entered the room before starting treatment.', noDeptVisit: 'This visit has no department. Check the patient in to a department first.',
+  startOnBehalf: 'Start on behalf of', onBehalfNote: 'The session is recorded for the selected clinician; your name is logged as the person who started it.', startingAs: 'Clinician', openSettings: 'Open Settings',
+  notAuthorizedTag: 'not authorized', noClinicianTag: 'no authorized clinician', treatmentStarted: 'Treatment started', chooseService: 'Choose a service', authorizedClinicians: 'Authorized clinicians',
+  noAuthorizedChip: 'No authorized clinician', authHelp: 'Authorization is granted per person under Staff → Edit. Administrator and supervisor roles have no clinical authorization unless you assign it explicitly.',
+  authNote: 'Availability is shown for information only; it never grants authorization.', serviceDept: 'Department',
   requiredForCheckIn: 'required to check in', searchHint: 'Search by MRN, English or Arabic name, or phone number',
 };
 const AR = {
@@ -68,6 +76,14 @@ const AR = {
   useThisPatient: 'استخدام هذا المريض', registerAnyway: 'شخص مختلف — تسجيل على أي حال', possibleDup: 'احتمال تكرار', fixErrors: 'يرجى تصحيح الحقول المحددة.',
   noResults: 'لا يوجد مريض مطابق. استخدم «مريض جديد» للتسجيل.', openVisitNote: 'زيارة مفتوحة', mrnTaken: 'رقم السجل هذا يخص', genderOptions: 'خيارات الجنس', genderCode: 'الرمز', labelEn: 'الإنجليزية', labelAr: 'العربية',
   policyNameAr: 'الاسم العربي مطلوب عند التسجيل', policyPhone: 'رقم التواصل مطلوب عند التسجيل', policyService: 'الخدمة مطلوبة عند تسجيل الوصول', patientSelected: 'المريض المحدد', changePatient: 'تغيير',
+  notAuthSvc: 'ليس لديك تصريح بتقديم «{svc}».', noServicesFor: 'لا توجد خدمات مضبوطة لقسم {dept}.', noServicesAdmin: 'أضف الخدمات من الإعدادات ← الخدمات.', noServicesOther: 'اطلب من المسؤول إضافة الخدمات من الإعدادات ← الخدمات.',
+  noAuthClinician: 'لا يوجد أخصائي مصرّح له بهذه الخدمة.', noAuthAdmin: 'يرجى تعيين أخصائي مصرّح له من الإعدادات ← الموظفون.', noAuthOther: 'اطلب من المسؤول تعيين أخصائي مصرّح له من الإعدادات ← الموظفون.',
+  notAuthAny: 'ليس لديك تصريح بأي خدمة في قسم {dept}.', notAuthAnyHelp: 'اطلب من المسؤول منحك التصريح من الإعدادات ← الموظفون.',
+  needRoom: 'عيّن غرفة للمريض أولًا.', needEntry: 'أكّد دخول المريض إلى الغرفة قبل بدء العلاج.', noDeptVisit: 'هذه الزيارة بلا قسم. سجّل وصول المريض إلى قسم أولًا.',
+  startOnBehalf: 'البدء نيابةً عن', onBehalfNote: 'تُسجَّل الجلسة باسم الأخصائي المحدد، ويُسجَّل اسمك كمن بدأها.', startingAs: 'الأخصائي', openSettings: 'فتح الإعدادات',
+  notAuthorizedTag: 'غير مصرّح', noClinicianTag: 'لا أخصائي مصرّح', treatmentStarted: 'بدأ العلاج', chooseService: 'اختر الخدمة', authorizedClinicians: 'الأخصائيون المصرّح لهم',
+  noAuthorizedChip: 'لا أخصائي مصرّح', authHelp: 'يُمنح التصريح لكل شخص من الموظفون ← تعديل. أدوار المسؤول والمشرف بلا تصريح سريري ما لم تمنحه صراحةً.',
+  authNote: 'الإتاحة للعلم فقط ولا تمنح التصريح أبدًا.', serviceDept: 'القسم',
   requiredForCheckIn: 'مطلوب لتسجيل الوصول', searchHint: 'ابحث برقم السجل أو الاسم بالعربية أو الإنجليزية أو رقم الهاتف',
 };
 const DICT = { en: EN, ar: AR };

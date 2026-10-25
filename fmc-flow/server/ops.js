@@ -310,26 +310,78 @@ export function makeOps(db) {
   function authorizedFor(userId, serviceId) {
     return !!one('SELECT 1 x FROM staff_services WHERE user_id=? AND service_id=?', userId, serviceId);
   }
+  /** Departments the visit is currently being treated in (open queue entries, else any entry, else the appointment). */
+  function visitDepartments(visitId) {
+    const rows = (sql) => q(sql, visitId).map((r) => r.id);
+    const open = rows("SELECT DISTINCT department_id id FROM queue_entries WHERE visit_id=? AND status IN ('WAITING','CALLED','IN_ROOM')");
+    if (open.length) return open;
+    const any = rows('SELECT DISTINCT department_id id FROM queue_entries WHERE visit_id=?');
+    if (any.length) return any;
+    return rows('SELECT a.department_id id FROM appointments a JOIN visits v ON v.appointment_id=a.id WHERE v.id=?');
+  }
+  const deptName = (id) => one('SELECT name FROM departments WHERE id=?', id)?.name || 'the department';
+
+  /** Everything the Start Treatment window needs: the visit's department(s), their active services, and who is authorized for each. */
+  function treatmentOptions(user, visitId) {
+    need(user, 'session.run');
+    const v = openVisit(visitId); needVisible(user, v.id);
+    const occ = one('SELECT o.*, r.code room_code, st.code station_code FROM occupancy o JOIN rooms r ON r.id=o.room_id LEFT JOIN stations st ON st.id=o.station_id WHERE o.visit_id=? AND o.exited_at IS NULL', v.id);
+    const ready = !!(occ && occ.entered_at);
+    const departments = visitDepartments(v.id).map((id) => {
+      const d = one('SELECT id,name,name_ar FROM departments WHERE id=?', id);
+      const services = q('SELECT id,name,name_ar,default_minutes FROM services WHERE department_id=? AND active=1 ORDER BY name', id).map((sv) => {
+        const authorized = q(`SELECT u.id,u.name,u.name_ar,u.role,COALESCE(a.status,'OFF_DUTY') availability FROM staff_services ss JOIN users u ON u.id=ss.user_id
+          LEFT JOIN staff_availability a ON a.user_id=u.id WHERE ss.service_id=? AND u.active=1 ORDER BY u.name`, sv.id);
+        return { ...sv, authorized, can_start_as_me: authorized.some((c) => c.id === user.id) };
+      });
+      return { ...d, services };
+    });
+    return {
+      visit_id: v.id, ready,
+      location: occ ? locLabel(occ.room_id, occ.station_id) : null,
+      not_ready_reason: !occ ? 'NO_ROOM' : !occ.entered_at ? 'NOT_ENTERED' : null,
+      departments,
+      viewer: { id: user.id, role: user.role, can_start_for_others: can(user, 'availability.others') },
+    };
+  }
+
   function startSession(user, visitId, { serviceId, clinicianId, idemKey }) {
     need(user, 'session.run');
     return tx(db, () => {
       if (idemKey) { const ex = one('SELECT * FROM treatment_sessions WHERE idem_key=?', idemKey); if (ex) return sessionView(ex); }
       const v = openVisit(visitId); needVisible(user, v.id);
-      const svc = one('SELECT * FROM services WHERE id=? AND active=1', serviceId) || fail(400, 'SERVICE_INVALID');
+      if (!serviceId) fail(400, 'SERVICE_REQUIRED', 'Choose the service to start.');
+      const svc = one('SELECT * FROM services WHERE id=?', serviceId) || fail(400, 'SERVICE_INVALID', 'That service does not exist.');
+      if (!svc.active) fail(400, 'SERVICE_INVALID', `“${svc.name}” is no longer active. Choose an active service.`);
+      const depts = visitDepartments(v.id);
+      if (depts.length && !depts.includes(svc.department_id))
+        fail(409, 'SERVICE_NOT_IN_VISIT_DEPARTMENT', `“${svc.name}” belongs to ${deptName(svc.department_id)}, but this patient is checked in to ${depts.map(deptName).join(' / ')}. Choose a service from ${depts.map(deptName).join(' / ')}.`);
       const clin = Number(clinicianId || user.id);
-      if (clin !== user.id && !can(user, 'availability.others')) fail(403, 'FORBIDDEN', 'Only supervisors can start sessions for another clinician');
-      if (!authorizedFor(clin, svc.id)) fail(403, 'NOT_AUTHORIZED_FOR_SERVICE', 'Clinician is not authorized for this service'); // availability is irrelevant here
+      const onBehalf = clin !== user.id;
+      if (onBehalf && !can(user, 'availability.others')) fail(403, 'FORBIDDEN', 'Only supervisors and administrators can start treatment for another clinician. Sign in as the clinician instead.');
+      const who = one('SELECT name,role,active FROM users WHERE id=?', clin);
+      if (!who || !who.active) fail(400, 'CLINICIAN_INVALID', 'That clinician is not active.');
+      if (!authorizedFor(clin, svc.id)) { // availability is irrelevant here; only an explicit authorization counts
+        const anyone = one('SELECT 1 x FROM staff_services ss JOIN users u ON u.id=ss.user_id WHERE ss.service_id=? AND u.active=1', svc.id);
+        if (!anyone) fail(403, 'NO_AUTHORIZED_CLINICIAN', `No authorized clinician is available for “${svc.name}”. Please assign an authorized clinician in Settings → Staff.`);
+        const msg = !onBehalf
+          ? (who.role === 'clinician' ? `You are not authorized to provide “${svc.name}”. Ask an administrator to grant it in Settings → Staff, or choose a service you are authorized for.`
+            : `Your ${who.role === 'admin' ? 'administrator' : who.role} role does not include clinical authorization for “${svc.name}”. Choose an authorized clinician to start it for, or sign in as that clinician.`)
+          : `${who.name} is not authorized to provide “${svc.name}”. Choose an authorized clinician, or grant it in Settings → Staff.`;
+        fail(403, 'NOT_AUTHORIZED_FOR_SERVICE', msg);
+      }
       const occ = one('SELECT * FROM occupancy WHERE visit_id=? AND exited_at IS NULL', v.id);
-      if (!occ || !occ.entered_at) fail(409, 'NOT_IN_ROOM', 'Patient must be in a room before treatment starts');
+      if (!occ) fail(409, 'NOT_IN_ROOM', 'Assign a room to the patient and confirm room entry before starting treatment.');
+      if (!occ.entered_at) fail(409, 'NOT_IN_ROOM', 'Confirm that the patient has entered the room before starting treatment.');
       if (one("SELECT 1 x FROM treatment_sessions WHERE visit_id=? AND service_id=? AND clinician_id=? AND status IN ('ACTIVE','PAUSED')", v.id, svc.id, clin))
-        fail(409, 'SESSION_EXISTS', 'An open session for this service and clinician already exists');
+        fail(409, 'SESSION_EXISTS', `${onBehalf ? who.name : 'You'} already ${onBehalf ? 'has' : 'have'} an open “${svc.name}” session for this visit. Complete it first.`);
       const ts = now();
       const r = run('INSERT INTO treatment_sessions(idem_key,visit_id,patient_id,service_id,clinician_id,room_id,station_id,started_at) VALUES (?,?,?,?,?,?,?,?)',
         idemKey || null, v.id, v.patient_id, svc.id, clin, occ.room_id, occ.station_id, ts);
       const id = Number(r.lastInsertRowid);
-      event(v, 'TREATMENT_STARTED', user, { sessionId: id, occupancyId: occ.id, ts, data: { service: svc.name, clinician_id: clin, location: locLabel(occ.room_id, occ.station_id) } });
+      event(v, 'TREATMENT_STARTED', user, { sessionId: id, occupancyId: occ.id, ts, data: { service: svc.name, clinician_id: clin, clinician: who.name, on_behalf: onBehalf, location: locLabel(occ.room_id, occ.station_id) } });
       run("UPDATE staff_availability SET status='BUSY', updated_at=?, updated_by=? WHERE user_id=? AND status='AVAILABLE'", ts, user.id, clin);
-      audit(user, 'session.start', 'session', id, { visit: v.id, service: svc.id });
+      audit(user, 'session.start', 'session', id, { visit: v.id, service: svc.id, clinician: clin, on_behalf: onBehalf });
       return sessionView(one('SELECT * FROM treatment_sessions WHERE id=?', id));
     });
   }
@@ -481,7 +533,7 @@ export function makeOps(db) {
     sessionIntervals, unionMs, sumMs, visitDurations, sessionView, roomState, visitVisible, needVisible,
     assignRoom, enterRoom, exitRoom, transferRoom, setRoomStatus,
     checkIn, checkOut, callNext, setPriority, queueList,
-    startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
+    treatmentOptions, visitDepartments, startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
     timeline, requestCorrection, decideCorrection, locLabel,
   };
 }
