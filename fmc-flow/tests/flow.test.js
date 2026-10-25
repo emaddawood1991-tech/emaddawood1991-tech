@@ -117,8 +117,8 @@ test('concurrent assignment to the same station: exactly one wins', async () => 
 });
 
 test('concurrent call-next never calls the same patient twice', async () => {
-  const d = dept('General Practice').id;
-  const vs = [await checkin(patient(), 'General Practice'), await checkin(patient(), 'General Practice')];
+  const d = dept('General Medicine').id;
+  const vs = [await checkin(patient(), 'General Medicine'), await checkin(patient(), 'General Medicine')];
   const res = await Promise.all([1, 2, 3].map(() => rec.post('/api/queue/call-next', { department_id: d })));
   const ids = res.map((r) => r.body?.id).filter(Boolean);
   assert.equal(new Set(ids).size, ids.length);
@@ -165,11 +165,11 @@ test('transfer PT-01 → PT-03 keeps session and creates separate occupancy rows
 });
 
 test('room maintenance blocks assignment, requires reason, keeps history', async () => {
-  const r = room('GP-02');
+  const r = room('GM-02');
   assert.equal((await rec.put(`/api/rooms/${r.id}/status`, { status: 'MAINTENANCE', reason: 'x' })).status, 403);
   assert.equal((await sup.put(`/api/rooms/${r.id}/status`, { status: 'MAINTENANCE' })).body.error.code, 'REASON_REQUIRED');
   assert.equal((await sup.put(`/api/rooms/${r.id}/status`, { status: 'MAINTENANCE', reason: 'AC repair' })).status, 200);
-  const v = await checkin(patient(), 'General Practice');
+  const v = await checkin(patient(), 'General Medicine');
   assert.equal((await rec.post(`/api/visits/${v}/room`, { room_id: r.id })).body.error.code, 'ROOM_UNAVAILABLE');
   assert.equal((await sup.put(`/api/rooms/${r.id}/status`, { status: 'AVAILABLE' })).status, 200);
   assert.equal((await rec.post(`/api/visits/${v}/room`, { room_id: r.id })).status, 201);
@@ -198,9 +198,9 @@ test('overlapping sessions are not double counted in total duration', () => {
 });
 
 test('pause time is excluded from session duration', async () => {
-  const v = await checkin(patient()); await intoRoom(v, 'GP-01');
+  const v = await checkin(patient()); await intoRoom(v, 'GM-01');
   const s = t.ops.run('INSERT INTO treatment_sessions(visit_id,patient_id,service_id,clinician_id,status,started_at,ended_at) VALUES (?,?,?,?,?,?,?)',
-    v, 1, svc('GP Consultation').id, 1, 'COMPLETED', '2026-01-01T10:00:00.000Z', '2026-01-01T11:00:00.000Z').lastInsertRowid;
+    v, 1, svc('General Medicine Consultation').id, 1, 'COMPLETED', '2026-01-01T10:00:00.000Z', '2026-01-01T11:00:00.000Z').lastInsertRowid;
   t.ops.run('INSERT INTO session_pauses(session_id,paused_at,resumed_at) VALUES (?,?,?)', s, '2026-01-01T10:20:00.000Z', '2026-01-01T10:30:00.000Z');
   const view = t.ops.sessionView(t.ops.one('SELECT * FROM treatment_sessions WHERE id=?', s));
   assert.equal(view.active_ms, 50 * 60000);
@@ -215,7 +215,7 @@ test('events and audit log are append-only at the database level', () => {
 });
 
 test('correction: forgotten checkout → request → separate approver → original preserved', async () => {
-  const v = await checkin(patient()); await intoRoom(v, 'GP-01');
+  const v = await checkin(patient()); await intoRoom(v, 'GM-01');
   const s = await pt1.post(`/api/visits/${v}/sessions`, { service_id: svc('PT Treatment').id });
   const before = Date.now();
   const bad = await pt1.post('/api/corrections', { kind: 'SESSION_END', entity_id: s.body.id, corrected_ts: new Date(before - 600e3).toISOString() });
@@ -237,7 +237,7 @@ test('correction: forgotten checkout → request → separate approver → origi
 });
 
 test('supervisor cannot approve their own correction', async () => {
-  const v = await checkin(patient()); await intoRoom(v, 'GP-01');
+  const v = await checkin(patient()); await intoRoom(v, 'GM-01');
   const c = await pt1.post('/api/corrections', { kind: 'ROOM_EXIT', entity_id: t.ops.one('SELECT id FROM occupancy WHERE visit_id=? AND exited_at IS NULL', v).id, corrected_ts: new Date(Date.parse(t.ops.one('SELECT entered_at e FROM occupancy WHERE visit_id=? AND exited_at IS NULL', v).e) + 1).toISOString(), reason: 'Left earlier' });
   assert.equal(c.status, 201, JSON.stringify(c.body));
   const own = await sup.post('/api/corrections', { kind: 'CLINIC_DEPARTURE', entity_id: v, corrected_ts: new Date(Date.now()).toISOString(), reason: 'Departed earlier' });

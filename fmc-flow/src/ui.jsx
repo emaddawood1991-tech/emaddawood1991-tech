@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from './i18n.jsx';
 import { useNet } from './api.js';
@@ -32,7 +33,8 @@ export function useAction() {
 
 export function Modal({ title, onClose, children, wide }) {
   const { t } = useI18n();
-  return (
+  // Portal: a fixed overlay inside a backdrop-filter card would be positioned and clipped by that card.
+  return createPortal(
     <div className="overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose()} role="dialog" aria-modal="true" aria-label={title}>
       <motion.div className={`glass modal ${wide ? 'wide' : ''}`} initial={{ opacity: 0, scale: .96, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }}>
         <div className="row" style={{ justifyContent: 'space-between', marginBottom: 12 }}>
@@ -41,7 +43,8 @@ export function Modal({ title, onClose, children, wide }) {
         </div>
         {children}
       </motion.div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

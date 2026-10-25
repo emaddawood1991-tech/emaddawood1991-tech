@@ -3,6 +3,7 @@ import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypt
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { openDb, tx } from './db.js';
 import { makeOps, HttpError, now } from './ops.js';
+import { makeRegistration } from './registration.js';
 import { can, deptScope } from './perms.js';
 
 export function hashPassword(pw) {
@@ -28,6 +29,7 @@ const CONFIG = {
 export function createApp({ db = openDb(), backupDir = new URL('../data/backups/', import.meta.url).pathname, staticDir } = {}) {
   const ops = makeOps(db);
   const { q, one, run, audit, fail } = ops;
+  const reg = makeRegistration(db, ops);
   const app = express();
   app.disable('x-powered-by');
   app.use(express.json({ limit: '200kb' }));
@@ -132,8 +134,20 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     });
   }
   app.patch('/api/config/settings', guard('config.manage'), (req, res) => {
-    const allowed = ['timezone', 'correction_requires_approval', 'transfer_reason_required', 'session_idle_hours'];
-    for (const [k, v] of Object.entries(req.body)) if (allowed.includes(k)) { run('INSERT INTO settings(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', k, String(v)); audit(req.user, 'config.settings', 'settings', k, { v }); }
+    const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin'];
+    const allowed = ['timezone', 'session_idle_hours', 'gender_options', ...flags];
+    const body = req.body || {};
+    for (const [k, v] of Object.entries(body)) {
+      if (!allowed.includes(k)) continue;
+      if (flags.includes(k) && !['0', '1'].includes(String(v))) throw new HttpError(400, 'INVALID', `${k} must be 0 or 1`);
+      if (k === 'gender_options') {
+        const list = typeof v === 'string' ? (() => { try { return JSON.parse(v); } catch { return null; } })() : v;
+        if (!Array.isArray(list) || !list.length || list.some((g) => !g || !/^[A-Za-z0-9_-]{1,10}$/.test(String(g.code)) || !String(g.en || '').trim()) || new Set(list.map((g) => g.code)).size !== list.length)
+          throw new HttpError(400, 'INVALID', 'Gender options need a unique short code and an English label.');
+        run('INSERT INTO settings(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', k, JSON.stringify(list.map((g) => ({ code: String(g.code), en: String(g.en).trim(), ar: String(g.ar || '').trim() }))));
+      } else run('INSERT INTO settings(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', k, String(v));
+      audit(req.user, 'config.settings', 'settings', k, { v: k === 'gender_options' ? 'updated' : v });
+    }
     res.json({ ok: true });
   });
   app.post('/api/config/staff', guard('config.manage'), (req, res) => {
@@ -180,21 +194,15 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   });
 
   // ---- patients / appointments ----
-  app.get('/api/patients', guard('patients.read'), (req, res) => {
-    const term = `%${String(req.query.q || '').trim()}%`;
-    audit(req.user, 'patients.search', 'patient', null, { q_len: String(req.query.q || '').length });
-    res.json(q('SELECT * FROM patients WHERE (name LIKE ? OR name_ar LIKE ? OR mrn LIKE ? OR CAST(id AS TEXT)=?) ORDER BY name LIMIT 30', term, term, term, String(req.query.q || '').trim()));
-  });
+  app.get('/api/patients', guard('patients.read'), (req, res) => res.json(reg.search(req.user, req.query.q)));
   app.post('/api/patients', guard('patients.write'), (req, res) => {
-    const { name, name_ar = '', dob = null, sex = null, phone = null } = req.body;
-    if (!name) throw new HttpError(400, 'NAME_REQUIRED');
-    const id = tx(db, () => {
-      const n = one('SELECT COALESCE(MAX(id),0)+1 n FROM patients').n;
-      const r = run('INSERT INTO patients(mrn,name,name_ar,dob,sex,phone,created_at) VALUES (?,?,?,?,?,?,?)', `MRN-${String(n).padStart(6, '0')}`, name, name_ar, dob, sex, phone, now());
-      return Number(r.lastInsertRowid);
-    });
-    audit(req.user, 'patient.create', 'patient', id);
-    res.status(201).json(one('SELECT * FROM patients WHERE id=?', id));
+    const r = reg.createPatient(req.user, req.body || {});
+    res.status(r.replayed ? 200 : 201).json({ ...r.patient, replayed: !!r.replayed });
+  });
+  // Register (or select) a patient and check them into a department queue in one atomic step.
+  app.post('/api/registrations', guard('patients.write'), (req, res) => {
+    const r = reg.register(req.user, req.body || {});
+    res.status(r.replayed ? 200 : 201).json(r);
   });
   app.get('/api/appointments', guard('patients.read'), (req, res) => {
     const s = deptScope(req.user);
@@ -356,7 +364,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.use('/api', (_req, _res, next) => next(new HttpError(404, 'NOT_FOUND')));
   // eslint-disable-next-line no-unused-vars
   app.use((err, _req, res, _next) => {
-    if (err instanceof HttpError) return res.status(err.status).json({ error: { code: err.code, message: err.message } });
+    if (err instanceof HttpError) return res.status(err.status).json({ error: { code: err.code, message: err.message, ...(err.extra || {}) } });
     if (err?.type === 'entity.parse.failed') return res.status(400).json({ error: { code: 'BAD_JSON', message: 'Malformed JSON' } });
     const msg = String(err?.message || err).slice(0, 200);
     try { run('INSERT INTO system_errors(ts,source,code,message) VALUES (?,?,?,?)', now(), 'server', err?.code || 'EXCEPTION', msg); } catch { /* ignore */ }

@@ -1,47 +1,60 @@
 import { useState } from 'react';
 import { api, usePoll, useTicker } from '../api.js';
 import { useI18n, fmtMs } from '../i18n.jsx';
-import { Chip, Empty, Modal, useAction } from '../ui.jsx';
+import { Chip, Empty, useAction, useToast } from '../ui.jsx';
+import PatientFormModal from './PatientForm.jsx';
 import { CorrectionModal, RoomPickerModal, SessionControls, StartSessionModal, TimelineModal } from './shared.jsx';
 
 function CheckIn({ config, staff, onDone, canWrite }) {
-  const { t, loc, fmt } = useI18n(); const { run, busy } = useAction();
-  const [q, setQ] = useState(''); const [found, setFound] = useState([]); const [p, setP] = useState(null);
+  const { t, loc, fmt } = useI18n(); const { run, busy } = useAction(); const toast = useToast();
+  const [q, setQ] = useState(''); const [found, setFound] = useState(null); const [p, setP] = useState(null);
   const [f, setF] = useState({ appointmentId: '', departmentId: '', serviceId: '', clinicianId: '' });
-  const [np, setNp] = useState(null);
+  const [errs, setErrs] = useState({}); const [open, setOpen] = useState(false);
   const appts = usePoll('/appointments', 0);
-  const search = async (v) => { setQ(v); if (v.trim().length < 2) return setFound([]); try { setFound(await api.get(`/patients?q=${encodeURIComponent(v.trim())}`)); } catch { /* shown by banner */ } };
+  const needService = config.settings.require_service_at_checkin === '1';
+  const search = async (v) => { setQ(v); if (v.trim().length < 2) return setFound(null); try { setFound(await api.get(`/patients?q=${encodeURIComponent(v.trim())}`)); } catch { /* connection banner explains */ } };
   const myAppts = (appts.data || []).filter((a) => a.patient_id === p?.id);
   const pick = (a) => setF({ appointmentId: a?.id || '', departmentId: a?.department_id || f.departmentId, serviceId: a?.service_id || '', clinicianId: a?.clinician_id || '' });
+  const reset = () => { setP(null); setQ(''); setFound(null); setErrs({}); setF({ appointmentId: '', departmentId: '', serviceId: '', clinicianId: '' }); };
   const submit = async () => {
-    const r = await run(() => api.post('/visits/checkin', { patientId: p.id, appointmentId: f.appointmentId ? Number(f.appointmentId) : undefined, departmentId: Number(f.departmentId), serviceId: f.serviceId ? Number(f.serviceId) : undefined, clinicianId: f.clinicianId ? Number(f.clinicianId) : undefined }));
-    if (r?.queue) { setP(null); setQ(''); setFound([]); setF({ appointmentId: '', departmentId: '', serviceId: '', clinicianId: '' }); onDone(r.queue.display); }
+    setErrs({});
+    try {
+      const r = await api.post('/visits/checkin', { patientId: p.id, appointmentId: f.appointmentId ? Number(f.appointmentId) : undefined, departmentId: Number(f.departmentId), serviceId: f.serviceId ? Number(f.serviceId) : undefined, clinicianId: f.clinicianId ? Number(f.clinicianId) : undefined });
+      toast(`${loc(p)} (${p.mrn}) — ${t('checkedInAs')} ${r.queue.display}`); reset(); onDone();
+    } catch (e) { if (e.code === 'NETWORK') toast(t('offline'), true); else { setErrs(e.details?.fields || {}); toast(e.message, true); } }
   };
-  const saveNew = async () => { const r = await run(() => api.post('/patients', np)); if (r?.id) { setP(r); setNp(null); } };
   const deptServices = config.services.filter((s) => s.active && String(s.department_id) === String(f.departmentId));
   const deptClin = staff.filter((s) => s.role === 'clinician' && s.active && String(s.department_id) === String(f.departmentId));
   return (
-    <div className="card"><h2>{t('checkIn')}{canWrite && <button className="btn ghost sm" onClick={() => setNp({ name: '', name_ar: '' })}>＋ {t('newPatient')}</button>}</h2>
+    <div className="card"><h2>{t('checkIn')}{canWrite && <button className="btn ghost sm" onClick={() => setOpen(true)}>＋ {t('newPatient')}</button>}</h2>
       <div className="stack">
         {!p ? <>
-          <input placeholder={t('searchPatient')} value={q} onChange={(e) => search(e.target.value)} aria-label={t('searchPatient')} />
-          {found.map((x) => <button key={x.id} className="btn ghost" onClick={() => setP(x)}>{loc(x)} · {x.mrn}</button>)}
+          <input placeholder={t('searchHint')} value={q} onChange={(e) => search(e.target.value)} aria-label={t('searchHint')} />
+          {found?.length === 0 && <p className="muted small">{t('noResults')}</p>}
+          {found?.map((x) => (
+            <button key={x.id} type="button" className="btn ghost patient-row" onClick={() => { setP(x); setFound(null); }}>
+              <b>{loc(x)}</b><span className="muted small">{x.mrn}{x.phone ? ` · ${x.phone}` : ''}{x.dob ? ` · ${x.dob}` : ''}{x.open_visit_id ? ` · ${t('openVisitNote')}` : ''}</span>
+            </button>
+          ))}
         </> : <>
-          <div className="row" style={{ justifyContent: 'space-between' }}><b>{loc(p)} · {p.mrn}</b><button className="btn ghost sm" onClick={() => setP(null)}>✕</button></div>
-          <label>{t('appointment')}<select value={f.appointmentId} onChange={(e) => pick(myAppts.find((a) => String(a.id) === e.target.value))}>
-            <option value="">{t('walkIn')}</option>{myAppts.map((a) => <option key={a.id} value={a.id}>{a.ref} · {fmt(a.scheduled_at, { hour: '2-digit', minute: '2-digit' })} · {a.department}</option>)}</select></label>
+          <div className="row" style={{ justifyContent: 'space-between' }}><span><span className="muted small">{t('patientSelected')}: </span><b>{loc(p)} · {p.mrn}</b></span><button className="btn ghost sm" onClick={reset}>{t('changePatient')}</button></div>
+          <div className="field"><label htmlFor="ci-appt">{t('appointment')} <span className="opt">· {t('optionalWord')}</span></label>
+            <select id="ci-appt" value={f.appointmentId} onChange={(e) => pick(myAppts.find((a) => String(a.id) === e.target.value))}>
+              <option value="">{t('walkIn')}</option>{myAppts.map((a) => <option key={a.id} value={a.id}>{a.ref} · {fmt(a.scheduled_at, { hour: '2-digit', minute: '2-digit' })} · {a.department}</option>)}</select></div>
           <div className="form-grid">
-            <label>{t('department')}<select value={f.departmentId} onChange={(e) => setF({ ...f, departmentId: e.target.value, serviceId: '', clinicianId: '' })}><option value="">—</option>{config.departments.filter((d) => d.active).map((d) => <option key={d.id} value={d.id}>{loc(d)}</option>)}</select></label>
-            <label>{t('service')}<select value={f.serviceId} onChange={(e) => setF({ ...f, serviceId: e.target.value })}><option value="">—</option>{deptServices.map((s) => <option key={s.id} value={s.id}>{loc(s)}</option>)}</select></label>
-            <label>{t('clinician')}<select value={f.clinicianId} onChange={(e) => setF({ ...f, clinicianId: e.target.value })}><option value="">—</option>{deptClin.map((s) => <option key={s.id} value={s.id}>{loc(s)}</option>)}</select></label>
+            <div className="field"><label htmlFor="ci-dept">{t('department')} <span className="req" aria-hidden="true">*</span><span className="sr-only"> ({t('requiredWord')})</span></label>
+              <select id="ci-dept" aria-required="true" aria-invalid={errs.department_id ? 'true' : undefined} value={f.departmentId} onChange={(e) => setF({ ...f, departmentId: e.target.value, serviceId: '', clinicianId: '' })}><option value="">—</option>{config.departments.filter((d) => d.active).map((d) => <option key={d.id} value={d.id}>{loc(d)}</option>)}</select></div>
+            <div className="field"><label htmlFor="ci-svc">{t('service')} {needService ? <span className="req" aria-hidden="true">*</span> : <span className="opt">· {t('optionalWord')}</span>}</label>
+              <select id="ci-svc" disabled={!f.departmentId} aria-invalid={errs.service_id ? 'true' : undefined} value={f.serviceId} onChange={(e) => setF({ ...f, serviceId: e.target.value })}><option value="">—</option>{deptServices.map((s) => <option key={s.id} value={s.id}>{loc(s)}</option>)}</select>
+              {errs.service_id && <div className="field-err" role="alert">{errs.service_id}</div>}</div>
+            <div className="field"><label htmlFor="ci-clin">{t('clinician')} <span className="opt">· {t('optionalWord')}</span></label>
+              <select id="ci-clin" disabled={!f.departmentId} value={f.clinicianId} onChange={(e) => setF({ ...f, clinicianId: e.target.value })}><option value="">—</option>{deptClin.map((s) => <option key={s.id} value={s.id}>{loc(s)}</option>)}</select></div>
           </div>
-          <button className="btn" disabled={busy || !f.departmentId} onClick={submit}>{t('checkIn')}</button>
+          <button className="btn" disabled={busy || !f.departmentId} onClick={() => run(submit)}>{t('checkIn')}</button>
         </>}
       </div>
-      {np && <Modal title={t('newPatient')} onClose={() => setNp(null)}><div className="stack">
-        <label>{t('name')}<input value={np.name} onChange={(e) => setNp({ ...np, name: e.target.value })} /></label>
-        <label>{t('nameAr')}<input dir="rtl" value={np.name_ar} onChange={(e) => setNp({ ...np, name_ar: e.target.value })} /></label>
-        <div className="row"><button className="btn" disabled={!np.name || busy} onClick={saveNew}>{t('save')}</button></div></div></Modal>}
+      {open && <PatientFormModal config={config} staff={staff} onClose={() => setOpen(false)} onUse={(x) => { setP(x); setFound(null); }}
+        onSaved={(r, checkedIn) => { if (checkedIn) { reset(); onDone(); } else { setP(r); setQ(''); setFound(null); } }} />}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore, useCallback } from 'react';
 
 export class ApiError extends Error {
-  constructor(status, code, message) { super(message); this.status = status; this.code = code; }
+  constructor(status, code, message, details) { super(message); this.status = status; this.code = code; this.details = details || {}; }
 }
 
 // ---- tiny connection/sync store ----
@@ -23,7 +23,7 @@ async function req(method, path, body) {
   let json = null;
   try { json = await res.json(); } catch { /* empty */ }
   setNet({ offline: false, lastSync: Date.now(), ...(json?.server_time ? { offset: Date.parse(json.server_time) - Date.now() } : {}) });
-  if (!res.ok) throw new ApiError(res.status, json?.error?.code || 'ERROR', json?.error?.message || res.statusText);
+  if (!res.ok) throw new ApiError(res.status, json?.error?.code || 'ERROR', json?.error?.message || res.statusText, json?.error);
   return json;
 }
 export const api = {

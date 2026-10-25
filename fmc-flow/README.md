@@ -15,7 +15,7 @@ npm test             # 23 backend tests (workflows, permissions, concurrency, in
 Dev with hot reload: `npm run dev:api` and `npm run dev:web` (Vite proxies `/api`).
 Browser smoke test (server running): `NODE_PATH=$(npm root -g) node tests/e2e-smoke.cjs http://localhost:3000 ./shots`.
 
-Synthetic logins (password from `SEED_PASSWORD`, default `Demo-Passw0rd!` — **dev only**): `admin`, `super`, `reception`, `dr.ort`, `pt.one`, `pt.two`, `ot.one`, `st.one`, `gp.one`.
+Synthetic logins (password from `SEED_PASSWORD`, default `Demo-Passw0rd!` — **dev only**): `admin`, `super`, `reception`, `dr.ort`, `pt.one`, `pt.two`, `gm.one`, `nr.one`, `si.one`, `rh.one`.
 Use `FMC_INSECURE_COOKIES=1` only when serving over plain http on a non-localhost host (cookies are `Secure` by default).
 
 ## Architecture
@@ -28,3 +28,7 @@ Use `FMC_INSECURE_COOKIES=1` only when serving over plain http on a non-localhos
 
 ## Layout
 `server/` API, rules, seed, backup · `src/` React app · `tests/` backend + browser tests · `docs/` operations notes.
+
+## Reception registration
+Visits → **New patient**: MRN (manual, uniqueness-checked and never overwritten, or auto-generated), English/Arabic full name, date of birth (stored as a plain date), gender (configurable), contact number (UAE formats and international `+` numbers normalised to E.164), department and service (dynamic, filtered). **Save & check in** creates patient + visit + department queue entry atomically; a per-form idempotency key makes double-clicks safe. Search by MRN, English/Arabic name or phone. Requirements (Arabic name, phone, service at check-in) and gender options are set under Settings → Policy. Departments are never stored on the patient — they belong to the visit/queue entry/appointment. Discontinued OT and Speech Therapy are deactivated (not deleted) by a one-time catalog migration (`server/seed.js`).
+Tests: `npm test` (40) · `node tests/e2e-registration.cjs http://localhost:3000` (browser).

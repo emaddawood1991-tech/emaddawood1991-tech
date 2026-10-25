@@ -24,8 +24,8 @@ async function boot() {
   seed(db);
   const { app } = createApp({ db, backupDir: '/demo/' });
   let cookie = ls.get(CK) || '';
-  let timer = null;
-  const persist = () => { clearTimeout(timer); timer = setTimeout(() => { try { ls.set(KEY, b64.enc(db.export())); } catch { /* ignore */ } }, 300); };
+  // Save right after every change so a quick refresh never loses a record.
+  const persist = () => { try { ls.set(KEY, b64.enc(db.export())); } catch { /* ignore */ } };
 
   const realFetch = window.fetch.bind(window);
   window.fetch = async (input, opts = {}) => {

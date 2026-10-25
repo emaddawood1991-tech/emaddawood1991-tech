@@ -142,6 +142,10 @@ CREATE TABLE IF NOT EXISTS audit_log (
 CREATE TABLE IF NOT EXISTS system_errors (
   id INTEGER PRIMARY KEY, ts TEXT NOT NULL, source TEXT NOT NULL, code TEXT, message TEXT
 );
+CREATE TABLE IF NOT EXISTS idempotency_keys (
+  key TEXT PRIMARY KEY, scope TEXT NOT NULL, response TEXT NOT NULL, created_at TEXT NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS patients_mrn_upper ON patients(upper(mrn));
 CREATE TABLE IF NOT EXISTS backup_log (
   id INTEGER PRIMARY KEY, ts TEXT NOT NULL, file TEXT, bytes INTEGER, ok INTEGER NOT NULL, note TEXT
 );
@@ -166,6 +170,10 @@ export const DEFAULT_SETTINGS = {
   correction_requires_approval: '1',
   transfer_reason_required: '0',
   session_idle_hours: '12',
+  registration_require_name_ar: '0',
+  registration_require_phone: '0',
+  require_service_at_checkin: '0',
+  gender_options: JSON.stringify([{ code: 'M', en: 'Male', ar: 'ذكر' }, { code: 'F', en: 'Female', ar: 'أنثى' }]),
 };
 
 export function openDb(path = DB_PATH) {
@@ -178,15 +186,19 @@ export function openDb(path = DB_PATH) {
   return db;
 }
 
-/** Run fn inside an IMMEDIATE transaction; rolls back on any throw. */
+const depth = new WeakMap();
+/** Run fn inside an IMMEDIATE transaction (nested calls become savepoints); rolls back on any throw. */
 export function tx(db, fn) {
-  db.exec('BEGIN IMMEDIATE');
+  const d = depth.get(db) || 0;
+  const sp = `sp${d}`;
+  db.exec(d === 0 ? 'BEGIN IMMEDIATE' : `SAVEPOINT ${sp}`);
+  depth.set(db, d + 1);
   try {
     const r = fn();
-    db.exec('COMMIT');
+    db.exec(d === 0 ? 'COMMIT' : `RELEASE ${sp}`);
     return r;
   } catch (e) {
-    try { db.exec('ROLLBACK'); } catch { /* already rolled back */ }
+    try { db.exec(d === 0 ? 'ROLLBACK' : `ROLLBACK TO ${sp}; RELEASE ${sp}`); } catch { /* already rolled back */ }
     throw e;
-  }
+  } finally { depth.set(db, d); }
 }

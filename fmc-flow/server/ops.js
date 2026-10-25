@@ -2,9 +2,9 @@ import { tx } from './db.js';
 import { can, deptScope } from './perms.js';
 
 export class HttpError extends Error {
-  constructor(status, code, message) { super(message || code); this.status = status; this.code = code; }
+  constructor(status, code, message, extra) { super(message || code); this.status = status; this.code = code; this.extra = extra; }
 }
-const fail = (status, code, message) => { throw new HttpError(status, code, message); };
+const fail = (status, code, message, extra) => { throw new HttpError(status, code, message, extra); };
 
 export const now = () => new Date().toISOString();
 const dayOf = (iso, tz) => new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date(iso));
@@ -231,6 +231,15 @@ export function makeOps(db) {
         }
         event(v, 'ARRIVED', user, { ts });
       }
+      const svcId = serviceId ? Number(serviceId) : appt?.service_id || null;
+      if (svcId) {
+        const sv = one('SELECT * FROM services WHERE id=?', svcId);
+        if (!sv || !sv.active) fail(400, 'VALIDATION', 'That service is not active.', { fields: { service_id: 'Choose an active service.' } });
+        if (sv.department_id !== deptId) fail(400, 'VALIDATION', 'The service does not belong to the selected department.', { fields: { service_id: 'Choose a service from the selected department.' } });
+      } else if (setting('require_service_at_checkin') === '1') fail(400, 'VALIDATION', 'A service is required at check-in.', { fields: { service_id: 'Service is required.' } });
+      const clinId = clinicianId || appt?.clinician_id || null;
+      if (clinId && !one("SELECT 1 x FROM users WHERE id=? AND role='clinician' AND active=1 AND department_id=?", clinId, deptId))
+        fail(400, 'VALIDATION', 'The clinician is not active in the selected department.', { fields: { clinician_id: 'Choose a clinician from the selected department.' } });
       const dept = one('SELECT * FROM departments WHERE id=?', deptId);
       const day = dayOf(ts, setting('timezone'));
       const dayKey = dept.queue_reset_daily ? day : 'ALL';
@@ -238,9 +247,9 @@ export function makeOps(db) {
       const number = c ? c.last + 1 : dept.queue_start;
       run('INSERT INTO queue_counters(department_id,day,last) VALUES (?,?,?) ON CONFLICT(department_id,day) DO UPDATE SET last=excluded.last', deptId, dayKey, number);
       const display = `${dept.queue_prefix}${String(number).padStart(3, '0')}`;
-      const cl = clinicianId || appt?.clinician_id || null;
+      const cl = clinId;
       const qr = run('INSERT INTO queue_entries(visit_id,department_id,number,display,clinician_id,service_id,created_at) VALUES (?,?,?,?,?,?,?)',
-        v.id, deptId, number, display, cl, serviceId || appt?.service_id || null, ts);
+        v.id, deptId, number, display, cl, svcId, ts);
       event(v, 'QUEUE_ENTERED', user, { ts, data: { queue: display, department: dept.name } });
       audit(user, 'visit.checkin', 'visit', v.id, { patient: p.id, queue: display });
       return { visit: v, queue: one('SELECT * FROM queue_entries WHERE id=?', Number(qr.lastInsertRowid)) };

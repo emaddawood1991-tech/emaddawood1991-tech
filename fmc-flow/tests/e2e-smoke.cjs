@@ -20,9 +20,9 @@ async function login(browser, user) {
   const rec = await login(browser, 'reception');
   await rec.page.screenshot({ path: `${out}/01-dashboard.png` });
   await rec.page.click('.nav a:has-text("Visits")');
-  await rec.page.fill('input[placeholder^="Search name"]', 'Patient B');
+  await rec.page.fill('input[placeholder^="Search by"]', 'Patient B');
   await rec.page.click('button.btn.ghost:has-text("Sample Patient B")');
-  await rec.page.selectOption('label:has-text("Appointment") select', { index: 1 });
+  await rec.page.selectOption('#ci-appt', { index: 1 });
   await rec.page.click('button.btn:has-text("Check in")');
   await rec.page.waitForSelector('tr:has-text("Sample Patient B")');
   assert(true, 'reception checked a patient in through the UI');

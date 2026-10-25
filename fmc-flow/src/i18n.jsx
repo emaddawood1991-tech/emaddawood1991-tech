@@ -25,6 +25,15 @@ const EN = {
   ev_APPOINTMENT: 'Appointment time', ev_ARRIVED: 'Patient arrived', ev_QUEUE_ENTERED: 'Entered queue', ev_QUEUE_CALLED: 'Called', ev_ROOM_ASSIGNED: 'Room assigned', ev_ROOM_ENTERED: 'Entered room',
   ev_TREATMENT_STARTED: 'Treatment started', ev_TREATMENT_PAUSED: 'Treatment paused', ev_TREATMENT_RESUMED: 'Treatment resumed', ev_TREATMENT_COMPLETED: 'Treatment completed',
   ev_ROOM_EXITED: 'Exited room', ev_ROOM_TRANSFERRED: 'Room transfer', ev_CLINIC_DEPARTED: 'Left the clinic', ev_CORRECTION_REQUESTED: 'Correction requested', ev_CORRECTION_APPLIED: 'Correction applied', ev_CORRECTION_REJECTED: 'Correction rejected',
+  mrnLabel: 'Medical Record Number (MRN)', mrnAuto: 'Generate automatically', mrnManual: 'Enter existing MRN', mrnAutoHint: 'A new MRN is assigned when you save.',
+  mrnManualHint: 'Letters, numbers, “-” or “/”, 3–30 characters. An MRN already in use is never overwritten.', fullNameEn: 'Full name (English)', fullNameAr: 'Full name (Arabic)',
+  dob: 'Date of birth', gender: 'Gender', contactNumber: 'Contact number', phoneHint: 'UAE: 050 123 4567. Other countries: include the code, e.g. +44 7700 900123.',
+  patientDetails: 'Patient details', visitDetails: 'Visit', registerPatient: 'Register patient', deptRequired: 'Select a department to check the patient in.', selectDeptFirst: 'Select a department first',
+  optionalWord: 'optional', requiredWord: 'required', savePatient: 'Save patient', saveCheckIn: 'Save & check in', saving: 'Saving…', patientSaved: 'Patient saved', checkedInAs: 'checked in, queue number',
+  useThisPatient: 'Use this patient', registerAnyway: 'This is a different person — register anyway', possibleDup: 'Possible duplicate', fixErrors: 'Please correct the highlighted fields.',
+  noResults: 'No matching patient. Use “New patient” to register one.', openVisitNote: 'Visit open', mrnTaken: 'This MRN already belongs to', genderOptions: 'Gender options', genderCode: 'Code', labelEn: 'English', labelAr: 'Arabic',
+  policyNameAr: 'Arabic name required at registration', policyPhone: 'Contact number required at registration', policyService: 'Service required at check-in', patientSelected: 'Selected patient', changePatient: 'Change',
+  requiredForCheckIn: 'required to check in', searchHint: 'Search by MRN, English or Arabic name, or phone number',
 };
 const AR = {
   appName: 'نظام تدفق المرضى', tagline: 'الرعاية المثالية', signIn: 'تسجيل الدخول', username: 'اسم المستخدم', password: 'كلمة المرور', signOut: 'تسجيل الخروج',
@@ -51,6 +60,15 @@ const AR = {
   ev_APPOINTMENT: 'وقت الموعد', ev_ARRIVED: 'وصل المريض', ev_QUEUE_ENTERED: 'دخل الطابور', ev_QUEUE_CALLED: 'تم النداء', ev_ROOM_ASSIGNED: 'تعيين غرفة', ev_ROOM_ENTERED: 'دخل الغرفة',
   ev_TREATMENT_STARTED: 'بدأ العلاج', ev_TREATMENT_PAUSED: 'إيقاف العلاج مؤقتًا', ev_TREATMENT_RESUMED: 'استئناف العلاج', ev_TREATMENT_COMPLETED: 'انتهى العلاج',
   ev_ROOM_EXITED: 'خرج من الغرفة', ev_ROOM_TRANSFERRED: 'نقل بين الغرف', ev_CLINIC_DEPARTED: 'غادر العيادة', ev_CORRECTION_REQUESTED: 'طلب تصحيح', ev_CORRECTION_APPLIED: 'تم تطبيق التصحيح', ev_CORRECTION_REJECTED: 'رُفض التصحيح',
+  mrnLabel: 'رقم السجل الطبي (MRN)', mrnAuto: 'إنشاء تلقائي', mrnManual: 'إدخال رقم سجل موجود', mrnAutoHint: 'يُمنح رقم سجل جديد عند الحفظ.',
+  mrnManualHint: 'أحرف وأرقام أو “-” أو “/”، من 3 إلى 30 خانة. لا يتم استبدال رقم مستخدم مسبقًا.', fullNameEn: 'الاسم الكامل (بالإنجليزية)', fullNameAr: 'الاسم الكامل (بالعربية)',
+  dob: 'تاريخ الميلاد', gender: 'الجنس', contactNumber: 'رقم التواصل', phoneHint: 'الإمارات: \u2066050 123 4567\u2069. دول أخرى: أضف رمز الدولة مثل \u2066+44 7700 900123\u2069.',
+  patientDetails: 'بيانات المريض', visitDetails: 'الزيارة', registerPatient: 'تسجيل مريض', deptRequired: 'اختر القسم لتسجيل وصول المريض.', selectDeptFirst: 'اختر القسم أولًا',
+  optionalWord: 'اختياري', requiredWord: 'مطلوب', savePatient: 'حفظ المريض', saveCheckIn: 'حفظ وتسجيل الوصول', saving: 'جارٍ الحفظ…', patientSaved: 'تم حفظ المريض', checkedInAs: 'تم تسجيل الوصول، رقم الدور',
+  useThisPatient: 'استخدام هذا المريض', registerAnyway: 'شخص مختلف — تسجيل على أي حال', possibleDup: 'احتمال تكرار', fixErrors: 'يرجى تصحيح الحقول المحددة.',
+  noResults: 'لا يوجد مريض مطابق. استخدم «مريض جديد» للتسجيل.', openVisitNote: 'زيارة مفتوحة', mrnTaken: 'رقم السجل هذا يخص', genderOptions: 'خيارات الجنس', genderCode: 'الرمز', labelEn: 'الإنجليزية', labelAr: 'العربية',
+  policyNameAr: 'الاسم العربي مطلوب عند التسجيل', policyPhone: 'رقم التواصل مطلوب عند التسجيل', policyService: 'الخدمة مطلوبة عند تسجيل الوصول', patientSelected: 'المريض المحدد', changePatient: 'تغيير',
+  requiredForCheckIn: 'مطلوب لتسجيل الوصول', searchHint: 'ابحث برقم السجل أو الاسم بالعربية أو الإنجليزية أو رقم الهاتف',
 };
 const DICT = { en: EN, ar: AR };
 const Ctx = createContext(null);

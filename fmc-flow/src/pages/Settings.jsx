@@ -63,6 +63,25 @@ function StaffAdmin({ staff, config, reload }) {
   );
 }
 
+function GenderEditor({ config, reload }) {
+  const { t } = useI18n(); const { run } = useAction();
+  const [rows, setRows] = useState(() => { try { return JSON.parse(config.settings.gender_options); } catch { return []; } });
+  const upd = (i, k, v) => setRows(rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
+  const save = async () => { const r = await run(() => api.patch('/config/settings', { gender_options: rows }), t('save')); if (r) reload(); };
+  return (
+    <fieldset className="mrn-box"><legend>{t('genderOptions')}</legend>
+      {rows.map((r, i) => (
+        <div key={i} className="row" style={{ marginBottom: 6 }}>
+          <input aria-label={t('genderCode')} style={{ width: 80 }} value={r.code} maxLength={10} onChange={(e) => upd(i, 'code', e.target.value)} />
+          <input aria-label={t('labelEn')} placeholder={t('labelEn')} style={{ flex: 1, minWidth: 120 }} value={r.en} onChange={(e) => upd(i, 'en', e.target.value)} />
+          <input aria-label={t('labelAr')} placeholder={t('labelAr')} dir="rtl" style={{ flex: 1, minWidth: 120 }} value={r.ar || ''} onChange={(e) => upd(i, 'ar', e.target.value)} />
+          <button type="button" className="btn ghost sm" aria-label="remove" onClick={() => setRows(rows.filter((_, j) => j !== i))}>✕</button>
+        </div>))}
+      <div className="row"><button type="button" className="btn ghost sm" onClick={() => setRows([...rows, { code: '', en: '', ar: '' }])}>＋ {t('add')}</button><button type="button" className="btn sm" onClick={save}>{t('save')}</button></div>
+    </fieldset>
+  );
+}
+
 export default function Settings({ staff, reloadStaff }) {
   const { t, loc } = useI18n(); const { run } = useAction();
   const cfg = usePoll('/config', 0); const [tab, setTab] = useState('departments');
@@ -81,8 +100,9 @@ export default function Settings({ staff, reloadStaff }) {
       {tab === 'services' && <Table title={t('services')} endpoint="services" rows={config.services} reload={reload} fields={[{ k: 'department_id', label: t('department'), type: 'ref', opts: depOpts }, { k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'default_minutes', label: t('minutes'), type: 'num', def: 30 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />}
       {tab === 'staff' && <StaffAdmin staff={staff} config={config} reload={reload} />}
       {tab === 'policy' && <div className="card stack"><h2>{t('policy')}</h2>
-        <label className="chk"><input type="checkbox" checked={config.settings.correction_requires_approval === '1'} onChange={(e) => setPol('correction_requires_approval', e.target.checked)} />{t('policyApproval')}</label>
-        <label className="chk"><input type="checkbox" checked={config.settings.transfer_reason_required === '1'} onChange={(e) => setPol('transfer_reason_required', e.target.checked)} />{t('policyTransfer')}</label>
+        {[['correction_requires_approval', 'policyApproval'], ['transfer_reason_required', 'policyTransfer'], ['registration_require_name_ar', 'policyNameAr'], ['registration_require_phone', 'policyPhone'], ['require_service_at_checkin', 'policyService']].map(([k, label]) => (
+          <label key={k} className="chk"><input type="checkbox" checked={config.settings[k] === '1'} onChange={(e) => setPol(k, e.target.checked)} />{t(label)}</label>))}
+        <GenderEditor config={config} reload={cfg.reload} />
         <p className="small muted">Retention periods and backup schedule are set from verified requirements and FMC policy — see docs/BACKUP_AND_RECOVERY.md.</p></div>}
     </>
   );

@@ -11,8 +11,8 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   await page.screenshot({ path: `${out}/d0-login.png` });
   await login('reception');
   await page.click('.nav a:has-text("Visits")');
-  await page.fill('input[placeholder^="Search name"]', 'Patient B'); await page.click('button.btn.ghost:has-text("Sample Patient B")');
-  await page.selectOption('label:has-text("Appointment") select', { index: 1 }); await page.click('button.btn:has-text("Check in")');
+  await page.fill('input[placeholder^="Search by"]', 'Patient B'); await page.click('button.btn.ghost:has-text("Sample Patient B")');
+  await page.selectOption('#ci-appt', { index: 1 }); await page.click('button.btn:has-text("Check in")');
   await page.waitForSelector('tr:has-text("Sample Patient B")'); ok(true, 'check-in works in the single-file demo');
   await page.click('tr:has-text("Sample Patient B") button:has-text("Assign room")');
   const opts = await page.locator('.modal select').first().locator('option').allTextContents();
