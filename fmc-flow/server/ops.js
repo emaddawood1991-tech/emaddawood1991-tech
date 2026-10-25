@@ -76,7 +76,7 @@ export function makeOps(db) {
     return { ...s, ended_effective: effEnd(s), active_ms: sumMs(iv), pauses: q('SELECT paused_at,resumed_at FROM session_pauses WHERE session_id=? ORDER BY id', s.id) };
   };
   function visitDurations(visitId) {
-    const sessions = q('SELECT * FROM treatment_sessions WHERE visit_id=?', visitId);
+    const sessions = q('SELECT ts.*, sv.name service, sv.name_ar service_ar FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.visit_id=?', visitId);
     const all = sessions.flatMap((s) => sessionIntervals(s));
     return { sessions: sessions.map(sessionView), total_ms: unionMs(all), sum_ms: sumMs(all) };
   }
@@ -383,7 +383,7 @@ export function makeOps(db) {
     need(user, 'patients.read');
     const v = getVisit(visitId); needVisible(user, v.id);
     audit(user, 'timeline.view', 'visit', v.id);
-    const events = q(`SELECT e.*, u.name actor FROM events e LEFT JOIN users u ON u.id=e.actor_id WHERE e.visit_id=? ORDER BY e.ts, e.id`, v.id)
+    const events = q(`SELECT e.*, u.name actor FROM events e LEFT JOIN users u ON u.id=e.actor_id WHERE e.visit_id=? ORDER BY e.id`, v.id)
       .map((e) => ({ ...e, data: JSON.parse(e.data) }));
     const corrections = q(`SELECT c.*, ur.name requester, ud.name decider FROM corrections c JOIN users ur ON ur.id=c.requested_by LEFT JOIN users ud ON ud.id=c.decided_by WHERE c.visit_id=? ORDER BY c.id`, v.id);
     const patient = one('SELECT id,mrn,name,name_ar FROM patients WHERE id=?', v.patient_id);

@@ -1,0 +1,73 @@
+import { createContext, useContext, useEffect, useState } from 'react';
+
+const EN = {
+  appName: 'FMC Patient Flow', tagline: 'Ideal Care', signIn: 'Sign in', username: 'Username', password: 'Password', signOut: 'Sign out',
+  demoNote: 'Development build — synthetic data only.',
+  dashboard: 'Dashboard', visits: 'Visits', queue: 'Queue', rooms: 'Rooms', sessions: 'Sessions', corrections: 'Corrections', search: 'Search', reports: 'Reports', settings: 'Settings', system: 'System',
+  waiting: 'Waiting', inTreatment: 'In treatment', roomsFree: 'Rooms free', staffAvail: 'Staff available', callNext: 'Call next', department: 'Department', allDepartments: 'All departments',
+  patient: 'Patient', mrn: 'MRN', clinician: 'Clinician', service: 'Service', room: 'Room', station: 'Station / bed', status: 'Status', actions: 'Actions', arrival: 'Arrival', waited: 'Waited', priority: 'Priority',
+  normal: 'Normal', high: 'High', urgent: 'Urgent', reason: 'Reason', cancel: 'Cancel', save: 'Save', confirm: 'Confirm', close: 'Close', add: 'Add', edit: 'Edit', back: 'Back',
+  checkIn: 'Check in', checkOut: 'Check out', newPatient: 'New patient', searchPatient: 'Search name, MRN or ID', name: 'Name', nameAr: 'Name (Arabic)', appointment: 'Appointment', walkIn: 'Walk-in',
+  assignRoom: 'Assign room', enterRoom: 'Confirm entry', transfer: 'Transfer', exitRoom: 'Exit room', startSession: 'Start treatment', pause: 'Pause', resume: 'Resume', complete: 'Complete', timeline: 'Timeline',
+  requestCorrection: 'Request correction', correctedTime: 'Corrected time', originalTime: 'Original time', approve: 'Approve', reject: 'Reject', pending: 'Pending', approved: 'Approved', rejected: 'Rejected',
+  AVAILABLE: 'Available', OCCUPIED: 'Occupied', CLEANING: 'Cleaning', MAINTENANCE: 'Maintenance', OUT_OF_SERVICE: 'Out of service', BUSY: 'Busy', ON_BREAK: 'On break', OFF_DUTY: 'Off duty', UNAVAILABLE: 'Unavailable',
+  WAITING: 'Waiting', CALLED: 'Called', IN_ROOM: 'In room', DONE: 'Done', ACTIVE: 'Active', PAUSED: 'Paused', COMPLETED: 'Completed', OPEN: 'Open', CHECKED_OUT: 'Checked out',
+  noData: 'Nothing here yet.', loading: 'Loading…', myStatus: 'My status', maintenance: 'Maintenance', restore: 'Restore', history: 'History', capacity: 'Capacity', stations: 'Stations',
+  serverTime: 'Server time', synced: 'Synced', offline: 'Cannot reach the server. Showing last known data — actions are paused until the connection returns. No times are recorded offline.',
+  stale: 'Last synced', session: 'Session', duration: 'Duration', total: 'Total', totalNoOverlap: 'Total (no overlap)', sumSessions: 'Sum of sessions',
+  from: 'From', to: 'To', export: 'Export CSV', avgWait: 'Avg wait (min)', transfers: 'Transfers', maintEvents: 'Maintenance events', byService: 'By service', byRoom: 'By room', minutes: 'Minutes',
+  health: 'System health', audit: 'Audit log', backup: 'Backup', lastBackup: 'Last backup', never: 'Never', database: 'Database', connected: 'Connected', failedOps: 'Failed operations (24h)', syncProblems: 'Sync problems (24h)', recentErrors: 'Recent errors',
+  departments: 'Departments', services: 'Services', staff: 'Staff', policy: 'Policy', prefix: 'Queue prefix', startNo: 'Start number', resetDaily: 'Reset daily', cleaningAfter: 'Cleaning after use', active: 'Active',
+  role: 'Role', schedule: 'Schedule', authorizedServices: 'Authorized services', policyApproval: 'Corrections need approval', policyTransfer: 'Transfer reason required',
+  unauthorizedNote: 'Availability never grants authorization — services need explicit authorization.',
+  from_room: 'From', to_room: 'To', timelineTitle: 'Visit timeline', events: 'Events', occupancy: 'Room occupancy', by: 'By',
+  scheduled: 'Scheduled', newAppt: 'New appointment', when: 'When', openVisits: 'Open visits', none: '—', yes: 'Yes', no: 'No', lang: 'العربية',
+  ev_APPOINTMENT: 'Appointment time', ev_ARRIVED: 'Patient arrived', ev_QUEUE_ENTERED: 'Entered queue', ev_QUEUE_CALLED: 'Called', ev_ROOM_ASSIGNED: 'Room assigned', ev_ROOM_ENTERED: 'Entered room',
+  ev_TREATMENT_STARTED: 'Treatment started', ev_TREATMENT_PAUSED: 'Treatment paused', ev_TREATMENT_RESUMED: 'Treatment resumed', ev_TREATMENT_COMPLETED: 'Treatment completed',
+  ev_ROOM_EXITED: 'Exited room', ev_ROOM_TRANSFERRED: 'Room transfer', ev_CLINIC_DEPARTED: 'Left the clinic', ev_CORRECTION_REQUESTED: 'Correction requested', ev_CORRECTION_APPLIED: 'Correction applied', ev_CORRECTION_REJECTED: 'Correction rejected',
+};
+const AR = {
+  appName: 'نظام تدفق المرضى', tagline: 'الرعاية المثالية', signIn: 'تسجيل الدخول', username: 'اسم المستخدم', password: 'كلمة المرور', signOut: 'تسجيل الخروج',
+  demoNote: 'نسخة تطوير — بيانات تجريبية فقط.',
+  dashboard: 'لوحة التحكم', visits: 'الزيارات', queue: 'الطابور', rooms: 'الغرف', sessions: 'الجلسات', corrections: 'التصحيحات', search: 'بحث', reports: 'التقارير', settings: 'الإعدادات', system: 'النظام',
+  waiting: 'في الانتظار', inTreatment: 'قيد العلاج', roomsFree: 'غرف متاحة', staffAvail: 'الكادر المتاح', callNext: 'نداء التالي', department: 'القسم', allDepartments: 'كل الأقسام',
+  patient: 'المريض', mrn: 'رقم الملف', clinician: 'الأخصائي', service: 'الخدمة', room: 'الغرفة', station: 'السرير / المحطة', status: 'الحالة', actions: 'إجراءات', arrival: 'الوصول', waited: 'مدة الانتظار', priority: 'الأولوية',
+  normal: 'عادي', high: 'مرتفع', urgent: 'عاجل', reason: 'السبب', cancel: 'إلغاء', save: 'حفظ', confirm: 'تأكيد', close: 'إغلاق', add: 'إضافة', edit: 'تعديل', back: 'رجوع',
+  checkIn: 'تسجيل الوصول', checkOut: 'تسجيل المغادرة', newPatient: 'مريض جديد', searchPatient: 'ابحث بالاسم أو رقم الملف', name: 'الاسم', nameAr: 'الاسم (عربي)', appointment: 'الموعد', walkIn: 'بدون موعد',
+  assignRoom: 'تعيين غرفة', enterRoom: 'تأكيد الدخول', transfer: 'نقل', exitRoom: 'الخروج من الغرفة', startSession: 'بدء العلاج', pause: 'إيقاف مؤقت', resume: 'استئناف', complete: 'إنهاء', timeline: 'الجدول الزمني',
+  requestCorrection: 'طلب تصحيح', correctedTime: 'الوقت المصحح', originalTime: 'الوقت الأصلي', approve: 'موافقة', reject: 'رفض', pending: 'قيد المراجعة', approved: 'تمت الموافقة', rejected: 'مرفوض',
+  AVAILABLE: 'متاحة', OCCUPIED: 'مشغولة', CLEANING: 'قيد التنظيف', MAINTENANCE: 'صيانة', OUT_OF_SERVICE: 'خارج الخدمة', BUSY: 'مشغول', ON_BREAK: 'استراحة', OFF_DUTY: 'خارج الدوام', UNAVAILABLE: 'غير متاح',
+  WAITING: 'في الانتظار', CALLED: 'تم النداء', IN_ROOM: 'في الغرفة', DONE: 'منتهي', ACTIVE: 'نشطة', PAUSED: 'متوقفة', COMPLETED: 'مكتملة', OPEN: 'مفتوحة', CHECKED_OUT: 'غادر',
+  noData: 'لا توجد بيانات بعد.', loading: 'جارٍ التحميل…', myStatus: 'حالتي', maintenance: 'صيانة', restore: 'استعادة', history: 'السجل', capacity: 'السعة', stations: 'المحطات',
+  serverTime: 'وقت الخادم', synced: 'متزامن', offline: 'لا يمكن الوصول إلى الخادم. تُعرض آخر بيانات معروفة — الإجراءات متوقفة حتى عودة الاتصال. لا تُسجَّل أي أوقات أثناء انقطاع الاتصال.',
+  stale: 'آخر مزامنة', session: 'جلسة', duration: 'المدة', total: 'الإجمالي', totalNoOverlap: 'الإجمالي (دون تداخل)', sumSessions: 'مجموع الجلسات',
+  from: 'من', to: 'إلى', export: 'تصدير CSV', avgWait: 'متوسط الانتظار (دقيقة)', transfers: 'عمليات النقل', maintEvents: 'أحداث الصيانة', byService: 'حسب الخدمة', byRoom: 'حسب الغرفة', minutes: 'دقائق',
+  health: 'صحة النظام', audit: 'سجل التدقيق', backup: 'النسخ الاحتياطي', lastBackup: 'آخر نسخة', never: 'أبدًا', database: 'قاعدة البيانات', connected: 'متصلة', failedOps: 'عمليات فاشلة (24 ساعة)', syncProblems: 'مشاكل مزامنة (24 ساعة)', recentErrors: 'أحدث الأخطاء',
+  departments: 'الأقسام', services: 'الخدمات', staff: 'الموظفون', policy: 'السياسات', prefix: 'بادئة الطابور', startNo: 'رقم البداية', resetDaily: 'إعادة يومية', cleaningAfter: 'تنظيف بعد الاستخدام', active: 'نشط',
+  role: 'الدور', schedule: 'الجدول', authorizedServices: 'الخدمات المصرّح بها', policyApproval: 'التصحيحات تحتاج موافقة', policyTransfer: 'سبب النقل مطلوب',
+  unauthorizedNote: 'الإتاحة لا تمنح التصريح — يلزم تصريح صريح لكل خدمة.',
+  from_room: 'من', to_room: 'إلى', timelineTitle: 'الجدول الزمني للزيارة', events: 'الأحداث', occupancy: 'إشغال الغرف', by: 'بواسطة',
+  scheduled: 'مجدول', newAppt: 'موعد جديد', when: 'الوقت', openVisits: 'الزيارات المفتوحة', none: '—', yes: 'نعم', no: 'لا', lang: 'English',
+  ev_APPOINTMENT: 'وقت الموعد', ev_ARRIVED: 'وصل المريض', ev_QUEUE_ENTERED: 'دخل الطابور', ev_QUEUE_CALLED: 'تم النداء', ev_ROOM_ASSIGNED: 'تعيين غرفة', ev_ROOM_ENTERED: 'دخل الغرفة',
+  ev_TREATMENT_STARTED: 'بدأ العلاج', ev_TREATMENT_PAUSED: 'إيقاف العلاج مؤقتًا', ev_TREATMENT_RESUMED: 'استئناف العلاج', ev_TREATMENT_COMPLETED: 'انتهى العلاج',
+  ev_ROOM_EXITED: 'خرج من الغرفة', ev_ROOM_TRANSFERRED: 'نقل بين الغرف', ev_CLINIC_DEPARTED: 'غادر العيادة', ev_CORRECTION_REQUESTED: 'طلب تصحيح', ev_CORRECTION_APPLIED: 'تم تطبيق التصحيح', ev_CORRECTION_REJECTED: 'رُفض التصحيح',
+};
+const DICT = { en: EN, ar: AR };
+const Ctx = createContext(null);
+
+export function LangProvider({ children }) {
+  const [lang, setLang] = useState(() => { try { return localStorage.getItem('fmc_lang') || 'en'; } catch { return 'en'; } });
+  useEffect(() => {
+    document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    try { localStorage.setItem('fmc_lang', lang); } catch { /* ignore */ }
+  }, [lang]);
+  const t = (k) => DICT[lang][k] ?? EN[k] ?? k;
+  const loc = (o, f = 'name') => (lang === 'ar' && o?.[`${f}_ar`]) || o?.[f] || '';
+  const tz = 'Asia/Dubai';
+  const fmt = (iso, o = { hour: '2-digit', minute: '2-digit', second: '2-digit' }) => (iso ? new Intl.DateTimeFormat(lang === 'ar' ? 'ar-AE' : 'en-GB', { timeZone: window.__tz || tz, ...o }).format(new Date(iso)) : '—');
+  const fmtDT = (iso) => fmt(iso, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  return <Ctx.Provider value={{ lang, setLang, t, loc, fmt, fmtDT }}>{children}</Ctx.Provider>;
+}
+export const useI18n = () => useContext(Ctx);
+
+export const fmtMs = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60); return `${h ? `${h}:` : ''}${String(m).padStart(h ? 2 : 1, '0')}:${String(s % 60).padStart(2, '0')}`; };

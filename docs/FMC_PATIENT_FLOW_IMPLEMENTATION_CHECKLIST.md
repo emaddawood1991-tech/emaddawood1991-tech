@@ -168,3 +168,24 @@ DB-level guarantees:
 
 ## Research tasks
 - **R1** — Verify DoH Abu Dhabi / UAE requirements: health-data retention, data residency, access logging, backup/encryption, patient record correction rules. Cite sources; tag each as "verified" or "needs confirmation".
+
+---
+
+## Implementation status (updated)
+
+Built in `fmc-flow/` (see its README). Verified by 23 backend tests + a browser smoke test.
+
+| Phase | Status |
+|---|---|
+| 0 Foundation (auth, RBAC, append-only events/audit, glass design system, AR/EN RTL, synthetic seed) | Done |
+| 1 Dynamic configuration (departments, rooms, stations, services, staff, schedules, queue numbering, policies) | Done |
+| 2 Visit lifecycle & queue (check-in, queue numbers, call next, manual priority, check-out) | Done |
+| 3 Rooms, stations, sessions, transfers, maintenance/cleaning | Done |
+| 4 Timeline, corrections (request → approve), session recovery, offline handling | Done |
+| 5 Staff availability, advanced search, reports + CSV | Done |
+| 6 Health page, encrypted backup/restore, audit view | Done (mechanism); **policy values and R1 DoH research pending** |
+| 7 Integration pass | Done for implemented features; hardcode scan: names only in `server/seed.js` |
+
+Decisions taken (defaults, change in Settings → Policy): corrections need approval by a different supervisor/admin; transfer reason optional; total duration = union of active intervals; offline actions are blocked, not queued.
+
+Not yet done / needs input: R1 regulatory research and retention values · production hosting (HTTPS, reverse proxy, secret management) · formal security review · accessibility audit · real (non-synthetic) data handling procedures · MFA / SSO.

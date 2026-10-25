@@ -79,7 +79,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     attempts.delete(key);
     const token = randomBytes(32).toString('hex');
     run('INSERT INTO auth_sessions(token_hash,user_id,created_at,last_seen) VALUES (?,?,?,?)', sha(token), u.id, now(), now());
-    res.set('Set-Cookie', `fmc_sid=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200`);
+    res.set('Set-Cookie', `fmc_sid=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200${process.env.FMC_INSECURE_COOKIES === '1' ? '' : '; Secure'}`);
     audit(u, 'login', 'user', u.id);
     res.json({ user: { id: u.id, username: u.username, name: u.name, name_ar: u.name_ar, role: u.role, department_id: u.department_id }, server_time: now() });
   });
@@ -260,7 +260,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
 
   // ---- search (always department-scoped) ----
   app.get('/api/search', guard('patients.read'), (req, res) => {
-    const f = req.query, s = deptScope(req.user), w = [], a = [];
+    const f = Object.fromEntries(Object.entries(req.query).map(([k, v]) => [k, String(v)])), s = deptScope(req.user), w = [], a = [];
     if (f.patient) { w.push('(p.name LIKE ? OR p.name_ar LIKE ? OR CAST(p.id AS TEXT)=?)'); a.push(`%${f.patient}%`, `%${f.patient}%`, f.patient); }
     if (f.mrn) { w.push('p.mrn LIKE ?'); a.push(`%${f.mrn}%`); }
     if (f.appointment) { w.push('EXISTS (SELECT 1 FROM appointments x WHERE x.id=v.appointment_id AND x.ref LIKE ?)'); a.push(`%${f.appointment}%`); }
