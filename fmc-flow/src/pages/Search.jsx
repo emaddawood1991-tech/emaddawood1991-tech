@@ -13,7 +13,7 @@ export default function Search({ staff }) {
   const sel = (k, list, label) => <label>{label}<select value={f[k] || ''} onChange={set(k)}><option value="">—</option>{list.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></label>;
   return (
     <>
-      <form className="card stack" onSubmit={go}>
+      <div className="card stack" role="search" onKeyDown={(e) => e.key === 'Enter' && e.target.tagName === 'INPUT' && go(e)}>
         <div className="form-grid">
           <label>{t('patient')} / ID<input value={f.patient || ''} onChange={set('patient')} /></label>
           <label>{t('mrn')}<input value={f.mrn || ''} onChange={set('mrn')} /></label>
@@ -25,8 +25,8 @@ export default function Search({ staff }) {
           <label>{t('arrival')}<input type="date" value={f.date || ''} onChange={set('date')} /></label>
           {sel('session_status', ['ACTIVE', 'PAUSED', 'COMPLETED'].map((s) => [s, t(s)]), `${t('session')} ${t('status')}`)}
         </div>
-        <div className="row"><button className="btn">{t('search')}</button><button type="button" className="btn ghost" onClick={() => { setF({}); setRows(null); }}>{t('cancel')}</button></div>
-      </form>
+        <div className="row"><button type="button" className="btn" onClick={go}>{t('search')}</button><button type="button" className="btn ghost" onClick={() => { setF({}); setRows(null); }}>{t('cancel')}</button></div>
+      </div>
       {rows && <div className="card">{rows.length === 0 ? <Empty /> : <div className="tbl"><table>
         <thead><tr><th>{t('patient')}</th><th>{t('mrn')}</th><th>{t('arrival')}</th><th>{t('status')}</th><th /></tr></thead>
         <tbody>{rows.map((r) => <tr key={r.visit_id}><td>{loc(r, 'patient_name') || r.patient_name}</td><td>{r.mrn}</td><td>{fmtDT(r.arrived_at)}</td><td><Chip s={r.status} /></td><td><button className="btn ghost sm" onClick={() => setTl(r.visit_id)}>{t('timeline')}</button></td></tr>)}</tbody></table></div>}</div>}

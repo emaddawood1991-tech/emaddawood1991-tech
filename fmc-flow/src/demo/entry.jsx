@@ -29,7 +29,7 @@ async function boot() {
 
   const realFetch = window.fetch.bind(window);
   window.fetch = async (input, opts = {}) => {
-    const url = new URL(typeof input === 'string' ? input : input.url, location.href);
+    const url = new URL(typeof input === 'string' ? input : input.url, 'http://fmc.demo/');
     if (!url.pathname.startsWith('/api')) return realFetch(input, opts);
     const method = (opts.method || 'GET').toUpperCase();
     const headers = Object.fromEntries(Object.entries(opts.headers || {}).map(([k, v]) => [k.toLowerCase(), v]));
@@ -43,7 +43,7 @@ async function boot() {
     if (method !== 'GET') persist();
     return new Response(res.body, { status: res.statusCode, headers: { 'content-type': res.headers['content-type'] || 'application/json' } });
   };
-  window.__resetDemo = () => { ls.del(KEY); ls.del(CK); location.reload(); };
+  window.__resetDemo = () => { ls.del(KEY); ls.del(CK); try { location.reload(); } catch { document.getElementById('root').textContent = 'Demo data cleared. Reopen the file.'; } };
   createRoot(document.getElementById('root')).render(<StrictMode><LangProvider><ToastProvider><App /></ToastProvider></LangProvider></StrictMode>);
 }
 boot().catch((e) => { document.getElementById('root').textContent = `Demo failed to start: ${e.message}`; });

@@ -30,17 +30,17 @@ function Login({ onDone }) {
   };
   return (
     <div className="login">
-      <form className="glass box" onSubmit={submit}>
+      <div className="glass box" role="form" onKeyDown={(e) => e.key === 'Enter' && f.username && f.password && submit(e)}>
         <img src={logo} alt="FMC Ideal Care" />
         <h1>{t('appName')}</h1>
         <label>{t('username')}<input autoFocus autoComplete="username" value={f.username} onChange={(e) => setF({ ...f, username: e.target.value })} /></label>
         <label>{t('password')}<input type="password" autoComplete="current-password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} /></label>
         {err && <div className="err" role="alert">{err}</div>}
-        <button className="btn" disabled={!f.username || !f.password}>{t('signIn')}</button>
+        <button type="button" className="btn" disabled={!f.username || !f.password} onClick={submit}>{t('signIn')}</button>
         <button type="button" className="btn ghost sm" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t('lang')}</button>
         <small className="muted">{t('demoNote')}</small>
         {window.__FMC_DEMO__ && <button type="button" className="btn ghost sm" onClick={() => window.__resetDemo()}>Reset demo data</button>}
-      </form>
+      </div>
     </div>
   );
 }
@@ -54,7 +54,7 @@ export default function App() {
   const { t, lang, setLang, loc } = useI18n();
   const net = useNet();
   const [user, setUser] = useState(undefined);
-  const [page, setPage] = useState(() => location.hash.slice(2) || 'dashboard');
+  const [page, setPage] = useState(() => { try { return location.hash.slice(2) || 'dashboard'; } catch { return 'dashboard'; } });
   const [staffTick, setStaffTick] = useState(0);
   const { run } = useAction();
   useEffect(() => { api.get('/me').then((r) => { window.__tz = r.timezone; setUser(r.user); }).catch((e) => setUser(e.status === 401 ? null : undefined)); }, []);
@@ -65,7 +65,7 @@ export default function App() {
   const mine = staff.data?.find((s) => s.id === user.id);
   const allowed = PAGES.filter(([, , roles]) => roles.includes(user.role));
   const [, Page] = allowed.find(([k]) => k === page) || allowed[0];
-  const go = (k) => { location.hash = `/${k}`; };
+  const go = (k) => { setPage(k); try { location.hash = `/${k}`; } catch { /* hash unavailable in sandboxed frames; state already updated */ } };
   const signOut = async () => { await run(() => api.post('/logout')); setUser(null); };
   return (
     <div className="shell">
