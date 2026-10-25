@@ -10,6 +10,8 @@ npm run build        # builds the React app into dist/
 npm start            # API + app on http://localhost:3000 (seeds synthetic data on first run)
 npm test             # 23 backend tests (workflows, permissions, concurrency, integrity, backup)
 ```
+**Easiest:** Windows double-click `run-local.bat`; Mac/Linux run `./run-local.sh` (needs Node 22+). It installs, builds and opens http://localhost:3000.
+
 Dev with hot reload: `npm run dev:api` and `npm run dev:web` (Vite proxies `/api`).
 Browser smoke test (server running): `NODE_PATH=$(npm root -g) node tests/e2e-smoke.cjs http://localhost:3000 ./shots`.
 
