@@ -1,0 +1,392 @@
+{
+ "voice": "am_michael",
+ "speed": 1.257,
+ "wpm": 161,
+ "total": 29.159,
+ "phrases": [
+  {
+   "id": "p0",
+   "start": 0.15,
+   "end": 3.103,
+   "show": "Five more hidden Windows tools you can open in seconds!",
+   "speak": "Five more hidden Windows tools you can open in seconds!",
+   "map": null
+  },
+  {
+   "id": "p1",
+   "start": 4.073,
+   "end": 7.281,
+   "show": "Check the security certificates installed for your Windows account.",
+   "speak": "Check the security certificates installed for your Windows account.",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "start": 8.251,
+   "end": 12.107,
+   "show": "On older Windows versions, record troubleshooting steps with Steps Recorder.",
+   "speak": "On older Windows versions, record troubleshooting steps with Steps Recorder.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "start": 13.077,
+   "end": 17.058,
+   "show": "Open File Explorer Options to manage hidden files and file extensions.",
+   "speak": "Open File Explorer Options to manage hidden files and file extensions.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "start": 18.028,
+   "end": 21.609,
+   "show": "Open iSCSI Initiator to manage network storage connections.",
+   "speak": "Open iSCSI Initiator to manage network storage connections.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "start": 22.579,
+   "end": 25.236,
+   "show": "Open ODBC settings to manage database connections.",
+   "speak": "Open ODBC settings to manage database connections.",
+   "map": null
+  },
+  {
+   "id": "p6a",
+   "start": 25.956,
+   "end": 27.011,
+   "show": "Save these commands",
+   "speak": "Save these commands",
+   "map": null
+  },
+  {
+   "id": "p6b",
+   "start": 27.331,
+   "end": 29.039,
+   "show": "and follow Agentoon.ai!",
+   "speak": "and follow Agentoon dot A I!",
+   "map": [
+    [
+     "and",
+     "and"
+    ],
+    [
+     "follow",
+     "follow"
+    ],
+    [
+     "Agentoon.ai!",
+     "Agentoon dot A I!"
+    ]
+   ]
+  }
+ ],
+ "words": [
+  {
+   "w": "Five",
+   "s": 0.15,
+   "e": 0.418
+  },
+  {
+   "w": "more",
+   "s": 0.418,
+   "e": 0.687
+  },
+  {
+   "w": "hidden",
+   "s": 0.687,
+   "e": 1.045
+  },
+  {
+   "w": "Windows",
+   "s": 1.045,
+   "e": 1.448
+  },
+  {
+   "w": "tools",
+   "s": 1.448,
+   "e": 1.761
+  },
+  {
+   "w": "you",
+   "s": 1.761,
+   "e": 1.984
+  },
+  {
+   "w": "can",
+   "s": 1.984,
+   "e": 2.208
+  },
+  {
+   "w": "open",
+   "s": 2.208,
+   "e": 2.477
+  },
+  {
+   "w": "in",
+   "s": 2.477,
+   "e": 2.656
+  },
+  {
+   "w": "seconds!",
+   "s": 2.656,
+   "e": 3.103
+  },
+  {
+   "w": "Check",
+   "s": 4.073,
+   "e": 4.365
+  },
+  {
+   "w": "the",
+   "s": 4.365,
+   "e": 4.573
+  },
+  {
+   "w": "security",
+   "s": 4.573,
+   "e": 4.99
+  },
+  {
+   "w": "certificates",
+   "s": 4.99,
+   "e": 5.573
+  },
+  {
+   "w": "installed",
+   "s": 5.573,
+   "e": 6.031
+  },
+  {
+   "w": "for",
+   "s": 6.031,
+   "e": 6.239
+  },
+  {
+   "w": "your",
+   "s": 6.239,
+   "e": 6.489
+  },
+  {
+   "w": "Windows",
+   "s": 6.489,
+   "e": 6.864
+  },
+  {
+   "w": "account.",
+   "s": 6.864,
+   "e": 7.281
+  },
+  {
+   "w": "On",
+   "s": 8.251,
+   "e": 8.428
+  },
+  {
+   "w": "older",
+   "s": 8.428,
+   "e": 8.739
+  },
+  {
+   "w": "Windows",
+   "s": 8.739,
+   "e": 9.137
+  },
+  {
+   "w": "versions,",
+   "s": 9.137,
+   "e": 9.625
+  },
+  {
+   "w": "record",
+   "s": 9.625,
+   "e": 9.98
+  },
+  {
+   "w": "troubleshooting",
+   "s": 9.98,
+   "e": 10.733
+  },
+  {
+   "w": "steps",
+   "s": 10.733,
+   "e": 11.043
+  },
+  {
+   "w": "with",
+   "s": 11.043,
+   "e": 11.309
+  },
+  {
+   "w": "Steps",
+   "s": 11.309,
+   "e": 11.619
+  },
+  {
+   "w": "Recorder.",
+   "s": 11.619,
+   "e": 12.107
+  },
+  {
+   "w": "Open",
+   "s": 13.077,
+   "e": 13.368
+  },
+  {
+   "w": "File",
+   "s": 13.368,
+   "e": 13.66
+  },
+  {
+   "w": "Explorer",
+   "s": 13.66,
+   "e": 14.145
+  },
+  {
+   "w": "Options",
+   "s": 14.145,
+   "e": 14.582
+  },
+  {
+   "w": "to",
+   "s": 14.582,
+   "e": 14.776
+  },
+  {
+   "w": "manage",
+   "s": 14.776,
+   "e": 15.165
+  },
+  {
+   "w": "hidden",
+   "s": 15.165,
+   "e": 15.553
+  },
+  {
+   "w": "files",
+   "s": 15.553,
+   "e": 15.893
+  },
+  {
+   "w": "and",
+   "s": 15.893,
+   "e": 16.136
+  },
+  {
+   "w": "file",
+   "s": 16.136,
+   "e": 16.427
+  },
+  {
+   "w": "extensions.",
+   "s": 16.427,
+   "e": 17.058
+  },
+  {
+   "w": "Open",
+   "s": 18.028,
+   "e": 18.344
+  },
+  {
+   "w": "iSCSI",
+   "s": 18.344,
+   "e": 18.713
+  },
+  {
+   "w": "Initiator",
+   "s": 18.713,
+   "e": 19.292
+  },
+  {
+   "w": "to",
+   "s": 19.292,
+   "e": 19.503
+  },
+  {
+   "w": "manage",
+   "s": 19.503,
+   "e": 19.924
+  },
+  {
+   "w": "network",
+   "s": 19.924,
+   "e": 20.398
+  },
+  {
+   "w": "storage",
+   "s": 20.398,
+   "e": 20.872
+  },
+  {
+   "w": "connections.",
+   "s": 20.872,
+   "e": 21.609
+  },
+  {
+   "w": "Open",
+   "s": 22.579,
+   "e": 22.854
+  },
+  {
+   "w": "ODBC",
+   "s": 22.854,
+   "e": 23.129
+  },
+  {
+   "w": "settings",
+   "s": 23.129,
+   "e": 23.587
+  },
+  {
+   "w": "to",
+   "s": 23.587,
+   "e": 23.77
+  },
+  {
+   "w": "manage",
+   "s": 23.77,
+   "e": 24.137
+  },
+  {
+   "w": "database",
+   "s": 24.137,
+   "e": 24.595
+  },
+  {
+   "w": "connections.",
+   "s": 24.595,
+   "e": 25.236
+  },
+  {
+   "w": "Save",
+   "s": 25.956,
+   "e": 26.231
+  },
+  {
+   "w": "these",
+   "s": 26.231,
+   "e": 26.552
+  },
+  {
+   "w": "commands",
+   "s": 26.552,
+   "e": 27.011
+  },
+  {
+   "w": "and",
+   "s": 27.331,
+   "e": 27.598
+  },
+  {
+   "w": "follow",
+   "s": 27.598,
+   "e": 28.025
+  },
+  {
+   "w": "Agentoon.ai!",
+   "s": 28.025,
+   "e": 29.039
+  }
+ ]
+}

@@ -1,0 +1,95 @@
+1
+00:00:00,150 --> 00:00:01,448
+Five more hidden Windows
+
+2
+00:00:01,448 --> 00:00:02,477
+tools you can open
+
+3
+00:00:02,477 --> 00:00:03,103
+in seconds!
+
+4
+00:00:04,073 --> 00:00:04,990
+Check the security
+
+5
+00:00:04,990 --> 00:00:06,031
+certificates installed
+
+6
+00:00:06,031 --> 00:00:06,864
+for your Windows
+
+7
+00:00:06,864 --> 00:00:07,281
+account.
+
+8
+00:00:08,251 --> 00:00:09,137
+On older Windows
+
+9
+00:00:09,137 --> 00:00:09,625
+versions,
+
+10
+00:00:09,625 --> 00:00:10,733
+record troubleshooting
+
+11
+00:00:10,733 --> 00:00:11,619
+steps with Steps
+
+12
+00:00:11,619 --> 00:00:12,107
+Recorder.
+
+13
+00:00:13,077 --> 00:00:14,145
+Open File Explorer
+
+14
+00:00:14,145 --> 00:00:15,553
+Options to manage hidden
+
+15
+00:00:15,553 --> 00:00:16,427
+files and file
+
+16
+00:00:16,427 --> 00:00:17,058
+extensions.
+
+17
+00:00:18,028 --> 00:00:19,503
+Open iSCSI Initiator to
+
+18
+00:00:19,503 --> 00:00:20,872
+manage network storage
+
+19
+00:00:20,872 --> 00:00:21,609
+connections.
+
+20
+00:00:22,579 --> 00:00:23,770
+Open ODBC settings to
+
+21
+00:00:23,770 --> 00:00:24,595
+manage database
+
+22
+00:00:24,595 --> 00:00:25,236
+connections.
+
+23
+00:00:25,956 --> 00:00:27,598
+Save these commands and
+
+24
+00:00:27,598 --> 00:00:29,039
+follow Agentoon.ai!

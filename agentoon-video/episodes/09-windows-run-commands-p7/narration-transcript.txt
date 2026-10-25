@@ -1,0 +1,8 @@
+Five more hidden Windows tools you can open in seconds!
+Check the security certificates installed for your Windows account.
+On older Windows versions, record troubleshooting steps with Steps Recorder.
+Open File Explorer Options to manage hidden files and file extensions.
+Open iSCSI Initiator to manage network storage connections.
+Open ODBC settings to manage database connections.
+Save these commands
+and follow Agentoon.ai!

@@ -1,0 +1,79 @@
+{
+ "title": "5 hidden Windows tools part 7",
+ "voice": "am_michael",
+ "speed": 1.1,
+ "total": 32.0,
+ "music": [],
+ "sfx": [],
+ "phrases": [
+  {
+   "id": "p0",
+   "speak": "Five more hidden Windows tools you can open in seconds!",
+   "show": "Five more hidden Windows tools you can open in seconds!",
+   "map": null,
+   "pad": 0.85
+  },
+  {
+   "id": "p1",
+   "speak": "Check the security certificates installed for your Windows account.",
+   "show": "Check the security certificates installed for your Windows account.",
+   "map": null,
+   "pad": 0.85
+  },
+  {
+   "id": "p2",
+   "speak": "On older Windows versions, record troubleshooting steps with Steps Recorder.",
+   "show": "On older Windows versions, record troubleshooting steps with Steps Recorder.",
+   "map": null,
+   "pad": 0.85
+  },
+  {
+   "id": "p3",
+   "speak": "Open File Explorer Options to manage hidden files and file extensions.",
+   "show": "Open File Explorer Options to manage hidden files and file extensions.",
+   "map": null,
+   "pad": 0.85
+  },
+  {
+   "id": "p4",
+   "speak": "Open iSCSI Initiator to manage network storage connections.",
+   "show": "Open iSCSI Initiator to manage network storage connections.",
+   "map": null,
+   "pad": 0.85
+  },
+  {
+   "id": "p5",
+   "speak": "Open ODBC settings to manage database connections.",
+   "show": "Open ODBC settings to manage database connections.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p6a",
+   "speak": "Save these commands",
+   "show": "Save these commands",
+   "map": null,
+   "pad": 0.2
+  },
+  {
+   "id": "p6b",
+   "speak": "and follow Agentoon dot A I!",
+   "show": "and follow Agentoon.ai!",
+   "map": [
+    [
+     "and",
+     "and"
+    ],
+    [
+     "follow",
+     "follow"
+    ],
+    [
+     "Agentoon.ai!",
+     "Agentoon dot A I!"
+    ]
+   ],
+   "pad": 0
+  }
+ ]
+}

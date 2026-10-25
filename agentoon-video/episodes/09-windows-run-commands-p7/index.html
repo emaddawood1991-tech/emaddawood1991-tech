@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 09 Windows Run Commands Part 7</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Fluent HUD". Deep-blue cyber desk, frosted-glass panels, classic PowerShell navy terminal, cyan scan beams, shield/lock/clock graphics.
+     No Windows logo, no green SAFE badges. Terminal OUTPUT is never invented: every capture on screen is real or verbatim. */
+  :root { --bg: #08051A; --cy: #A78BFA; --bl: #8B5CF6; --ps: #1A0F3A; }
+  .chip { position: absolute; white-space: nowrap; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .glass { position: absolute; border-radius: 26px; background: linear-gradient(160deg,rgba(90,60,170,.40),rgba(24,12,56,.80)); border: 2px solid rgba(190,170,255,.45); box-shadow: 0 0 50px rgba(167,139,250,.2), inset 0 0 30px rgba(255,255,255,.05); }
+  .ps { position: absolute; border-radius: 18px; overflow: hidden; background: #150C33; border: 3px solid #8B5CF6; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 50px rgba(61,214,255,.25); }
+  .rv { position: absolute; width: 1000px; height: 620px; border-radius: 28px; object-fit: cover; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 50px rgba(167,139,250,.3); }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .t1 { position: absolute; font: 900 120px/1 var(--body); letter-spacing: -.04em; color: #fff; white-space: nowrap; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/nightops.js"></script>
+<script src="kit/outro.js"></script>
+<script src="kit/term.js"></script>
+<script src="timeline.js"></script>
+<script src="slots.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="31.6">
+  <section id="s1" class="clip scene" data-start="0.0" data-duration="4.79"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="3.99" data-duration="4.98"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="8.17" data-duration="5.63"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="13.0" data-duration="5.75"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="17.95" data-duration="5.35"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="22.5" data-duration="4.18"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="25.88" data-duration="2.37"><div id="s7i" class="inner"></div></section>
+  <section id="s8" class="clip scene" data-start="27.25" data-duration="4.35"><div id="s8i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="31.6" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, SL = window.SLOTS, S = E.scenes, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word not found: " + pid + " " + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#E9E1FF") + ";background:" + (o.bg || "rgba(167,139,250,.14)") + ";border:2px solid " + (o.bd || "#A78BFA"), text); };
+  const AMB = { fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.14)" };
+  const fadeIn = (e, at, d, y) => tl.from(e, { opacity: 0, y: y == null ? 40 : y, duration: d || 0.3, ease: "power3.out" }, at);
+  const isPh = k => SL[k].status !== "verified";
+  const hud = (host, id, label, t0) => {
+    const k = chip(host, id + "k", 60, 196, label); tl.from(k, { opacity: 0, x: -30, duration: 0.25 }, t0);
+  };
+  const base = (k) => {
+    const inn = $(k + "i");
+    el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#2A1766 0%,#120A33 55%,#05030D 100%)");
+    const gr = el(inn, "bgg" + k, "", "position:absolute;inset:0;background-image:linear-gradient(rgba(167,139,250,.10) 2px,transparent 2px),linear-gradient(90deg,rgba(167,139,250,.10) 2px,transparent 2px);background-size:100px 100px");
+    tl.to(gr, { backgroundPosition: "200px 400px", duration: S[k].len, ease: "none" }, S[k].start);
+    for (let i = 0; i < 14; i++) { const d = el(inn, "bgp" + k + i, "", "left:" + ((i * 149 + 40) % 1040) + "px;top:" + (260 + (i * 233) % 1400) + "px;width:6px;height:6px;border-radius:50%;background:#C4B5FD;opacity:.55;box-shadow:0 0 12px #A78BFA"); tl.fromTo(d, { y: 0 }, { y: -130 - (i % 5) * 50, duration: S[k].len, ease: "none" }, S[k].start); }
+    return inn;
+  };
+  const wrapScene = (k) => { const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Array.from(inn.children).filter(c => c !== w && !/^bg/.test(c.id)).forEach(c => w.appendChild(c)); Cam.frame(w, 540, 960, 1); return w; };
+  const GRN = "#9CF2B6", YEL = "#F5E7A5", RED = "#FCA5A5", GITC = "#F05032";
+  const G = { fg: "#BBF7D0", bd: "#4ADE80", bg: "rgba(34,197,94,.14)" };
+  const D = window.DATA;
+  /* official brand marks (simple-icons, CC0 artwork of the Git and GitHub logos) */
+  const logo = (host, id, x, y, size, kind) => { const d = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + size + "px;height:" + size + "px"); const sv = svgEl(d, "svg", { viewBox: "0 0 24 24", width: size, height: size }); svgEl(sv, "path", { d: kind === "git" ? D.gitPath : D.ghPath, fill: kind === "git" ? GITC : "#FFFFFF" }); return d; };
+  function term(host, id, x, y, w, h, title, rows, t0, fs, lh) {
+    const card = el(host, id, "ps", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px");
+    el(card, id + "b", "", "left:0;top:0;width:" + w + "px;height:62px;background:#2B1A63;border-bottom:2px solid #8B5CF6");
+    [0, 1, 2].forEach(i => el(card, id + "d" + i, "", "left:" + (24 + i * 30) + "px;top:22px;width:18px;height:18px;border-radius:50%;background:#C4B5FD;opacity:" + (0.9 - i * 0.2)));
+    el(card, id + "t", "", "left:130px;top:0;font:700 26px/62px var(--body);color:#EDE6FF", title);
+    const ys = []; let t = t0;
+    rows.forEach((r, i) => {
+      const yy = 86 + i * lh; ys.push(yy);
+      const d = el(card, id + "r" + i, "mono", "left:28px;top:" + yy + "px;font:600 " + fs + "px/" + lh + "px var(--mono);color:" + (r[1] || "#fff"), r[0]);
+      const at = r[3] != null ? r[3] : t;
+      if (r[2]) { const n = Math.max(1, r[0].length), dur = n / r[2]; d.style.clipPath = "inset(0 100% 0 0)"; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + n + ")" }, at); t = at + dur + 0.05; }
+      else { tl.from(d, { opacity: 0, x: -14, duration: 0.14 }, at); t = at + 0.1; }
+    });
+    return { card, end: t, ys };
+  }
+  const browser = (host, id, x, y, w, imgs, label) => {
+    const h = Math.round(w * 520 / 480), fr = el(host, id, "ps", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + (h + 56) + "px");
+    el(fr, id + "b", "", "left:0;top:0;width:" + w + "px;height:56px;background:#2B1A63"); el(fr, id + "u", "", "left:70px;top:10px;width:" + (w - 90) + "px;height:36px;border-radius:18px;background:#150C33;font:700 20px/36px var(--mono);color:#C4B5FD;text-align:center", label || "localhost · Bean Bar");
+    [0, 1, 2].forEach(i => el(fr, id + "d" + i, "", "left:" + (18 + i * 16) + "px;top:20px;width:12px;height:12px;border-radius:50%;background:#C4B5FD;opacity:" + (0.9 - i * 0.2)));
+    const ims = imgs.map((f, i) => { const im = document.createElement("img"); im.src = "assets/" + f; im.id = id + "i" + i; im.style.cssText = "position:absolute;left:0;top:56px;width:" + w + "px;height:" + h + "px;opacity:" + (i ? 0 : 1); fr.appendChild(im); return im; });
+    return { fr, ims };
+  };
+  const swapTo = (ph, i, at, d) => { tl.to(ph.ims[i], { opacity: 1, duration: d || 0.2 }, at); if (i) tl.to(ph.ims[i - 1], { opacity: 0, duration: 0.01 }, at + (d || 0.2) + 0.02); };
+  const laptop = (host, id, x, y, w, label) => { const g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + Math.round(w * 0.72) + "px");
+    el(g, id + "s", "", "left:" + w * 0.08 + "px;top:0;width:" + w * 0.84 + "px;height:" + w * 0.52 + "px;border-radius:16px;background:linear-gradient(160deg,#2B1A63,#150C33);border:4px solid #C4B5FD;box-shadow:0 0 40px rgba(167,139,250,.4)");
+    el(g, id + "k", "", "left:0;top:" + w * 0.54 + "px;width:" + w + "px;height:" + w * 0.06 + "px;border-radius:0 0 18px 18px;background:#C4B5FD");
+    el(g, id + "l", "", "left:0;width:" + w + "px;top:" + w * 0.66 + "px;text-align:center;font:800 22px/1 var(--mono);color:#E9E1FF", label); return g; };
+  const cloud = (host, id, x, y, w) => { const g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + w * 0.7 + "px");
+    const sv = svgEl(g, "svg", { viewBox: "0 0 200 140", width: w, height: w * 0.7 }); svgEl(sv, "path", { d: "M52 118 C20 118 12 78 40 68 C38 36 80 22 98 46 C112 20 160 28 160 66 C192 66 196 118 160 118 Z", fill: "rgba(167,139,250,.18)", stroke: "#C4B5FD", "stroke-width": 5 });
+    const lg = logo(g, id + "g", w * 0.34, w * 0.2, w * 0.32, "gh"); return g; };
+
+  /* ---------- v2: real software inside laptop illustrations + purposeful camera zooms (no moving light sweeps) ---------- */
+  const vidIn = (v, scr, sw, sh) => { scr.appendChild(v); v.style.cssText = "left:0;top:0;width:" + sw + "px;height:" + sh + "px;border-radius:0;box-shadow:none;object-fit:contain;background:#120a33"; };
+  const zwin = [];
+  const zoomTo = (cam, cx, cy, s, at, dur) => (zwin.push([cam.id, at - 0.2, at + (dur || 0.7) + 0.1]), tl.to(cam, { scale: s, x: 540 - cx * s, y: cy * (1 - s), duration: dur || 0.7, ease: "power2.inOut" }, at));
+  const zoomOut = (cam, at, dur) => (zwin.push([cam.id, at - 0.2, at + (dur || 0.7) + 0.1]), tl.to(cam, { scale: 1, x: 0, y: 0, duration: dur || 0.7, ease: "power2.inOut" }, at));
+  const zmv = [];
+  const vArrow = (id, x, y, dir, col, at) => { const a = el(s6i_host, id, "", "left:" + x + "px;top:" + y + "px;width:90px;height:150px"); const sv = svgEl(a, "svg", { viewBox: "0 0 90 150", width: 90, height: 150 }); svgEl(sv, "path", { d: dir < 0 ? "M45 140 V20 M15 55 L45 18 L75 55" : "M45 10 V130 M15 95 L45 132 L75 95", stroke: col, "stroke-width": 11, fill: "none", "stroke-linecap": "round", "stroke-linejoin": "round" }); tl.from(a, { opacity: 0, y: dir < 0 ? 60 : -60, duration: 0.35, ease: "back.out(1.8)" }, at); tl.to(a, { y: dir < 0 ? -22 : 22, duration: 0.45, yoyo: true, repeat: 3, ease: "sine.inOut" }, at + 0.4); return a; };
+  let s6i_host = null;
+
+  /* v3 polish: laptop with an optional realistic browser bar; page->scene mapping so the camera and rings land on the real website changes */
+  const lap = (host, id, x, y, w, o) => {
+    o = o || {}; const sw = w - 44, ch = o.chrome ? Math.round(sw * 480 / 720) : 0, sh = o.chrome ? ch + 44 : Math.round(sw * 500 / 720), lidH = sh + 44;
+    const g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + (lidH + 34) + "px");
+    const lid = el(g, id + "lid", "", "left:0;top:0;width:" + w + "px;height:" + lidH + "px;border-radius:22px 22px 8px 8px;background:linear-gradient(180deg,#2A2150,#120B2C);border:3px solid #6F5BD0;box-shadow:0 34px 70px rgba(0,0,0,.6),0 0 50px rgba(139,92,246,.35)");
+    const scr = el(lid, id + "scr", "", "left:19px;top:19px;width:" + sw + "px;height:" + sh + "px;overflow:hidden;border-radius:6px;background:#120a33");
+    el(g, id + "base", "", "left:" + (-w * 0.04) + "px;top:" + lidH + "px;width:" + (w * 1.08) + "px;height:22px;border-radius:0 0 22px 22px;background:linear-gradient(180deg,#8E7DE0,#4B3C99);box-shadow:0 14px 30px rgba(0,0,0,.5)");
+    el(g, id + "nt", "", "left:" + (w * 0.5 - 60) + "px;top:" + lidH + "px;width:120px;height:9px;border-radius:0 0 10px 10px;background:#2A2150");
+    if (o.chrome) { const bar = el(scr, id + "bar", "", "left:0;top:0;width:" + sw + "px;height:44px;background:#E7E2F5;z-index:3"); ["#FF5F57", "#FEBC2E", "#28C840"].forEach((c, i) => el(bar, id + "bd" + i, "", "left:" + (16 + i * 22) + "px;top:15px;width:14px;height:14px;border-radius:50%;background:" + c));
+      el(bar, id + "bu", "", "left:100px;top:7px;width:" + (sw - 130) + "px;height:30px;border-radius:15px;background:#fff;font:700 18px/30px var(--mono);color:#4B3C99;text-align:center", o.url || ""); }
+    const ims = (o.imgs || []).map((f, i) => { const im = document.createElement("img"); im.src = "assets/" + f; im.id = id + "i" + i; im.style.cssText = "position:absolute;left:0;top:" + (o.chrome ? 44 : 0) + "px;width:" + sw + "px;height:" + (o.chrome ? ch : sh) + "px;opacity:" + (i ? 0 : 1); scr.appendChild(im); return im; });
+    return { g, scr, ims, sw, sh, cx: x + w / 2, cy: y + 22 + sh / 2, bottom: y + lidH + 34, x0: x + 22, y0: y + 22, k: sw / 720, ch: o.chrome ? 44 : 0 };
+  };
+  const pg = (L, px, py) => [L.x0 + px * L.k, L.y0 + L.ch + py * L.k];
+  const ringAt = (host, id, L, r, color, label) => { const a = pg(L, r[0], r[1]); return NO.callout(host, { id, x: a[0], y: a[1], w: r[2] * L.k, h: r[3] * L.k, color, label }); };
+  const focus = (cam, rx, ry, s, ty, at, dur) => (zwin.push([cam.id, at - 0.2, at + (dur || 0.7) + 0.1]), tl.to(cam, { scale: s, x: 540 - rx * s, y: ty - ry * s, duration: dur || 0.7, ease: "power2.inOut" }, at));
+  const commitPill = (host, id, x, y, hash, msg, col) => { const d = el(host, id, "", "left:" + x + "px;top:" + y + "px;padding:8px 14px 10px;border-radius:14px;background:" + (col || "rgba(240,80,50,.18)") + ";border:2px solid #F05032;font:800 22px/1 var(--mono);color:#fff;white-space:nowrap;z-index:6"); d.innerHTML = "<span style='color:#FFB199'>" + hash + "</span> " + (msg || ""); return d; };
+
+  /* ================================================================= EP 09 · 5 HIDDEN WINDOWS TOOLS · PART 7 ================================================================= */
+  const isV = k => SL[k] && SL[k].status === "verified";
+  const AMBX = { fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.14)" };
+  const keycap = (host, id, x, y, w, txt) => { const k = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:96px;border-radius:18px;background:linear-gradient(180deg,#F4F0FF,#C9BEF0);border-bottom:10px solid #7B68C8;box-shadow:0 14px 30px rgba(0,0,0,.5);font:900 44px/90px var(--body);color:#1A0F3A;text-align:center", txt); return k; };
+  /* screen content: a real clip when verified, otherwise an honest recording slot (never a drawn imitation of a Windows window) */
+  function screenContent(L, key, o) {
+    const scr = L.scr;
+    if (isV(key)) { const v = $("v_" + key); scr.appendChild(v); v.style.cssText = "left:0;top:0;width:" + L.sw + "px;height:" + L.sh + "px;border-radius:0;box-shadow:none;object-fit:cover"; return null; }
+    const slot = el(scr, o.id + "slot", "", "left:0;top:0;width:" + L.sw + "px;height:" + L.sh + "px;background:linear-gradient(160deg,#241455,#120a33)");
+    el(slot, o.id + "sf", "", "left:26px;top:26px;width:" + (L.sw - 52) + "px;height:" + (L.sh - 52) + "px;border:4px dashed rgba(196,181,253,.55);border-radius:20px");
+    el(slot, o.id + "st", "", "left:0;right:0;top:56px;text-align:center;font:900 50px/1.1 var(--body);color:#fff", o.tool);
+    el(slot, o.id + "sc", "mono", "left:0;right:0;top:122px;text-align:center;font:800 38px/1 var(--mono);color:#FFE08A", o.cmd);
+    el(slot, o.id + "sl", "", "left:0;right:0;top:180px;text-align:center;font:800 20px/1 var(--mono);letter-spacing:.06em;color:#C4B5FD", "THE REAL WINDOWS WINDOW GOES HERE");
+    const col = el(slot, o.id + "sk", "", "left:0;right:0;top:232px;display:flex;flex-direction:column;align-items:center;gap:10px");
+    (o.facts || []).forEach((f, i) => { const c = document.createElement("div"); c.textContent = f; c.style.cssText = "padding:9px 20px 11px;border-radius:999px;border:2px solid #A78BFA;background:rgba(167,139,250,.14);font:800 22px/1 var(--mono);letter-spacing:.05em;color:#E9E1FF"; col.appendChild(c); });
+    const rb = NO.ribbon(slot, { id: o.id + "rb", x: (L.sw - 600) / 2, y: L.sh - 104, w: 600, text: "RECORDING SLOT · REAL CLIP PENDING" });
+    return slot;
+  }
+  function cmdScene(k, key, o) {
+    const inn = base(k); hud(inn, "h" + k, o.hud, S[k].start + 0.15);
+    const t0 = S[k].start + 0.25;
+    const bar = el(inn, "bar" + k, "glass", "left:40px;top:285px;width:1000px;height:150px;border-color:" + o.col);
+    const kc = chip(bar, "kc" + k, 26, 30, "WIN + R", { size: 22, pad: "8px 14px 10px" });
+    const cmd = el(bar, "cmd" + k, "mono", "left:26px;top:70px;font:900 " + o.size + "px/1 var(--mono);color:#fff;white-space:pre", o.cmd), enter = el(bar, "en" + k, "", "right:26px;top:48px;font:900 56px/1 var(--body);color:" + o.col, "↵");
+    const dur = Math.max(0.5, o.cmd.length / 15); cmd.style.clipPath = "inset(0 100% 0 0)";
+    tl.from(bar, { opacity: 0, y: -50, duration: 0.3 }, S[k].start + 0.05);
+    tl.fromTo(cmd, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + o.cmd.length + ")" }, t0);
+    tl.fromTo(enter, { opacity: 0.25, scale: 1 }, { opacity: 1, scale: 1.5, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }, t0 + dur + 0.15);
+    const L = lap(inn, "l" + k, 70, 470, 940, {}); const tOpen = S[k].start + 1.5;
+    tl.fromTo(L.g, { opacity: 0, y: 90, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, tOpen - 0.35);
+    const slot = screenContent(L, key, Object.assign({ id: "sl" + k }, o));
+    const g = ringAt(inn, "rg" + k, L, o.ring || [0, 0, 1, 1], o.col, o.ringLabel);
+    let hi = isV(key) ? SL[key].highlight : null;
+    if (hi) { const r = [hi.x * 720, hi.y * 500, hi.w * 720, hi.h * 500]; const rr = ringAt(inn, "rr" + k, L, r, o.col, o.ringLabel); rr.draw(tl, tOpen + 1.0, 0.5); }
+    const pc = chip(inn, "pc" + k, 40, L.bottom + 18, o.purpose, { size: 26, pad: "12px 20px 14px", fg: "#BBF7D0", bd: "#4ADE80", bg: "rgba(34,197,94,.14)" }); tl.from(pc, { opacity: 0, x: -150, duration: 0.3, ease: "back.out(1.7)" }, S[k].b + 1.4);
+    if (o.note) { const nt = chip(inn, "nt" + k, 40, L.bottom + 84, o.note, Object.assign({ size: 20, pad: "8px 14px 10px" }, AMBX)); tl.from(nt, { opacity: 0, scale: 0.6, duration: 0.3, ease: "back.out(2)" }, S[k].b + 2.0); }
+    const bot = botAt(inn, "bot" + k, 880, 1210, 120); bot.face(tl, 0, -1, 0.01); bot.rise(tl, S[k].start + 0.6, 420, 0.4); bot.blinks(tl, S[k].start, S[k].end, 1.1);
+    bot.aimPoint(tl, tOpen + 0.2, { x: 880, y: 1210, scale: 1, target: [700, 800], hand: "L", hold: 0.7 }); bot.react(tl, tOpen + 1.4, o.react || "wow");
+    const f = hi ? [hi.x + hi.w / 2, hi.y + hi.h / 2] : [0.5, 0.5]; const p = pg(L, f[0] * 720, f[1] * 500);
+    zmv.push(() => { focus(cams[k], p[0], p[1], 1.28, 760, tOpen + 0.9, 0.7); zoomOut(cams[k], S[k].end - 1.0, 0.6); });
+    return { L, inn };
+  }
+
+  /* ---------------- S1 HOOK: robot presses WIN + R, the Run dialog opens (real clip slot c0) ---------------- */
+  const s1i = base("s1"); hud(s1i, "h1", "EP 09 · WINDOWS RUN", 0.05);
+  const a1 = el(s1i, "a1", "t1", "left:50px;top:250px;font-size:92px;line-height:1.02", "5 HIDDEN WINDOWS"), a2 = el(s1i, "a2", "t1", "left:50px;top:350px;font-size:92px;color:#C4B5FD;text-shadow:0 0 40px rgba(167,139,250,.9)", "TOOLS"), a3 = chip(s1i, "a3", 480, 372, "PART 7", { size: 44, pad: "12px 28px 14px", fg: "#FFE08A", bd: "#FFC83D", bg: "rgba(255,200,61,.16)" });
+  tl.from(a1, { opacity: 0, x: -220, scale: 0.7, duration: 0.35, ease: "back.out(2)", transformOrigin: "0 50%" }, 0.1); tl.from(a2, { opacity: 0, x: 240, duration: 0.3, ease: "power3.out" }, 0.4); tl.from(a3, { opacity: 0, scale: 0.3, rotation: -12, duration: 0.35, ease: "back.out(2.6)" }, 0.8);
+  const kw = keycap(s1i, "kw", 250, 560, 270, "⊞ WIN"), kr = keycap(s1i, "kr", 560, 560, 200, "R"); const plus = el(s1i, "kp", "", "left:525px;top:575px;font:900 60px/1 var(--body);color:#fff", "+");
+  tl.from([kw, kr, plus], { opacity: 0, y: 80, duration: 0.3, stagger: 0.1, ease: "back.out(1.8)" }, 0.9);
+  const tPress = 1.5; tl.to([kw, kr], { y: 12, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.in" }, tPress);
+  const L1 = lap(s1i, "l1", 110, 740, 860, {}); tl.fromTo(L1.g, { opacity: 0, y: 120, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, tPress + 0.3);
+  screenContent(L1, "c0", { id: "sl1", tool: "Run dialog", cmd: "WIN + R", facts: ["OPENS THE RUN BOX", "TYPE A COMMAND", "PRESS ENTER"] });
+  const bot1 = botAt(s1i, "bot1", 830, 480, 130); bot1.face(tl, 0, -1, 0.01); bot1.rise(tl, 0.3, 450, 0.4); bot1.blinks(tl, 1, 3.4, 1.1);
+  bot1.press(tl, tPress - 0.35, { x: 830, y: 480, scale: 1, target: [660, 600], hand: "L" }); bot1.react(tl, tPress + 0.5, "wow");
+  chip(s1i, "tg1", 110, L1.bottom + 20, "THE REAL RUN DIALOG", { size: 22, pad: "9px 16px 11px" }); tl.from("#tg1", { opacity: 0, duration: 0.25 }, tPress + 0.8);
+
+  /* ---------------- S2..S6: the five commands ---------------- */
+  cmdScene("s2", "c1", { hud: "COMMAND 31", cmd: "certmgr.msc", size: 72, col: "#A78BFA", tool: "Certificate Manager", facts: ["Personal", "Trusted Root Certification", "Intermediate Certification", "Trusted Publishers"], purpose: "SECURITY CERTIFICATES · YOUR ACCOUNT", ringLabel: "CERTIFICATE FOLDERS", react: "think" });
+  cmdScene("s3", "c2", { hud: "COMMAND 32", cmd: "psr", size: 84, col: "#FFC83D", tool: "Steps Recorder", facts: ["PROBLEM STEPS RECORDER", "DEPRECATED BY MICROSOFT", "MAY BE MISSING ON NEWER WINDOWS", "SHOW WINDOWS' REAL RESPONSE"], purpose: "RECORD TROUBLESHOOTING STEPS", note: "DEPRECATED · ON NEWER WINDOWS IT MAY NOT OPEN", ringLabel: "STEPS RECORDER", react: "worried" });
+  cmdScene("s4", "c3", { hud: "COMMAND 33", cmd: "control folders", size: 62, col: "#4ADE80", tool: "File Explorer Options", facts: ["GENERAL TAB", "VIEW TAB", "SEARCH TAB", "HIDDEN FILES + EXTENSIONS"], purpose: "HIDDEN FILES + FILE EXTENSIONS", ringLabel: "VIEW TAB", react: "nod" });
+  cmdScene("s5", "c4", { hud: "COMMAND 34", cmd: "iscsicpl", size: 76, col: "#7DD3FC", tool: "iSCSI Initiator", facts: ["TARGETS", "DISCOVERY", "VOLUMES AND DEVICES", "VIEW ONLY · NO CHANGES"], purpose: "NETWORK STORAGE CONNECTIONS", note: "VIEW ONLY · NOTHING IS CONNECTED OR CHANGED", ringLabel: "ISCSI INITIATOR", react: "think" });
+  cmdScene("s6", "c5", { hud: "COMMAND 35", cmd: "odbcad32", size: 76, col: "#F0ABFC", tool: "ODBC Data Source Administrator", facts: ["USER DSN", "SYSTEM DSN", "FILE DSN", "DRIVERS"], purpose: "DATABASE CONNECTIONS", ringLabel: "DATA SOURCE TABS", react: "celebrate" });
+
+  /* ---------------- S7 five command cards ---------------- */
+  const s7i = base("s7"); hud(s7i, "h7", "SAVE THESE", S.s7.start + 0.15);
+  const CARDS = [["31", "certmgr.msc", "Certificates", "#A78BFA"], ["32", "psr", "Steps Recorder", "#FFC83D"], ["33", "control folders", "Folder Options", "#4ADE80"], ["34", "iscsicpl", "iSCSI Initiator", "#7DD3FC"], ["35", "odbcad32", "ODBC Admin", "#F0ABFC"]];
+  CARDS.forEach(([n, c, d, col], i) => { const g = el(s7i, "cd" + i, "glass", "left:40px;top:" + (300 + i * 150) + "px;width:1000px;height:128px;border-color:" + col); el(g, "cdn" + i, "", "left:28px;top:34px;font:900 62px/1 var(--body);color:" + col, n); el(g, "cdc" + i, "mono", "left:150px;top:22px;font:900 50px/1 var(--mono);color:#fff", c); el(g, "cdd" + i, "", "left:152px;top:84px;font:800 24px/1 var(--mono);color:#D9CCFF", d.toUpperCase()); tl.from(g, { opacity: 0, x: i % 2 ? 500 : -500, duration: 0.4, ease: "back.out(1.4)" }, S.s7.start + 0.15 + i * 0.12); });
+  const bot7 = botAt(s7i, "bot7", 850, 1060, 170); bot7.face(tl, 0, -1, 0.01); bot7.rise(tl, S.s7.start + 0.7, 420, 0.4); bot7.blinks(tl, S.s7.start, S.s7.end, 1.1); bot7.react(tl, S.s7.start + 0.9, "celebrate");
+
+  /* ---------------- S8 CTA ---------------- */
+  const s8i = base("s8"); hud(s8i, "h8", "PART 7", S.s8.start + 0.1);
+  const tOut = PW("p6b", "follow") - 0.4, botO = botAt(s8i, "botO", -400, 470, 300);
+  Outro.build(tl, s8i, tOut, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" });
+  tl.to(["#h8k"], { opacity: 0, duration: 0.2 }, tOut);
+
+  { const pv = el($("fx"), "pvw", "", "left:0;top:0;width:1080px;height:1920px;pointer-events:none"); chip(pv, "pvb", 60, 128, "PREVIEW · REAL WINDOWS CLIPS PENDING", Object.assign({ size: 19, pad: "8px 16px 9px" }, AMBX)); pv.style.display = SL.banner ? "block" : "none"; }
+  /* ---------- camera: purposeful zooms + small eased punches; NO moving light sweeps ---------- */
+  const cams = {}; ["s2", "s3", "s4", "s5", "s6", "s7"].forEach(k => cams[k] = wrapScene(k));
+  zmv.forEach(f => f());
+  const sceneOf2 = t => { let r = "s1"; Object.keys(S).forEach(k => { if (t >= S[k].b) r = k; }); return r; };
+  const bounds2 = Object.keys(S).map(k => S[k].b); let dn = 0;
+  const heldZoom = (id, t0, t1) => zwin.some(w => w[0] === id && t0 < w[2] && t1 > w[1]);
+  for (let t0 = 1.0; t0 < S.s7.end - 0.9; t0 += 1.3) {
+    const k = sceneOf2(t0), cam = cams[k]; if (!cam) continue;
+    const t1 = t0 + 0.45;
+    if (bounds2.some(b => t0 > b - 0.5 && t0 < b + 0.7) || sceneOf2(t1) !== k || heldZoom("cam" + k, t0, t1)) continue;
+    const A = [[1.0, 0, 0], [1.05, -26, -36], [1.0, 0, 0], [1.045, 22, -30]][dn % 4], B = [[1.05, -26, -36], [1.0, 0, 0], [1.045, 22, -30], [1.0, 0, 0]][dn % 4]; dn++;
+    tl.fromTo(cam, { scale: A[0], x: A[1], y: A[2] }, { scale: B[0], x: B[1], y: B[2], duration: 0.4, ease: "power3.out", immediateRender: false }, t0);
+  }
+  /* ---------- transitions ---------- */
+  Cam.push(tl, S.s2.b, 0.5, { out: "#s1i", inn: "#s2i", ox: 540, oy: 1000, scale: 4 });
+  [["s3", "s2", 1], ["s4", "s3", -1], ["s5", "s4", 1], ["s6", "s5", -1], ["s7", "s6", 1]].forEach(([a, b, d]) => Cam.whip(tl, S[a].b, 0.5, { out: "#" + b + "i", inn: "#" + a + "i", dir: d, blur: 28 }));
+  Cam.iris(tl, S.s8.b, 0.7, { inn: "#s8i", cx: 540, cy: 760, ring: "#A78BFA", host: $("fx"), id: "ir8" });
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 330, active: "#FFFFFF", block: "#7C3AED", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

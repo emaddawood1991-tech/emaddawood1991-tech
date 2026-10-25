@@ -1,0 +1,48 @@
+{
+ "_readme": "Real Windows screen recordings (Win+R and the five tools). Put each clip in assets/, set status to verified and file to its name. Optional highlight = fractions {x,y,w,h} of the clip frame to ring and zoom into. See deliverables/RECORDING-RUNBOOK.md.",
+ "preview_banner": true,
+ "slots": {
+  "c0": {
+   "scene": "s1",
+   "status": "placeholder",
+   "file": null,
+   "title": "Win+R opens the Run dialog",
+   "highlight": null
+  },
+  "c1": {
+   "scene": "s2",
+   "status": "placeholder",
+   "file": null,
+   "title": "Certificate Manager",
+   "highlight": null
+  },
+  "c2": {
+   "scene": "s3",
+   "status": "placeholder",
+   "file": null,
+   "title": "Steps Recorder (or the genuine Windows response)",
+   "highlight": null
+  },
+  "c3": {
+   "scene": "s4",
+   "status": "placeholder",
+   "file": null,
+   "title": "File Explorer Options",
+   "highlight": null
+  },
+  "c4": {
+   "scene": "s5",
+   "status": "placeholder",
+   "file": null,
+   "title": "iSCSI Initiator",
+   "highlight": null
+  },
+  "c5": {
+   "scene": "s6",
+   "status": "placeholder",
+   "file": null,
+   "title": "ODBC Data Source Administrator",
+   "highlight": null
+  }
+ }
+}

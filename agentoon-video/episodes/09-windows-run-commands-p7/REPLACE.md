@@ -1,0 +1,2 @@
+# Ep 09 — what is still needed
+Preview: `out/agentoon-ep09-windows-run-commands-p7-PREVIEW.mp4` (about 31.6 s). Every Windows window is a labelled RECORDING SLOT (no drawn imitation of a Windows dialog). Needed: the six real clips c0–c5 per `deliverables/RECORDING-RUNBOOK.md`. Then `data/slots.json` -> verified, `python3 build.py`, mix, render to a NEW filename, set preview_banner false, run `no-placeholders.sh`.

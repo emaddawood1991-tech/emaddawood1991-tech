@@ -1,0 +1,155 @@
+{
+ "music": [
+  {
+   "from": "p0",
+   "to": "p1",
+   "mood": "hook",
+   "fo": -0.1,
+   "to_off": 0.1
+  },
+  {
+   "from": "p1",
+   "to": "p5",
+   "mood": "demo",
+   "to_off": 0.1
+  },
+  {
+   "from": "p5",
+   "to": "p6b.end",
+   "mood": "result",
+   "to_off": 1.9
+  }
+ ],
+ "sfx": [
+  {
+   "name": "pop",
+   "at": "p0:Five",
+   "off": 0.1,
+   "gain": 0.5
+  },
+  {
+   "name": "tick",
+   "at": "p0:Windows",
+   "off": 0.3,
+   "gain": 0.5
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s2",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "S:s2",
+   "off": 0.3,
+   "gain": 0.3,
+   "dur": 0.9,
+   "cps": 14
+  },
+  {
+   "name": "tick",
+   "at": "S:s2",
+   "off": 1.35,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s3",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "S:s3",
+   "off": 0.3,
+   "gain": 0.3,
+   "dur": 0.4,
+   "cps": 10
+  },
+  {
+   "name": "tick",
+   "at": "S:s3",
+   "off": 1.0,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s4",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "S:s4",
+   "off": 0.3,
+   "gain": 0.3,
+   "dur": 1.0,
+   "cps": 15
+  },
+  {
+   "name": "tick",
+   "at": "S:s4",
+   "off": 1.5,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s5",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "S:s5",
+   "off": 0.3,
+   "gain": 0.3,
+   "dur": 0.6,
+   "cps": 13
+  },
+  {
+   "name": "tick",
+   "at": "S:s5",
+   "off": 1.1,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s6",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "type",
+   "at": "S:s6",
+   "off": 0.3,
+   "gain": 0.3,
+   "dur": 0.6,
+   "cps": 13
+  },
+  {
+   "name": "tick",
+   "at": "S:s6",
+   "off": 1.1,
+   "gain": 0.6
+  },
+  {
+   "name": "whoosh",
+   "at": "S:s7",
+   "off": 0,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "at": "p6a:Save",
+   "off": 0.0,
+   "gain": 0.45
+  },
+  {
+   "name": "sparkle",
+   "at": "p6b:follow",
+   "off": 0,
+   "gain": 0.5
+  }
+ ]
+}
