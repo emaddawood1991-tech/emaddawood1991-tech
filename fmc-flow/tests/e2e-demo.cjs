@@ -7,7 +7,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   const b = await chromium.launch(); const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } }); const page = await ctx.newPage();
   const errors = []; page.on('pageerror', (e) => errors.push(e.message)); page.on('console', (m) => m.type() === 'error' && !/fonts|ERR_|Failed to load/.test(m.text()) && errors.push(m.text()));
   const login = async (u) => { await page.fill('input[autocomplete=username]', u); await page.fill('input[type=password]', PW); await page.click('button.btn:has-text("Sign in")'); await page.waitForSelector('.shell'); };
-  await page.goto(`file://${file}`); await page.waitForSelector('form.box');
+  await page.goto(`file://${file}`); await page.waitForSelector('div.box');
   await page.screenshot({ path: `${out}/d0-login.png` });
   await login('reception');
   await page.click('.nav a:has-text("Visits")');
@@ -19,7 +19,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   await page.locator('.modal select').first().selectOption({ label: opts.find((o) => o.includes('PT-HALL-01')) });
   await page.locator('.modal select').nth(1).selectOption({ label: 'BED-02' }); await page.click('.modal button:has-text("Confirm")');
   await page.click('tr:has-text("Sample Patient B") button:has-text("Confirm entry")'); await page.waitForSelector('tr:has-text("Sample Patient B") button:has-text("Transfer")');
-  await page.click('button:has-text("Sign out")'); await page.waitForSelector('form.box');
+  await page.click('button:has-text("Sign out")'); await page.waitForSelector('div.box');
   await login('pt.one'); await page.click('.nav a:has-text("Visits")');
   await page.click('tr:has-text("Sample Patient B") button:has-text("Start treatment")'); await page.locator('.modal select').selectOption({ label: 'PT Treatment' }); await page.click('.modal button:has-text("Confirm")');
   await page.waitForSelector('tr:has-text("Sample Patient B") button:has-text("Pause")'); await page.waitForTimeout(2200);
