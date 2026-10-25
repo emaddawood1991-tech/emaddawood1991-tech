@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Fails if an Agentoon.ai episode still contains placeholder/preview material. Usage: no-placeholders.sh <episode-dir>
 d="${1:-.}"; bad=0
+if [ ! -f "$d/index.html" ] && [ ! -f "$d/src/index.template.html" ]; then echo "FAIL no index.html in $d (wrong episode path?)"; exit 1; fi
 for f in "$d/index.html" "$d/src/index.template.html"; do
   [ -f "$f" ] || continue
   hits=$(grep -n -i -E 'PLACEHOLDER|PREVIEW · (SOME|PLACEHOLDER)|\(PREVIEW\)|REBUILT FROM THE REAL|SOME REAL FOOTAGE|lorem ipsum|TODO|REPLACE ME' "$f" | head -5)

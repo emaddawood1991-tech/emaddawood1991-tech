@@ -21,6 +21,12 @@ Apply this standard automatically. Do not ask production questions it already an
 4. **Never show** API keys, setup codes, passwords or the user's email. Use env vars; blur secret lines.
 5. **Preserve the brand:** original robot (never Clawd or another character), logo, one signature ending. See `references/brand-guide.md`.
 6. **Do not reuse the previous episode's visual template.** See `references/creative-direction.md`.
+7. **Real software, real results.** Windows tools -> real Windows UI; GitHub -> real github.com/repo; Claude Code -> genuine session; AI apps -> the real site/UI; commands -> real execution. Never pass a placeholder or mock-up off as a recording. See `references/real-demo-standard.md` section 8.
+8. **Never label an unfinished video FINAL.** Run `scripts/final-gate.sh`; if it fails, the file is `*-PREVIEW.mp4`, the report lists the exact blockers and a MUST RECORD list, and every other asset keeps being prepared. See `references/final-approval-gate.md`.
+9. **Mandatory "OFFICIAL WEBSITES & REAL VISUAL ASSETS"** section (`data/OFFICIAL-SOURCES.md`) before scenes are designed. See `references/official-sources-and-real-assets.md`.
+10. **Mobile-first proof.** Test frames at phone size (`scripts/mobile-check.sh`) and fix unreadable ones. See `references/mobile-readability.md`.
+11. **Never claim a tool you did not use** (Remotion, Blender, Pexels, Shotcut, Lemo Opuscar, MCPs): verify availability, use together only where they help, credit only what ran.
+12. These additions are additive: all cinematic style rules (robot, kinetic subtitles, transitions, camera, SFX/music mix, branding) stay in force.
 
 ## Workflow
 
@@ -50,7 +56,8 @@ Word-timed kinetic subtitles, style chosen per episode, never over code or key U
 1. Run the pre-render list in `references/quality-checklist.md` and `bash /home/user/emaddawood1991-tech/.claude/skills/agentoon-video-producer/scripts/no-placeholders.sh <episode-dir>`.
 2. Render the MP4, then run `bash ${CLAUDE_SKILL_DIR}/scripts/validate-render.sh <video.mp4> [word_count]` and `bash ${CLAUDE_SKILL_DIR}/scripts/motion-profile.sh <video.mp4>` (details in `references/technical-validation.md`). Fix dead holds and a motion gap longer than ~3 s before delivery.
 3. Review the actual MP4: contact sheets at every scene and seam, the phone-size sheet, audio, timing, spelling, robot acting, branding. Fix significant problems, re-render to a new filename, re-check.
-4. Deliver the file path, a short summary, sources, and anything unverified or version-dependent.
+4. Run `bash /home/user/emaddawood1991-tech/.claude/skills/agentoon-video-producer/scripts/mobile-check.sh <video.mp4>` and review the frames; then `scripts/final-gate.sh <episode-dir> <video.mp4>`. Pass = FINAL; fail = PREVIEW with exact issues.
+5. Deliver the file path, a short summary, sources, and anything unverified or version-dependent.
 
 ### 7. Analytics (only with real metrics)
 When the user provides Instagram/TikTok numbers, analyse retention drop points mapped to scenes, average watch time, completion rate, saves and shares; compare with earlier episodes; propose concrete changes for the next video. Never invent numbers. If none are provided, say so and skip.
@@ -82,5 +89,10 @@ When the user provides Instagram/TikTok numbers, analyse retention drop points m
 - `references/reference-analysis.md` — techniques from the approved reference videos, measured benchmarks, technique↔topic table, kit backlog
 - `references/real-demo-standard.md` — real demos only (no placeholders), truth labels, claim tracing, hook/structure, current CTA, automatic checks
 - `references/remotion-blender.md` — optional Remotion and Blender tools: status, render command for this sandbox, licence, where they help
+- `references/official-sources-and-real-assets.md` — mandatory official URLs/repos/logos/screenshots section and tool-availability honesty
+- `references/mobile-readability.md` — phone-size rules, safe areas, Instagram/TikTok overlays, frame test
+- `references/final-approval-gate.md` — PREVIEW vs FINAL blockers, QC report, MUST RECORD format
+- `scripts/final-gate.sh` — automated FINAL gate (placeholders, slots, sources, QC report, mobile check, filename)
+- `scripts/mobile-check.sh` — phone-size frame extraction and contact sheet (read-only)
 - `scripts/validate-render.sh` — automated post-render checks and phone-size contact sheet
 - `scripts/motion-profile.sh` — motion energy, hard cuts, static stretches, longest gap between motion bursts (read-only)

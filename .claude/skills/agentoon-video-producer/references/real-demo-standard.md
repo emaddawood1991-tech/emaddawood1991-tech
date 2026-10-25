@@ -35,3 +35,8 @@ Existing Outro animation with `Outro.build(..., {cta: "Follow @agentoon.ai", tag
 - **Explain with relations**: states that follow the narration (step chips 1-2-3 lighting as the screen changes), arrows for direction (push/pull), timelines for versions.
 - **No moving light sweeps.** The vertical "scan beam" (`mix-blend-mode:screen` gradient crossing the frame every ~1.25 s) is retired: viewers found it distracting. Do not use any repeated full-height sweep or flash. Transitions (whip/push/iris), purposeful glows (active chip, callout, HEAD marker) stay. Energy now comes from camera moves, typing, state changes and robot acting; the motion-profile bar for the dark Agentoon look is: no static stretch >= 2.5 s, mean energy about 2+ (the old 4+ bar assumed the beams).
 - Honest labels stay on every capture (`VERBATIM`, `ORIGINAL · LOCAL TEST APP`, `RUN ON MY BUILD`).
+
+## 8. Authentic software footage (added after Ep 09 review)
+- Windows tool -> real Windows interface (Run dialog, Settings, the actual MMC window); GitHub -> real github.com / real repo pages; Claude Code -> genuine session activity; AI app -> the real site/interface; commands -> real execution and real results.
+- Never fabricate success, never show a mock-up as a recording, never ship a "FINAL" with missing-footage labels. If footage cannot be obtained in this sandbox (no Windows, github.com unreachable), the video stays a PREVIEW and the report lists exactly what must be recorded and where it plugs in (slots). Keep preparing everything else.
+- Required companion files: `references/official-sources-and-real-assets.md`, `references/mobile-readability.md`, `references/final-approval-gate.md`.

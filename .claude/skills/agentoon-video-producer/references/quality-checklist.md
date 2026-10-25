@@ -107,3 +107,11 @@ Checks: wpm <n>, loudness <LUFS>, true peak <dBTP>, longest silence <s>, motion 
 Sources: <links>
 Unverified / simulated: <list or "none">
 ```
+
+## Final QC (added: required before any video is called FINAL; see final-approval-gate.md)
+**Visual:** no placeholders/missing-footage labels; real software shown (not mock-ups passed as recordings); consistent branding, robot acts in each scene; no large empty zones; no clipped/overlapping text; transitions clean; no moving light sweeps.
+**Technical accuracy:** every command/URL/number verified against the official page or a local run; official URLs listed in `data/OFFICIAL-SOURCES.md`; no secrets/emails; labels truthful.
+**Audio:** ~-15 LUFS, true peak <= -1 dBTP, no clipping; voice above music; no silent gap > ~1 s; SFX match on-screen actions.
+**Mobile:** `scripts/mobile-check.sh` frames reviewed at 360x640; commands readable and fully inside safe areas; captions not over commands (see mobile-readability.md).
+**Storytelling:** hook in 0-3 s shows the real result; narration matches visuals beat for beat; one point at a time; one takeaway; single follow CTA.
+**Gate:** `scripts/final-gate.sh` passes; `data/QC-REPORT.md` filled in; exported MP4 actually inspected.
