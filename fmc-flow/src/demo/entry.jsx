@@ -22,7 +22,8 @@ async function boot() {
   setSql(SQL, saved);
   const db = openDb(':memory:');
   seed(db);
-  const { app } = createApp({ db, backupDir: '/demo/' });
+  const { app, ops } = createApp({ db, backupDir: '/demo/' });
+  setInterval(() => { try { ops.sweepTimers(); } catch { /* ignore */ } }, 10000);
   let cookie = ls.get(CK) || '';
   // Save right after every change so a quick refresh never loses a record.
   const persist = () => { try { ls.set(KEY, b64.enc(db.export())); } catch { /* ignore */ } };

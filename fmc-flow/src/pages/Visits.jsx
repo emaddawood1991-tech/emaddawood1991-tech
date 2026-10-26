@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { api, usePoll, useTicker } from '../api.js';
-import { useI18n, fmtMs } from '../i18n.jsx';
+import { useI18n, fmtWait, waitingView } from '../i18n.jsx';
 import { Chip, Empty, useAction, useToast } from '../ui.jsx';
 import PatientFormModal from './PatientForm.jsx';
-import { CorrectionModal, RoomPickerModal, SessionControls, StartSessionModal, TimelineModal } from './shared.jsx';
+import { CorrectionModal, RoomPickerModal, SessionControls, StartSessionModal, TimelineModal, TimingGrid } from './shared.jsx';
 
 function CheckIn({ config, staff, onDone, canWrite }) {
   const { t, loc, fmt } = useI18n(); const { run, busy } = useAction(); const toast = useToast();
@@ -63,7 +63,7 @@ export default function Visits({ user, staff }) {
   const { t, loc, fmt } = useI18n(); const { run } = useAction();
   const cfgP = usePoll('/config', 10000); const open = usePoll('/visits/open', 4000);
   const now = useTicker(1000);
-  const [modal, setModal] = useState(null);
+  const [modal, setModal] = useState(null); const [expanded, setExpanded] = useState({});
   const sess = usePoll('/sessions/active', 4000);
   const config = cfgP.data; if (!config) return <p className="muted">{t('loading')}</p>;
   const me = staff.find((s) => s.id === user.id);
@@ -80,13 +80,15 @@ export default function Visits({ user, staff }) {
           <thead><tr><th>{t('queue')}</th><th>{t('patient')}</th><th>{t('arrival')}</th><th>{t('room')}</th><th>{t('sessions')}</th><th>{t('actions')}</th></tr></thead>
           <tbody>{open.data.map((v) => {
             const ss = sessionsOf(v.id); const o = v.occupancy;
+            const wv = waitingView(v.timing, now); const isOpen = !!expanded[v.id];
             return (
-              <tr key={v.id}>
+              <Fragment key={v.id}>
+              <tr>
                 <td><span className="q-no">{v.queue?.display || '—'}</span>{v.queue && <div><Chip s={v.queue.status} /></div>}</td>
                 <td><b>{loc(v, 'patient_name') || v.patient_name}</b><div className="small muted">{v.mrn}</div></td>
-                <td>{fmt(v.arrived_at, { hour: '2-digit', minute: '2-digit' })}<div className="small muted">{fmtMs(now - Date.parse(v.arrived_at))}</div></td>
+                <td>{fmt(v.arrived_at, { hour: '2-digit', minute: '2-digit' })}<div className="small muted" title={t('waitTotal')}>{t('waiting')}: {fmtWait(wv.total)}{wv.live ? ' ●' : ''}</div></td>
                 <td>{o ? <><b>{o.room_code}{o.station_code ? `/${o.station_code}` : ''}</b><div className="small muted">{o.entered_at ? t('IN_ROOM') : t('pending')}</div></> : '—'}</td>
-                <td style={{ minWidth: 260 }}>{ss.map((s) => <SessionControls key={s.id} s={{ ...s, patient_name: undefined }} now={now} onChange={reload} />)}</td>
+                <td style={{ minWidth: 260 }}>{ss.map((s) => <SessionControls key={s.id} s={{ ...s, patient_name: undefined }} now={now} onChange={reload} onCorrect={(target) => setModal({ k: 'correct', v, target })} />)}</td>
                 <td><div className="row">
                   {!o && <button className="btn sm" onClick={() => setModal({ k: 'assign', v })}>{t('assignRoom')}</button>}
                   {o && !o.entered_at && <button className="btn sm" onClick={() => post(`/visits/${v.id}/room/enter`, t('enterRoom'))}>{t('enterRoom')}</button>}
@@ -94,10 +96,13 @@ export default function Visits({ user, staff }) {
                   {o?.entered_at && <button className="btn ghost sm" onClick={() => setModal({ k: 'transfer', v })}>{t('transfer')}</button>}
                   {o && ss.length === 0 && <button className="btn ghost sm" onClick={() => post(`/visits/${v.id}/room/exit`, t('exitRoom'))}>{t('exitRoom')}</button>}
                   {!o && ss.length === 0 && canManage && <button className="btn red sm" onClick={() => post(`/visits/${v.id}/checkout`, t('checkOut'))}>{t('checkOut')}</button>}
+                  <button className="btn ghost sm" aria-expanded={isOpen} onClick={() => setExpanded({ ...expanded, [v.id]: !isOpen })}>{isOpen ? t('hideTiming') : t('timing')}</button>
                   <button className="btn ghost sm" onClick={() => setModal({ k: 'timeline', v })}>{t('timeline')}</button>
                   {o && ss.length === 0 && <button className="btn ghost sm" onClick={() => setModal({ k: 'correct', v, target: { kind: 'ROOM_EXIT', entity_id: o.id, started: o.entered_at, open: true } })}>{t('requestCorrection')}</button>}
                 </div></td>
-              </tr>);
+              </tr>
+              {isOpen && <tr className="detail-row"><td colSpan={6}><TimingGrid tm={v.timing} sessions={ss} now={now} /></td></tr>}
+              </Fragment>);
           })}</tbody></table></div>}
       </div>
       {modal?.k === 'assign' && <RoomPickerModal visit={modal.v} config={config} onClose={() => setModal(null)} onDone={reload} />}

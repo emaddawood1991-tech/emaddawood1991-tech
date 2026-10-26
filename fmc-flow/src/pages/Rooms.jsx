@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { api, usePoll } from '../api.js';
+import { api, usePoll, useTicker } from '../api.js';
 import { useI18n } from '../i18n.jsx';
 import { Chip, Modal, useAction } from '../ui.jsx';
+import { RoomTimers } from './shared.jsx';
 
 export default function Rooms({ user }) {
   const { t, loc, fmtDT } = useI18n(); const { run } = useAction();
-  const cfg = usePoll('/config', 4000); const [m, setM] = useState(null); const [hist, setHist] = useState(null);
+  const cfg = usePoll('/config', 4000); const now = useTicker(1000); const [m, setM] = useState(null); const [hist, setHist] = useState(null);
   const canMaint = ['admin', 'supervisor'].includes(user.role);
   const config = cfg.data; if (!config) return <p className="muted">{t('loading')}</p>;
   const setStatus = async (room, status, reason) => { const r = await run(() => api.put(`/rooms/${room.id}/status`, { status, reason }), t(status)); if (r) { setM(null); cfg.reload(); } };
@@ -19,6 +20,7 @@ export default function Rooms({ user }) {
               <div className="row" style={{ justifyContent: 'space-between' }}><b>{r.code}</b><Chip s={r.display_status} /></div>
               <span className="small muted">{loc(r)} · {t('capacity')} {r.effective_capacity}{r.status_reason ? ` · ${r.status_reason}` : ''}</span>
               {r.stations.length > 0 && <div className="beds">{r.stations.map((s) => <span key={s.id} className={`bed ${s.occupied_by ? 'busy' : ''}`}>{s.code}</span>)}</div>}
+              <RoomTimers room={r} now={now} />
               <div className="row">
                 {r.status === 'CLEANING' && <button className="btn sm" onClick={() => setStatus(r, 'AVAILABLE')}>{t('AVAILABLE')}</button>}
                 {r.status === 'AVAILABLE' && r.occupants === 0 && <button className="btn ghost sm" onClick={() => setStatus(r, 'CLEANING')}>{t('CLEANING')}</button>}

@@ -13,11 +13,11 @@ If a change breaks something that worked, stop and restore the last verified che
 
 ## Commands (run in `fmc-flow/`)
 - `npm install`, `npm run build`, `npm start` (http://localhost:3000), `npm run dev:api` + `npm run dev:web`
-- Backend tests: `npm test` (48 tests)
+- Backend tests: `npm test` (60 tests)
 - Browser suites (server on a FRESH synthetic database, e.g. `FMC_DB=/tmp/t.db PORT=3100 node server/index.js`): `NODE_PATH=$(npm root -g) node tests/e2e-smoke.cjs|e2e-registration.cjs|e2e-treatment.cjs|e2e-settings-reports.cjs http://localhost:3100`
 - Demo build: `npm run build:demo` then `node tests/e2e-demo.cjs demo/fmc-demo.html`
 - Security probes: `node --disable-warning=ExperimentalWarning tests/audit-probe.mjs`
-Baseline (26 Oct 2026): 48 backend + 12 + 27 + 21 + 9 browser + 4 demo checks, all passing. See `docs/phase-a/BASELINE_TESTS.md`.
+Baseline (26 Oct 2026, with timers): 60 backend + 12 + 27 + 21 + 9 + 29 (`e2e-timers.cjs`, server needs `FMC_TEST_CLOCK=1`) browser + 4 demo checks, all passing. See `docs/phase-a/BASELINE_TESTS.md`.
 
 ## Hard rules
 - Synthetic data only in development and tests. Never real patient data until the approved security plan and DoH/ADHICS assessment are complete.

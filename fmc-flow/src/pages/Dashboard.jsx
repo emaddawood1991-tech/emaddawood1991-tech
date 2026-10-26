@@ -1,7 +1,7 @@
 import { api, usePoll, useTicker } from '../api.js';
-import { useI18n, fmtMs } from '../i18n.jsx';
+import { useI18n, fmtMs, fmtCountdown, timerView } from '../i18n.jsx';
 import { Chip, Empty, useAction } from '../ui.jsx';
-import { SessionControls, TimelineModal } from './shared.jsx';
+import { SessionControls, TimelineModal, RoomTimers } from './shared.jsx';
 import { useState } from 'react';
 
 export default function Dashboard({ user, staff }) {
@@ -41,7 +41,7 @@ export default function Dashboard({ user, staff }) {
         </div>
         <div className="card"><h2>{t('sessions')}</h2>
           {sessions.length === 0 ? <Empty /> : sessions.map((s) => <div key={s.id} style={{ padding: '6px 0', borderTop: '1px solid rgba(46,85,178,.1)' }}>
-            {user.role === 'reception' ? <div className="row" style={{ justifyContent: 'space-between' }}><span><b>{s.patient_name}</b> · {s.service} · {s.room}</span><span className="timer">{fmtMs(Math.max(0, now - Date.parse(s.started_at) - (s.pauses || []).reduce((a, p) => a + ((p.resumed_at ? Date.parse(p.resumed_at) : now) - Date.parse(p.paused_at)), 0)))}</span></div>
+            {user.role === 'reception' ? <div className="row" style={{ justifyContent: 'space-between' }}><span><b>{s.patient_name}</b> · {s.service} · {s.room}</span><span className="timer">{(() => { const v = timerView(s, now); return v.legacy ? fmtMs(now - Date.parse(s.started_at)) : v.state === 'ELAPSED' ? t('TIMER_ELAPSED') : fmtCountdown(v.remaining); })()}</span></div>
               : <SessionControls s={s} now={now} onChange={sess.reload} />}</div>)}
         </div>
       </div>
@@ -52,6 +52,7 @@ export default function Dashboard({ user, staff }) {
             <span className="small muted">{loc(r)}{r.status_reason ? ` — ${r.status_reason}` : ''}</span>
             {r.stations.length > 0 ? <div className="beds">{r.stations.map((s) => <span key={s.id} className={`bed ${s.occupied_by ? 'busy' : ''}`}>{s.code.replace('BED-', 'B')}</span>)}</div>
               : <span className="small">{r.occupants}/{r.capacity}</span>}
+            <RoomTimers room={r} now={now} />
           </div>))}</div>
       </div>
       <div className="card"><h2>{t('staff')}</h2>

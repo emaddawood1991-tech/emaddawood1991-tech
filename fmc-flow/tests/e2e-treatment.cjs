@@ -65,10 +65,10 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   // ---- orthopedic doctor ----
   const dr = await login('dr.ort'); await dr.click('.nav a:has-text("Visits")'); await dr.click('tr:has-text("Sample Patient A") button:has-text("Start treatment")'); await dr.waitForSelector('#st-service');
   ok((await dr.locator('#st-service option').allTextContents()).join('|') === 'Choose a service|Orthopedic Consultation', 'orthopedic doctor sees only orthopedic services');
-  await dr.selectOption('#st-service', { label: 'Orthopedic Consultation' }); await dr.click('.modal button:has-text("Confirm")'); await dr.waitForSelector('tr:has-text("Sample Patient A") button:has-text("Complete")'); ok(true, 'authorized orthopedic doctor starts orthopedic treatment');
+  await dr.selectOption('#st-service', { label: 'Orthopedic Consultation' }); await dr.click('.modal button:has-text("Confirm")'); await dr.waitForSelector('tr:has-text("Sample Patient A") button:has-text("End early")'); ok(true, 'authorized orthopedic doctor starts orthopedic treatment');
 
   // ---- complete → room exit → check-out ----
-  await dr.click('tr:has-text("Sample Patient A") button:has-text("Complete")'); await dr.waitForSelector('tr:has-text("Sample Patient A") button:has-text("Exit room")');
+  await dr.click('tr:has-text("Sample Patient A") button:has-text("End early")'); await dr.click('tr:has-text("Sample Patient A") button:has-text("Confirm: end early")'); await dr.waitForSelector('tr:has-text("Sample Patient A") button:has-text("Exit room")');
   await dr.click('tr:has-text("Sample Patient A") button:has-text("Exit room")'); await rec.reload(); await rec.waitForSelector('.shell'); await rec.click('.nav a:has-text("Visits")');
   await rec.click('tr:has-text("Sample Patient A") button:has-text("Check out")'); await rec.waitForSelector('tr:has-text("Sample Patient A")', { state: 'detached' });
   const v = await api(rec, '/search?patient=Sample Patient A'); ok(v.body[0].status === 'CHECKED_OUT', 'completion → room exit → check-out leaves the visit CHECKED_OUT');

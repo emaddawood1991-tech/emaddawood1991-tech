@@ -6,7 +6,10 @@ export class HttpError extends Error {
 }
 const fail = (status, code, message, extra) => { throw new HttpError(status, code, message, extra); };
 
-export const now = () => new Date().toISOString();
+// Authoritative clock. `clock.offsetMs` exists only so automated tests can move time forward (never set in production).
+export const clock = { offsetMs: 0, advance(ms) { this.offsetMs += ms; } };
+export const nowMs = () => Date.now() + clock.offsetMs;
+export const now = () => new Date(nowMs()).toISOString();
 const dayOf = (iso, tz) => new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date(iso));
 
 export function makeOps(db) {
@@ -47,7 +50,7 @@ export function makeOps(db) {
   // ---------- durations ----------
   const effEnd = (s) => s.ended_at_corrected || s.ended_at;
   /** Active (non-paused) intervals of a session, in ms epoch. Open sessions run to `asOf`. */
-  function sessionIntervals(s, asOf = Date.now()) {
+  function sessionIntervals(s, asOf = nowMs()) {
     const end = effEnd(s) ? Date.parse(effEnd(s)) : asOf;
     const pauses = q('SELECT * FROM session_pauses WHERE session_id=? ORDER BY paused_at', s.id);
     const out = [];
@@ -71,10 +74,69 @@ export function makeOps(db) {
     if (curE != null) total += curE - curS;
     return total;
   }
+  /** Timer facts derived only from stored timestamps: planned minutes, pauses, start. Never from a browser counter. */
+  function timerOf(s, asOf = nowMs()) {
+    const iv = sessionIntervals(s, asOf); const active = sumMs(iv);
+    if (!s.planned_minutes) return { planned_ms: null, remaining_ms: null, overrun_ms: 0, timer_state: s.status === 'COMPLETED' ? 'DONE' : s.status === 'PAUSED' ? 'PAUSED' : 'RUNNING' };
+    const planned = s.planned_minutes * 60000;
+    if (s.status === 'COMPLETED') return { planned_ms: planned, remaining_ms: 0, overrun_ms: Math.max(0, active - planned), timer_state: 'DONE' };
+    const remaining = Math.max(0, planned - active);
+    const state = s.timer_elapsed_at || remaining === 0 ? 'ELAPSED' : s.status === 'PAUSED' ? 'PAUSED' : 'RUNNING';
+    return { planned_ms: planned, remaining_ms: state === 'ELAPSED' ? 0 : remaining, overrun_ms: state === 'ELAPSED' ? Math.max(0, active - planned) : 0, timer_state: state };
+  }
   const sessionView = (s) => {
-    const iv = sessionIntervals(s);
-    return { ...s, ended_effective: effEnd(s), active_ms: sumMs(iv), pauses: q('SELECT paused_at,resumed_at FROM session_pauses WHERE session_id=? ORDER BY id', s.id) };
+    const asOf = nowMs(); const iv = sessionIntervals(s, asOf);
+    return { ...s, ended_effective: effEnd(s), active_ms: sumMs(iv), ...timerOf(s, asOf), pauses: q('SELECT paused_at,resumed_at FROM session_pauses WHERE session_id=? ORDER BY id', s.id) };
   };
+
+  /** Record (once) that a running timer reached its scheduled end. Does NOT complete the treatment or free the room. */
+  function sweepTimers() {
+    const t = now();
+    const due = q("SELECT id FROM treatment_sessions WHERE status='ACTIVE' AND planned_minutes IS NOT NULL AND timer_elapsed_at IS NULL AND scheduled_end_at IS NOT NULL AND scheduled_end_at <= ?", t);
+    for (const { id } of due) tx(db, () => {
+      const s = one('SELECT * FROM treatment_sessions WHERE id=?', id);
+      if (!s || s.status !== 'ACTIVE' || s.timer_elapsed_at || s.scheduled_end_at > now()) return;
+      run('UPDATE treatment_sessions SET timer_elapsed_at=? WHERE id=?', s.scheduled_end_at, id);
+      const v = getVisit(s.visit_id);
+      event(v, 'TIMER_ELAPSED', null, { sessionId: id, ts: s.scheduled_end_at, data: { planned_minutes: s.planned_minutes, scheduled_end_at: s.scheduled_end_at, recorded_at: now() } });
+      if (setting('timer_auto_close') === '1') closeSession(s.id, null, 'AUTO', s.scheduled_end_at);
+    });
+    return due.length;
+  }
+  /** Shared closing step. `endedAt` is the clinical end; confirmation time is recorded separately. */
+  function closeSession(id, user, kind, endedAt) {
+    const s = one('SELECT * FROM treatment_sessions WHERE id=?', id); const ts = now();
+    run('UPDATE session_pauses SET resumed_at=? WHERE session_id=? AND resumed_at IS NULL', ts, id);
+    run("UPDATE treatment_sessions SET status='COMPLETED', ended_at=?, completion_kind=?, confirmed_at=? WHERE id=?", endedAt, kind, kind === 'AUTO' ? null : ts, id);
+    event(getVisit(s.visit_id), 'TREATMENT_COMPLETED', user, { sessionId: id, ts, data: { kind, ended_at: endedAt, scheduled_end_at: s.scheduled_end_at, planned_minutes: s.planned_minutes, verified: kind !== 'AUTO' } });
+    if (!one("SELECT 1 x FROM treatment_sessions WHERE clinician_id=? AND status IN ('ACTIVE','PAUSED')", s.clinician_id))
+      run("UPDATE staff_availability SET status='AVAILABLE', updated_at=?, updated_by=? WHERE user_id=? AND status='BUSY'", ts, user?.id ?? null, s.clinician_id);
+    audit(user, kind === 'AUTO' ? 'session.auto_close' : 'session.complete', 'session', id, { kind });
+  }
+
+  /** Waiting and visit timing from stored timestamps (first room entry, first treatment start, last end/exit). */
+  function visitTiming(v, asOf = nowMs()) {
+    const ms = (x) => (x ? Date.parse(x) : null);
+    const arrival = ms(v.arrived_at);
+    const entry = ms(one('SELECT MIN(entered_at) t FROM occupancy WHERE visit_id=? AND entered_at IS NOT NULL', v.id)?.t);
+    const sess = q('SELECT * FROM treatment_sessions WHERE visit_id=? ORDER BY started_at', v.id);
+    const start = sess.length ? ms(sess[0].started_at) : null;
+    const ends = sess.filter((x) => x.status === 'COMPLETED').map((x) => ms(effEnd(x)));
+    const lastEnd = ends.length && ends.length === sess.length ? Math.max(...ends) : null;
+    const exits = q('SELECT exited_at, exited_at_corrected FROM occupancy WHERE visit_id=?', v.id);
+    const lastExit = exits.length && exits.every((o) => o.exited_at) ? Math.max(...exits.map((o) => ms(o.exited_at_corrected || o.exited_at))) : null;
+    const departed = ms(v.departed_at_corrected || v.departed_at);
+    const stop = departed ?? asOf; // a closed visit stops counting at departure
+    return {
+      arrival_at: v.arrived_at, room_entry_at: entry ? new Date(entry).toISOString() : null, treatment_start_at: start ? new Date(start).toISOString() : null,
+      last_treatment_end_at: lastEnd ? new Date(lastEnd).toISOString() : null, room_exit_at: lastExit ? new Date(lastExit).toISOString() : null, departed_at: departed ? new Date(departed).toISOString() : null,
+      waiting_before_room_ms: entry ? entry - arrival : Math.max(0, stop - arrival),
+      waiting_in_room_ms: entry ? (start ? start - entry : Math.max(0, stop - entry)) : null,
+      total_waiting_ms: start ? start - arrival : Math.max(0, stop - arrival),
+      waiting_is_live: !start && !departed, in_room_wait_is_live: !!entry && !start && !departed,
+      total_visit_ms: departed ? departed - arrival : null,
+    };
+  }
   function visitDurations(visitId) {
     const sessions = q('SELECT ts.*, sv.name service, sv.name_ar service_ar FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.visit_id=?', visitId);
     const all = sessions.flatMap((s) => sessionIntervals(s));
@@ -89,7 +151,10 @@ export function makeOps(db) {
     const occupants = roomOpenCount(r.id);
     const cap = stations.length || r.capacity;
     const display = r.status !== 'AVAILABLE' ? r.status : occupants > 0 ? 'OCCUPIED' : 'AVAILABLE';
-    return { ...r, stations, occupants, effective_capacity: cap, display_status: display };
+    const timers = q(`SELECT ts.* FROM treatment_sessions ts
+      WHERE ts.room_id=? AND ts.status IN ('ACTIVE','PAUSED') AND EXISTS (SELECT 1 FROM occupancy o WHERE o.visit_id=ts.visit_id AND o.exited_at IS NULL AND o.room_id=ts.room_id)`, r.id)
+      .map((x) => ({ session_id: x.id, station_id: x.station_id, ...timerOf(x), scheduled_end_at: x.scheduled_end_at }));
+    return { ...r, stations, occupants, effective_capacity: cap, display_status: display, timers };
   }
   function checkAssignable(roomId, stationId, excludeOcc) {
     const room = one('SELECT * FROM rooms WHERE id=?', roomId) || fail(404, 'ROOM_NOT_FOUND');
@@ -329,7 +394,7 @@ export function makeOps(db) {
     const ready = !!(occ && occ.entered_at);
     const departments = visitDepartments(v.id).map((id) => {
       const d = one('SELECT id,name,name_ar FROM departments WHERE id=?', id);
-      const services = q('SELECT id,name,name_ar,default_minutes FROM services WHERE department_id=? AND active=1 ORDER BY name', id).map((sv) => {
+      const services = q('SELECT id,name,name_ar,default_minutes,min_minutes,max_minutes,allow_override FROM services WHERE department_id=? AND active=1 ORDER BY name', id).map((sv) => {
         const authorized = q(`SELECT u.id,u.name,u.name_ar,u.role,COALESCE(a.status,'OFF_DUTY') availability FROM staff_services ss JOIN users u ON u.id=ss.user_id
           LEFT JOIN staff_availability a ON a.user_id=u.id WHERE ss.service_id=? AND u.active=1 ORDER BY u.name`, sv.id);
         return { ...sv, authorized, can_start_as_me: authorized.some((c) => c.id === user.id) };
@@ -338,6 +403,7 @@ export function makeOps(db) {
     });
     return {
       visit_id: v.id, ready,
+      patient: one('SELECT id,mrn,name,name_ar FROM patients WHERE id=?', v.patient_id),
       location: occ ? locLabel(occ.room_id, occ.station_id) : null,
       not_ready_reason: !occ ? 'NO_ROOM' : !occ.entered_at ? 'NOT_ENTERED' : null,
       departments,
@@ -345,7 +411,7 @@ export function makeOps(db) {
     };
   }
 
-  function startSession(user, visitId, { serviceId, clinicianId, idemKey }) {
+  function startSession(user, visitId, { serviceId, clinicianId, idemKey, plannedMinutes }) {
     need(user, 'session.run');
     return tx(db, () => {
       if (idemKey) { const ex = one('SELECT * FROM treatment_sessions WHERE idem_key=?', idemKey); if (ex) return sessionView(ex); }
@@ -375,13 +441,19 @@ export function makeOps(db) {
       if (!occ.entered_at) fail(409, 'NOT_IN_ROOM', 'Confirm that the patient has entered the room before starting treatment.');
       if (one("SELECT 1 x FROM treatment_sessions WHERE visit_id=? AND service_id=? AND clinician_id=? AND status IN ('ACTIVE','PAUSED')", v.id, svc.id, clin))
         fail(409, 'SESSION_EXISTS', `${onBehalf ? who.name : 'You'} already ${onBehalf ? 'has' : 'have'} an open “${svc.name}” session for this visit. Complete it first.`);
+      // Planned duration: any whole number of minutes inside the service's configured range.
+      const planned = plannedMinutes == null || plannedMinutes === '' ? svc.default_minutes : Number(plannedMinutes);
+      if (!Number.isInteger(planned)) fail(400, 'VALIDATION', 'Treatment duration must be a whole number of minutes.', { fields: { planned_minutes: 'Enter whole minutes, for example 20, 40, 50, 55 or 60.' } });
+      if (planned < svc.min_minutes || planned > svc.max_minutes) fail(400, 'VALIDATION', `Duration for “${svc.name}” must be between ${svc.min_minutes} and ${svc.max_minutes} minutes.`, { fields: { planned_minutes: `Allowed range: ${svc.min_minutes}–${svc.max_minutes} minutes.` } });
+      if (!svc.allow_override && planned !== svc.default_minutes) fail(400, 'VALIDATION', `The duration for “${svc.name}” is fixed at ${svc.default_minutes} minutes by clinic policy. An administrator can allow overrides in Settings → Services.`, { fields: { planned_minutes: `Fixed at ${svc.default_minutes} minutes.` } });
       const ts = now();
-      const r = run('INSERT INTO treatment_sessions(idem_key,visit_id,patient_id,service_id,clinician_id,room_id,station_id,started_at) VALUES (?,?,?,?,?,?,?,?)',
-        idemKey || null, v.id, v.patient_id, svc.id, clin, occ.room_id, occ.station_id, ts);
+      const endAt = new Date(Date.parse(ts) + planned * 60000).toISOString();
+      const r = run('INSERT INTO treatment_sessions(idem_key,visit_id,patient_id,service_id,clinician_id,room_id,station_id,started_at,planned_minutes,scheduled_end_at) VALUES (?,?,?,?,?,?,?,?,?,?)',
+        idemKey || null, v.id, v.patient_id, svc.id, clin, occ.room_id, occ.station_id, ts, planned, endAt);
       const id = Number(r.lastInsertRowid);
-      event(v, 'TREATMENT_STARTED', user, { sessionId: id, occupancyId: occ.id, ts, data: { service: svc.name, clinician_id: clin, clinician: who.name, on_behalf: onBehalf, location: locLabel(occ.room_id, occ.station_id) } });
+      event(v, 'TREATMENT_STARTED', user, { sessionId: id, occupancyId: occ.id, ts, data: { service: svc.name, clinician_id: clin, clinician: who.name, on_behalf: onBehalf, location: locLabel(occ.room_id, occ.station_id), planned_minutes: planned, scheduled_end_at: endAt } });
       run("UPDATE staff_availability SET status='BUSY', updated_at=?, updated_by=? WHERE user_id=? AND status='AVAILABLE'", ts, user.id, clin);
-      audit(user, 'session.start', 'session', id, { visit: v.id, service: svc.id, clinician: clin, on_behalf: onBehalf });
+      audit(user, 'session.start', 'session', id, { visit: v.id, service: svc.id, clinician: clin, on_behalf: onBehalf, planned_minutes: planned });
       return sessionView(one('SELECT * FROM treatment_sessions WHERE id=?', id));
     });
   }
@@ -393,14 +465,16 @@ export function makeOps(db) {
     return s;
   }
   function pauseSession(user, id) {
+    sweepTimers();
     return tx(db, () => {
       const s = ownSession(user, id);
       if (s.status === 'PAUSED') return sessionView(s);
       if (s.status !== 'ACTIVE') fail(409, 'SESSION_NOT_ACTIVE');
+      if (s.timer_elapsed_at) fail(409, 'TIMER_ELAPSED', 'The scheduled treatment time has already elapsed. Confirm completion, or end the treatment, instead of pausing.');
       const ts = now();
       run("UPDATE treatment_sessions SET status='PAUSED' WHERE id=?", id);
       run('INSERT INTO session_pauses(session_id,paused_at) VALUES (?,?)', id, ts);
-      event(getVisit(s.visit_id), 'TREATMENT_PAUSED', user, { sessionId: id, ts });
+      event(getVisit(s.visit_id), 'TREATMENT_PAUSED', user, { sessionId: id, ts, data: { remaining_ms: timerOf(one('SELECT * FROM treatment_sessions WHERE id=?', id), Date.parse(ts)).remaining_ms } });
       return sessionView(one('SELECT * FROM treatment_sessions WHERE id=?', id));
     });
   }
@@ -410,28 +484,35 @@ export function makeOps(db) {
       if (s.status === 'ACTIVE') return sessionView(s);
       if (s.status !== 'PAUSED') fail(409, 'SESSION_NOT_PAUSED');
       const ts = now();
-      run("UPDATE treatment_sessions SET status='ACTIVE' WHERE id=?", id);
+      // The planned duration is ACTIVE treatment time, so the end moves out by the length of the pause.
+      let endAt = s.scheduled_end_at;
+      if (s.planned_minutes) endAt = new Date(Date.parse(ts) + Math.max(0, s.planned_minutes * 60000 - sumMs(sessionIntervals(s, Date.parse(ts))))).toISOString();
+      run("UPDATE treatment_sessions SET status='ACTIVE', scheduled_end_at=? WHERE id=?", endAt, id);
       run('UPDATE session_pauses SET resumed_at=? WHERE session_id=? AND resumed_at IS NULL', ts, id);
-      event(getVisit(s.visit_id), 'TREATMENT_RESUMED', user, { sessionId: id, ts });
+      event(getVisit(s.visit_id), 'TREATMENT_RESUMED', user, { sessionId: id, ts, data: { scheduled_end_at: endAt } });
       return sessionView(one('SELECT * FROM treatment_sessions WHERE id=?', id));
     });
   }
-  function completeSession(user, id) {
+  /** Confirm completion. mode: 'now' (default; the treatment ran until this confirmation) or 'scheduled' (clinician confirms it ended at the scheduled time). */
+  function completeSession(user, id, { mode } = {}) {
+    sweepTimers();
     return tx(db, () => {
       const s = ownSession(user, id);
       if (s.status === 'COMPLETED') return sessionView(s);
       const ts = now();
-      run('UPDATE session_pauses SET resumed_at=? WHERE session_id=? AND resumed_at IS NULL', ts, id);
-      run("UPDATE treatment_sessions SET status='COMPLETED', ended_at=? WHERE id=?", ts, id);
-      const v = getVisit(s.visit_id);
-      event(v, 'TREATMENT_COMPLETED', user, { sessionId: id, ts });
-      if (!one("SELECT 1 x FROM treatment_sessions WHERE clinician_id=? AND status IN ('ACTIVE','PAUSED')", s.clinician_id))
-        run("UPDATE staff_availability SET status='AVAILABLE', updated_at=?, updated_by=? WHERE user_id=? AND status='BUSY'", ts, user.id, s.clinician_id);
-      audit(user, 'session.complete', 'session', id);
+      let kind = null; let endedAt = ts;
+      if (s.planned_minutes) {
+        if (s.timer_elapsed_at) { if (mode === 'scheduled') { kind = 'FULL'; endedAt = s.scheduled_end_at; } else kind = 'OVERRUN'; }
+        else kind = 'EARLY';
+      }
+      if (mode && !['now', 'scheduled'].includes(mode)) fail(400, 'VALIDATION', 'Unknown completion mode.');
+      closeSession(id, user, kind, endedAt);
+      if (!kind) run('UPDATE treatment_sessions SET confirmed_at=? WHERE id=?', ts, id);
       return sessionView(one('SELECT * FROM treatment_sessions WHERE id=?', id));
     });
   }
   function activeSessions(user) {
+    sweepTimers();
     const s = deptScope(user);
     return q(`SELECT ts.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, sv.name service, sv.name_ar service_ar, u.name clinician
       FROM treatment_sessions ts JOIN patients p ON p.id=ts.patient_id JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id
@@ -448,7 +529,8 @@ export function makeOps(db) {
       .map((e) => ({ ...e, data: JSON.parse(e.data) }));
     const corrections = q(`SELECT c.*, ur.name requester, ud.name decider FROM corrections c JOIN users ur ON ur.id=c.requested_by LEFT JOIN users ud ON ud.id=c.decided_by WHERE c.visit_id=? ORDER BY c.id`, v.id);
     const patient = one('SELECT id,mrn,name,name_ar FROM patients WHERE id=?', v.patient_id);
-    return { visit: v, patient, events, corrections, durations: visitDurations(v.id),
+    sweepTimers();
+    return { visit: v, patient, events, corrections, durations: visitDurations(v.id), timing: visitTiming(v),
       occupancy: q('SELECT o.*, r.code room_code, st.code station_code FROM occupancy o JOIN rooms r ON r.id=o.room_id LEFT JOIN stations st ON st.id=o.station_id WHERE o.visit_id=? ORDER BY o.id', v.id) };
   }
 
@@ -491,7 +573,7 @@ export function makeOps(db) {
       const cMs = Date.parse(correctedTs);
       if (Number.isNaN(cMs)) fail(400, 'BAD_TIMESTAMP');
       if (cMs < startMs) fail(400, 'BEFORE_START', 'Corrected time cannot be before the start');
-      if (cMs > Date.now()) fail(400, 'IN_FUTURE', 'Corrected time cannot be in the future');
+      if (cMs > nowMs()) fail(400, 'IN_FUTURE', 'Corrected time cannot be in the future');
       if (one("SELECT 1 x FROM corrections WHERE kind=? AND entity_id=? AND status='PENDING'", kind, entityId)) fail(409, 'CORRECTION_PENDING', 'A correction is already pending');
       const ts = now();
       const r = run("INSERT INTO corrections(kind,entity_id,visit_id,original_ts,corrected_ts,reason,requested_by,requested_at,status) VALUES (?,?,?,?,?,?,?,?,'PENDING')",
@@ -533,7 +615,7 @@ export function makeOps(db) {
     sessionIntervals, unionMs, sumMs, visitDurations, sessionView, roomState, visitVisible, needVisible,
     assignRoom, enterRoom, exitRoom, transferRoom, setRoomStatus,
     checkIn, checkOut, callNext, setPriority, queueList,
-    treatmentOptions, visitDepartments, startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
+    sweepTimers, visitTiming, timerOf, treatmentOptions, visitDepartments, startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
     timeline, requestCorrection, decideCorrection, locLabel,
   };
 }

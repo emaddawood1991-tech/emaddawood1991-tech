@@ -96,3 +96,15 @@ input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--ba
 .modal h3 { margin: 4px 0 -2px; color: var(--navy); }
 :focus-visible { outline: 3px solid rgba(46, 85, 178, .55); outline-offset: 2px; }
 @media (max-width: 520px) { .modal { padding: 14px; } .form-grid.two { grid-template-columns: 1fr; } .patient-row { flex-direction: column; } }
+
+/* Treatment timers and visit timing */
+.sess { padding: 8px 0; } .sess + .sess { border-top: 1px solid rgba(46, 85, 178, .12); }
+.sess-elapsed { background: rgba(209, 47, 54, .06); border-radius: 12px; padding: 8px 10px; }
+.timer { font-variant-numeric: tabular-nums; }
+.tgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px 14px; margin: 0; }
+.tgrid > div { background: rgba(255, 255, 255, .6); border: 1px solid rgba(46, 85, 178, .12); border-radius: 12px; padding: 8px 10px; min-width: 0; }
+.tgrid dt { font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; margin: 0; }
+.tgrid dd { margin: 2px 0 0; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.tgrid.compact { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.detail-row td { background: rgba(255, 255, 255, .35); }
+.rtimers { display: grid; gap: 2px; font-variant-numeric: tabular-nums; }

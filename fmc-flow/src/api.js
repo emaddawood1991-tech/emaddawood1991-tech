@@ -22,7 +22,8 @@ async function req(method, path, body) {
   }
   let json = null;
   try { json = await res.json(); } catch { /* empty */ }
-  setNet({ offline: false, lastSync: Date.now(), ...(json?.server_time ? { offset: Date.parse(json.server_time) - Date.now() } : {}) });
+  const st = json?.server_time || res.headers?.get?.('x-server-time');
+  setNet({ offline: false, lastSync: Date.now(), ...(st && !Number.isNaN(Date.parse(st)) ? { offset: Date.parse(st) - Date.now() } : {}) });
   if (!res.ok) throw new ApiError(res.status, json?.error?.code || 'ERROR', json?.error?.message || res.statusText, json?.error);
   return json;
 }

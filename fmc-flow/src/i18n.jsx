@@ -41,7 +41,16 @@ const EN = {
   notAuthorizedTag: 'not authorized', noClinicianTag: 'no authorized clinician', treatmentStarted: 'Treatment started', chooseService: 'Choose a service', authorizedClinicians: 'Authorized clinicians',
   noAuthorizedChip: 'No authorized clinician', authHelp: 'Authorization is granted per person under Staff → Edit. Administrator and supervisor roles have no clinical authorization unless you assign it explicitly.',
   authNote: 'Availability is shown for information only; it never grants authorization.', serviceDept: 'Department',
-  requiredForCheckIn: 'required to check in', searchHint: 'Search by MRN, English or Arabic name, or phone number',
+  requiredForCheckIn: 'required to check in', minShort: 'min', durationMin: 'Treatment duration (minutes)', durationHint: 'Allowed {min}–{max} minutes. Default {def}.', durationFixed: 'Fixed at {def} minutes by clinic policy.', durationInvalid: 'Enter whole minutes between {min} and {max}.',
+  summaryPatient: 'Patient', summaryRoom: 'Room', planned: 'Planned', remaining: 'Remaining', scheduledEnd: 'Scheduled end', actualEnd: 'Actual end', roomEntry: 'Room entry', roomExit: 'Room exit', treatmentStart: 'Treatment start',
+  waitBefore: 'Waiting before room', waitInRoom: 'Waiting in room', waitTotal: 'Total waiting', totalVisit: 'Total visit', timing: 'Timing', hideTiming: 'Hide timing', arrivalAt: 'Arrival',
+  TIMER_RUNNING: 'Running', TIMER_PAUSED: 'Timer paused', TIMER_ELAPSED: 'Time elapsed', TIMER_DONE: 'Completed', endEarly: 'End early', confirmEndEarly: 'Confirm: end early', confirmCompletion: 'Confirm completion', continuedEndNow: 'Treatment continued — end now',
+  elapsedNotice: 'Scheduled treatment time has elapsed. Confirm completion to record the treatment as finished.', elapsedToast: 'Scheduled time elapsed', overtime: 'Overtime', pauseTimer: 'Pause timer', resumeTimer: 'Resume timer',
+  completionKind_FULL: 'Completed at scheduled time (confirmed)', completionKind_OVERRUN: 'Overran the plan (confirmed)', completionKind_EARLY: 'Ended early (confirmed)', completionKind_AUTO: 'Auto-closed (not verified)',
+  timerAutoClose: 'Automatically close treatment when the scheduled time elapses (recorded as NOT clinician-verified; the room is never freed automatically)', allowOverride: 'Clinicians may change duration', minMin: 'Min minutes', maxMin: 'Max minutes', defaultMin: 'Default minutes',
+  repWaitBefore: 'Avg waiting before room', repWaitIn: 'Avg waiting in room', repWaitTotal: 'Avg total waiting', repPlanned: 'Avg planned minutes', repActual: 'Avg confirmed minutes', repOverruns: 'Overruns', repEarly: 'Early completions', repFull: 'Completed on time', repAuto: 'Auto-closed (unverified)', repOcc: 'Avg room occupancy', repVisit: 'Avg total visit', filters: 'Filters', apply: 'Apply', patientFilter: 'Patient name or MRN', allRooms: 'All rooms', allServices: 'All services', allClinicians: 'All clinicians', timeLeft: 'left',
+  ev_TIMER_ELAPSED: 'Scheduled time elapsed',
+  searchHint: 'Search by MRN, English or Arabic name, or phone number',
 };
 const AR = {
   appName: 'نظام تدفق المرضى', tagline: 'الرعاية المثالية', signIn: 'تسجيل الدخول', username: 'اسم المستخدم', password: 'كلمة المرور', signOut: 'تسجيل الخروج',
@@ -84,7 +93,16 @@ const AR = {
   notAuthorizedTag: 'غير مصرّح', noClinicianTag: 'لا أخصائي مصرّح', treatmentStarted: 'بدأ العلاج', chooseService: 'اختر الخدمة', authorizedClinicians: 'الأخصائيون المصرّح لهم',
   noAuthorizedChip: 'لا أخصائي مصرّح', authHelp: 'يُمنح التصريح لكل شخص من الموظفون ← تعديل. أدوار المسؤول والمشرف بلا تصريح سريري ما لم تمنحه صراحةً.',
   authNote: 'الإتاحة للعلم فقط ولا تمنح التصريح أبدًا.', serviceDept: 'القسم',
-  requiredForCheckIn: 'مطلوب لتسجيل الوصول', searchHint: 'ابحث برقم السجل أو الاسم بالعربية أو الإنجليزية أو رقم الهاتف',
+  requiredForCheckIn: 'مطلوب لتسجيل الوصول', minShort: 'د', durationMin: 'مدة العلاج (بالدقائق)', durationHint: 'المسموح {min}–{max} دقيقة. الافتراضي {def}.', durationFixed: 'المدة ثابتة عند {def} دقيقة حسب سياسة المركز.', durationInvalid: 'أدخل عدد دقائق صحيحًا بين {min} و{max}.',
+  summaryPatient: 'المريض', summaryRoom: 'الغرفة', planned: 'المخطط', remaining: 'المتبقي', scheduledEnd: 'النهاية المجدولة', actualEnd: 'النهاية الفعلية', roomEntry: 'دخول الغرفة', roomExit: 'الخروج من الغرفة', treatmentStart: 'بدء العلاج',
+  waitBefore: 'الانتظار قبل الغرفة', waitInRoom: 'الانتظار داخل الغرفة', waitTotal: 'إجمالي الانتظار', totalVisit: 'إجمالي الزيارة', timing: 'التوقيت', hideTiming: 'إخفاء التوقيت', arrivalAt: 'الوصول',
+  TIMER_RUNNING: 'يعمل', TIMER_PAUSED: 'المؤقت متوقف', TIMER_ELAPSED: 'انتهى الوقت', TIMER_DONE: 'مكتمل', endEarly: 'إنهاء مبكر', confirmEndEarly: 'تأكيد: إنهاء مبكر', confirmCompletion: 'تأكيد الإكمال', continuedEndNow: 'استمر العلاج — إنهاء الآن',
+  elapsedNotice: 'انتهى وقت العلاج المجدول. أكّد الإكمال لتسجيل العلاج كمنتهٍ.', elapsedToast: 'انتهى الوقت المجدول', overtime: 'وقت إضافي', pauseTimer: 'إيقاف المؤقت', resumeTimer: 'استئناف المؤقت',
+  completionKind_FULL: 'اكتمل في الوقت المجدول (مؤكد)', completionKind_OVERRUN: 'تجاوز الخطة (مؤكد)', completionKind_EARLY: 'انتهى مبكرًا (مؤكد)', completionKind_AUTO: 'أُغلق تلقائيًا (غير مؤكد)',
+  timerAutoClose: 'إغلاق العلاج تلقائيًا عند انتهاء الوقت المجدول (يُسجَّل كغير مؤكد سريريًا؛ ولا تُفرَّغ الغرفة تلقائيًا)', allowOverride: 'يسمح للأخصائي بتغيير المدة', minMin: 'أقل مدة', maxMin: 'أقصى مدة', defaultMin: 'المدة الافتراضية',
+  repWaitBefore: 'متوسط الانتظار قبل الغرفة', repWaitIn: 'متوسط الانتظار داخل الغرفة', repWaitTotal: 'متوسط إجمالي الانتظار', repPlanned: 'متوسط الدقائق المخططة', repActual: 'متوسط الدقائق المؤكدة', repOverruns: 'التجاوزات', repEarly: 'إنهاء مبكر', repFull: 'اكتمل في موعده', repAuto: 'إغلاق تلقائي (غير مؤكد)', repOcc: 'متوسط إشغال الغرفة', repVisit: 'متوسط مدة الزيارة', filters: 'عوامل التصفية', apply: 'تطبيق', patientFilter: 'اسم المريض أو رقم الملف', allRooms: 'كل الغرف', allServices: 'كل الخدمات', allClinicians: 'كل الأخصائيين', timeLeft: 'متبقي',
+  ev_TIMER_ELAPSED: 'انتهى الوقت المجدول',
+  searchHint: 'ابحث برقم السجل أو الاسم بالعربية أو الإنجليزية أو رقم الهاتف',
 };
 const DICT = { en: EN, ar: AR };
 const Ctx = createContext(null);
@@ -104,4 +122,21 @@ export function LangProvider({ children }) {
 }
 export const useI18n = () => useContext(Ctx);
 
+/** Countdown/stopwatch as minutes:seconds (60 minutes shows 60:00, never rolls into hours). */
+export const fmtCountdown = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
+/** Waiting time in minutes and hours, e.g. "12 min 05 s" or "1 h 05 min". */
+export const fmtWait = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60); return h ? `${h} h ${String(m).padStart(2, '0')} min` : `${m} min ${String(s % 60).padStart(2, '0')} s`; };
+/** Waiting values from stored timestamps; ticks live until the next milestone is reached. */
+export function waitingView(tm, now) {
+  const at = (x) => (x ? Date.parse(x) : null); const arrival = at(tm.arrival_at); const entry = at(tm.room_entry_at); const start = at(tm.treatment_start_at); const stop = at(tm.departed_at) ?? now;
+  return { before: entry ? entry - arrival : Math.max(0, stop - arrival), inRoom: entry ? (start ? start - entry : Math.max(0, stop - entry)) : null, total: start ? start - arrival : Math.max(0, stop - arrival), live: !start && !tm.departed_at };
+}
+/** Countdown state from stored fields; `now` is the server-aligned clock. Never negative. */
+export function timerView(s, now) {
+  if (!s.planned_minutes) return { legacy: true, state: s.status === 'PAUSED' ? 'PAUSED' : 'RUNNING' };
+  if (s.status === 'COMPLETED') return { state: 'DONE', remaining: 0, overtime: 0 };
+  if (s.status === 'PAUSED') return { state: 'PAUSED', remaining: s.remaining_ms ?? 0, overtime: 0 };
+  const end = Date.parse(s.scheduled_end_at); const left = end - now;
+  return left <= 0 || s.timer_state === 'ELAPSED' ? { state: 'ELAPSED', remaining: 0, overtime: Math.max(0, now - end) } : { state: 'RUNNING', remaining: left, overtime: 0 };
+}
 export const fmtMs = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60); return `${h ? `${h}:` : ''}${String(m).padStart(h ? 2 : 1, '0')}:${String(s % 60).padStart(2, '0')}`; };

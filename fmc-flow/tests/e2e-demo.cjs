@@ -25,7 +25,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   await page.waitForSelector('tr:has-text("Sample Patient B") button:has-text("Pause")'); await page.waitForTimeout(2200);
   await page.reload(); await page.waitForSelector('.shell'); ok(true, 'still signed in after refresh');
   await page.click('.nav a:has-text("Sessions")'); await page.waitForSelector('.card > h2:has-text("Sessions")'); await page.waitForSelector('.timer');
-  const t = await page.locator('.timer').first().textContent(); ok(/0:0[2-9]|0:[1-5]\d/.test(t), `session survived refresh with timer ${t}`);
+  const t = await page.locator('.timer').first().textContent(); ok(/^4[0-4]:\d\d$/.test(t), `countdown continued after refresh (${t} remaining of 45:00)`);
   await page.screenshot({ path: `${out}/d1-sessions.png` });
   await page.click('button:has-text("Sign out")'); await login('admin');
   await page.click('.nav a:has-text("System")'); await page.waitForSelector('text=System health'); await page.screenshot({ path: `${out}/d2-system.png` });

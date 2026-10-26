@@ -52,7 +52,7 @@ async function login(browser, user) {
   await pt.page.waitForSelector('.card > h2:has-text("Sessions")'); await pt.page.waitForSelector('.timer'); await pt.page.waitForTimeout(500);
   const after = await pt.page.locator('.timer').first().textContent();
   const secs = (s) => s.split(':').reduce((a, b) => a * 60 + Number(b), 0);
-  assert(secs(after) >= secs(before), `session survived browser refresh (timer ${before} → ${after}, not reset)`);
+  assert(secs(after) <= secs(before) && secs(after) > 600, `countdown continued after browser refresh (remaining ${before} → ${after}, not reset to full)`);
   assert(await pt.page.locator('.timer').count() === 1, 'no duplicate session after refresh');
   await pt.page.screenshot({ path: `${out}/03-sessions.png` });
 
@@ -67,7 +67,7 @@ async function login(browser, user) {
   await pt.ctx.setOffline(false);
   await pt.page.waitForSelector('.banner.bad', { state: 'detached', timeout: 15000 });
   assert(true, 'reconnects and clears the banner');
-  await pt.page.click('button:has-text("Complete")');
+  await pt.page.click('button:has-text("End early")'); await pt.page.click('button:has-text("Confirm: end early")');
   await pt.page.waitForSelector('text=Nothing here yet', { timeout: 8000 });
 
   await rec.page.click('tr:has-text("Sample Patient B") button:has-text("Timeline")');

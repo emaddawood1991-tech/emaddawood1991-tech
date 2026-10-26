@@ -2,7 +2,7 @@ import express from 'express';
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { openDb, tx } from './db.js';
-import { makeOps, HttpError, now } from './ops.js';
+import { makeOps, HttpError, now, nowMs, clock } from './ops.js';
 import { makeRegistration } from './registration.js';
 import { can, deptScope } from './perms.js';
 
@@ -23,8 +23,17 @@ const CONFIG = {
   departments: ['name', 'name_ar', 'queue_prefix', 'queue_start', 'queue_reset_daily', 'active'],
   rooms: ['department_id', 'code', 'name', 'name_ar', 'capacity', 'cleaning_after_use', 'active'],
   stations: ['room_id', 'code', 'active'],
-  services: ['department_id', 'name', 'name_ar', 'default_minutes', 'active'],
+  services: ['department_id', 'name', 'name_ar', 'default_minutes', 'min_minutes', 'max_minutes', 'allow_override', 'active'],
 };
+
+function checkDurationRange(b) {
+  const n = (v) => (v === undefined || v === null || v === '' ? null : Number(v));
+  const [d, lo, hi] = [n(b.default_minutes), n(b.min_minutes), n(b.max_minutes)];
+  for (const [k, v] of [['Default', d], ['Minimum', lo], ['Maximum', hi]]) if (v !== null && (!Number.isInteger(v) || v < 1 || v > 600)) throw new HttpError(400, 'VALIDATION', `${k} duration must be a whole number of minutes between 1 and 600.`);
+  if (lo !== null && hi !== null && lo > hi) throw new HttpError(400, 'VALIDATION', 'The minimum duration cannot be longer than the maximum.');
+  if (d !== null && lo !== null && d < lo) throw new HttpError(400, 'VALIDATION', 'The default duration is below the minimum.');
+  if (d !== null && hi !== null && d > hi) throw new HttpError(400, 'VALIDATION', 'The default duration is above the maximum.');
+}
 
 export function createApp({ db = openDb(), backupDir = new URL('../data/backups/', import.meta.url).pathname, staticDir } = {}) {
   const ops = makeOps(db);
@@ -51,7 +60,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     if (tok) {
       const s = one('SELECT * FROM auth_sessions WHERE token_hash=?', sha(tok));
       const maxIdle = Number(ops.setting('session_idle_hours') || 12) * 3600e3;
-      if (s && Date.now() - Date.parse(s.last_seen) < maxIdle) {
+      if (s && nowMs() - Date.parse(s.last_seen) < maxIdle) {
         const u = one('SELECT id,username,name,name_ar,role,department_id,active FROM users WHERE id=?', s.user_id);
         if (u?.active) { req.user = u; run('UPDATE auth_sessions SET last_seen=? WHERE token_hash=?', now(), s.token_hash); }
       }
@@ -65,6 +74,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     if (req.method !== 'GET' && req.headers['x-requested-with'] !== 'fmc') return next(new HttpError(403, 'CSRF', 'Missing request header'));
     next();
   };
+  app.use('/api', (_req, res, next) => { res.set('X-Server-Time', now()); next(); }); // every response carries the server clock so clients stay in step
   app.use('/api', authenticate);
 
   app.post('/api/login', (req, res) => {
@@ -117,6 +127,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     app.post(`/api/config/${table}`, guard('config.manage'), (req, res) => {
       const vals = cols.filter((c) => req.body[c] !== undefined);
       if (!vals.length) throw new HttpError(400, 'EMPTY');
+      if (table === 'services') checkDurationRange(req.body);
       let r;
       try { r = run(`INSERT INTO ${table}(${vals.join(',')}) VALUES (${vals.map(() => '?').join(',')})`, ...vals.map((c) => req.body[c])); }
       catch (e) { throw new HttpError(400, 'INVALID', String(e.message).replace(/^.*constraint failed: /, '')); }
@@ -126,6 +137,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     app.patch(`/api/config/${table}/:id`, guard('config.manage'), (req, res) => {
       const vals = cols.filter((c) => req.body[c] !== undefined);
       if (!vals.length) throw new HttpError(400, 'EMPTY');
+      if (table === 'services') { const cur = one('SELECT default_minutes,min_minutes,max_minutes FROM services WHERE id=?', req.params.id) || {}; checkDurationRange({ ...cur, ...req.body }); }
       if (table === 'rooms' && req.body.active === 0 && ops.one('SELECT 1 x FROM occupancy WHERE room_id=? AND exited_at IS NULL', req.params.id)) throw new HttpError(409, 'ROOM_OCCUPIED');
       try { run(`UPDATE ${table} SET ${vals.map((c) => `${c}=?`).join(',')} WHERE id=?`, ...vals.map((c) => req.body[c]), req.params.id); }
       catch (e) { throw new HttpError(400, 'INVALID', String(e.message).replace(/^.*constraint failed: /, '')); }
@@ -134,7 +146,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     });
   }
   app.patch('/api/config/settings', guard('config.manage'), (req, res) => {
-    const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin'];
+    const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin', 'timer_auto_close'];
     const allowed = ['timezone', 'session_idle_hours', 'gender_options', ...flags];
     const body = req.body || {};
     for (const [k, v] of Object.entries(body)) {
@@ -238,6 +250,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.post('/api/visits/checkin', guard(), (req, res) => res.status(201).json(ops.checkIn(req.user, req.body)));
   app.post('/api/visits/:id/checkout', guard(), (req, res) => res.json(ops.checkOut(req.user, Number(req.params.id))));
   app.get('/api/visits/open', guard('patients.read'), (req, res) => {
+    ops.sweepTimers();
     const s = deptScope(req.user);
     const rows = q(`SELECT v.*, p.name patient_name, p.name_ar patient_name_ar, p.mrn FROM visits v JOIN patients p ON p.id=v.patient_id WHERE v.status='OPEN' ORDER BY v.arrived_at`)
       .filter((v) => s == null || ops.visitVisible(req.user, v.id));
@@ -246,6 +259,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       queue: one("SELECT display,status,department_id FROM queue_entries WHERE visit_id=? AND status IN ('WAITING','CALLED','IN_ROOM') ORDER BY id DESC LIMIT 1", v.id) || null,
       occupancy: one(`SELECT o.id,o.room_id,o.station_id,o.entered_at,r.code room_code,st.code station_code FROM occupancy o JOIN rooms r ON r.id=o.room_id LEFT JOIN stations st ON st.id=o.station_id WHERE o.visit_id=? AND o.exited_at IS NULL`, v.id) || null,
       open_sessions: q("SELECT id,status,service_id FROM treatment_sessions WHERE visit_id=? AND status IN ('ACTIVE','PAUSED')", v.id),
+      timing: ops.visitTiming(v),
     })));
   });
   app.get('/api/visits/:id/timeline', guard('patients.read'), (req, res) => res.json(ops.timeline(req.user, Number(req.params.id))));
@@ -265,10 +279,10 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   // ---- sessions ----
   app.get('/api/sessions/active', guard('patients.read'), (req, res) => res.json({ server_time: now(), sessions: ops.activeSessions(req.user) }));
   app.get('/api/visits/:id/treatment-options', guard('session.run'), (req, res) => res.json(ops.treatmentOptions(req.user, Number(req.params.id))));
-  app.post('/api/visits/:id/sessions', guard(), (req, res) => res.status(201).json(ops.startSession(req.user, Number(req.params.id), { serviceId: req.body.service_id, clinicianId: req.body.clinician_id, idemKey: req.body.idem_key })));
+  app.post('/api/visits/:id/sessions', guard(), (req, res) => res.status(201).json(ops.startSession(req.user, Number(req.params.id), { serviceId: req.body.service_id, clinicianId: req.body.clinician_id, idemKey: req.body.idem_key, plannedMinutes: req.body.planned_minutes })));
   app.post('/api/sessions/:id/pause', guard(), (req, res) => res.json(ops.pauseSession(req.user, Number(req.params.id))));
   app.post('/api/sessions/:id/resume', guard(), (req, res) => res.json(ops.resumeSession(req.user, Number(req.params.id))));
-  app.post('/api/sessions/:id/complete', guard(), (req, res) => res.json(ops.completeSession(req.user, Number(req.params.id))));
+  app.post('/api/sessions/:id/complete', guard(), (req, res) => res.json(ops.completeSession(req.user, Number(req.params.id), { mode: req.body.mode })));
 
   // ---- corrections ----
   app.get('/api/corrections', guard('corrections.request'), (req, res) => {
@@ -300,48 +314,83 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   });
 
   // ---- reports ----
-  function reportData(user, from, to) {
+  /** Visits and sessions matching the filters, limited to what the user may see. Timestamps are stored server times. */
+  function reportScope(user, f = {}) {
     const tz = ops.setting('timezone');
     const day = (iso) => new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date(iso));
-    const inRange = (iso) => iso && (!from || day(iso) >= from) && (!to || day(iso) <= to);
-    const s = deptScope(user);
-    const visits = q('SELECT * FROM visits').filter((v) => inRange(v.arrived_at) && (s == null || ops.visitVisible(user, v.id)));
+    const inRange = (iso) => iso && (!f.from || day(iso) >= f.from) && (!f.to || day(iso) <= f.to);
+    const sc = deptScope(user); const num = (x) => (x === undefined || x === '' ? null : Number(x));
+    const [dep, svc, cli, room] = [num(f.department_id), num(f.service_id), num(f.clinician_id), num(f.room_id)];
+    const term = String(f.patient || '').trim().toLowerCase();
+    const visits = q('SELECT v.*, p.mrn, p.name patient_name FROM visits v JOIN patients p ON p.id=v.patient_id ORDER BY v.arrived_at DESC').filter((v) => {
+      if (!inRange(v.arrived_at) || (sc != null && !ops.visitVisible(user, v.id))) return false;
+      if (term && !`${v.patient_name} ${v.mrn}`.toLowerCase().includes(term)) return false;
+      if (dep != null && !one('SELECT 1 x FROM queue_entries WHERE visit_id=? AND department_id=? UNION SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.visit_id=? AND sv.department_id=?', v.id, dep, v.id, dep)) return false;
+      if (svc != null && !one('SELECT 1 x FROM treatment_sessions WHERE visit_id=? AND service_id=?', v.id, svc)) return false;
+      if (cli != null && !one('SELECT 1 x FROM treatment_sessions WHERE visit_id=? AND clinician_id=?', v.id, cli)) return false;
+      if (room != null && !one('SELECT 1 x FROM occupancy WHERE visit_id=? AND room_id=?', v.id, room)) return false;
+      return true;
+    });
     const ids = new Set(visits.map((v) => v.id));
-    const waits = visits.map((v) => {
-      const e = one("SELECT MIN(ts) t FROM events WHERE visit_id=? AND type='ROOM_ENTERED'", v.id)?.t;
-      return e ? (Date.parse(e) - Date.parse(v.arrived_at)) / 60000 : null;
-    }).filter((x) => x != null);
-    const sessions = q('SELECT ts.*, sv.name service FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id').filter((x) => ids.has(x.visit_id));
+    const sessions = q('SELECT ts.*, sv.name service, sv.department_id, u.name clinician, r.code room FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id LEFT JOIN rooms r ON r.id=ts.room_id')
+      .filter((x) => ids.has(x.visit_id) && (svc == null || x.service_id === svc) && (cli == null || x.clinician_id === cli) && (room == null || x.room_id === room) && (dep == null || x.department_id === dep));
+    return { tz, visits, ids, sessions, inRange, room, dep };
+  }
+  function reportData(user, f = {}) {
+    ops.sweepTimers();
+    const { tz, visits, ids, sessions, inRange, room } = reportScope(user, f);
+    const r1 = (n) => Math.round(n * 10) / 10; const min = (ms) => ms / 60000;
+    const avg = (a) => (a.length ? r1(a.reduce((x, y) => x + y, 0) / a.length) : null);
+    const timings = visits.map((v) => ({ v, t: ops.visitTiming(v) }));
+    const before = timings.filter((x) => x.t.room_entry_at).map((x) => min(Date.parse(x.t.room_entry_at) - Date.parse(x.t.arrival_at)));
+    const inRoom = timings.filter((x) => x.t.room_entry_at && x.t.treatment_start_at).map((x) => min(Date.parse(x.t.treatment_start_at) - Date.parse(x.t.room_entry_at)));
+    const total = timings.filter((x) => x.t.treatment_start_at).map((x) => min(Date.parse(x.t.treatment_start_at) - Date.parse(x.t.arrival_at)));
+    const visitLen = timings.filter((x) => x.t.total_visit_ms != null).map((x) => min(x.t.total_visit_ms));
+    const done = sessions.filter((x) => x.status === 'COMPLETED').map((x) => ({ x, active: min(ops.sumMs(ops.sessionIntervals(x))) }));
+    const planned = sessions.filter((x) => x.planned_minutes).map((x) => x.planned_minutes);
+    const kind = (k) => done.filter((d) => d.x.completion_kind === k);
     const bySvc = {};
-    for (const x of sessions) { const m = ops.sumMs(ops.sessionIntervals(x)) / 60000; const b = (bySvc[x.service] ||= { service: x.service, sessions: 0, minutes: 0 }); b.sessions++; b.minutes += m; }
-    const occ = q('SELECT o.*, r.code room FROM occupancy o JOIN rooms r ON r.id=o.room_id').filter((o) => ids.has(o.visit_id) && o.entered_at);
-    const byRoom = {};
-    for (const o of occ) { const end = o.exited_at_corrected || o.exited_at; const m = ((end ? Date.parse(end) : Date.now()) - Date.parse(o.entered_at)) / 60000; const b = (byRoom[o.room] ||= { room: o.room, occupied_minutes: 0, uses: 0 }); b.occupied_minutes += m; b.uses++; }
+    for (const x of sessions) { const m = min(ops.sumMs(ops.sessionIntervals(x))); const b = (bySvc[x.service] ||= { service: x.service, sessions: 0, minutes: 0, planned_minutes: 0 }); b.sessions++; b.minutes += m; b.planned_minutes += x.planned_minutes || 0; }
+    const occ = q('SELECT o.*, r.code room FROM occupancy o JOIN rooms r ON r.id=o.room_id').filter((o) => ids.has(o.visit_id) && o.entered_at && (room == null || o.room_id === room));
+    const byRoom = {}; const occMins = [];
+    for (const o of occ) { const end = o.exited_at_corrected || o.exited_at; const m = min((end ? Date.parse(end) : nowMs()) - Date.parse(o.entered_at)); occMins.push(m); const b = (byRoom[o.room] ||= { room: o.room, occupied_minutes: 0, uses: 0 }); b.occupied_minutes += m; b.uses++; }
     const ev = q("SELECT type, visit_id FROM events WHERE type IN ('ROOM_TRANSFERRED')").filter((e) => ids.has(e.visit_id));
     const corr = q('SELECT status, visit_id FROM corrections').filter((c) => ids.has(c.visit_id));
     const maint = q("SELECT * FROM room_status_history WHERE to_status IN ('MAINTENANCE','OUT_OF_SERVICE')").filter((h) => inRange(h.ts));
-    const r1 = (n) => Math.round(n * 10) / 10;
     return {
-      from, to, timezone: tz,
+      from: f.from, to: f.to, timezone: tz, filters: Object.fromEntries(Object.entries(f).filter(([, v]) => v)),
       visits: visits.length, checked_out: visits.filter((v) => v.status === 'CHECKED_OUT').length,
-      avg_wait_minutes: waits.length ? r1(waits.reduce((a, b) => a + b, 0) / waits.length) : null,
+      avg_wait_minutes: avg(before),
+      waiting: { before_room_avg_min: avg(before), in_room_avg_min: avg(inRoom), total_avg_min: avg(total), visit_total_avg_min: avg(visitLen), samples: { before: before.length, in_room: inRoom.length, total: total.length, visit: visitLen.length } },
+      treatment: {
+        planned_avg_min: avg(planned), actual_confirmed_avg_min: avg(done.filter((d) => d.x.completion_kind !== 'AUTO').map((d) => d.active)),
+        full: kind('FULL').length, overruns: kind('OVERRUN').length, early: kind('EARLY').length, auto_closed_unverified: kind('AUTO').length, running_or_paused: sessions.filter((x) => x.status !== 'COMPLETED').length,
+        overrun_avg_min: avg(kind('OVERRUN').map((d) => Math.max(0, d.active - d.x.planned_minutes))), early_avg_min: avg(kind('EARLY').map((d) => Math.max(0, d.x.planned_minutes - d.active))),
+      },
+      room_occupancy_avg_min: avg(occMins),
       sessions: sessions.length,
-      by_service: Object.values(bySvc).map((b) => ({ ...b, minutes: r1(b.minutes), avg_minutes: r1(b.minutes / b.sessions) })),
+      by_service: Object.values(bySvc).map((b) => ({ ...b, minutes: r1(b.minutes), avg_minutes: r1(b.minutes / b.sessions), planned_avg_minutes: b.planned_minutes ? r1(b.planned_minutes / b.sessions) : null })),
       by_room: Object.values(byRoom).map((b) => ({ ...b, occupied_minutes: r1(b.occupied_minutes) })),
+      visit_rows: timings.slice(0, 200).map(({ v, t }) => ({ visit_id: v.id, mrn: v.mrn, patient: v.patient_name, status: v.status, arrival_at: t.arrival_at, room_entry_at: t.room_entry_at, treatment_start_at: t.treatment_start_at, last_treatment_end_at: t.last_treatment_end_at, room_exit_at: t.room_exit_at, departed_at: t.departed_at,
+        waiting_before_room_min: t.room_entry_at ? r1(min(Date.parse(t.room_entry_at) - Date.parse(t.arrival_at))) : null, waiting_in_room_min: t.room_entry_at && t.treatment_start_at ? r1(min(Date.parse(t.treatment_start_at) - Date.parse(t.room_entry_at))) : null,
+        total_waiting_min: t.treatment_start_at ? r1(min(Date.parse(t.treatment_start_at) - Date.parse(t.arrival_at))) : null, total_visit_min: t.total_visit_ms != null ? r1(min(t.total_visit_ms)) : null })),
       transfers: ev.length,
       corrections: { total: corr.length, pending: corr.filter((c) => c.status === 'PENDING').length, approved: corr.filter((c) => c.status === 'APPROVED').length, rejected: corr.filter((c) => c.status === 'REJECTED').length },
       maintenance_events: maint.length,
     };
   }
-  app.get('/api/reports', guard('reports.view'), (req, res) => { audit(req.user, 'reports.view', 'report', null, req.query); res.json(reportData(req.user, req.query.from, req.query.to)); });
+  app.get('/api/reports', guard('reports.view'), (req, res) => { audit(req.user, 'reports.view', 'report', null, req.query); res.json(reportData(req.user, req.query)); });
   app.get('/api/reports/sessions.csv', guard('reports.view'), (req, res) => {
-    const tz = ops.setting('timezone'); const day = (iso) => new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date(iso));
-    const rows = q(`SELECT ts.id, p.mrn, sv.name service, u.name clinician, ts.status, ts.started_at, COALESCE(ts.ended_at_corrected, ts.ended_at) ended_at, ts.visit_id
-      FROM treatment_sessions ts JOIN patients p ON p.id=ts.patient_id JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id ORDER BY ts.id`)
-      .filter((r) => ops.visitVisible(req.user, r.visit_id) && (!req.query.from || day(r.started_at) >= req.query.from) && (!req.query.to || day(r.started_at) <= req.query.to));
+    ops.sweepTimers();
+    const { sessions, visits } = reportScope(req.user, req.query);
+    const tv = new Map(visits.map((v) => [v.id, { v, t: ops.visitTiming(v) }]));
+    const min = (a, b) => (a && b ? Math.round(((Date.parse(b) - Date.parse(a)) / 60000) * 10) / 10 : '');
     const esc = (v) => { let s = v == null ? '' : String(v); if (/^[=+\-@]/.test(s)) s = `'${s}`; return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
-    audit(req.user, 'reports.export', 'report', null, { rows: rows.length });
-    res.type('text/csv').send(['session_id,mrn,service,clinician,status,started_at,ended_at', ...rows.map((r) => [r.id, r.mrn, r.service, r.clinician, r.status, r.started_at, r.ended_at].map(esc).join(','))].join('\n'));
+    audit(req.user, 'reports.export', 'report', null, { rows: sessions.length, filters: Object.keys(req.query) });
+    const head = 'session_id,mrn,service,clinician,room,status,planned_minutes,started_at,scheduled_end_at,timer_elapsed_at,clinical_end_at,confirmed_at,completion_kind,active_minutes,arrival_at,room_entry_at,waiting_before_room_min,waiting_in_room_min,total_waiting_min';
+    const lines = sessions.map((x) => { const { v, t } = tv.get(x.visit_id); const end = x.ended_at_corrected || x.ended_at;
+      return [x.id, v.mrn, x.service, x.clinician, x.room, x.status, x.planned_minutes, x.started_at, x.scheduled_end_at, x.timer_elapsed_at, end, x.confirmed_at, x.completion_kind, Math.round((ops.sumMs(ops.sessionIntervals(x)) / 60000) * 10) / 10, t.arrival_at, t.room_entry_at, min(t.arrival_at, t.room_entry_at), min(t.room_entry_at, x.started_at), min(t.arrival_at, x.started_at)].map(esc).join(','); });
+    res.type('text/csv').send([head, ...lines].join('\n'));
   });
   app.get('/api/audit', guard('audit.view'), (req, res) =>
     res.json(q(`SELECT a.id,a.ts,a.action,a.entity,a.entity_id,a.detail,u.name actor FROM audit_log a LEFT JOIN users u ON u.id=a.actor_id ORDER BY a.id DESC LIMIT ?`, Math.min(Number(req.query.limit) || 100, 500))));
@@ -365,6 +414,11 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       backup: { supported: true, encrypted_files: files, last: lastBackup || null, stale: !lastBackup || Date.now() - Date.parse(lastBackup.ts) > 26 * 3600e3 },
     });
   });
+
+  // ---- test clock: exists ONLY when FMC_TEST_CLOCK=1 (automated tests); never enable in production ----
+  if (process.env.FMC_TEST_CLOCK === '1') {
+    app.post('/api/__test/advance-clock', guard('config.manage'), (req, res) => { clock.advance(Math.max(0, Number(req.body.minutes) || 0) * 60000); ops.sweepTimers(); res.json({ server_time: now() }); });
+  }
 
   // ---- static SPA ----
   if (staticDir && existsSync(staticDir)) {

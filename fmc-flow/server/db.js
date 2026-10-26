@@ -173,14 +173,28 @@ export const DEFAULT_SETTINGS = {
   registration_require_name_ar: '0',
   registration_require_phone: '0',
   require_service_at_checkin: '0',
+  timer_auto_close: '0',
   gender_options: JSON.stringify([{ code: 'M', en: 'Male', ar: 'ذكر' }, { code: 'F', en: 'Female', ar: 'أنثى' }]),
 };
+
+// Additive, non-destructive column upgrades (safe on existing databases; no data is touched).
+const ADDED_COLUMNS = {
+  services: { min_minutes: 'INTEGER NOT NULL DEFAULT 5', max_minutes: 'INTEGER NOT NULL DEFAULT 180', allow_override: 'INTEGER NOT NULL DEFAULT 1' },
+  treatment_sessions: { planned_minutes: 'INTEGER', scheduled_end_at: 'TEXT', timer_elapsed_at: 'TEXT', confirmed_at: 'TEXT', completion_kind: 'TEXT' },
+};
+function ensureColumns(db) {
+  for (const [table, cols] of Object.entries(ADDED_COLUMNS)) {
+    const have = new Set(db.prepare(`PRAGMA table_info(${table})`).all().map((c) => c.name));
+    for (const [name, def] of Object.entries(cols)) if (!have.has(name)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${name} ${def}`);
+  }
+}
 
 export function openDb(path = DB_PATH) {
   if (path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
   const db = new DatabaseSync(path);
   db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;');
   db.exec(SCHEMA);
+  ensureColumns(db);
   const ins = db.prepare('INSERT OR IGNORE INTO settings(key,value) VALUES (?,?)');
   for (const [k, v] of Object.entries(DEFAULT_SETTINGS)) ins.run(k, v);
   return db;
