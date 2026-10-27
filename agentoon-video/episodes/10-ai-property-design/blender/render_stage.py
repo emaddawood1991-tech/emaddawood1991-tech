@@ -52,6 +52,7 @@ if "--frames" in a:
             tg = Vector(look[i0]).lerp(Vector(look[i0+1]), u)
         cam.rotation_euler = (tg - cam.location).to_track_quat('-Z','Y').to_euler()
         cam.data.lens = 24 if mode == "walk" else 30
+        if os.path.exists(f"{out}_{f:04d}.png"): continue          # resumable: keep frames already rendered
         sc.frame_set(f); sc.render.filepath = f"{out}_{f:04d}.png"
         bpy.ops.render.render(write_still=True)
 else:
