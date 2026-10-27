@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 10b AI Property Design (85 s)</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Survey Studio" (see Ep 10) extended with cinematic Blender keyframe animation: car, gate, people, door, interior.
+     Every 3D shot is a real Blender 5.2.3 render. Samples and sample cards are labelled. No fake software interfaces. */
+  :root { --paper: #F3E9D8; --ink: #1B2A41; --ter: #D9643A; --sun: #F2B544; --cy: #60CDFF; --navy: #0B1630; }
+  .chip { position: absolute; white-space: nowrap; z-index: 8; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .card { position: absolute; border-radius: 22px; overflow: hidden; background: #fff; border: 3px solid var(--ink); box-shadow: 0 26px 60px rgba(27,42,65,.35); }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .rv { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
+  .t1 { position: absolute; font: 900 108px/1 var(--body); letter-spacing: -.04em; white-space: nowrap; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+<script src="data/lipsync.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="85.2">
+  <section id="s1" class="clip scene" data-start="0.0" data-duration="5.79"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="4.99" data-duration="15.03"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="19.22" data-duration="8.86"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="27.28" data-duration="10.22"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="36.7" data-duration="12.29"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="48.19" data-duration="10.1"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="57.49" data-duration="9.33"><div id="s7i" class="inner"></div></section>
+  <section id="s8" class="clip scene" data-start="66.02" data-duration="15.49"><div id="s8i" class="inner"></div></section>
+  <section id="s9" class="clip scene" data-start="80.51" data-duration="4.69"><div id="s9i" class="inner"></div></section>
+  <video id="vHook" class="rv" src="assets/v2_hook.mp4" muted playsinline data-start="0.0" data-duration="5.79" data-media-start="0" data-track-index="2"></video>
+  <video id="vBuild" class="rv" src="assets/v2_build.mp4" muted playsinline data-start="27.28" data-duration="10.22" data-media-start="0" data-track-index="3"></video>
+  <video id="vCar" class="rv" src="assets/v2_car.mp4" muted playsinline data-start="36.7" data-duration="12.29" data-media-start="0" data-track-index="4"></video>
+  <video id="vGarden" class="rv" src="assets/v2_garden.mp4" muted playsinline data-start="48.19" data-duration="10.1" data-media-start="0" data-track-index="5"></video>
+  <video id="vInt" class="rv" src="assets/v2_interior.mp4" muted playsinline data-start="57.49" data-duration="9.33" data-media-start="0" data-track-index="6"></video>
+  <video id="vOrb" class="rv" src="assets/orbit.mp4" muted playsinline data-start="68.42" data-duration="5.0" data-media-start="0" data-track-index="7"></video>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="85.2" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, S = E.scenes, LIP = window.LIPSYNC, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word " + pid + ":" + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#FFF6E8") + ";background:" + (o.bg || "rgba(27,42,65,.86)") + ";border:2px solid " + (o.bd || "#F2B544"), text); };
+  const INK = "#1B2A41", TER = "#D9643A", SUN = "#F2B544", CY = "#60CDFF";
+  const paper = (k) => {
+    const inn = $(k + "i");
+    el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#FBF3E4 0%,#F3E9D8 60%,#E6D7BC 100%)");
+    const gr = el(inn, "bgg" + k, "", "position:absolute;inset:0;background-image:linear-gradient(rgba(27,42,65,.09) 2px,transparent 2px),linear-gradient(90deg,rgba(27,42,65,.09) 2px,transparent 2px);background-size:90px 90px");
+    tl.to(gr, { backgroundPosition: "180px 360px", duration: S[k].len, ease: "none" }, S[k].start); return inn;
+  };
+  const dark = (k) => { const inn = $(k + "i"); el(inn, "bg" + k, "", "position:absolute;inset:0;background:#B7A88E"); return inn; };
+  const hud = (host, id, label, t0, bd) => { const k = chip(host, id + "k", 60, 236, label, { bd: bd || SUN }); k.style.zIndex = 9; tl.from(k, { opacity: 0, x: -30, duration: 0.25 }, t0); return k; };
+  const img = (host, id, src, css) => { const i = document.createElement("img"); i.id = id; i.src = "assets/" + src; i.style.cssText = "position:absolute;" + (css || ""); host.appendChild(i); return i; };
+  const wrapScene = (k) => { const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Array.from(inn.children).filter(c => c !== w && !/^bg/.test(c.id)).forEach(c => w.appendChild(c)); Cam.frame(w, 540, 960, 1); return w; };
+  const zoomTo = (cam, cx, cy, s, at, dur) => tl.to(cam, { scale: s, x: 540 - cx * s, y: cy * (1 - s), duration: dur || 0.7, ease: "power2.inOut" }, at);
+  const zoomOut = (cam, at, dur) => tl.to(cam, { scale: 1, x: 0, y: 0, duration: dur || 0.7, ease: "power2.inOut" }, at);
+  /* the robot is the presenter: it speaks the narration (mouth follows the voice envelope) while it acts */
+  const presenter = (bot, host, k, x, y, face) => { bot.face(tl, 0, face || -1, 0.01); bot.rise(tl, S[k].start + 0.4, 420, 0.4); bot.blinks(tl, S[k].start, S[k].end, 1.1); bot.P.wrap.style.zIndex = 12; return bot; };
+  const speak = (bot, pid) => { const p = P(pid); bot.speak(tl, LIP, p.start, p.end); };
+
+  /* ---- original conceptual plan, drawn from the same numbers as the Blender model (CONCEPT, NOT TO SCALE) ---- */
+  function planSvg(host, id, x, y, w) {
+    const sc = w / 44, h = 34 * sc, g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px");
+    const sv = svgEl(g, "svg", { viewBox: "-22 -17 44 34", width: w, height: h });
+    const R = (x0, y0, w0, h0, a) => svgEl(sv, "rect", Object.assign({ x: x0, y: -(y0 + h0), width: w0, height: h0 }, a));
+    R(-20, -15, 40, 30, { fill: "#EFE2C6", stroke: INK, "stroke-width": 0.35, "stroke-dasharray": "1.2 .8" }); R(-9, 1.25, 13, 7.5, { fill: "#fff", stroke: INK, "stroke-width": 0.3 }); R(4, 2.25, 5, 6.5, { fill: "#fff", stroke: INK, "stroke-width": 0.3 });
+    R(3.9, -6.3, 7.2, 3.6, { fill: "#7FD4F2", stroke: INK, "stroke-width": 0.3 }); R(-12, -15.4, 4, 0.8, { fill: SUN, stroke: INK, "stroke-width": 0.25 });
+    svgEl(sv, "path", { d: "M-10 24 L-10 15 L-10 9 L-4 6.5 L3.4 6.2", transform: "scale(1,-1)", fill: "none", stroke: "#B9A68A", "stroke-width": 2.2 });
+    [[-14, -9], [-14, 2], [15, -10], [15, 9], [3, 12], [-9, 11.5]].forEach(([px, py]) => svgEl(sv, "circle", { cx: px, cy: -py, r: 1.3, fill: "#3E8E4B", stroke: INK, "stroke-width": 0.2 }));
+    [["HOUSE", -2.5, 4.6, 1.7], ["POOL", 7.5, -4.6, 1.5], ["GATE", -10, -13.8, 1.4]].forEach(([t, px, py, fs]) => { const e = svgEl(sv, "text", { x: px, y: -py, "font-size": fs, "font-family": "JetBrains Mono, monospace", "font-weight": 800, fill: INK, "text-anchor": "middle" }); e.textContent = t; });
+    return g;
+  }
+  function term(host, id, w, h, title, rows, t0, fs, lh) {
+    const card = el(host, id, "", "left:0;top:0;width:" + w + "px;height:" + h + "px;overflow:hidden;background:#0B1630");
+    el(card, id + "b", "", "left:0;top:0;width:" + w + "px;height:56px;background:#16294F;border-bottom:2px solid #60CDFF");
+    [0, 1, 2].forEach(i => el(card, id + "d" + i, "", "left:" + (22 + i * 28) + "px;top:20px;width:16px;height:16px;border-radius:50%;background:#60CDFF;opacity:" + (0.9 - i * 0.25)));
+    el(card, id + "t", "", "left:120px;top:0;font:700 24px/56px var(--body);color:#DDEBFF", title);
+    let t = t0;
+    rows.forEach((r, i) => {
+      const yy = 78 + i * lh, d = el(card, id + "r" + i, "mono", "left:26px;top:" + yy + "px;font:600 " + fs + "px/" + lh + "px var(--mono);color:" + (r[1] || "#fff"), r[0]);
+      const at = r[3] != null ? r[3] : t, n = Math.max(1, r[0].length), dur = n / r[2]; d.style.clipPath = "inset(0 100% 0 0)";
+      tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + n + ")" }, at); t = at + dur + 0.05;
+    });
+    return { card, end: t };
+  }
+  const lap = (host, id, x, y, w, sh) => {
+    const sw = w - 44, lidH = sh + 44, g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + (lidH + 34) + "px");
+    const lid = el(g, id + "lid", "", "left:0;top:0;width:" + w + "px;height:" + lidH + "px;border-radius:22px 22px 8px 8px;background:linear-gradient(180deg,#2B3A55,#121A2C);border:3px solid " + INK + ";box-shadow:0 34px 70px rgba(27,42,65,.45)");
+    const scr = el(lid, id + "scr", "", "left:19px;top:19px;width:" + sw + "px;height:" + sh + "px;overflow:hidden;border-radius:6px;background:#0B1630");
+    el(g, id + "base", "", "left:" + (-w * 0.04) + "px;top:" + lidH + "px;width:" + (w * 1.08) + "px;height:22px;border-radius:0 0 22px 22px;background:linear-gradient(180deg,#C9C2B5,#8F877A);box-shadow:0 14px 30px rgba(27,42,65,.4)");
+    return { g, scr, sw, sh };
+  };
+
+  /* ================================================================= S1 HOOK: the car, the gate, the camera follows */
+  const s1i = dark("s1"); const vH = $("vHook"); s1i.appendChild(vH);
+  tl.fromTo(vH, { scale: 1.0 }, { scale: 1.08, duration: S.s1.len, ease: "none" }, S.s1.start);
+  const tCould = PW("p1", "could"), tExp = PW("p1", "explore");
+  const h1 = chip(s1i, "h1c", 60, 236, "REAL BLENDER ANIMATION · CAR + GATE", { bd: CY }); h1.style.zIndex = 9; tl.from(h1, { opacity: 0, x: -30, duration: 0.3 }, 0.2);
+  const big1 = el(s1i, "big1", "t1", "left:0;right:0;text-align:center;top:760px;font-size:96px;line-height:1.05;white-space:pre;color:#fff;text-shadow:0 8px 40px rgba(11,22,48,.85);z-index:9", "MAPS → 3D\nPROPERTY");
+  tl.from(big1, { opacity: 0, scale: 1.4, duration: 0.4, ease: "back.out(1.8)" }, tCould); tl.to(big1, { opacity: 0, duration: 0.3 }, S.s1.end - 0.5);
+  const bot1 = presenter(botAt(s1i, "bot1", 60, 1230, 220), s1i, "s1", 60, 1230, 1); speak(bot1, "p1"); bot1.react(tl, tExp + 0.2, "wow");
+
+  /* ================================================================= S2 GOOGLE MAPS STEP (labelled sample, never a fake Maps UI) */
+  const s2i = dark("s2");
+  const loc = img(s2i, "loc", "loc_empty.jpg", "left:0;top:0;width:1080px;height:1920px;object-fit:cover;transform-origin:50% 62%");
+  tl.fromTo(loc, { scale: 1.0 }, { scale: 1.55, duration: P("p2").end - S.s2.start + 1.2, ease: "power2.inOut" }, S.s2.start);
+  const pin = el(s2i, "pin", "", "left:490px;top:900px;width:100px;height:130px;z-index:6");
+  const psv = svgEl(pin, "svg", { viewBox: "0 0 100 130", width: 100, height: 130 }); svgEl(psv, "path", { d: "M50 4 C25 4 10 24 10 46 C10 80 50 126 50 126 S90 80 90 46 C90 24 75 4 50 4 Z", fill: TER, stroke: "#fff", "stroke-width": 6 }); svgEl(psv, "circle", { cx: 50, cy: 46, r: 16, fill: "#fff" });
+  tl.from(pin, { y: -260, opacity: 0, duration: 0.5, ease: "bounce.out" }, PW("p2", "land") - 0.1);
+  const tSat = PW("p2", "satellite"), tCopy = PW("p2", "copy");
+  const steps = [["1 · FIND YOUR LAND", PW("p2", "land") - 0.1], ["2 · SATELLITE VIEW", tSat - 0.1], ["3 · COPY THE LOCATION", tCopy - 0.1]];
+  steps.forEach(([t, at], i) => { const c = chip(s2i, "st" + i, 60, 330 + i * 80, t, { size: 28, bd: i === 2 ? TER : CY }); c.style.zIndex = 9; tl.from(c, { opacity: 0, x: -80, duration: 0.3, ease: "power3.out" }, at); });
+  const note = chip(s2i, "locn", 60, 236, "SAMPLE LOCATION · BLENDER TOP VIEW · NOT GOOGLE MAPS", { size: 22, bd: SUN }); note.style.zIndex = 9; tl.from(note, { opacity: 0, duration: 0.3 }, 0.1);
+  const tSur = PW("p3", "surroundings"), tBnd = PW("p3", "boundaries");
+  const gives = el(s2i, "gives", "", "left:60px;top:1000px;width:960px;padding:22px 28px;border-radius:22px;background:rgba(27,42,65,.9);border:3px solid " + CY + ";font:800 38px/1.3 var(--body);color:#fff;z-index:9;white-space:pre", "MAPS SHOWS\n✓ surroundings   ✓ nearby roads");
+  const lacks = el(s2i, "lacks", "", "left:60px;top:1180px;width:960px;padding:22px 28px;border-radius:22px;background:rgba(27,42,65,.9);border:3px solid " + TER + ";font:800 38px/1.3 var(--body);color:#fff;z-index:9;white-space:pre", "MAPS DOES NOT GIVE\n✗ exact boundaries   ✗ measurements");
+  tl.from(gives, { opacity: 0, y: 60, duration: 0.35, ease: "power3.out" }, tSur - 0.3); tl.from(lacks, { opacity: 0, y: 60, duration: 0.35, ease: "power3.out" }, tBnd - 0.3);
+  const bot2 = presenter(botAt(s2i, "bot2", 880, 1330, 140), s2i, "s2", 880, 1330, -1); speak(bot2, "p2"); speak(bot2, "p3"); bot2.react(tl, tCopy + 0.3, "nod");
+
+  /* ================================================================= S3 CLAUDE CODE: the verbatim brief */
+  const s3i = paper("s3"); hud(s3i, "h3", "STEP 2 · CLAUDE CODE", S.s3.start + 0.15, CY);
+  const L3 = lap(s3i, "l3", 60, 300, 960, 700); tl.from(L3.g, { opacity: 0, y: 120, scale: 0.94, duration: 0.6, ease: "power3.out" }, S.s3.start + 0.15);
+  const tHouse = PW("p4", "house"), tPool = PW("p4", "pool");
+  const BR = ["› I want a modern house, a driveway,", "  an entrance gate, a landscaped", "  garden, a swimming pool, and", "  walking paths.", "› The entrance should be accessible", "  from the road.", "› Do not invent exact dimensions", "  or claim the design is", "  construction-ready."];
+  term(L3.scr, "t3", L3.sw, L3.sh, "Claude Code · prompt (verbatim from the brief)", BR.map((l, i) => [l, i === 0 || i === 4 || i === 6 ? "#FFE08A" : "#DDEBFF", 40, i === 0 ? S.s3.start + 0.5 : null]), S.s3.start + 0.5, 28, 56);
+  const roles = [["CLAUDE CODE → writes the scripts", PW("p4", "Claude") + 0.2], ["BLENDER → builds + animates", tHouse + 0.2], ["HYPERFRAMES → final edit", tPool + 0.4]];
+  roles.forEach(([t, at], i) => { const c = chip(s3i, "ro" + i, 60, 1150 + i * 78, t, { size: 26, bd: CY }); tl.from(c, { opacity: 0, x: -100, duration: 0.3, ease: "power3.out" }, at); });
+  const rn = chip(s3i, "ron", 60, 1100, "TOOLS ACTUALLY USED IN THIS VIDEO", { size: 20, bd: SUN }); tl.from(rn, { opacity: 0, duration: 0.25 }, PW("p4", "Claude"));
+  const bot3 = presenter(botAt(s3i, "bot3", 880, 1250, 150), s3i, "s3", 880, 1250, -1); speak(bot3, "p4"); bot3.react(tl, tPool + 0.5, "nod");
+
+  /* ================================================================= S4 BUILD-UP */
+  const s4i = dark("s4"); const vB = $("vBuild"); s4i.appendChild(vB);
+  const c4 = chip(s4i, "c4", 60, 236, "BLENDER · BUILD-UP ANIMATION", { bd: CY }); c4.style.zIndex = 9; tl.from(c4, { opacity: 0, x: -30, duration: 0.3 }, S.s4.start + 0.2);
+  const bot4 = presenter(botAt(s4i, "bot4", 60, 1230, 200), s4i, "s4", 60, 1230, 1); speak(bot4, "p5"); bot4.react(tl, PW("p5", "garden") + 0.3, "celebrate");
+
+  /* ================================================================= S5 CAR + GATE */
+  const s5i = dark("s5"); const vC = $("vCar"); s5i.appendChild(vC);
+  const c5 = chip(s5i, "c5", 60, 236, "REAL BLENDER KEYFRAMES · CAR + GATE", { bd: CY }); c5.style.zIndex = 9; tl.from(c5, { opacity: 0, x: -30, duration: 0.3 }, S.s5.start + 0.2);
+  const bot5 = presenter(botAt(s5i, "bot5", 880, 1230, 160), s5i, "s5", 880, 1230, -1); speak(bot5, "p6"); bot5.react(tl, PW("p6", "gate") + 0.2, "wow");
+
+  /* ================================================================= S6 GARDEN + PEOPLE */
+  const s6i = dark("s6"); const vG = $("vGarden"); s6i.appendChild(vG);
+  const c6 = chip(s6i, "c6", 60, 236, "GARDEN · PEOPLE · POOL WATER (BLENDER)", { bd: CY }); c6.style.zIndex = 9; tl.from(c6, { opacity: 0, x: -30, duration: 0.3 }, S.s6.start + 0.2);
+  const bot6 = presenter(botAt(s6i, "bot6", 60, 1230, 170), s6i, "s6", 60, 1230, 1); speak(bot6, "p7"); bot6.react(tl, PW("p7", "editable") + 0.1, "nod");
+
+  /* ================================================================= S7 INTERIOR */
+  const s7i = dark("s7"); const vI = $("vInt"); s7i.appendChild(vI);
+  const c7 = chip(s7i, "c7", 60, 236, "FRONT DOOR OPENS · INTERIOR (BLENDER)", { bd: CY }); c7.style.zIndex = 9; tl.from(c7, { opacity: 0, x: -30, duration: 0.3 }, S.s7.start + 0.2);
+  const bot7 = presenter(botAt(s7i, "bot7", 880, 1230, 150), s7i, "s7", 880, 1230, -1); speak(bot7, "p8"); bot7.react(tl, PW("p8", "open") + 0.2, "wow");
+
+  /* ================================================================= S8 FROM THE LAND TO THE AERIAL REVEAL + CONCEPT DISCLAIMER */
+  const s8i = dark("s8");
+  const lA = img(s8i, "lA", "loc_empty.jpg", "left:0;top:0;width:1080px;height:1920px;object-fit:cover"), lB = img(s8i, "lB", "loc_final.jpg", "left:0;top:0;width:1080px;height:1920px;object-fit:cover;opacity:0");
+  tl.fromTo([lA, lB], { scale: 1.45 }, { scale: 1.0, duration: 2.6, ease: "power2.inOut" }, S.s8.start); tl.to(lB, { opacity: 1, duration: 1.0, ease: "power1.inOut" }, S.s8.start + 0.9);
+  const c8a = chip(s8i, "c8a", 60, 236, "LAND → CONCEPT · SAME SITE, BLENDER TOP VIEW", { size: 22, bd: CY }); c8a.style.zIndex = 9; tl.from(c8a, { opacity: 0, x: -30, duration: 0.3 }, S.s8.start + 0.2);
+  const tOrb = parseFloat("68.42"); tl.set([lA, lB, c8a], { opacity: 0 }, tOrb - 0.05); tl.set("#c8a", { opacity: 0 }, tOrb - 0.05);
+  const vO = $("vOrb"); s8i.appendChild(vO); tl.fromTo(vO, { opacity: 0 }, { opacity: 1, duration: 0.25 }, tOrb);
+  const c8b = chip(s8i, "c8b", 60, 236, "FINAL AERIAL · REAL BLENDER ORBIT", { bd: CY }); c8b.style.zIndex = 9; tl.set(c8b, { opacity: 0 }, 0); tl.to(c8b, { opacity: 1, duration: 0.3 }, tOrb + 0.1);
+  const tCards = tOrb + 5.0;
+  const cardsBg = el(s8i, "cbg", "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#FBF3E4 0%,#F3E9D8 60%,#E6D7BC 100%);z-index:3;opacity:0"); tl.to(cardsBg, { opacity: 1, duration: 0.3 }, tCards - 0.1); tl.set(vO, { opacity: 0 }, tCards + 0.25);
+  const k1 = el(s8i, "k1", "card", "left:40px;top:330px;width:300px;height:760px;z-index:4"), k2 = el(s8i, "k2", "card", "left:390px;top:330px;width:300px;height:760px;background:#F7F0E0;z-index:4"), k3 = el(s8i, "k3", "card", "left:740px;top:330px;width:300px;height:760px;z-index:4");
+  img(k1, "k1i", "hero_empty.jpg", "left:0;top:0;width:300px;height:760px;object-fit:cover;object-position:50% 70%"); planSvg(k2, "pl8", 6, 190, 288); img(k3, "k3i", "hero_final.jpg", "left:0;top:0;width:300px;height:760px;object-fit:cover;object-position:50% 62%");
+  [["LAND", k1], ["PLAN", k2], ["CONCEPT", k3]].forEach(([t, k], i) => chip(k, "kl" + i, 12, 700, t, { size: 24, pad: "8px 16px 10px" }));
+  [k1, k2, k3].forEach((k, i) => { tl.set(k, { opacity: 0 }, 0); tl.fromTo(k, { opacity: 0, y: 140, rotation: (i - 1) * 6 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.4)" }, tCards + 0.2 + i * 0.3); });
+  const tCon = PW("p10", "conceptual");
+  const warn = el(s8i, "warn", "", "left:50px;right:50px;top:1170px;padding:26px 30px;border-radius:22px;background:" + INK + ";border:3px solid " + SUN + ";font:900 50px/1.15 var(--body);color:#FFF6E8;text-align:center;z-index:5;white-space:pre", "CONCEPT VISUALIZATION\nNOT CONSTRUCTION DRAWINGS"); tl.from(warn, { opacity: 0, y: 60, scale: 0.92, duration: 0.45, ease: "back.out(1.6)" }, tCon - 0.2);
+  const bot8 = presenter(botAt(s8i, "bot8", 880, 1290, 140), s8i, "s8", 880, 1290, -1); bot8.P.wrap.style.zIndex = 12; speak(bot8, "p9"); speak(bot8, "p10"); bot8.react(tl, tCon + 0.8, "nod");
+
+  /* ================================================================= S9 CTA */
+  const s9i = $("s9i"); const tOut = PW("p11", "Follow") - 0.35, botO = botAt(s9i, "botO", -400, 470, 300);
+  Outro.build(tl, s9i, tOut, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" }); speak(botO, "p11");
+
+  /* ---------- camera: purposeful zoom on the prompt ---------- */
+  const cam3 = wrapScene("s3"); zoomTo(cam3, 540, 600, 1.06, S.s3.start + 1.0, 0.8);
+  /* ---------- transitions ---------- */
+  Cam.whip(tl, S.s2.b, 0.5, { out: "#s1i", inn: "#s2i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s3.b, 0.5, { out: "#s2i", inn: "#s3i", dir: -1, blur: 28 });
+  Cam.push(tl, S.s4.b, 0.5, { out: "#s3i", inn: "#s4i", ox: 540, oy: 700, scale: 4 });
+  Cam.whip(tl, S.s5.b, 0.5, { out: "#s4i", inn: "#s5i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s6.b, 0.5, { out: "#s5i", inn: "#s6i", dir: -1, blur: 28 });
+  Cam.whip(tl, S.s7.b, 0.5, { out: "#s6i", inn: "#s7i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s8.b, 0.5, { out: "#s7i", inn: "#s8i", dir: -1, blur: 28 });
+  Cam.iris(tl, S.s9.b, 0.7, { inn: "#s9i", cx: 540, cy: 760, ring: "#60CDFF", host: $("fx"), id: "ir9" });
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 300, active: "#FFFFFF", block: "#D9643A", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>
