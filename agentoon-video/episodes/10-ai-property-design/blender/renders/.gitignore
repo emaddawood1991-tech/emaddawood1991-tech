@@ -1,0 +1,3 @@
+# animation frame sequences are intermediates (rebuilt by render_anim.sh); the encoded clips live in assets/
+orbit_*.png
+walk_*.png
