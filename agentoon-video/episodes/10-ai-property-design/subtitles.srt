@@ -1,0 +1,199 @@
+1
+00:00:00,150 --> 00:00:01,381
+What if AI could show
+
+2
+00:00:01,381 --> 00:00:03,021
+you your dream property before
+
+3
+00:00:03,021 --> 00:00:03,933
+it's even built?
+
+4
+00:00:04,553 --> 00:00:06,435
+This empty desert plot becomes
+
+5
+00:00:06,435 --> 00:00:06,801
+this,
+
+6
+00:00:06,801 --> 00:00:08,213
+in one design session.
+
+7
+00:00:08,833 --> 00:00:10,165
+Start with a photo of
+
+8
+00:00:10,165 --> 00:00:10,806
+your land,
+
+9
+00:00:10,806 --> 00:00:11,596
+its location,
+
+10
+00:00:11,596 --> 00:00:12,977
+and your building plan.
+
+11
+00:00:13,497 --> 00:00:14,316
+Three inputs.
+
+12
+00:00:14,316 --> 00:00:15,340
+One clear brief.
+
+13
+00:00:15,960 --> 00:00:17,455
+Give Claude the images and
+
+14
+00:00:17,455 --> 00:00:18,951
+explain where you want the
+
+15
+00:00:18,951 --> 00:00:19,325
+house,
+
+16
+00:00:19,325 --> 00:00:19,839
+entrance,
+
+17
+00:00:19,839 --> 00:00:20,166
+pool,
+
+18
+00:00:20,166 --> 00:00:20,820
+and garden.
+
+19
+00:00:21,340 --> 00:00:23,273
+Be specific: a single-story home
+
+20
+00:00:23,273 --> 00:00:24,138
+to the north,
+
+21
+00:00:24,138 --> 00:00:25,563
+the gate on the south,
+
+22
+00:00:25,563 --> 00:00:27,191
+the pool beside the porch.
+
+23
+00:00:27,811 --> 00:00:29,486
+Then use Claude Code with
+
+24
+00:00:29,486 --> 00:00:31,647
+Blender to turn those requirements
+
+25
+00:00:31,647 --> 00:00:32,890
+into a 3D concept.
+
+26
+00:00:33,410 --> 00:00:35,053
+Claude Code writes the scene
+
+27
+00:00:35,053 --> 00:00:35,827
+as a script,
+
+28
+00:00:35,827 --> 00:00:37,180
+and Blender renders it.
+
+29
+00:00:37,180 --> 00:00:38,195
+First a blockout,
+
+30
+00:00:38,195 --> 00:00:39,645
+then materials and light.
+
+31
+00:00:40,265 --> 00:00:42,156
+Want the pool somewhere else?
+
+32
+00:00:42,156 --> 00:00:42,913
+More trees?
+
+33
+00:00:42,913 --> 00:00:43,885
+A garden path?
+
+34
+00:00:43,885 --> 00:00:45,398
+Just update the design.
+
+35
+00:00:45,918 --> 00:00:46,702
+Same scene.
+
+36
+00:00:46,702 --> 00:00:47,543
+New version.
+
+37
+00:00:48,163 --> 00:00:49,727
+Now explore the layout from
+
+38
+00:00:49,727 --> 00:00:50,106
+above,
+
+39
+00:00:50,106 --> 00:00:51,101
+check the spaces,
+
+40
+00:00:51,101 --> 00:00:52,855
+and preview the whole property.
+
+41
+00:00:53,375 --> 00:00:54,091
+Fly over it,
+
+42
+00:00:54,091 --> 00:00:55,434
+then walk in through the
+
+43
+00:00:55,434 --> 00:00:55,747
+gate.
+
+44
+00:00:56,367 --> 00:00:57,938
+It's a powerful way to
+
+45
+00:00:57,938 --> 00:01:00,126
+explore ideas before investing in
+
+46
+00:01:00,126 --> 00:01:02,033
+a final architectural design.
+
+47
+00:01:02,553 --> 00:01:04,298
+Remember: this is a concept,
+
+48
+00:01:04,298 --> 00:01:05,838
+not construction drawings.
+
+49
+00:01:06,458 --> 00:01:09,194
+Follow Agentoon.ai for more real
+
+50
+00:01:09,194 --> 00:01:10,346
+AI workflows!

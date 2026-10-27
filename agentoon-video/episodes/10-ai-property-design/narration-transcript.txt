@@ -1,0 +1,15 @@
+What if AI could show you your dream property before it's even built?
+This empty desert plot becomes this, in one design session.
+Start with a photo of your land, its location, and your building plan.
+Three inputs. One clear brief.
+Give Claude the images and explain where you want the house, entrance, pool, and garden.
+Be specific: a single-story home to the north, the gate on the south, the pool beside the porch.
+Then use Claude Code with Blender to turn those requirements into a 3D concept.
+Claude Code writes the scene as a script, and Blender renders it. First a blockout, then materials and light.
+Want the pool somewhere else? More trees? A garden path? Just update the design.
+Same scene. New version.
+Now explore the layout from above, check the spaces, and preview the whole property.
+Fly over it, then walk in through the gate.
+It's a powerful way to explore ideas before investing in a final architectural design.
+Remember: this is a concept, not construction drawings.
+Follow Agentoon.ai for more real AI workflows!

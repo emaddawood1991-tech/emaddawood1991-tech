@@ -1,0 +1,12 @@
+{
+ "version_cmd": "python -c \"import bpy;print(bpy.app.version_string)\"",
+ "version_out": "5.2.3 LTS",
+ "build_out": [
+  "Info: Saved as \"property.blend\"",
+  "saved 223 objects"
+ ],
+ "blockout": "00:58.604  render | Saved: 'renders/hero_blockout.png'",
+ "partial": "01:05.967  render | Saved: 'renders/hero_partial.png'",
+ "final": "01:10.667  render | Saved: 'renders/hero_final.png'",
+ "source": "version/build lines: terminal output of this session; render lines: blender/render.log"
+}

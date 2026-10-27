@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 10 AI Property Design</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Survey Studio". Warm drafting paper + navy ink + terracotta, full-bleed real Blender renders, drawn-on survey overlays.
+     Every image is a real Blender render of the original conceptual property (labelled), every terminal line is real output. */
+  :root { --paper: #F3E9D8; --ink: #1B2A41; --ter: #D9643A; --sun: #F2B544; --cy: #60CDFF; --navy: #0B1630; }
+  .chip { position: absolute; white-space: nowrap; z-index: 8; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .card { position: absolute; border-radius: 22px; overflow: hidden; background: #fff; border: 3px solid var(--ink); box-shadow: 0 26px 60px rgba(27,42,65,.35); }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .shot { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
+  .rv { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
+  .t1 { position: absolute; font: 900 108px/1 var(--body); letter-spacing: -.04em; white-space: nowrap; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+<script src="src/data.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="{{TOTAL}}">
+  <section id="s1" class="clip scene" data-start="{{s1.start}}" data-duration="{{s1.len}}"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="{{s2.start}}" data-duration="{{s2.len}}"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="{{s3.start}}" data-duration="{{s3.len}}"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="{{s4.start}}" data-duration="{{s4.len}}"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="{{s5.start}}" data-duration="{{s5.len}}"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="{{s6.start}}" data-duration="{{s6.len}}"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="{{s7.start}}" data-duration="{{s7.len}}"><div id="s7i" class="inner"></div></section>
+  <section id="s8" class="clip scene" data-start="{{s8.start}}" data-duration="{{s8.len}}"><div id="s8i" class="inner"></div></section>
+  <video id="vOrb" class="rv" src="assets/orbit.mp4" muted playsinline data-start="{{s6.start}}" data-duration="5.4" data-media-start="0" data-track-index="2"></video>
+  <video id="vWalk" class="rv" src="assets/walk.mp4" muted playsinline data-start="{{s6.start}}" data-duration="3.6" data-media-start="0" data-track-index="3"></video>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, S = E.scenes, D = window.DATA, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word " + pid + ":" + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + (o.size || 26) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#FFF6E8") + ";background:" + (o.bg || "rgba(27,42,65,.86)") + ";border:2px solid " + (o.bd || "#F2B544"), text); };
+  const fadeIn = (e, at, d, y) => tl.from(e, { opacity: 0, y: y == null ? 40 : y, duration: d || 0.3, ease: "power3.out" }, at);
+  const hud = (host, id, label, t0) => { const k = chip(host, id + "k", 60, 236, label); tl.from(k, { opacity: 0, x: -30, duration: 0.25 }, t0); return k; };
+  const paper = (k, grid) => {
+    const inn = $(k + "i");
+    el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#FBF3E4 0%,#F3E9D8 60%,#E6D7BC 100%)");
+    const gr = el(inn, "bgg" + k, "", "position:absolute;inset:0;background-image:linear-gradient(rgba(27,42,65,.09) 2px,transparent 2px),linear-gradient(90deg,rgba(27,42,65,.09) 2px,transparent 2px);background-size:90px 90px");
+    tl.to(gr, { backgroundPosition: "180px 360px", duration: S[k].len, ease: "none" }, S[k].start);
+    return inn;
+  };
+  const img = (host, id, src, css) => { const i = document.createElement("img"); i.id = id; i.src = "assets/" + src; i.style.cssText = "position:absolute;" + (css || ""); host.appendChild(i); return i; };
+  const wrapScene = (k) => { const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Array.from(inn.children).filter(c => c !== w && !/^bg/.test(c.id)).forEach(c => w.appendChild(c)); Cam.frame(w, 540, 960, 1); return w; };
+  const zoomTo = (cam, cx, cy, s, at, dur) => tl.to(cam, { scale: s, x: 540 - cx * s, y: cy * (1 - s), duration: dur || 0.7, ease: "power2.inOut" }, at);
+  const zoomOut = (cam, at, dur) => tl.to(cam, { scale: 1, x: 0, y: 0, duration: dur || 0.7, ease: "power2.inOut" }, at);
+  const INK = "#1B2A41", TER = "#D9643A", SUN = "#F2B544";
+
+  /* ---- original conceptual plan, drawn from the same numbers as the Blender model (plot 40 x 30 m, +y = north). CONCEPT, NOT TO SCALE. ---- */
+  function planSvg(host, id, x, y, w, o) {
+    o = o || {}; const sc = w / 44, h = 34 * sc, g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px");
+    const sv = svgEl(g, "svg", { viewBox: "-22 -17 44 34", width: w, height: h });
+    const R = (x0, y0, w0, h0, a) => svgEl(sv, "rect", Object.assign({ x: x0, y: -(y0 + h0), width: w0, height: h0 }, a));
+    const parts = [];
+    parts.push(R(-20, -15, 40, 30, { fill: "#EFE2C6", stroke: INK, "stroke-width": 0.35, "stroke-dasharray": "1.2 .8" }));
+    parts.push(R(-9, 1.25, 13, 7.5, { fill: "#fff", stroke: INK, "stroke-width": 0.3 })); parts.push(R(4, 2.25, 5, 6.5, { fill: "#fff", stroke: INK, "stroke-width": 0.3 }));
+    parts.push(R(o.poolX == null ? 3.9 : o.poolX, -6.3, 7.2, 3.6, { fill: "#7FD4F2", stroke: INK, "stroke-width": 0.3 }));
+    parts.push(R(-12, -15.4, 4, 0.8, { fill: SUN, stroke: INK, "stroke-width": 0.25 }));
+    const dr = svgEl(sv, "path", { d: "M-10 14.9 L-10 9 L-4 6.5 L3.4 6.2", transform: "scale(1,-1)", fill: "none", stroke: "#B9A68A", "stroke-width": 2.2, opacity: 0.9 }); parts.push(dr);
+    [[-14, -9], [-14, 2], [15, -10], [15, 9], [3, 12], [-9, 11.5]].forEach(([px, py]) => { const c = svgEl(sv, "circle", { cx: px, cy: -py, r: 1.3, fill: "#3E8E4B", stroke: INK, "stroke-width": 0.2 }); parts.push(c); });
+    const tx = (t, px, py, s) => { const e = svgEl(sv, "text", { x: px, y: -py, "font-size": s || 1.7, "font-family": "JetBrains Mono, monospace", "font-weight": 800, fill: INK, "text-anchor": "middle" }); e.textContent = t; return e; };
+    const labs = [tx("HOUSE", -2.5, 4.6), tx("POOL", 7.5, -4.6, 1.5), tx("GATE", -10, -13.8, 1.4), tx("N ↑", 18, 13, 1.6)];
+    return { g, sv, parts, labs };
+  }
+
+  /* ---- terminal card with stepped typing ---- */
+  function term(host, id, x, y, w, h, title, rows, t0, fs, lh) {
+    const card = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px;overflow:hidden;background:#0B1630");
+    el(card, id + "b", "", "left:0;top:0;width:" + w + "px;height:56px;background:#16294F;border-bottom:2px solid #60CDFF");
+    [0, 1, 2].forEach(i => el(card, id + "d" + i, "", "left:" + (22 + i * 28) + "px;top:20px;width:16px;height:16px;border-radius:50%;background:#60CDFF;opacity:" + (0.9 - i * 0.25)));
+    el(card, id + "t", "", "left:120px;top:0;font:700 24px/56px var(--body);color:#DDEBFF", title);
+    let t = t0;
+    rows.forEach((r, i) => {
+      const yy = 80 + i * lh, d = el(card, id + "r" + i, "mono", "left:26px;top:" + yy + "px;font:600 " + fs + "px/" + lh + "px var(--mono);color:" + (r[1] || "#fff"), r[0]);
+      const at = r[3] != null ? r[3] : t;
+      if (r[2]) { const n = Math.max(1, r[0].length), dur = n / r[2]; d.style.clipPath = "inset(0 100% 0 0)"; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + n + ")" }, at); t = at + dur + 0.05; }
+      else { tl.from(d, { opacity: 0, x: -14, duration: 0.14 }, at); t = at + 0.1; }
+    });
+    return { card, end: t };
+  }
+  const lap = (host, id, x, y, w, sh) => {
+    const sw = w - 44, lidH = sh + 44, g = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + (lidH + 34) + "px");
+    const lid = el(g, id + "lid", "", "left:0;top:0;width:" + w + "px;height:" + lidH + "px;border-radius:22px 22px 8px 8px;background:linear-gradient(180deg,#2B3A55,#121A2C);border:3px solid " + INK + ";box-shadow:0 34px 70px rgba(27,42,65,.45)");
+    const scr = el(lid, id + "scr", "", "left:19px;top:19px;width:" + sw + "px;height:" + sh + "px;overflow:hidden;border-radius:6px;background:#0B1630");
+    el(g, id + "base", "", "left:" + (-w * 0.04) + "px;top:" + lidH + "px;width:" + (w * 1.08) + "px;height:22px;border-radius:0 0 22px 22px;background:linear-gradient(180deg,#C9C2B5,#8F877A);box-shadow:0 14px 30px rgba(27,42,65,.4)");
+    return { g, scr, sw, sh, cx: x + w / 2, bottom: y + lidH + 34 };
+  };
+
+  /* ================================================================= S1 HOOK: empty land -> concept */
+  const s1i = $("s1i");
+  el(s1i, "bgs1", "", "position:absolute;inset:0;background:#B7A88E");
+  const eImg = img(s1i, "s1e", "hero_empty.jpg", "left:0;top:0;width:1080px;height:1920px;object-fit:cover;transform-origin:50% 60%");
+  const fWrap = el(s1i, "s1fw", "", "left:0;top:0;width:1080px;height:1920px;overflow:hidden;clip-path:inset(0 100% 0 0)");
+  const fImg = img(fWrap, "s1f", "hero_final.jpg", "left:0;top:0;width:1080px;height:1920px;object-fit:cover;transform-origin:50% 60%");
+  const handle = el(s1i, "s1h", "", "left:0;top:0;width:8px;height:1920px;background:#60CDFF;box-shadow:0 0 30px #60CDFF;opacity:0;z-index:6");
+  const wipe = (at, dur, from, to) => { const o = { v: from }; tl.fromTo(o, { v: from }, { v: to, duration: dur, ease: "power2.inOut", onUpdate: () => { fWrap.style.clipPath = "inset(0 " + (100 - o.v * 100) + "% 0 0)"; handle.style.left = (o.v * 1080 - 4) + "px"; handle.style.opacity = (o.v > 0.005 && o.v < 0.995) ? 1 : 0; } }, at); };
+  tl.fromTo([eImg, fImg], { scale: 1.0 }, { scale: 1.12, duration: S.s1.len, ease: "none" }, 0);
+  wipe(0.25, 0.45, 0, 1); wipe(1.2, 0.35, 1, 0);                          // one-second flash of the finished property, then back to empty land
+  const tBec = PW("p2", "becomes"); wipe(tBec + 0.05, 1.1, 0, 1);       // transformation
+  const lbE = chip(s1i, "s1le", 60, 236, "EMPTY PLOT · BLENDER RENDER"); const lbF = chip(s1i, "s1lf", 60, 236, "AI-ASSISTED 3D CONCEPT", { bd: "#60CDFF" });
+  tl.from(lbE, { opacity: 0, x: -30, duration: 0.25 }, 0.05); tl.to(lbE, { opacity: 0, duration: 0.2 }, tBec); tl.set(lbF, { opacity: 0 }, 0); tl.to(lbF, { opacity: 1, duration: 0.3 }, tBec + 1.0);
+  const bigH = el(s1i, "s1big", "t1", "left:0;right:0;text-align:center;top:830px;font-size:104px;line-height:1.05;white-space:pre;color:#fff;text-shadow:0 8px 40px rgba(11,22,48,.8)", "YOUR LAND.\nYOUR PLAN.");
+  tl.from(bigH, { opacity: 0, scale: 1.4, duration: 0.4, ease: "back.out(1.8)" }, PW("p1", "dream") - 0.2); tl.to(bigH, { opacity: 0, duration: 0.25 }, tBec - 0.2);
+  const bot1 = botAt(s1i, "bot1", 60, 1230, 220); bot1.face(tl, 0, 1, 0.01); bot1.rise(tl, 1.2, 420, 0.45); bot1.blinks(tl, 1.5, S.s1.end, 1.1);
+  bot1.aimPoint(tl, tBec - 0.4, { x: 60, y: 1230, scale: 1, target: [620, 880], hand: "R", hold: 0.9 }); bot1.react(tl, tBec + 1.0, "wow");
+
+  /* ================================================================= S2 THE THREE INPUTS */
+  const s2i = paper("s2"); hud(s2i, "h2", "STEP 1 · THE INPUTS", S.s2.start + 0.15);
+  const tPh = PW("p3", "photo"), tLo = PW("p3", "location"), tPl = PW("p3", "plan");
+  const c1 = el(s2i, "c1", "card", "left:50px;top:320px;width:480px;height:560px"); const i1 = img(c1, "c1i", "hero_empty.jpg", "left:-150px;top:0;width:690px;height:1227px;transform:scale(.62);transform-origin:0 0;object-fit:cover"); i1.style.cssText = "position:absolute;left:0;top:0;width:480px;height:560px;object-fit:cover;object-position:50% 70%";
+  chip(c1, "c1l", 14, 502, "SAMPLE LAND · BLENDER RENDER", { size: 17, pad: "7px 12px 9px" });
+  tl.from(c1, { opacity: 0, x: -360, rotation: -10, duration: 0.5, ease: "back.out(1.5)" }, tPh - 0.2);
+  const c2 = el(s2i, "c2", "card", "left:550px;top:320px;width:480px;height:560px;background:#E8DFC9");
+  const mp = svgEl(el(c2, "c2s", "", "left:0;top:0;width:480px;height:560px"), "svg", { viewBox: "0 0 480 560", width: 480, height: 560 });
+  for (let i = 1; i < 8; i++) { svgEl(mp, "line", { x1: 0, y1: i * 70, x2: 480, y2: i * 70, stroke: "rgba(27,42,65,.18)", "stroke-width": 2 }); svgEl(mp, "line", { x1: i * 60, y1: 0, x2: i * 60, y2: 560, stroke: "rgba(27,42,65,.18)", "stroke-width": 2 }); }
+  svgEl(mp, "path", { d: "M-10 420 C120 330 220 470 330 380 S470 300 500 330", fill: "none", stroke: "#8FB8D8", "stroke-width": 26, "stroke-linecap": "round" });
+  svgEl(mp, "path", { d: "M40 40 L200 180 L260 270 L420 520", fill: "none", stroke: "#fff", "stroke-width": 14 });
+  const pin = svgEl(mp, "path", { d: "M300 150 c-40 0 -62 30 -62 62 c0 44 62 100 62 100 s62 -56 62 -100 c0 -32 -22 -62 -62 -62 z", fill: TER, stroke: INK, "stroke-width": 5 }); svgEl(mp, "circle", { cx: 300, cy: 212, r: 20, fill: "#fff" });
+  chip(c2, "c2l", 14, 502, "SAMPLE LOCATION · SCHEMATIC, NOT A REAL MAP", { size: 15, pad: "7px 12px 9px" });
+  tl.from(c2, { opacity: 0, x: 360, rotation: 10, duration: 0.5, ease: "back.out(1.5)" }, tLo - 0.2); tl.from(pin, { y: -120, opacity: 0, duration: 0.4, ease: "bounce.out" }, tLo + 0.25);
+  const c3 = el(s2i, "c3", "card", "left:190px;top:930px;width:700px;height:520px;background:#F7F0E0"); const PL = planSvg(c3, "pl3", 22, 24, 656, {});
+  chip(c3, "c3l", 14, 466, "CONCEPT PLAN · NOT TO SCALE", { size: 17, pad: "7px 12px 9px" });
+  tl.from(c3, { opacity: 0, y: 360, duration: 0.5, ease: "back.out(1.4)" }, tPl - 0.2);
+  PL.parts.forEach((p, i) => { p.style.strokeDasharray = "none"; tl.from(p, { opacity: 0, duration: 0.2 }, tPl + 0.1 + i * 0.07); });
+  const brief = el(s2i, "brief", "t1", "left:0;right:0;text-align:center;top:1010px;font-size:96px;color:" + INK, "ONE CLEAR BRIEF");
+  const tBr = PW("p4", "clear");
+  tl.to(c1, { x: 250, y: 330, scale: 0.7, rotation: -4, duration: 0.55, ease: "power3.inOut" }, P("p4").start - 0.1); tl.to(c2, { x: -250, y: 330, scale: 0.7, rotation: 4, duration: 0.55, ease: "power3.inOut" }, P("p4").start - 0.1);
+  tl.to(c3, { y: 330, scale: 0.78, duration: 0.55, ease: "power3.inOut" }, P("p4").start - 0.1);
+  tl.from(brief, { opacity: 0, scale: 1.5, duration: 0.35, ease: "back.out(2)" }, tBr - 0.15);
+  const bot2 = botAt(s2i, "bot2", 880, 1330, 150); bot2.face(tl, 0, -1, 0.01); bot2.rise(tl, S.s2.start + 0.5, 420, 0.4); bot2.blinks(tl, S.s2.start, S.s2.end, 1.1);
+  bot2.aimPoint(tl, tPl - 0.3, { x: 880, y: 1330, scale: 1, target: [700, 1100], hand: "L", hold: 0.8 }); bot2.react(tl, tBr + 0.2, "nod");
+
+  /* ================================================================= S3 GIVE CLAUDE THE PLAN */
+  const s3i = paper("s3"); hud(s3i, "h3", "STEP 2 · THE BRIEF", S.s3.start + 0.15);
+  const tHo = PW("p5", "house"), tEn = PW("p5", "entrance"), tPo = PW("p5", "pool"), tGa = PW("p5", "garden");
+  const L3 = lap(s3i, "l3", 60, 300, 960, 520); tl.from(L3.g, { opacity: 0, y: 120, scale: 0.94, duration: 0.6, ease: "power3.out" }, S.s3.start + 0.15);
+  const BRIEF = ["› Create an original sample property:", "  · desert plot, boundary walls", "  · modern single-story residence", "  · small swimming pool", "  · palm trees, walking paths", "  · driveway and entrance gate", "› Label it CONCEPT. No engineering claims."];
+  const T3 = term(L3.scr, "t3", 0, 0, L3.sw, L3.sh, "Claude Code · brief (verbatim from the project brief)", BRIEF.map((l, i) => [l, i === 0 || i === 6 ? "#FFE08A" : "#DDEBFF", 34, i === 0 ? S.s3.start + 0.5 : null]), S.s3.start + 0.5, 30, 66);
+  chip(s3i, "c3a", 60, 1000, "ATTACHED:  land.jpg · location · plan.png", { size: 22, pad: "10px 16px 12px", bd: "#60CDFF" }); tl.from("#c3a", { opacity: 0, y: 30, duration: 0.3 }, S.s3.start + 0.9);
+  const pl3b = planSvg(s3i, "pl3b", 60, 1070, 560, {}); tl.from(pl3b.g, { opacity: 0, y: 60, duration: 0.4 }, S.s3.start + 1.1);
+  const marks = [["HOUSE · NORTH", tHo, 700, 1090], ["ENTRANCE · SOUTH GATE", tEn, 640, 1170], ["POOL · BESIDE PORCH", tPo, 700, 1250], ["GARDEN · LAWN + PATH", tGa, 640, 1330]];
+  marks.forEach(([t, at, x, y], i) => { const c = chip(s3i, "mk" + i, x, y, t, { size: 21, pad: "9px 14px 11px", bd: TER }); tl.from(c, { opacity: 0, x: 80, duration: 0.3, ease: "power3.out" }, at - 0.15); });
+  const dsh = el(s3i, "docs", "card", "left:620px;top:1400px;width:400px;height:120px;background:#FBF7EE;opacity:0"); img(dsh, "docsi", "shot-claude-code-docs.png", "left:0;top:-30px;width:400px;object-fit:cover;object-position:0 0");
+  const bot3 = botAt(s3i, "bot3", 880, 1560, 130);
+  bot3.face(tl, 0, -1, 0.01); bot3.rise(tl, S.s3.start + 0.6, 420, 0.4); bot3.blinks(tl, S.s3.start, S.s3.end, 1.1);
+  bot3.aimPoint(tl, tHo - 0.35, { x: 880, y: 1560, scale: 1, target: [700, 1100], hand: "L", hold: 0.8 }); bot3.react(tl, PW("p6", "specific") + 0.2, "think");
+
+  /* ================================================================= S4 CLAUDE CODE + BLENDER */
+  const s4i = paper("s4"); hud(s4i, "h4", "STEP 3 · CLAUDE CODE + BLENDER", S.s4.start + 0.15);
+  const tBl = PW("p8", "blockout"), tMa = PW("p8", "materials");
+  const L4 = lap(s4i, "l4", 60, 290, 960, 556); tl.from(L4.g, { opacity: 0, y: 120, scale: 0.94, duration: 0.6, ease: "power3.out" }, S.s4.start + 0.1);
+  const rows4 = [["$ " + "python -c \"import bpy;print(bpy.app.version_string)\"", "#FFE08A", 40, S.s4.start + 0.5], ["5.2.3 LTS", "#9CF2B6", 0], ["$ python build_property.py", "#FFE08A", 36, S.s4.start + 2.6], [D.build_out[0], "#9CF2B6", 0], [D.build_out[1], "#9CF2B6", 0],
+    ["$ python render_stage.py blockout", "#FFE08A", 36, tBl - 0.4], [D.blockout || "", "#9CF2B6", 0], ["$ python render_stage.py partial", "#FFE08A", 36, tMa - 0.4], [D.partial || "", "#9CF2B6", 0]];
+  const T4 = term(L4.scr, "t4", 0, 0, L4.sw, L4.sh, "Claude Code · real run · Blender 5.2.3 (bpy)", rows4, S.s4.start + 0.5, 24, 50);
+  const stage = el(s4i, "stage4", "card", "left:110px;top:965px;width:860px;height:440px");
+  const b1 = img(stage, "b1", "hero_blockout.jpg", "left:0;top:0;width:860px;height:440px;object-fit:cover;object-position:50% 62%"), b2 = img(stage, "b2", "hero_partial.jpg", "left:0;top:0;width:860px;height:440px;object-fit:cover;object-position:50% 62%;opacity:0");
+  tl.from(stage, { opacity: 0, y: 80, scale: 0.95, duration: 0.4 }, tBl);
+  tl.to(b2, { opacity: 1, duration: 0.5 }, tMa + 0.1);
+  const cb1 = chip(s4i, "cb1", 130, 985, "BLOCKOUT · CLAY MASSING", { size: 22, bd: "#60CDFF" }), cb2 = chip(s4i, "cb2", 130, 985, "MATERIALS + LIGHT · REAL BLENDER RENDER", { size: 20, bd: "#60CDFF" });
+  tl.from(cb1, { opacity: 0, duration: 0.25 }, tBl + 0.1); tl.to(cb1, { opacity: 0, duration: 0.15 }, tMa); tl.from(cb2, { opacity: 0, duration: 0.25 }, tMa + 0.1);
+  const bot4 = botAt(s4i, "bot4", 910, 1500, 120); bot4.face(tl, 0, -1, 0.01); bot4.rise(tl, S.s4.start + 0.6, 420, 0.4); bot4.blinks(tl, S.s4.start, S.s4.end, 1.1);
+  bot4.press(tl, P("p8").start - 0.55, { x: 910, y: 1500, scale: 1, target: [700, 700], hand: "L" }); bot4.react(tl, tMa + 0.4, "celebrate");
+
+  /* ================================================================= S5 REFINE (three genuine iterations) */
+  const s5i = $("s5i"); el(s5i, "bgs5", "", "position:absolute;inset:0;background:#B7A88E");
+  const v = ["hero_partial.jpg", "hero_iterA.jpg", "hero_iterB.jpg", "hero_final.jpg"].map((f, i) => img(s5i, "v" + i, f, "left:0;top:0;width:1080px;height:1920px;object-fit:cover;transform-origin:50% 60%;z-index:" + (i + 1)));
+  const tP = PW("p9", "pool"), tT = PW("p9", "trees"), tPa = PW("p9", "path");
+  const cuts = [tP + 0.15, tT + 0.15, tPa + 0.15];
+  tl.fromTo(v, { scale: 1.0 }, { scale: 1.1, duration: S.s5.len, ease: "none" }, S.s5.start);
+  const reveal = (i, at) => { const w = v[i]; w.style.clipPath = "inset(0 100% 0 0)"; tl.to(w, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "power3.inOut" }, at); };
+  v.forEach((w, i) => { if (i) reveal(i, cuts[i - 1]); });
+  const lb = [["VERSION 1 · POOL WEST", S.s5.start + 0.1], ["VERSION 2 · POOL MOVED EAST", cuts[0]], ["VERSION 3 · MORE PALMS + LAWN", cuts[1]], ["VERSION 4 · GARDEN PATH ADDED", cuts[2]]];
+  lb.forEach(([t, at], i) => { const c = chip(s5i, "vl" + i, 60, 236, t, { size: 26, bd: i ? "#60CDFF" : SUN }); c.style.zIndex = 20; if (i) tl.set(c, { opacity: 0 }, 0); tl.fromTo(c, { opacity: i ? 0 : 1, x: -30 }, { opacity: 1, x: 0, duration: 0.3 }, at + (i ? 0.3 : 0)); if (i < 3) tl.to(c, { opacity: 0, duration: 0.15 }, lb[i + 1][1] + 0.25); });
+  const hd = el(s5i, "s5h", "", "left:0;width:8px;top:0;height:1920px;background:#60CDFF;box-shadow:0 0 30px #60CDFF;opacity:0;z-index:21");
+  cuts.forEach((c, i) => { tl.fromTo(hd, { x: 0, opacity: 1 }, { x: 1080, opacity: 1, duration: 0.6, ease: "power3.inOut" }, c); tl.set(hd, { opacity: 0 }, c + 0.62); });
+  const bot5 = botAt(s5i, "bot5", 60, 1215, 190); bot5.face(tl, 0, 1, 0.01); bot5.rise(tl, S.s5.start + 0.5, 420, 0.4); bot5.blinks(tl, S.s5.start, S.s5.end, 1.1); bot5.wrapZ = 22; bot5.P.wrap.style.zIndex = 22;
+  bot5.aimPoint(tl, tP - 0.4, { x: 60, y: 1215, scale: 1, target: [700, 880], hand: "R", hold: 0.7 }); bot5.react(tl, tT + 0.2, "think"); bot5.react(tl, PW("p10", "version") + 0.1, "nod");
+
+  /* ================================================================= S6 CINEMATIC REVEAL (real Blender orbit + walkthrough) */
+  const s6i = $("s6i"); el(s6i, "bgs6", "", "position:absolute;inset:0;background:#B7A88E");
+  const vO = $("vOrb"), vW = $("vWalk"); s6i.appendChild(vO); s6i.appendChild(vW);
+  const tWalk = S.s6.start + 5.4; tl.set(vW, { opacity: 0 }, 0); tl.set(vW, { opacity: 1 }, tWalk); tl.set(vO, { opacity: 0 }, tWalk);
+  const wcut = el(s6i, "s6wc", "", "left:0;top:0;width:1080px;height:1920px;background:#fff;opacity:0;z-index:5"); tl.fromTo(wcut, { opacity: 0 }, { opacity: 0.55, duration: 0.08, yoyo: true, repeat: 1 }, tWalk - 0.04);
+  const c6a = chip(s6i, "s6a", 60, 236, "AERIAL ORBIT · REAL BLENDER RENDER", { size: 24, bd: "#60CDFF" }), c6b = chip(s6i, "s6b", 60, 236, "WALKTHROUGH · GATE → DRIVEWAY → POOL", { size: 24, bd: "#60CDFF" });
+  c6a.style.zIndex = c6b.style.zIndex = 8; tl.from(c6a, { opacity: 0, x: -30, duration: 0.3 }, S.s6.start + 0.2); tl.to(c6a, { opacity: 0, duration: 0.15 }, tWalk); tl.set(c6b, { opacity: 0 }, 0); tl.to(c6b, { opacity: 1, duration: 0.3 }, tWalk + 0.1);
+  const bot6 = botAt(s6i, "bot6", 900, 1190, 150); bot6.P.wrap.style.zIndex = 9; bot6.face(tl, 0, -1, 0.01); bot6.rise(tl, S.s6.start + 0.6, 420, 0.4); bot6.blinks(tl, S.s6.start, S.s6.end, 1.1);
+  bot6.react(tl, PW("p11", "above") + 0.1, "wow"); bot6.react(tl, tWalk + 0.8, "nod");
+
+  /* ================================================================= S7 WHY IT MATTERS */
+  const s7i = paper("s7"); hud(s7i, "h7", "THE PAYOFF", S.s7.start + 0.15);
+  const tCo = PW("p14", "concept");
+  const k1 = el(s7i, "k1", "card", "left:40px;top:330px;width:300px;height:760px"); img(k1, "k1i", "hero_empty.jpg", "left:0;top:0;width:300px;height:760px;object-fit:cover;object-position:50% 70%");
+  const k2 = el(s7i, "k2", "card", "left:390px;top:330px;width:300px;height:760px;background:#F7F0E0"); const PL2 = planSvg(k2, "pl7", 6, 190, 288, {});
+  const k3 = el(s7i, "k3", "card", "left:740px;top:330px;width:300px;height:760px"); img(k3, "k3i", "hero_final.jpg", "left:0;top:0;width:300px;height:760px;object-fit:cover;object-position:50% 62%");
+  [["LAND", k1], ["PLAN", k2], ["CONCEPT", k3]].forEach(([t, k], i) => { const c = chip(k, "kl" + i, 12, 700, t, { size: 24, pad: "8px 16px 10px" }); });
+  [[345, "+"], [695, "="]].forEach(([x, t], i) => { const a = el(s7i, "ar" + i, "", "left:" + (x - 24) + "px;top:660px;width:60px;font:900 70px/1 var(--body);color:" + TER + ";text-align:center", t); tl.from(a, { opacity: 0, scale: 0, duration: 0.3, ease: "back.out(3)" }, PW("p13", i ? "final" : "explore") + 0.1); });
+  [k1, k2, k3].forEach((k, i) => tl.from(k, { opacity: 0, y: 140, rotation: (i - 1) * 6, duration: 0.5, ease: "back.out(1.4)" }, S.s7.start + 0.25 + i * 0.35));
+  const warn = el(s7i, "warn", "", "left:50px;right:50px;top:1170px;padding:26px 30px;border-radius:22px;background:" + INK + ";border:3px solid " + SUN + ";font:900 52px/1.15 var(--body);color:#FFF6E8;text-align:center", "CONCEPT VISUALIZATION\nNOT CONSTRUCTION DRAWINGS");
+  warn.style.whiteSpace = "pre"; tl.from(warn, { opacity: 0, y: 60, scale: 0.92, duration: 0.45, ease: "back.out(1.6)" }, tCo - 0.2);
+  const bot7 = botAt(s7i, "bot7", 880, 1300, 140); bot7.face(tl, 0, -1, 0.01); bot7.rise(tl, S.s7.start + 0.5, 420, 0.4); bot7.blinks(tl, S.s7.start, S.s7.end, 1.1);
+  bot7.aimPoint(tl, tCo - 0.4, { x: 880, y: 1300, scale: 1, target: [540, 1250], hand: "L", hold: 0.9 }); bot7.react(tl, tCo + 0.9, "nod");
+
+  /* ================================================================= S8 CTA */
+  const s8i = $("s8i"); const tOut = PW("p15", "Follow") - 0.35, botO = botAt(s8i, "botO", -400, 470, 300);
+  Outro.build(tl, s8i, tOut, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" });
+
+  /* ---------- camera moves into the readable parts; no moving light sweeps ---------- */
+  const cams = {}; ["s3", "s4"].forEach(k => cams[k] = wrapScene(k));
+  zoomTo(cams.s3, 540, 520, 1.07, tHo - 0.5, 0.7); zoomOut(cams.s3, tGa + 0.9, 0.6);
+  zoomTo(cams.s4, 540, 560, 1.07, S.s4.start + 1.0, 0.7); zoomOut(cams.s4, tBl - 0.8, 0.6);
+  /* ---------- transitions ---------- */
+  Cam.whip(tl, S.s2.b, 0.5, { out: "#s1i", inn: "#s2i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s3.b, 0.5, { out: "#s2i", inn: "#s3i", dir: -1, blur: 28 });
+  Cam.push(tl, S.s4.b, 0.5, { out: "#s3i", inn: "#s4i", ox: 540, oy: 700, scale: 4 });
+  Cam.whip(tl, S.s5.b, 0.5, { out: "#s4i", inn: "#s5i", dir: 1, blur: 28 });
+  Cam.whip(tl, S.s6.b, 0.5, { out: "#s5i", inn: "#s6i", dir: -1, blur: 28 });
+  Cam.whip(tl, S.s7.b, 0.5, { out: "#s6i", inn: "#s7i", dir: 1, blur: 28 });
+  Cam.iris(tl, S.s8.b, 0.7, { inn: "#s8i", cx: 540, cy: 760, ring: "#60CDFF", host: $("fx"), id: "ir8" });
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 300, active: "#FFFFFF", block: "#D9643A", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{"music":[{"from":"p1","to":"p2","mood":"hook","to_off":0.1},{"from":"p3","to":"p12","mood":"demo","to_off":0.1},{"from":"p13","to":"p15.end","mood":"result","to_off":0.7}],
+ "sfx":[{"name":"whoosh","at":"p1:dream","off":-0.25,"gain":0.45},{"name":"sparkle","at":"p2:becomes","off":0.05,"gain":0.45},
+ {"name":"whoosh","at":"S:s2","gain":0.45},{"name":"pop","at":"p3:photo","off":-0.1,"gain":0.45},{"name":"pop","at":"p3:location","off":-0.1,"gain":0.45},{"name":"pop","at":"p3:plan","off":-0.1,"gain":0.45},
+ {"name":"whoosh","at":"S:s3","gain":0.45},{"name":"tick","at":"p5:house","gain":0.4},{"name":"tick","at":"p5:entrance","gain":0.4},{"name":"tick","at":"p5:pool","gain":0.4},{"name":"tick","at":"p5:garden","gain":0.4},
+ {"name":"whoosh","at":"S:s4","gain":0.45},{"name":"sparkle","at":"p8:materials","gain":0.45},
+ {"name":"whoosh","at":"S:s5","gain":0.45},{"name":"pop","at":"p9:pool","gain":0.45},{"name":"pop","at":"p9:trees","gain":0.45},{"name":"pop","at":"p9:path","gain":0.45},
+ {"name":"whoosh","at":"S:s6","gain":0.45},{"name":"sparkle","at":"p12:walk","gain":0.4},
+ {"name":"whoosh","at":"S:s7","gain":0.45},{"name":"pop","at":"p14:concept","gain":0.45},
+ {"name":"whoosh","at":"S:s8","gain":0.45}]}
