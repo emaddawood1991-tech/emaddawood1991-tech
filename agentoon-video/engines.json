@@ -1,0 +1,74 @@
+{
+  "defaultComposer": "remotion",
+  "priority": ["blender", "playwright", "hyperframes", "pexels", "remotion", "ai-gateway"],
+  "engines": {
+    "blender": {
+      "role": "primary 3D animation engine (local, Windows PC with Blender MCP)",
+      "cost": "free",
+      "paid": false,
+      "keywords": {
+        "3d": 3, "blender": 4, "rig": 3, "rigging": 3, "rigged": 3, "character animation": 4,
+        "animated character": 3, "camera move": 2, "camera path": 3, "dolly": 2, "orbit": 2,
+        "turntable": 3, "product animation": 3, "product shot": 2, "environment": 2,
+        "3d environment": 3, "lighting": 1, "robot walk": 3, "mascot animation": 3, "exact camera": 3
+      }
+    },
+    "playwright": {
+      "role": "real software demonstrations (browser and terminal capture)",
+      "cost": "free",
+      "paid": false,
+      "keywords": {
+        "demo": 3, "real demo": 4, "software demo": 4, "terminal": 3, "install": 2, "dashboard": 3,
+        "github page": 3, "github repo": 2, "screen recording": 3, "real software": 4,
+        "ui walkthrough": 3, "browser": 2, "command line": 2, "cli": 2, "settings page": 2
+      }
+    },
+    "hyperframes": {
+      "role": "existing Agentoon episode workflow (preserved)",
+      "cost": "free",
+      "paid": false,
+      "keywords": {
+        "hyperframes": 5, "existing episode": 4, "agentoon episode": 4, "robot acting": 4,
+        "episode kit": 3, "continue episode": 3
+      }
+    },
+    "pexels": {
+      "role": "real-world stock footage and backgrounds",
+      "cost": "free (API key required)",
+      "paid": false,
+      "keywords": {
+        "stock": 3, "b-roll": 3, "broll": 3, "background video": 3, "real-world footage": 4,
+        "real world footage": 4, "nature": 2, "city": 2, "office": 2, "people working": 2,
+        "aerial": 2, "sunset": 1, "pexels": 5
+      }
+    },
+    "remotion": {
+      "role": "default composer: motion graphics, kinetic typography, captions, transitions, assembly",
+      "cost": "free",
+      "paid": false,
+      "keywords": {
+        "kinetic typography": 4, "typography": 3, "captions": 3, "subtitles": 3, "lower third": 3,
+        "transition": 2, "motion graphics": 4, "chart": 2, "title card": 3, "outro": 2,
+        "call to action": 2, "cta": 2, "text animation": 3, "assemble": 3, "assembly": 3,
+        "compose": 2, "final video": 3, "combine": 2
+      }
+    },
+    "ai-gateway": {
+      "role": "optional AI video provider via Vercel AI Gateway",
+      "cost": "paid",
+      "paid": true,
+      "keywords": {
+        "ai-generated": 4, "ai generated": 4, "text-to-video": 5, "text to video": 5,
+        "image-to-video": 5, "image to video": 5, "photoreal": 3, "photorealistic": 3,
+        "cinematic clip": 3, "cinematic footage": 3, "cinematic establishing shot": 4,
+        "establishing shot": 2, "dreamlike": 3, "surreal": 3, "veo": 4, "kling": 4, "wan": 3,
+        "motion transfer": 4, "generate video": 3
+      }
+    }
+  },
+  "overrides": {
+    "precisionTerms": ["precise", "exact", "rig", "rigged", "rigging", "character animation", "mascot", "robot", "product"],
+    "mascotTerms": ["robot", "mascot", "agentoon robot"],
+    "softwareTerms": ["real software", "real demo", "software demo", "terminal", "dashboard", "install", "github"]
+  }
+}
