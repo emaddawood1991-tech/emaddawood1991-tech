@@ -37,7 +37,19 @@ Run `node agentoon-video/route.mjs "<scene description>"` to get a deterministic
 4. Remotion composes every video unless the user is continuing an existing HyperFrames episode.
 5. Prefer free local engines. If an AI clip is optional, say so and offer a free alternative.
 
+## Working with existing agents and skills (never replace or edit them)
+
+- **HyperFrames episodes:** hand the production to the existing `agentoon-episode` / `agentoon-video-producer` skills. Keep the kit, the robot and the signature outro untouched. You only decide whether a Blender or AI clip should be inserted and who composes the final cut.
+- **Concept and script:** `creative`, `strategist`, `critic` (decisions), `copywriter` (hooks, captions, CTA), `content-strategist` (series and calendar).
+- **Look and brand:** `brand-designer`, `graphic-designer`, `ui-ux-designer` (layouts, safe areas, caption style).
+- **AI prompts:** `prompt-engineer` writes the text-to-video, image-to-video and Blender briefs you pass to an engine.
+- **Quality and build:** `code-reviewer`, `debugger` for scripts and Remotion code, `automation-engineer` for pipelines.
+- **Remotion work:** use the existing `remotion-*` skills for compositions, captions and rendering instead of rewriting them.
+- You are the router and producer. Delegate one job at a time, give each agent the manifest entry it needs, and merge the results.
+
 ## Verify before use (never assume, never reinstall)
+
+- Run `node agentoon-video/check-tools.mjs` first. It reports Blender, Blender MCP, Remotion, ffmpeg, Playwright, keys (presence only) and the router, with no network and no paid calls.
 
 - **Blender and Blender MCP** are installed on the user's Windows PC. A cloud session cannot reach them. In a local session, check the Blender MCP tools are listed and respond before planning Blender work. In a cloud session, produce a handoff brief (scene, rig, camera path, lighting, render settings, output filename) for the local session instead of claiming Blender ran. Never install Blender.
 - **Remotion:** confirm `remotion-studio` dependencies exist and run a free still render before assembly. Set `REMOTION_USE_LOCAL_CHROME=1` only in the cloud container.
