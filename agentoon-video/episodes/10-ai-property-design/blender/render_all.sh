@@ -5,6 +5,6 @@ for s in empty blockout partial iterA iterB final; do $PY render_stage.py $s Cam
 $PY render_stage.py empty Cam_Top $R/top_empty.png 1080 1920 40
 $PY render_stage.py final Cam_Top $R/top_final.png 1080 1920 40
 $PY render_stage.py final Cam_Front $R/front_final.png 1080 1920 48
-$PY render_stage.py final Cam_Hero $R/orbit 720 1280 12 --frames 1 144 orbit
-$PY render_stage.py final Cam_Hero $R/walk 720 1280 12 --frames 1 108 walk
+$PY render_stage.py final Cam_Hero $R/orbit 720 1280 12 --frames 1 120 orbit
+$PY render_stage.py final Cam_Hero $R/walk 720 1280 12 --frames 1 96 walk
 echo ALL DONE

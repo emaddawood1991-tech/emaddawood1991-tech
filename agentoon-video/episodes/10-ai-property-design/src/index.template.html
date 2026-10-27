@@ -36,8 +36,8 @@
   <section id="s6" class="clip scene" data-start="{{s6.start}}" data-duration="{{s6.len}}"><div id="s6i" class="inner"></div></section>
   <section id="s7" class="clip scene" data-start="{{s7.start}}" data-duration="{{s7.len}}"><div id="s7i" class="inner"></div></section>
   <section id="s8" class="clip scene" data-start="{{s8.start}}" data-duration="{{s8.len}}"><div id="s8i" class="inner"></div></section>
-  <video id="vOrb" class="rv" src="assets/orbit.mp4" muted playsinline data-start="{{s6.start}}" data-duration="5.4" data-media-start="0" data-track-index="2"></video>
-  <video id="vWalk" class="rv" src="assets/walk.mp4" muted playsinline data-start="{{s6.start}}" data-duration="3.6" data-media-start="0" data-track-index="3"></video>
+  <video id="vOrb" class="rv" src="assets/orbit.mp4" muted playsinline data-start="{{s6.start}}" data-duration="5.0" data-media-start="0" data-track-index="2"></video>
+  <video id="vWalk" class="rv" src="assets/walk.mp4" muted playsinline data-start="{{s6.start}}" data-duration="4.0" data-media-start="0" data-track-index="3"></video>
   <div id="capLayer"></div>
   <div id="fx"></div>
   <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
@@ -202,7 +202,7 @@
   /* ================================================================= S6 CINEMATIC REVEAL (real Blender orbit + walkthrough) */
   const s6i = $("s6i"); el(s6i, "bgs6", "", "position:absolute;inset:0;background:#B7A88E");
   const vO = $("vOrb"), vW = $("vWalk"); s6i.appendChild(vO); s6i.appendChild(vW);
-  const tWalk = S.s6.start + 5.4; tl.set(vW, { opacity: 0 }, 0); tl.set(vW, { opacity: 1 }, tWalk); tl.set(vO, { opacity: 0 }, tWalk);
+  const tWalk = S.s6.start + 5.0; tl.set(vW, { opacity: 0 }, 0); tl.set(vW, { opacity: 1 }, tWalk); tl.set(vO, { opacity: 0 }, tWalk);
   const wcut = el(s6i, "s6wc", "", "left:0;top:0;width:1080px;height:1920px;background:#fff;opacity:0;z-index:5"); tl.fromTo(wcut, { opacity: 0 }, { opacity: 0.55, duration: 0.08, yoyo: true, repeat: 1 }, tWalk - 0.04);
   const c6a = chip(s6i, "s6a", 60, 236, "AERIAL ORBIT · REAL BLENDER RENDER", { size: 24, bd: "#60CDFF" }), c6b = chip(s6i, "s6b", 60, 236, "WALKTHROUGH · GATE → DRIVEWAY → POOL", { size: 24, bd: "#60CDFF" });
   c6a.style.zIndex = c6b.style.zIndex = 8; tl.from(c6a, { opacity: 0, x: -30, duration: 0.3 }, S.s6.start + 0.2); tl.to(c6a, { opacity: 0, duration: 0.15 }, tWalk); tl.set(c6b, { opacity: 0 }, 0); tl.to(c6b, { opacity: 1, duration: 0.3 }, tWalk + 0.1);
