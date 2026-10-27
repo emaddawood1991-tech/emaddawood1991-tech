@@ -3,3 +3,4 @@
 !.env.example
 out/
 node_modules/
+gateway-models.json

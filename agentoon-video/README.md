@@ -8,7 +8,7 @@ Vercel AI Gateway is an optional paid provider. Nothing here is a website or a d
 |---|---|
 | `route.mjs`, `engines.json` | Free, deterministic scene router |
 | `check-tools.mjs` | Read-only readiness check per engine (no network, no paid calls) |
-| `verify-gateway.mjs` | Checks `.env` is git-ignored, key is set (hidden) and lists gateway video models |
+| `verify-gateway.mjs` | Authenticates the key (free `GET /v1/credits`), shows credits, lists gateway video models with prices. `--write-pricing` fills `pricing.json` |
 | `ai-clip.mjs`, `pricing.json` | Approval-gated AI Gateway clip generator (dry run by default) |
 | `.env.example` | Variable names only. Copy to `.env` (git-ignored). |
 | `tests/route.test.mjs` | Free tests: `node --test tests/route.test.mjs` |
@@ -31,8 +31,8 @@ node --test tests/route.test.mjs
 Copy-Item .env.example .env
 notepad .env            # AI_GATEWAY_API_KEY=...   (and PEXELS_API_KEY=... if you have one)
 
-# 4. Verify the gateway (no generation, key never printed)
-node verify-gateway.mjs
+# 4. Verify the gateway: authenticates the key, shows credits, lists video models and prices (no generation, key never printed)
+node verify-gateway.mjs --write-pricing
 ```
 
 Use the agent from this repo by starting Claude Code inside `emaddawood1991-tech`. To make it available in every project,
