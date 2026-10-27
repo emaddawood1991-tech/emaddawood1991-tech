@@ -27,6 +27,7 @@ data = {"version_cmd": "python -c \"import bpy;print(bpy.app.version_string)\"",
 open(f"{D}/src/data.js", "w").write("window.DATA = " + json.dumps(data) + ";\n"); json.dump(data, open(f"{D}/data/transcript.json", "w"), indent=1)
 t = open(f"{D}/src/index.template.html").read()
 for k, v in sc.items(): t = t.replace("{{%s.start}}" % k, str(v["start"])).replace("{{%s.len}}" % k, str(v["len"]))
+t = t.replace("{{s6.walk}}", str(round(sc["s6"]["start"] + 5.0, 2)))
 t = t.replace("{{TOTAL}}", str(TOTAL)); assert "{{" not in t, re.findall(r"\{\{[^}]+\}\}", t)[:3]
 open(f"{D}/index.html", "w").write(t)
 def res(a, off=0.0):

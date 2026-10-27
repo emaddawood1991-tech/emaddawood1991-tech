@@ -37,7 +37,7 @@
   <section id="s7" class="clip scene" data-start="{{s7.start}}" data-duration="{{s7.len}}"><div id="s7i" class="inner"></div></section>
   <section id="s8" class="clip scene" data-start="{{s8.start}}" data-duration="{{s8.len}}"><div id="s8i" class="inner"></div></section>
   <video id="vOrb" class="rv" src="assets/orbit.mp4" muted playsinline data-start="{{s6.start}}" data-duration="5.0" data-media-start="0" data-track-index="2"></video>
-  <video id="vWalk" class="rv" src="assets/walk.mp4" muted playsinline data-start="{{s6.start}}" data-duration="4.0" data-media-start="0" data-track-index="3"></video>
+  <video id="vWalk" class="rv" src="assets/walk.mp4" muted playsinline data-start="{{s6.walk}}" data-duration="4.0" data-media-start="0" data-track-index="3"></video>
   <div id="capLayer"></div>
   <div id="fx"></div>
   <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
@@ -145,10 +145,10 @@
   chip(c3, "c3l", 14, 466, "CONCEPT PLAN · NOT TO SCALE", { size: 17, pad: "7px 12px 9px" });
   tl.from(c3, { opacity: 0, y: 360, duration: 0.5, ease: "back.out(1.4)" }, tPl - 0.2);
   PL.parts.forEach((p, i) => { p.style.strokeDasharray = "none"; tl.from(p, { opacity: 0, duration: 0.2 }, tPl + 0.1 + i * 0.07); });
-  const brief = el(s2i, "brief", "t1", "left:0;right:0;text-align:center;top:1010px;font-size:96px;color:" + INK, "ONE CLEAR BRIEF");
+  const brief = el(s2i, "brief", "t1", "left:0;right:0;text-align:center;top:1250px;font-size:96px;color:" + INK, "ONE CLEAR BRIEF");
   const tBr = PW("p4", "clear");
-  tl.to(c1, { x: 250, y: 330, scale: 0.7, rotation: -4, duration: 0.55, ease: "power3.inOut" }, P("p4").start - 0.1); tl.to(c2, { x: -250, y: 330, scale: 0.7, rotation: 4, duration: 0.55, ease: "power3.inOut" }, P("p4").start - 0.1);
-  tl.to(c3, { y: 330, scale: 0.78, duration: 0.55, ease: "power3.inOut" }, P("p4").start - 0.1);
+  tl.to(c1, { x: 250, y: 120, scale: 0.7, rotation: -4, duration: 0.55, ease: "power3.inOut" }, P("p4").start - 0.1); tl.to(c2, { x: -250, y: 120, scale: 0.7, rotation: 4, duration: 0.55, ease: "power3.inOut" }, P("p4").start - 0.1);
+  tl.to(c3, { y: -150, scale: 0.78, duration: 0.55, ease: "power3.inOut" }, P("p4").start - 0.1);
   tl.from(brief, { opacity: 0, scale: 1.5, duration: 0.35, ease: "back.out(2)" }, tBr - 0.15);
   const bot2 = botAt(s2i, "bot2", 880, 1330, 150); bot2.face(tl, 0, -1, 0.01); bot2.rise(tl, S.s2.start + 0.5, 420, 0.4); bot2.blinks(tl, S.s2.start, S.s2.end, 1.1);
   bot2.aimPoint(tl, tPl - 0.3, { x: 880, y: 1330, scale: 1, target: [700, 1100], hand: "L", hold: 0.8 }); bot2.react(tl, tBr + 0.2, "nod");
