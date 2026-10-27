@@ -88,7 +88,13 @@ for nm, hx, ang in (("GateLeaf1", -12.0, 100), ("GateLeaf2", -8.0, -100)):
 # ======================= FRONT DOOR + HOLE + INTERIOR =======================
 door = OB["Door"]; door.location = (3.2, 1.2, 1.15); door.scale = (1.2, 0.1, 2.2)
 living = OB["Living"]
-cutter = box("DoorCut", (3.2, 1.25, 1.1), (1.2, 0.6, 2.2), mat("Cutter", (1, 0, 1)))
+# hollow the room first (0.25 m walls) so the doorway is a real opening into a real room
+room = box("RoomCut", (-2.5, 5.0, 1.8), (12.5, 7.0, 2.9), mat("Cutter0", (1, 0, 1)))
+bm0 = living.modifiers.new("RoomHole", "BOOLEAN"); bm0.operation = 'DIFFERENCE'; bm0.object = room; bm0.solver = 'EXACT'
+with bpy.context.temp_override(object=living, active_object=living, selected_objects=[living]):
+    bpy.ops.object.modifier_apply(modifier="RoomHole")
+room.hide_render = True; room.hide_viewport = True
+cutter = box("DoorCut", (3.2, 1.3, 1.1), (1.2, 0.7, 2.2), mat("Cutter", (1, 0, 1)))
 bm = living.modifiers.new("DoorHole", "BOOLEAN"); bm.operation = 'DIFFERENCE'; bm.object = cutter; bm.solver = 'EXACT'
 with bpy.context.temp_override(object=living, active_object=living, selected_objects=[living]):
     bpy.ops.object.modifier_apply(modifier="DoorHole")

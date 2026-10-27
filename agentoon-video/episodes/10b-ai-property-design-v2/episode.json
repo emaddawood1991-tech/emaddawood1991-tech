@@ -1,0 +1,87 @@
+{
+ "title": "AI Property Design v2",
+ "voice": "am_michael",
+ "speed": 1.1,
+ "total": 90.0,
+ "music": [],
+ "sfx": [],
+ "phrases": [
+  {
+   "id": "p1",
+   "speak": "What if you could turn a location on Google Maps into a property you can explore?",
+   "show": "What if you could turn a location on Google Maps into a property you can explore?",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p2",
+   "speak": "Start with Google Maps. Find your land, switch to satellite view, and copy the location.",
+   "show": "Start with Google Maps. Find your land, switch to satellite view, and copy the location.",
+   "map": null,
+   "pad": 0.4
+  },
+  {
+   "id": "p3",
+   "speak": "Maps shows the surroundings and the road. It does not give exact boundaries or measurements, so we treat everything as a concept.",
+   "show": "Maps shows the surroundings and the road. It does not give exact boundaries or measurements, so we treat everything as a concept.",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p4",
+   "speak": "Give Claude Code the location and describe your dream property. A modern house, a gate on the road, a pool, and a garden.",
+   "show": "Give Claude Code the location and describe your dream property. A modern house, a gate on the road, a pool, and a garden.",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p5",
+   "speak": "Claude Code coordinates Blender to turn the idea into an editable 3D concept. Walls rise, the roof drops, and the garden grows.",
+   "show": "Claude Code coordinates Blender to turn the idea into an editable 3D concept. Walls rise, the roof drops, and the garden grows.",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p6",
+   "speak": "Now watch it come alive. A car drives in from the road, the gate swings open, and the camera follows it inside. Every movement is real Blender keyframe animation.",
+   "show": "Now watch it come alive. A car drives in from the road, the gate swings open, and the camera follows it inside. Every movement is real Blender keyframe animation.",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p7",
+   "speak": "Walk through the garden. People stroll along the paths, the pool water ripples, and trees and plants add depth. Every detail stays editable.",
+   "show": "Walk through the garden. People stroll along the paths, the pool water ripples, and trees and plants add depth. Every detail stays editable.",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p8",
+   "speak": "Step up to the front door, open it, and explore the interior. A living room, a dining table, and warm light, all built in Blender.",
+   "show": "Step up to the front door, open it, and explore the interior. A living room, a dining table, and warm light, all built in Blender.",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p9",
+   "speak": "Then fly above the finished concept. Land photo, plan, and 3D design, side by side.",
+   "show": "Then fly above the finished concept. Land photo, plan, and 3D design, side by side.",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p10",
+   "speak": "Remember, this is a conceptual design. It is not construction drawings, and it needs real surveys and an architect.",
+   "show": "Remember, this is a conceptual design. It is not construction drawings, and it needs real surveys and an architect.",
+   "map": null,
+   "pad": 0.5
+  },
+  {
+   "id": "p11",
+   "speak": "Follow Agentoon.ai for more real AI workflows!",
+   "show": "Follow Agentoon.ai for more real AI workflows!",
+   "map": null,
+   "pad": 0.0
+  }
+ ]
+}

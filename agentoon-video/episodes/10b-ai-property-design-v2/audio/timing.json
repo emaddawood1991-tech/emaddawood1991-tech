@@ -1,0 +1,1178 @@
+{
+ "voice": "am_michael",
+ "speed": 1.1,
+ "wpm": 163,
+ "total": 84.601,
+ "phrases": [
+  {
+   "id": "p1",
+   "start": 0.15,
+   "end": 4.448,
+   "show": "What if you could turn a location on Google Maps into a property you can explore?",
+   "speak": "What if you could turn a location on Google Maps into a property you can explore?",
+   "map": null
+  },
+  {
+   "id": "p2",
+   "start": 5.068,
+   "end": 10.442,
+   "show": "Start with Google Maps. Find your land, switch to satellite view, and copy the location.",
+   "speak": "Start with Google Maps. Find your land, switch to satellite view, and copy the location.",
+   "map": null
+  },
+  {
+   "id": "p3",
+   "start": 10.962,
+   "end": 18.683,
+   "show": "Maps shows the surroundings and the road. It does not give exact boundaries or measurements, so we treat everything as a concept.",
+   "speak": "Maps shows the surroundings and the road. It does not give exact boundaries or measurements, so we treat everything as a concept.",
+   "map": null
+  },
+  {
+   "id": "p4",
+   "start": 19.303,
+   "end": 26.738,
+   "show": "Give Claude Code the location and describe your dream property. A modern house, a gate on the road, a pool, and a garden.",
+   "speak": "Give Claude Code the location and describe your dream property. A modern house, a gate on the road, a pool, and a garden.",
+   "map": null
+  },
+  {
+   "id": "p5",
+   "start": 27.358,
+   "end": 36.161,
+   "show": "Claude Code coordinates Blender to turn the idea into an editable 3D concept. Walls rise, the roof drops, and the garden grows.",
+   "speak": "Claude Code coordinates Blender to turn the idea into an editable 3D concept. Walls rise, the roof drops, and the garden grows.",
+   "map": null
+  },
+  {
+   "id": "p6",
+   "start": 36.781,
+   "end": 47.653,
+   "show": "Now watch it come alive. A car drives in from the road, the gate swings open, and the camera follows it inside. Every movement is real Blender keyframe animation.",
+   "speak": "Now watch it come alive. A car drives in from the road, the gate swings open, and the camera follows it inside. Every movement is real Blender keyframe animation.",
+   "map": null
+  },
+  {
+   "id": "p7",
+   "start": 48.273,
+   "end": 56.95,
+   "show": "Walk through the garden. People stroll along the paths, the pool water ripples, and trees and plants add depth. Every detail stays editable.",
+   "speak": "Walk through the garden. People stroll along the paths, the pool water ripples, and trees and plants add depth. Every detail stays editable.",
+   "map": null
+  },
+  {
+   "id": "p8",
+   "start": 57.57,
+   "end": 65.476,
+   "show": "Step up to the front door, open it, and explore the interior. A living room, a dining table, and warm light, all built in Blender.",
+   "speak": "Step up to the front door, open it, and explore the interior. A living room, a dining table, and warm light, all built in Blender.",
+   "map": null
+  },
+  {
+   "id": "p9",
+   "start": 66.096,
+   "end": 72.12,
+   "show": "Then fly above the finished concept. Land photo, plan, and 3D design, side by side.",
+   "speak": "Then fly above the finished concept. Land photo, plan, and 3D design, side by side.",
+   "map": null
+  },
+  {
+   "id": "p10",
+   "start": 72.74,
+   "end": 79.973,
+   "show": "Remember, this is a conceptual design. It is not construction drawings, and it needs real surveys and an architect.",
+   "speak": "Remember, this is a conceptual design. It is not construction drawings, and it needs real surveys and an architect.",
+   "map": null
+  },
+  {
+   "id": "p11",
+   "start": 80.593,
+   "end": 84.481,
+   "show": "Follow Agentoon.ai for more real AI workflows!",
+   "speak": "Follow Agentoon.ai for more real AI workflows!",
+   "map": null
+  }
+ ],
+ "words": [
+  {
+   "w": "What",
+   "s": 0.15,
+   "e": 0.413
+  },
+  {
+   "w": "if",
+   "s": 0.413,
+   "e": 0.589
+  },
+  {
+   "w": "you",
+   "s": 0.589,
+   "e": 0.808
+  },
+  {
+   "w": "could",
+   "s": 0.808,
+   "e": 1.115
+  },
+  {
+   "w": "turn",
+   "s": 1.115,
+   "e": 1.378
+  },
+  {
+   "w": "a",
+   "s": 1.378,
+   "e": 1.51
+  },
+  {
+   "w": "location",
+   "s": 1.51,
+   "e": 1.948
+  },
+  {
+   "w": "on",
+   "s": 1.948,
+   "e": 2.124
+  },
+  {
+   "w": "Google",
+   "s": 2.124,
+   "e": 2.474
+  },
+  {
+   "w": "Maps",
+   "s": 2.474,
+   "e": 2.738
+  },
+  {
+   "w": "into",
+   "s": 2.738,
+   "e": 3.001
+  },
+  {
+   "w": "a",
+   "s": 3.001,
+   "e": 3.132
+  },
+  {
+   "w": "property",
+   "s": 3.132,
+   "e": 3.571
+  },
+  {
+   "w": "you",
+   "s": 3.571,
+   "e": 3.79
+  },
+  {
+   "w": "can",
+   "s": 3.79,
+   "e": 4.009
+  },
+  {
+   "w": "explore?",
+   "s": 4.009,
+   "e": 4.448
+  },
+  {
+   "w": "Start",
+   "s": 5.068,
+   "e": 5.43
+  },
+  {
+   "w": "with",
+   "s": 5.43,
+   "e": 5.74
+  },
+  {
+   "w": "Google",
+   "s": 5.74,
+   "e": 6.153
+  },
+  {
+   "w": "Maps.",
+   "s": 6.153,
+   "e": 6.515
+  },
+  {
+   "w": "Find",
+   "s": 6.515,
+   "e": 6.825
+  },
+  {
+   "w": "your",
+   "s": 6.825,
+   "e": 7.135
+  },
+  {
+   "w": "land,",
+   "s": 7.135,
+   "e": 7.497
+  },
+  {
+   "w": "switch",
+   "s": 7.497,
+   "e": 7.91
+  },
+  {
+   "w": "to",
+   "s": 7.91,
+   "e": 8.117
+  },
+  {
+   "w": "satellite",
+   "s": 8.117,
+   "e": 8.685
+  },
+  {
+   "w": "view,",
+   "s": 8.685,
+   "e": 9.047
+  },
+  {
+   "w": "and",
+   "s": 9.047,
+   "e": 9.305
+  },
+  {
+   "w": "copy",
+   "s": 9.305,
+   "e": 9.615
+  },
+  {
+   "w": "the",
+   "s": 9.615,
+   "e": 9.874
+  },
+  {
+   "w": "location.",
+   "s": 9.874,
+   "e": 10.442
+  },
+  {
+   "w": "Maps",
+   "s": 10.962,
+   "e": 11.267
+  },
+  {
+   "w": "shows",
+   "s": 11.267,
+   "e": 11.622
+  },
+  {
+   "w": "the",
+   "s": 11.622,
+   "e": 11.876
+  },
+  {
+   "w": "surroundings",
+   "s": 11.876,
+   "e": 12.587
+  },
+  {
+   "w": "and",
+   "s": 12.587,
+   "e": 12.841
+  },
+  {
+   "w": "the",
+   "s": 12.841,
+   "e": 13.095
+  },
+  {
+   "w": "road.",
+   "s": 13.095,
+   "e": 13.451
+  },
+  {
+   "w": "It",
+   "s": 13.451,
+   "e": 13.654
+  },
+  {
+   "w": "does",
+   "s": 13.654,
+   "e": 13.959
+  },
+  {
+   "w": "not",
+   "s": 13.959,
+   "e": 14.213
+  },
+  {
+   "w": "give",
+   "s": 14.213,
+   "e": 14.518
+  },
+  {
+   "w": "exact",
+   "s": 14.518,
+   "e": 14.873
+  },
+  {
+   "w": "boundaries",
+   "s": 14.873,
+   "e": 15.483
+  },
+  {
+   "w": "or",
+   "s": 15.483,
+   "e": 15.686
+  },
+  {
+   "w": "measurements,",
+   "s": 15.686,
+   "e": 16.448
+  },
+  {
+   "w": "so",
+   "s": 16.448,
+   "e": 16.651
+  },
+  {
+   "w": "we",
+   "s": 16.651,
+   "e": 16.854
+  },
+  {
+   "w": "treat",
+   "s": 16.854,
+   "e": 17.21
+  },
+  {
+   "w": "everything",
+   "s": 17.21,
+   "e": 17.819
+  },
+  {
+   "w": "as",
+   "s": 17.819,
+   "e": 18.023
+  },
+  {
+   "w": "a",
+   "s": 18.023,
+   "e": 18.175
+  },
+  {
+   "w": "concept.",
+   "s": 18.175,
+   "e": 18.683
+  },
+  {
+   "w": "Give",
+   "s": 19.303,
+   "e": 19.611
+  },
+  {
+   "w": "Claude",
+   "s": 19.611,
+   "e": 20.021
+  },
+  {
+   "w": "Code",
+   "s": 20.021,
+   "e": 20.329
+  },
+  {
+   "w": "the",
+   "s": 20.329,
+   "e": 20.585
+  },
+  {
+   "w": "location",
+   "s": 20.585,
+   "e": 21.098
+  },
+  {
+   "w": "and",
+   "s": 21.098,
+   "e": 21.354
+  },
+  {
+   "w": "describe",
+   "s": 21.354,
+   "e": 21.867
+  },
+  {
+   "w": "your",
+   "s": 21.867,
+   "e": 22.174
+  },
+  {
+   "w": "dream",
+   "s": 22.174,
+   "e": 22.533
+  },
+  {
+   "w": "property.",
+   "s": 22.533,
+   "e": 23.097
+  },
+  {
+   "w": "A",
+   "s": 23.097,
+   "e": 23.251
+  },
+  {
+   "w": "modern",
+   "s": 23.251,
+   "e": 23.661
+  },
+  {
+   "w": "house,",
+   "s": 23.661,
+   "e": 24.072
+  },
+  {
+   "w": "a",
+   "s": 24.072,
+   "e": 24.225
+  },
+  {
+   "w": "gate",
+   "s": 24.225,
+   "e": 24.533
+  },
+  {
+   "w": "on",
+   "s": 24.533,
+   "e": 24.738
+  },
+  {
+   "w": "the",
+   "s": 24.738,
+   "e": 24.995
+  },
+  {
+   "w": "road,",
+   "s": 24.995,
+   "e": 25.354
+  },
+  {
+   "w": "a",
+   "s": 25.354,
+   "e": 25.507
+  },
+  {
+   "w": "pool,",
+   "s": 25.507,
+   "e": 25.866
+  },
+  {
+   "w": "and",
+   "s": 25.866,
+   "e": 26.123
+  },
+  {
+   "w": "a",
+   "s": 26.123,
+   "e": 26.277
+  },
+  {
+   "w": "garden.",
+   "s": 26.277,
+   "e": 26.738
+  },
+  {
+   "w": "Claude",
+   "s": 27.358,
+   "e": 27.827
+  },
+  {
+   "w": "Code",
+   "s": 27.827,
+   "e": 28.18
+  },
+  {
+   "w": "coordinates",
+   "s": 28.18,
+   "e": 28.943
+  },
+  {
+   "w": "Blender",
+   "s": 28.943,
+   "e": 29.471
+  },
+  {
+   "w": "to",
+   "s": 29.471,
+   "e": 29.705
+  },
+  {
+   "w": "turn",
+   "s": 29.705,
+   "e": 30.058
+  },
+  {
+   "w": "the",
+   "s": 30.058,
+   "e": 30.351
+  },
+  {
+   "w": "idea",
+   "s": 30.351,
+   "e": 30.703
+  },
+  {
+   "w": "into",
+   "s": 30.703,
+   "e": 31.055
+  },
+  {
+   "w": "an",
+   "s": 31.055,
+   "e": 31.29
+  },
+  {
+   "w": "editable",
+   "s": 31.29,
+   "e": 31.877
+  },
+  {
+   "w": "3D",
+   "s": 31.877,
+   "e": 32.112
+  },
+  {
+   "w": "concept.",
+   "s": 32.112,
+   "e": 32.698
+  },
+  {
+   "w": "Walls",
+   "s": 32.698,
+   "e": 33.109
+  },
+  {
+   "w": "rise,",
+   "s": 33.109,
+   "e": 33.52
+  },
+  {
+   "w": "the",
+   "s": 33.52,
+   "e": 33.814
+  },
+  {
+   "w": "roof",
+   "s": 33.814,
+   "e": 34.166
+  },
+  {
+   "w": "drops,",
+   "s": 34.166,
+   "e": 34.635
+  },
+  {
+   "w": "and",
+   "s": 34.635,
+   "e": 34.929
+  },
+  {
+   "w": "the",
+   "s": 34.929,
+   "e": 35.222
+  },
+  {
+   "w": "garden",
+   "s": 35.222,
+   "e": 35.692
+  },
+  {
+   "w": "grows.",
+   "s": 35.692,
+   "e": 36.161
+  },
+  {
+   "w": "Now",
+   "s": 36.781,
+   "e": 37.064
+  },
+  {
+   "w": "watch",
+   "s": 37.064,
+   "e": 37.46
+  },
+  {
+   "w": "it",
+   "s": 37.46,
+   "e": 37.687
+  },
+  {
+   "w": "come",
+   "s": 37.687,
+   "e": 38.027
+  },
+  {
+   "w": "alive.",
+   "s": 38.027,
+   "e": 38.48
+  },
+  {
+   "w": "A",
+   "s": 38.48,
+   "e": 38.65
+  },
+  {
+   "w": "car",
+   "s": 38.65,
+   "e": 38.933
+  },
+  {
+   "w": "drives",
+   "s": 38.933,
+   "e": 39.386
+  },
+  {
+   "w": "in",
+   "s": 39.386,
+   "e": 39.612
+  },
+  {
+   "w": "from",
+   "s": 39.612,
+   "e": 39.952
+  },
+  {
+   "w": "the",
+   "s": 39.952,
+   "e": 40.235
+  },
+  {
+   "w": "road,",
+   "s": 40.235,
+   "e": 40.632
+  },
+  {
+   "w": "the",
+   "s": 40.632,
+   "e": 40.915
+  },
+  {
+   "w": "gate",
+   "s": 40.915,
+   "e": 41.254
+  },
+  {
+   "w": "swings",
+   "s": 41.254,
+   "e": 41.707
+  },
+  {
+   "w": "open,",
+   "s": 41.707,
+   "e": 42.104
+  },
+  {
+   "w": "and",
+   "s": 42.104,
+   "e": 42.387
+  },
+  {
+   "w": "the",
+   "s": 42.387,
+   "e": 42.67
+  },
+  {
+   "w": "camera",
+   "s": 42.67,
+   "e": 43.123
+  },
+  {
+   "w": "follows",
+   "s": 43.123,
+   "e": 43.633
+  },
+  {
+   "w": "it",
+   "s": 43.633,
+   "e": 43.859
+  },
+  {
+   "w": "inside.",
+   "s": 43.859,
+   "e": 44.369
+  },
+  {
+   "w": "Every",
+   "s": 44.369,
+   "e": 44.765
+  },
+  {
+   "w": "movement",
+   "s": 44.765,
+   "e": 45.331
+  },
+  {
+   "w": "is",
+   "s": 45.331,
+   "e": 45.558
+  },
+  {
+   "w": "real",
+   "s": 45.558,
+   "e": 45.898
+  },
+  {
+   "w": "Blender",
+   "s": 45.898,
+   "e": 46.407
+  },
+  {
+   "w": "keyframe",
+   "s": 46.407,
+   "e": 46.974
+  },
+  {
+   "w": "animation.",
+   "s": 46.974,
+   "e": 47.653
+  },
+  {
+   "w": "Walk",
+   "s": 48.273,
+   "e": 48.59
+  },
+  {
+   "w": "through",
+   "s": 48.59,
+   "e": 49.067
+  },
+  {
+   "w": "the",
+   "s": 49.067,
+   "e": 49.331
+  },
+  {
+   "w": "garden.",
+   "s": 49.331,
+   "e": 49.807
+  },
+  {
+   "w": "People",
+   "s": 49.807,
+   "e": 50.231
+  },
+  {
+   "w": "stroll",
+   "s": 50.231,
+   "e": 50.654
+  },
+  {
+   "w": "along",
+   "s": 50.654,
+   "e": 51.024
+  },
+  {
+   "w": "the",
+   "s": 51.024,
+   "e": 51.289
+  },
+  {
+   "w": "paths,",
+   "s": 51.289,
+   "e": 51.712
+  },
+  {
+   "w": "the",
+   "s": 51.712,
+   "e": 51.977
+  },
+  {
+   "w": "pool",
+   "s": 51.977,
+   "e": 52.294
+  },
+  {
+   "w": "water",
+   "s": 52.294,
+   "e": 52.664
+  },
+  {
+   "w": "ripples,",
+   "s": 52.664,
+   "e": 53.193
+  },
+  {
+   "w": "and",
+   "s": 53.193,
+   "e": 53.458
+  },
+  {
+   "w": "trees",
+   "s": 53.458,
+   "e": 53.828
+  },
+  {
+   "w": "and",
+   "s": 53.828,
+   "e": 54.093
+  },
+  {
+   "w": "plants",
+   "s": 54.093,
+   "e": 54.516
+  },
+  {
+   "w": "add",
+   "s": 54.516,
+   "e": 54.781
+  },
+  {
+   "w": "depth.",
+   "s": 54.781,
+   "e": 55.204
+  },
+  {
+   "w": "Every",
+   "s": 55.204,
+   "e": 55.574
+  },
+  {
+   "w": "detail",
+   "s": 55.574,
+   "e": 55.998
+  },
+  {
+   "w": "stays",
+   "s": 55.998,
+   "e": 56.368
+  },
+  {
+   "w": "editable.",
+   "s": 56.368,
+   "e": 56.95
+  },
+  {
+   "w": "Step",
+   "s": 57.57,
+   "e": 57.874
+  },
+  {
+   "w": "up",
+   "s": 57.874,
+   "e": 58.077
+  },
+  {
+   "w": "to",
+   "s": 58.077,
+   "e": 58.28
+  },
+  {
+   "w": "the",
+   "s": 58.28,
+   "e": 58.533
+  },
+  {
+   "w": "front",
+   "s": 58.533,
+   "e": 58.888
+  },
+  {
+   "w": "door,",
+   "s": 58.888,
+   "e": 59.242
+  },
+  {
+   "w": "open",
+   "s": 59.242,
+   "e": 59.546
+  },
+  {
+   "w": "it,",
+   "s": 59.546,
+   "e": 59.8
+  },
+  {
+   "w": "and",
+   "s": 59.8,
+   "e": 60.053
+  },
+  {
+   "w": "explore",
+   "s": 60.053,
+   "e": 60.509
+  },
+  {
+   "w": "the",
+   "s": 60.509,
+   "e": 60.763
+  },
+  {
+   "w": "interior.",
+   "s": 60.763,
+   "e": 61.32
+  },
+  {
+   "w": "A",
+   "s": 61.32,
+   "e": 61.472
+  },
+  {
+   "w": "living",
+   "s": 61.472,
+   "e": 61.878
+  },
+  {
+   "w": "room,",
+   "s": 61.878,
+   "e": 62.233
+  },
+  {
+   "w": "a",
+   "s": 62.233,
+   "e": 62.385
+  },
+  {
+   "w": "dining",
+   "s": 62.385,
+   "e": 62.79
+  },
+  {
+   "w": "table,",
+   "s": 62.79,
+   "e": 63.195
+  },
+  {
+   "w": "and",
+   "s": 63.195,
+   "e": 63.449
+  },
+  {
+   "w": "warm",
+   "s": 63.449,
+   "e": 63.753
+  },
+  {
+   "w": "light,",
+   "s": 63.753,
+   "e": 64.158
+  },
+  {
+   "w": "all",
+   "s": 64.158,
+   "e": 64.412
+  },
+  {
+   "w": "built",
+   "s": 64.412,
+   "e": 64.766
+  },
+  {
+   "w": "in",
+   "s": 64.766,
+   "e": 64.969
+  },
+  {
+   "w": "Blender.",
+   "s": 64.969,
+   "e": 65.476
+  },
+  {
+   "w": "Then",
+   "s": 66.096,
+   "e": 66.461
+  },
+  {
+   "w": "fly",
+   "s": 66.461,
+   "e": 66.765
+  },
+  {
+   "w": "above",
+   "s": 66.765,
+   "e": 67.191
+  },
+  {
+   "w": "the",
+   "s": 67.191,
+   "e": 67.496
+  },
+  {
+   "w": "finished",
+   "s": 67.496,
+   "e": 68.104
+  },
+  {
+   "w": "concept.",
+   "s": 68.104,
+   "e": 68.712
+  },
+  {
+   "w": "Land",
+   "s": 68.712,
+   "e": 69.078
+  },
+  {
+   "w": "photo,",
+   "s": 69.078,
+   "e": 69.564
+  },
+  {
+   "w": "plan,",
+   "s": 69.564,
+   "e": 69.99
+  },
+  {
+   "w": "and",
+   "s": 69.99,
+   "e": 70.295
+  },
+  {
+   "w": "3D",
+   "s": 70.295,
+   "e": 70.538
+  },
+  {
+   "w": "design,",
+   "s": 70.538,
+   "e": 71.086
+  },
+  {
+   "w": "side",
+   "s": 71.086,
+   "e": 71.451
+  },
+  {
+   "w": "by",
+   "s": 71.451,
+   "e": 71.694
+  },
+  {
+   "w": "side.",
+   "s": 71.694,
+   "e": 72.12
+  },
+  {
+   "w": "Remember,",
+   "s": 72.74,
+   "e": 73.329
+  },
+  {
+   "w": "this",
+   "s": 73.329,
+   "e": 73.651
+  },
+  {
+   "w": "is",
+   "s": 73.651,
+   "e": 73.865
+  },
+  {
+   "w": "a",
+   "s": 73.865,
+   "e": 74.026
+  },
+  {
+   "w": "conceptual",
+   "s": 74.026,
+   "e": 74.669
+  },
+  {
+   "w": "design.",
+   "s": 74.669,
+   "e": 75.151
+  },
+  {
+   "w": "It",
+   "s": 75.151,
+   "e": 75.365
+  },
+  {
+   "w": "is",
+   "s": 75.365,
+   "e": 75.58
+  },
+  {
+   "w": "not",
+   "s": 75.58,
+   "e": 75.848
+  },
+  {
+   "w": "construction",
+   "s": 75.848,
+   "e": 76.598
+  },
+  {
+   "w": "drawings,",
+   "s": 76.598,
+   "e": 77.187
+  },
+  {
+   "w": "and",
+   "s": 77.187,
+   "e": 77.455
+  },
+  {
+   "w": "it",
+   "s": 77.455,
+   "e": 77.669
+  },
+  {
+   "w": "needs",
+   "s": 77.669,
+   "e": 78.044
+  },
+  {
+   "w": "real",
+   "s": 78.044,
+   "e": 78.366
+  },
+  {
+   "w": "surveys",
+   "s": 78.366,
+   "e": 78.848
+  },
+  {
+   "w": "and",
+   "s": 78.848,
+   "e": 79.116
+  },
+  {
+   "w": "an",
+   "s": 79.116,
+   "e": 79.33
+  },
+  {
+   "w": "architect.",
+   "s": 79.33,
+   "e": 79.973
+  },
+  {
+   "w": "Follow",
+   "s": 80.593,
+   "e": 81.169
+  },
+  {
+   "w": "Agentoon.ai",
+   "s": 81.169,
+   "e": 82.105
+  },
+  {
+   "w": "for",
+   "s": 82.105,
+   "e": 82.465
+  },
+  {
+   "w": "more",
+   "s": 82.465,
+   "e": 82.897
+  },
+  {
+   "w": "real",
+   "s": 82.897,
+   "e": 83.329
+  },
+  {
+   "w": "AI",
+   "s": 83.329,
+   "e": 83.617
+  },
+  {
+   "w": "workflows!",
+   "s": 83.617,
+   "e": 84.481
+  }
+ ]
+}

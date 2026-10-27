@@ -1,0 +1,11 @@
+{"music":[{"from":"p1","to":"p1","mood":"hook","to_off":0.6},{"from":"p2","to":"p8","mood":"demo","to_off":0.2},{"from":"p9","to":"p11.end","mood":"result","to_off":0.7}],
+ "sfx":[{"name":"whoosh","at":"p1:could","off":-0.2,"gain":0.45},{"name":"pop","at":"p1:explore","gain":0.45},
+ {"name":"whoosh","at":"S:s2","gain":0.45},{"name":"pop","at":"p2:land","gain":0.45},{"name":"tick","at":"p2:satellite","gain":0.4},{"name":"pop","at":"p2:copy","gain":0.45},
+ {"name":"tick","at":"p3:surroundings","gain":0.4},{"name":"tick","at":"p3:boundaries","gain":0.4},
+ {"name":"whoosh","at":"S:s3","gain":0.45},{"name":"tick","at":"p4:house","gain":0.4},{"name":"tick","at":"p4:pool","gain":0.4},
+ {"name":"whoosh","at":"S:s4","gain":0.45},{"name":"sparkle","at":"p5:Walls","off":-0.1,"gain":0.45},{"name":"pop","at":"p5:garden","gain":0.4},
+ {"name":"whoosh","at":"S:s5","gain":0.45},{"name":"pop","at":"p6:car","gain":0.45},{"name":"sparkle","at":"p6:gate","gain":0.45},
+ {"name":"whoosh","at":"S:s6","gain":0.45},{"name":"pop","at":"p7:People","gain":0.4},
+ {"name":"whoosh","at":"S:s7","gain":0.45},{"name":"pop","at":"p8:open","gain":0.45},
+ {"name":"whoosh","at":"S:s8","gain":0.45},{"name":"pop","at":"p10:conceptual","gain":0.45},
+ {"name":"whoosh","at":"S:s9","gain":0.45}]}
