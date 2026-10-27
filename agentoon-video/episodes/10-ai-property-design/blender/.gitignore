@@ -1,2 +1,6 @@
 render_anim.log
 render.done
+*.blend1
+render_v2*.log
+render_v2*.done
+renders/v2/
