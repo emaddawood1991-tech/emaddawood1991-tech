@@ -1,0 +1,37 @@
+{
+  "source": "Vercel AI Gateway documentation (video generation). The live catalog from verify-gateway.mjs is authoritative.",
+  "modes": {
+    "text-to-video": [
+      "google/veo-3.1-generate-001",
+      "alibaba/wan-v2.6-t2v",
+      "bytedance/seedance-2.5",
+      "spacexai/grok-imagine-video"
+    ],
+    "image-to-video": [
+      "klingai/kling-v3.0-i2v",
+      "google/veo-3.1-generate-001",
+      "spacexai/grok-imagine-video"
+    ],
+    "first-last-frame": [
+      "google/veo-3.1-generate-001",
+      "klingai/kling-v3.0-i2v"
+    ],
+    "reference-to-video": [
+      "alibaba/wan-v2.6-r2v",
+      "spacexai/grok-imagine-video",
+      "bytedance/seedance-2.5"
+    ],
+    "motion-control": [
+      "klingai/kling-v3.0-motion-control"
+    ]
+  },
+  "camera_control": [
+    "klingai/kling-v3.0-i2v"
+  ],
+  "notes": [
+    "Inputs must be hosted URLs for async jobs (inline data is capped at 300 KiB).",
+    "Kling camera control is mutually exclusive with first/last frame and motion brush.",
+    "Motion control: character image (jpg/png, up to 10 MB) plus a reference motion video (mp4/mov, 3-30 s, up to 100 MB).",
+    "Veo 3.1 image-to-video durations are 4, 6 or 8 s; Wan 2.6 is 2-15 s; Grok Imagine 1-15 s; Seedance 2.5 4-30 s."
+  ]
+}

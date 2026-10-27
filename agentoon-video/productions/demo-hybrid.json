@@ -1,0 +1,14 @@
+{
+  "name": "demo-hybrid",
+  "out": "out/demo-hybrid.mp4",
+  "width": 540,
+  "height": 960,
+  "fps": 24,
+  "transition": 0.4,
+  "scenes": [
+    { "engine": "threejs", "spec": "threejs/specs/demo-orbit.json", "seconds": 2 },
+    { "engine": "clip", "file": "out/threejs/demo-orbit.mp4" },
+    { "engine": "blender", "script": "blender/villa_development.py", "output": "out/blender/villa.mp4" },
+    { "engine": "ai-gateway", "file": "out/ai/approved-establishing-shot.mp4" }
+  ]
+}

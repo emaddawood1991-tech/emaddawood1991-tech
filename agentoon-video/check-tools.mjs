@@ -67,6 +67,12 @@ if (existsSync(envFile)) {
 add("ai-gateway", env.AI_GATEWAY_API_KEY ? "key set" : "no key", env.AI_GATEWAY_API_KEY ? "AI_GATEWAY_API_KEY set in agentoon-video/.env (value hidden); run verify-gateway.mjs" : "add AI_GATEWAY_API_KEY to agentoon-video/.env (optional paid provider)");
 add("pexels", env.PEXELS_API_KEY ? "key set" : "no key", env.PEXELS_API_KEY ? "PEXELS_API_KEY set (value hidden)" : "add PEXELS_API_KEY to agentoon-video/.env (free key)");
 
+// Three.js engine (code-generated 3D rendered headless)
+{
+  const t = join(here, "threejs", "node_modules", "three");
+  add("threejs", existsSync(t) ? "ready" : "needs npm install", existsSync(t) ? "three.js installed; renders via Playwright Chromium + FFmpeg" : "run `npm install` in agentoon-video/threejs (once)");
+}
+
 // Router
 const router = run(process.execPath, [join(here, "route.mjs"), "Rigged 3D character animation"]);
 add("router", router.status === 0 && router.stdout.includes('"engine": "blender"') ? "ready" : "FAILED", "route.mjs picks Blender for a 3D scene");

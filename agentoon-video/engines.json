@@ -4,6 +4,7 @@
     "blender",
     "playwright",
     "hyperframes",
+    "threejs",
     "pexels",
     "remotion",
     "ai-gateway"
@@ -142,6 +143,43 @@
         "generate video": 3,
         "seedance": 4
       }
+    },
+    "threejs": {
+      "role": "code-generated 3D (Three.js/WebGL) rendered headless to MP4: architecture, landscaping, orbit/fly-through cameras",
+      "cost": "free",
+      "paid": false,
+      "keywords": {
+        "three.js": 5,
+        "threejs": 5,
+        "webgl": 4,
+        "code-generated": 4,
+        "code generated": 4,
+        "interactive 3d": 4,
+        "architectural visualization": 4,
+        "arch viz": 3,
+        "archviz": 3,
+        "walkthrough": 2,
+        "fly-through": 2,
+        "flythrough": 2,
+        "orbiting camera": 2,
+        "landscaping": 2,
+        "landscape": 1,
+        "building": 1,
+        "trees": 1,
+        "shadows": 1,
+        "3d": 1,
+        "environment": 1,
+        "procedural": 2
+      },
+      "not_for": [
+        "rig",
+        "rigging",
+        "rigged",
+        "character animation",
+        "animated character",
+        "mascot animation",
+        "robot walk"
+      ]
     }
   },
   "overrides": {

@@ -105,6 +105,20 @@ if (key) {
   }
 }
 
+// 4b. Which requested video modes are covered by the live catalog (capabilities.json comes from the docs)
+if (videoModels.length) {
+  const capsFile = join(here, "capabilities.json");
+  if (existsSync(capsFile)) {
+    const caps = JSON.parse(readFileSync(capsFile, "utf8"));
+    const live = new Set(videoModels.map((m) => m.id));
+    console.log("\nVideo modes (docs) vs live catalog:");
+    for (const [mode, ids] of Object.entries({ ...caps.modes, "camera-control": caps.camera_control })) {
+      console.log(`  ${mode.padEnd(20)} ${ids.map((id) => `${id}${live.has(id) ? "" : " (not in live catalog)"}`).join(", ")}`);
+    }
+    console.log("");
+  }
+}
+
 // 5. Compare with pricing.json and optionally fill prices
 if (videoModels.length && existsSync(pricingFile)) {
   const pricing = JSON.parse(readFileSync(pricingFile, "utf8"));

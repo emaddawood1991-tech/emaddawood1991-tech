@@ -14,7 +14,7 @@ const has = (text, phrase) =>
   new RegExp(`(^|[^a-z0-9])${escapeRe(phrase)}([^a-z0-9]|$)`).test(text);
 const hasAny = (text, phrases) => phrases.some((p) => has(text, p));
 
-export function routeScene(description) {
+export function routeScene(description, opts = {}) {
   const text = String(description).toLowerCase();
   const scores = {};
   const matched = {};
@@ -77,6 +77,21 @@ export function routeScene(description) {
     confidence = "low";
   }
 
+  // If the chosen engine cannot run in this environment, fall back to the best available match.
+  let fallbackFrom = null;
+  if (Array.isArray(opts.available) && !opts.available.includes(engine)) {
+    const alt = ranked.find(
+      (n) => scores[n] > 0 && opts.available.includes(n) && !hasAny(text, config.engines[n].not_for ?? [])
+    );
+    if (alt) {
+      fallbackFrom = engine;
+      engine = alt;
+      notes.push(`${fallbackFrom} is not available in this environment; using ${alt}. Re-run on the machine that has ${fallbackFrom} for the precise version.`);
+    } else {
+      notes.push(`${engine} is not available in this environment and nothing else matched: hand off to a machine that has it.`);
+    }
+  }
+
   const info = config.engines[engine];
   if (info.paid) {
     notes.push("Paid engine: show provider, model and estimated cost and get approval first.");
@@ -85,6 +100,7 @@ export function routeScene(description) {
 
   return {
     engine,
+    fallbackFrom,
     confidence,
     score: topScore,
     matched: matched[engine] ?? [],
@@ -98,12 +114,12 @@ export function routeScene(description) {
   };
 }
 
-export function routeManifest(scenes) {
+export function routeManifest(scenes, opts = {}) {
   const routed = scenes.map((scene, i) => ({
     scene: i + 1,
     seconds: scene.seconds ?? null,
     description: scene.description,
-    ...routeScene(scene.description),
+    ...routeScene(scene.description, opts),
   }));
   const paidScenes = routed.filter((s) => s.paid).map((s) => s.scene);
   const finalComposer = routed.some((s) => s.engine === "hyperframes")
@@ -112,10 +128,20 @@ export function routeManifest(scenes) {
   return { scenes: routed, paidScenes, finalComposer, hybrid: new Set(routed.map((s) => s.engine)).size > 1 };
 }
 
-function main(argv) {
+async function main(argv) {
+  const opts = {};
+  const rest = [];
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--available") opts.available = argv[++i].split(",").map((x) => x.trim()).filter(Boolean);
+    else if (argv[i] === "--auto") {
+      const { detectAvailable } = await import("./available.mjs");
+      opts.available = Object.entries(detectAvailable()).filter(([, ok]) => ok).map(([k]) => k);
+    } else rest.push(argv[i]);
+  }
+  argv = rest;
   if (argv[0] === "--manifest") {
     const scenes = JSON.parse(readFileSync(argv[1], "utf8"));
-    const plan = routeManifest(scenes);
+    const plan = routeManifest(scenes, opts);
     for (const s of plan.scenes) {
       console.log(`Scene ${s.scene}: ${s.engine.padEnd(11)} [${s.confidence}] ${s.cost}  - ${s.description}`);
       for (const n of s.notes) console.log(`   note: ${n}`);
@@ -127,10 +153,10 @@ function main(argv) {
   }
   const description = argv.join(" ").trim();
   if (!description) {
-    console.error('Usage: node route.mjs "scene description" | --manifest scenes.json');
+    console.error('Usage: node route.mjs [--available blender,threejs,... | --auto] "scene description" | --manifest scenes.json');
     process.exit(1);
   }
-  console.log(JSON.stringify(routeScene(description), null, 2));
+  console.log(JSON.stringify(routeScene(description, opts), null, 2));
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) main(process.argv.slice(2));
+if (process.argv[1] === fileURLToPath(import.meta.url)) await main(process.argv.slice(2));

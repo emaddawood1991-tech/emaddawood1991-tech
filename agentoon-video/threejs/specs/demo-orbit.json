@@ -1,0 +1,123 @@
+{
+  "name": "Agentoon demo: modern villa orbit",
+  "seed": 11,
+  "duration": 7,
+  "fps": 24,
+  "sky": {
+    "sun_elevation": 24,
+    "sun_azimuth": 135,
+    "turbidity": 2.8,
+    "rayleigh": 2.0,
+    "exposure": 0.48,
+    "sun_intensity": 3.4,
+    "fog_density": 0.0015,
+    "fog_color": "#c9dcee"
+  },
+  "ground": {
+    "size": 600,
+    "color": "#6b8a48"
+  },
+  "buildings": [
+    {
+      "type": "villa",
+      "x": 0,
+      "z": 0,
+      "w": 16,
+      "d": 11,
+      "floor_height": 3.2,
+      "rotation": 0
+    }
+  ],
+  "pool": {
+    "x": 14,
+    "z": -3,
+    "w": 9,
+    "d": 4
+  },
+  "paths": [
+    {
+      "points": [
+        [
+          -4,
+          36
+        ],
+        [
+          -4,
+          12
+        ],
+        [
+          -9,
+          8.5
+        ]
+      ],
+      "width": 4.2,
+      "material": "asphalt"
+    },
+    {
+      "points": [
+        [
+          -9,
+          8.5
+        ],
+        [
+          -9,
+          6.5
+        ]
+      ],
+      "width": 3.2,
+      "material": "paving"
+    }
+  ],
+  "trees": {
+    "count": 30,
+    "area": {
+      "x": [
+        -30,
+        30
+      ],
+      "z": [
+        -21,
+        21
+      ]
+    },
+    "types": [
+      "round",
+      "round",
+      "pine",
+      "palm",
+      "palm"
+    ]
+  },
+  "camera": {
+    "fov": 48,
+    "ease": "inOutSine",
+    "keys": [
+      {
+        "t": 0,
+        "orbit": {
+          "center": [
+            4,
+            3,
+            0
+          ],
+          "radius": 58,
+          "azimuth": 10,
+          "height": 17
+        }
+      },
+      {
+        "t": 7,
+        "orbit": {
+          "center": [
+            4,
+            3,
+            0
+          ],
+          "radius": 36,
+          "azimuth": 160,
+          "height": 6.5
+        }
+      }
+    ]
+  }
+}

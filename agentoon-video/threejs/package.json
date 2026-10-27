@@ -1,0 +1,9 @@
+{
+  "name": "agentoon-threejs",
+  "private": true,
+  "type": "module",
+  "description": "Code-generated 3D scenes rendered headlessly to MP4 (free, local)",
+  "dependencies": {
+    "three": "0.170.0"
+  }
+}
