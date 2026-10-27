@@ -4,3 +4,5 @@ render.done
 render_v2*.log
 render_v2*.done
 renders/v2/
+render_v2c.log
+render_v2c.done
