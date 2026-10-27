@@ -1,0 +1,9 @@
+[
+  {"scene": 1, "frames": "1-96",    "seconds": 4, "engine": "blender", "cost": "free", "description": "Aerial drone drift over an empty plot of land with survey stakes", "camera": "CAM_A"},
+  {"scene": 2, "frames": "97-240",  "seconds": 6, "engine": "blender", "cost": "free", "description": "Time-lapse construction: two villas rise floor by floor, perimeter wall and driveway appear, orbit camera", "camera": "CAM_B"},
+  {"scene": 3, "frames": "241-360", "seconds": 5, "engine": "blender", "cost": "free", "description": "Finished villas: lawns and trees grow in, pool fills, loungers and umbrella appear, lower orbit", "camera": "CAM_C"},
+  {"scene": 4, "frames": "361-456", "seconds": 4, "engine": "blender", "cost": "free", "description": "People walking by the pool, driveway and gardens, street-level camera", "camera": "CAM_D"},
+  {"scene": 5, "frames": "457-552", "seconds": 4, "engine": "blender", "cost": "free", "description": "Gate slides open, car drives in and parks at the main entrance, tracking camera", "camera": "CAM_E"},
+  {"scene": 6, "frames": "553-720", "seconds": 7, "engine": "blender", "cost": "free", "description": "Camera flies through the opening front doors into the furnished interior toward the pool view", "camera": "CAM_F"},
+  {"scene": 7, "frames": "after render", "seconds": 3, "engine": "remotion", "cost": "free", "description": "Title, captions, transitions between the six cuts and the Agentoon.ai outro (+ Follow Agentoon.ai)"}
+]
