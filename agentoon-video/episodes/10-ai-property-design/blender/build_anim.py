@@ -191,6 +191,10 @@ for o in [x for x in final_stage if x.users_collection[0].name == "Fence"]: pop(
 for o in [OB["Slab"], OB["Porch"]]: pop(o, t); t += 5
 for nm in ("Living", "Wing"): rise(OB[nm], t, 30); t += 20
 for nm in ("Roof1", "Roof2"): drop(OB[nm], t); t += 12
+t_room = t + 14     # the furnished interior appears only once walls and roof are up (it is hidden under the roof from outside)
+for o in list(ANIM.objects):
+    if o.name.startswith(("Int", "Rug", "Sofa", "CoffeeTable", "TVUnit", "TV", "DiningTable", "Chair", "Pendant", "Plant")):
+        vis(o, False, 1); vis(o, True, t_room)
 for nm in ("Glass_South", "Glass_Wing", "Door", "LivingGlow"): pop(OB[nm], t, 8); t += 3
 for o in [x for x in final_stage if x.users_collection[0].name == "Gate"]:
     pop(o, t, 8); t += 2
