@@ -2,11 +2,33 @@
   "note": "Fill usd_per_second from the AI Gateway Models page (or `vercel ai-gateway models endpoints <model-id>`) before any live call. null means unknown, and ai-clip.mjs refuses to run live while the price is unknown.",
   "currency": "USD",
   "models": {
-    "google/veo-3.1-generate-001": { "usd_per_second": null, "verified": false },
-    "klingai/kling-v3.0-i2v": { "usd_per_second": null, "verified": false },
-    "klingai/kling-v3.0-motion-control": { "usd_per_second": null, "verified": false },
-    "alibaba/wan-v2.6-t2v": { "usd_per_second": null, "verified": false },
-    "alibaba/wan-v2.6-r2v": { "usd_per_second": null, "verified": false },
-    "spacexai/grok-imagine-video": { "usd_per_second": null, "verified": false }
+    "google/veo-3.1-generate-001": {
+      "usd_per_second": null,
+      "verified": false
+    },
+    "klingai/kling-v3.0-i2v": {
+      "usd_per_second": null,
+      "verified": false
+    },
+    "klingai/kling-v3.0-motion-control": {
+      "usd_per_second": null,
+      "verified": false
+    },
+    "alibaba/wan-v2.6-t2v": {
+      "usd_per_second": null,
+      "verified": false
+    },
+    "alibaba/wan-v2.6-r2v": {
+      "usd_per_second": null,
+      "verified": false
+    },
+    "spacexai/grok-imagine-video": {
+      "usd_per_second": null,
+      "verified": false
+    },
+    "bytedance/seedance-2.5": {
+      "usd_per_second": null,
+      "verified": false
+    }
   }
 }
