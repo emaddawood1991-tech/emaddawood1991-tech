@@ -24,3 +24,9 @@ Always:
 - Analyse Instagram/TikTok metrics only when the user provides them.
 - **Optional tools (additive):** Remotion (projects `remotion-video`, `remotion-studio`, `remotion-claude`) and Blender (only if an MCP is connected) may supply extra shots that are rendered to MP4 and composited into HyperFrames. They never replace HyperFrames, the kit, the robot or the existing effects. Install/render Remotion in a scratch copy, never in the repo; never run `remotion-claude`'s `npm run gen` (paid OpenAI/ElevenLabs) without approval. Details: `references/remotion-blender.md`.
 - **Permanent quality gate (additive; all style rules above stay):** real software for real tools (Windows UI, github.com, genuine Claude Code activity, real AI-app UI, real command results); never present a placeholder or mock-up as a recording. Every video has `data/OFFICIAL-SOURCES.md` ("OFFICIAL WEBSITES & REAL VISUAL ASSETS": exact URLs, repos, docs, logos, screenshots, verified install steps) made before scenes. Mobile-first proof with `scripts/mobile-check.sh` (large commands, safe areas, captions off commands). A video is FINAL only if `scripts/final-gate.sh` passes and `data/QC-REPORT.md` is complete; otherwise name it `*-PREVIEW.mp4`, report exact blockers plus a MUST RECORD list, and keep preparing other assets. Never claim a tool (Remotion, Blender, Pexels, Shotcut, Lemo Opuscar, MCPs) that was not actually used. Details: `references/final-approval-gate.md`, `official-sources-and-real-assets.md`, `mobile-readability.md`, `real-demo-standard.md` section 8.
+
+## Process safety
+- Never use pkill -f / grep-kill in a Bash call that also mentions the process name.
+- To stop renders, run ONLY: bash scripts/stop_renders.sh  (as its own Bash call).
+- Exit code 144 = the shell killed itself; nothing after it ran.
+- Edit files with the Edit tool or a python patch that asserts the old text exists.
