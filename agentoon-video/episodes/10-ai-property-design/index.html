@@ -36,8 +36,8 @@
   <section id="s6" class="clip scene" data-start="48.08" data-duration="9.01"><div id="s6i" class="inner"></div></section>
   <section id="s7" class="clip scene" data-start="56.29" data-duration="11.09"><div id="s7i" class="inner"></div></section>
   <section id="s8" class="clip scene" data-start="66.38" data-duration="4.62"><div id="s8i" class="inner"></div></section>
-  <video id="vOrb" class="rv" src="assets/orbit.mp4" muted playsinline data-start="48.08" data-duration="5.4" data-media-start="0" data-track-index="2"></video>
-  <video id="vWalk" class="rv" src="assets/walk.mp4" muted playsinline data-start="48.08" data-duration="3.6" data-media-start="0" data-track-index="3"></video>
+  <video id="vOrb" class="rv" src="assets/orbit.mp4" muted playsinline data-start="48.08" data-duration="5.0" data-media-start="0" data-track-index="2"></video>
+  <video id="vWalk" class="rv" src="assets/walk.mp4" muted playsinline data-start="48.08" data-duration="4.0" data-media-start="0" data-track-index="3"></video>
   <div id="capLayer"></div>
   <div id="fx"></div>
   <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="71.0" data-track-index="9" data-volume="1"></audio>
@@ -171,15 +171,15 @@
   /* ================================================================= S4 CLAUDE CODE + BLENDER */
   const s4i = paper("s4"); hud(s4i, "h4", "STEP 3 · CLAUDE CODE + BLENDER", S.s4.start + 0.15);
   const tBl = PW("p8", "blockout"), tMa = PW("p8", "materials");
-  const L4 = lap(s4i, "l4", 60, 300, 960, 540); tl.from(L4.g, { opacity: 0, y: 120, scale: 0.94, duration: 0.6, ease: "power3.out" }, S.s4.start + 0.1);
-  const rows4 = [["$ " + "python -c \"import bpy;print(bpy.app.version_string)\"", "#FFE08A", 40, S.s4.start + 0.5], ["5.2.3 LTS", "#9CF2B6", 0], ["$ python build_property.py", "#FFE08A", 36, P("p8").start - 0.3], [D.build_out[0], "#9CF2B6", 0], [D.build_out[1], "#9CF2B6", 0],
+  const L4 = lap(s4i, "l4", 60, 290, 960, 556); tl.from(L4.g, { opacity: 0, y: 120, scale: 0.94, duration: 0.6, ease: "power3.out" }, S.s4.start + 0.1);
+  const rows4 = [["$ " + "python -c \"import bpy;print(bpy.app.version_string)\"", "#FFE08A", 40, S.s4.start + 0.5], ["5.2.3 LTS", "#9CF2B6", 0], ["$ python build_property.py", "#FFE08A", 36, S.s4.start + 2.6], [D.build_out[0], "#9CF2B6", 0], [D.build_out[1], "#9CF2B6", 0],
     ["$ python render_stage.py blockout", "#FFE08A", 36, tBl - 0.4], [D.blockout || "", "#9CF2B6", 0], ["$ python render_stage.py partial", "#FFE08A", 36, tMa - 0.4], [D.partial || "", "#9CF2B6", 0]];
-  const T4 = term(L4.scr, "t4", 0, 0, L4.sw, L4.sh, "Claude Code · real run · Blender 5.2.3 (bpy)", rows4, S.s4.start + 0.5, 25, 56);
-  const stage = el(s4i, "stage4", "card", "left:110px;top:930px;width:860px;height:520px");
-  const b1 = img(stage, "b1", "hero_blockout.jpg", "left:0;top:0;width:860px;height:520px;object-fit:cover;object-position:50% 62%"), b2 = img(stage, "b2", "hero_partial.jpg", "left:0;top:0;width:860px;height:520px;object-fit:cover;object-position:50% 62%;opacity:0");
+  const T4 = term(L4.scr, "t4", 0, 0, L4.sw, L4.sh, "Claude Code · real run · Blender 5.2.3 (bpy)", rows4, S.s4.start + 0.5, 24, 50);
+  const stage = el(s4i, "stage4", "card", "left:110px;top:965px;width:860px;height:440px");
+  const b1 = img(stage, "b1", "hero_blockout.jpg", "left:0;top:0;width:860px;height:440px;object-fit:cover;object-position:50% 62%"), b2 = img(stage, "b2", "hero_partial.jpg", "left:0;top:0;width:860px;height:440px;object-fit:cover;object-position:50% 62%;opacity:0");
   tl.from(stage, { opacity: 0, y: 80, scale: 0.95, duration: 0.4 }, tBl);
   tl.to(b2, { opacity: 1, duration: 0.5 }, tMa + 0.1);
-  const cb1 = chip(s4i, "cb1", 110, 880, "BLOCKOUT · CLAY MASSING", { size: 22, bd: "#60CDFF" }), cb2 = chip(s4i, "cb2", 110, 880, "MATERIALS + LIGHT · REAL BLENDER RENDER", { size: 20, bd: "#60CDFF" });
+  const cb1 = chip(s4i, "cb1", 130, 985, "BLOCKOUT · CLAY MASSING", { size: 22, bd: "#60CDFF" }), cb2 = chip(s4i, "cb2", 130, 985, "MATERIALS + LIGHT · REAL BLENDER RENDER", { size: 20, bd: "#60CDFF" });
   tl.from(cb1, { opacity: 0, duration: 0.25 }, tBl + 0.1); tl.to(cb1, { opacity: 0, duration: 0.15 }, tMa); tl.from(cb2, { opacity: 0, duration: 0.25 }, tMa + 0.1);
   const bot4 = botAt(s4i, "bot4", 910, 1500, 120); bot4.face(tl, 0, -1, 0.01); bot4.rise(tl, S.s4.start + 0.6, 420, 0.4); bot4.blinks(tl, S.s4.start, S.s4.end, 1.1);
   bot4.press(tl, P("p8").start - 0.55, { x: 910, y: 1500, scale: 1, target: [700, 700], hand: "L" }); bot4.react(tl, tMa + 0.4, "celebrate");
@@ -202,7 +202,7 @@
   /* ================================================================= S6 CINEMATIC REVEAL (real Blender orbit + walkthrough) */
   const s6i = $("s6i"); el(s6i, "bgs6", "", "position:absolute;inset:0;background:#B7A88E");
   const vO = $("vOrb"), vW = $("vWalk"); s6i.appendChild(vO); s6i.appendChild(vW);
-  const tWalk = S.s6.start + 5.4; tl.set(vW, { opacity: 0 }, 0); tl.set(vW, { opacity: 1 }, tWalk); tl.set(vO, { opacity: 0 }, tWalk);
+  const tWalk = S.s6.start + 5.0; tl.set(vW, { opacity: 0 }, 0); tl.set(vW, { opacity: 1 }, tWalk); tl.set(vO, { opacity: 0 }, tWalk);
   const wcut = el(s6i, "s6wc", "", "left:0;top:0;width:1080px;height:1920px;background:#fff;opacity:0;z-index:5"); tl.fromTo(wcut, { opacity: 0 }, { opacity: 0.55, duration: 0.08, yoyo: true, repeat: 1 }, tWalk - 0.04);
   const c6a = chip(s6i, "s6a", 60, 236, "AERIAL ORBIT · REAL BLENDER RENDER", { size: 24, bd: "#60CDFF" }), c6b = chip(s6i, "s6b", 60, 236, "WALKTHROUGH · GATE → DRIVEWAY → POOL", { size: 24, bd: "#60CDFF" });
   c6a.style.zIndex = c6b.style.zIndex = 8; tl.from(c6a, { opacity: 0, x: -30, duration: 0.3 }, S.s6.start + 0.2); tl.to(c6a, { opacity: 0, duration: 0.15 }, tWalk); tl.set(c6b, { opacity: 0 }, 0); tl.to(c6b, { opacity: 1, duration: 0.3 }, tWalk + 0.1);
