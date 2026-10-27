@@ -186,6 +186,16 @@
     return at + d;
   };
   B.nod = function (tl, at) { const h = this.P.head; for (let i = 0; i < 2; i++) { tl.to(h, { y: 7, duration: 0.1, ease: "power1.in" }, at + i * 0.22); tl.to(h, { y: 0, duration: 0.12, ease: "power1.out" }, at + i * 0.22 + 0.1); } return at + 0.46; };
+  /* lip-sync: mouth shape follows the narration loudness envelope (lip = {fps, a:[0..1]} from data/lipsync.json); head bobs on stressed syllables. Absolute times. */
+  B.speak = function (tl, lip, t0, t1) {
+    const fps = lip.fps; let last = null;
+    for (let i = Math.floor(t0 * fps); i <= Math.ceil(t1 * fps); i++) {
+      const a = lip.a[i] || 0, nm = a < 0.12 ? "smile" : a < 0.42 ? "open" : "big";
+      if (nm !== last) { this.mouth(tl, i / fps, nm); last = nm; }
+      if (a > 0.7 && (lip.a[i - 1] || 0) <= 0.7 && i / fps > t0 + 0.1) { tl.to(this.P.head, { y: -4, duration: 0.07, yoyo: true, repeat: 1, ease: "sine.inOut" }, i / fps); }
+    }
+    this.mouth(tl, t1, "smile"); return t1;
+  };
   B.shake = function (tl, at) { const h = this.P.head; for (let i = 0; i < 3; i++) { tl.to(h, { rotation: i % 2 ? 9 : -9, duration: 0.09 }, at + i * 0.1); } tl.to(h, { rotation: 0, duration: 0.12 }, at + 0.3); this.mouth(tl, at, "flat"); this.mouth(tl, at + 0.5, "smile"); return at + 0.5; };
 
   B.react = function (tl, at, mood) {
