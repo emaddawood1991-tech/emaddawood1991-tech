@@ -161,7 +161,7 @@
   const bot6 = presenter(botAt(s6i, "bot6", 60, 1230, 170), s6i, "s6", 60, 1230, 1); speak(bot6, "p7"); bot6.react(tl, PW("p7", "editable") + 0.1, "nod");
 
   /* ================================================================= S7 INTERIOR */
-  const s7i = dark("s7"); const vI = $("vInt"); s7i.appendChild(vI);
+  const s7i = dark("s7"); const vI = $("vInt"); s7i.appendChild(vI); vI.style.filter = "brightness(0.8) saturate(0.85) contrast(1.06)";   /* tame the warm interior light */
   const c7 = chip(s7i, "c7", 60, 236, "FRONT DOOR OPENS · INTERIOR (BLENDER)", { bd: CY }); c7.style.zIndex = 9; tl.from(c7, { opacity: 0, x: -30, duration: 0.3 }, S.s7.start + 0.2);
   const bot7 = presenter(botAt(s7i, "bot7", 880, 1230, 150), s7i, "s7", 880, 1230, -1); speak(bot7, "p8"); bot7.react(tl, PW("p8", "open") + 0.2, "wow");
 
@@ -181,7 +181,7 @@
   [k1, k2, k3].forEach((k, i) => { tl.set(k, { opacity: 0 }, 0); tl.fromTo(k, { opacity: 0, y: 140, rotation: (i - 1) * 6 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.4)" }, tCards + 0.2 + i * 0.3); });
   const tCon = PW("p10", "conceptual");
   const warn = el(s8i, "warn", "", "left:50px;right:50px;top:1170px;padding:26px 30px;border-radius:22px;background:" + INK + ";border:3px solid " + SUN + ";font:900 50px/1.15 var(--body);color:#FFF6E8;text-align:center;z-index:5;white-space:pre", "CONCEPT VISUALIZATION\nNOT CONSTRUCTION DRAWINGS"); tl.from(warn, { opacity: 0, y: 60, scale: 0.92, duration: 0.45, ease: "back.out(1.6)" }, tCon - 0.2);
-  const bot8 = presenter(botAt(s8i, "bot8", 880, 1290, 140), s8i, "s8", 880, 1290, -1); bot8.P.wrap.style.zIndex = 12; speak(bot8, "p9"); speak(bot8, "p10"); bot8.react(tl, tCon + 0.8, "nod");
+  const bot8 = presenter(botAt(s8i, "bot8", 880, 1345, 130), s8i, "s8", 880, 1290, -1); bot8.P.wrap.style.zIndex = 12; speak(bot8, "p9"); speak(bot8, "p10"); bot8.react(tl, tCon + 0.8, "nod");
 
   /* ================================================================= S9 CTA */
   const s9i = $("s9i"); const tOut = PW("p11", "Follow") - 0.35, botO = botAt(s9i, "botO", -400, 470, 300);
