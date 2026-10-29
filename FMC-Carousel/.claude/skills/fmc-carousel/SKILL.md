@@ -43,3 +43,6 @@ Layout: 1080×1350, 110px side margins, content ends y=1200, footer 130px, ≤4 
 
 ## Supplied-asset workflow (v3)
 Reference images live in `assets/medical/source/` (ref-*). `process_assets.py` produces `badge-{scan,gait,pressure,posture}.png` (recoloured to one ice-blue tint), `machine-photo.png` (real photograph, background removed, 2.4x Lanczos + sharpen; source is only 300x300 so show it at <=~600 px) and `extract_machine.py` makes the poster cut-out. `child-walking-photo.jpg` is cropped from the client poster. Slide types `hero`, `quad`, `illcards`, `signs`, `closing2` use them via `src/components/badges.js` (`tile` values: scan|gait|pressure|posture|ib:<icon>). Never redraw the equipment.
+
+## Project note: fmc-metatarsalgia
+Template `templates/metatarsalgia` (slide types cover/explain/causes/care/close) with original vector anatomy in `src/components/foot-anatomy.js` and `metatarsalgia-visuals.js`. Callouts are HTML overlays; leader-line anchors use foot viewBox coords (px = 140 + x, py = 40 + y). Pass `view` to `plantarFoot()` to crop; never replace the viewBox string afterwards.
