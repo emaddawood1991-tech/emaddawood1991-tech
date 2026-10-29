@@ -86,8 +86,98 @@ export function makeOps(db) {
   }
   const sessionView = (s) => {
     const asOf = nowMs(); const iv = sessionIntervals(s, asOf);
-    return { ...s, ended_effective: effEnd(s), active_ms: sumMs(iv), ...timerOf(s, asOf), pauses: q('SELECT paused_at,resumed_at FROM session_pauses WHERE session_id=? ORDER BY id', s.id) };
+    const documentation = docEval(s);
+    return { ...s, ended_effective: effEnd(s), active_ms: sumMs(iv), ...timerOf(s, asOf), pauses: q('SELECT paused_at,resumed_at FROM session_pauses WHERE session_id=? ORDER BY id', s.id),
+      documentation, schedule_status: documentation.complete ? 'ORANGE' : 'YELLOW' };
   };
+
+  // ---------- clinical documentation (Step 4) ----------
+  // Completeness is derived from SAVED rows only and re-evaluated on every read, so editing, clearing or an
+  // approved code being deactivated moves the schedule colour back automatically. Nothing is ever auto-filled.
+  const DOC_TEXT_MAX = 4000;
+  function docEval(s) {
+    const d = one('SELECT * FROM session_documentation WHERE session_id=?', s.id);
+    const minC = Math.max(1, Number(setting('doc_min_chars')) || 3);
+    const txt = (v) => String(v ?? '').trim();
+    const text = (v) => (!txt(v) ? 'EMPTY' : txt(v).length < minC ? 'TOO_SHORT' : null);
+    const problems = {};
+    problems.chief_complaint = d ? text(d.chief_complaint) : 'EMPTY';
+    problems.progress_note = d ? text(d.progress_note) : 'EMPTY';
+    problems.diagnosis = d ? text(d.diagnosis) : 'EMPTY';
+    const pat = setting('diagnosis_pattern');
+    if (!problems.diagnosis && pat) { let okFmt = false; try { okFmt = new RegExp(pat).test(txt(d.diagnosis)); } catch { okFmt = false; } if (!okFmt) problems.diagnosis = 'FORMAT'; }
+    const svc = one('SELECT department_id FROM services WHERE id=?', s.service_id);
+    const cpt = d?.cpt_code_id ? one('SELECT * FROM cpt_codes WHERE id=?', d.cpt_code_id) : null;
+    problems.procedure = !cpt ? 'EMPTY' : (!cpt.active || (cpt.department_id != null && cpt.department_id !== svc?.department_id)) ? 'CPT_NOT_APPROVED' : null;
+    const fields = {}; let done = 0;
+    for (const k of ['chief_complaint', 'diagnosis', 'procedure', 'progress_note']) { fields[k] = !problems[k]; if (fields[k]) done++; }
+    return { fields, problems, completed: done, required: 4, complete: done === 4, saved_at: d?.saved_at ?? null, complete_since: done === 4 ? d.complete_since : null };
+  }
+  const visitScheduleStatus = (visitId) => {
+    const rows = q('SELECT * FROM treatment_sessions WHERE visit_id=?', visitId);
+    if (!rows.length) return null;
+    return rows.every((r) => docEval(r).complete) ? 'ORANGE' : 'YELLOW';
+  };
+  function docWriter(user, s) {
+    need(user, 'session.run');
+    if (user.role !== 'clinician') fail(403, 'FORBIDDEN', 'Clinical documentation is entered by the treating clinician. Supervisors and administrators cannot document on a clinician’s behalf.');
+    if (s.clinician_id !== user.id && !authorizedFor(user.id, s.service_id)) fail(403, 'NOT_AUTHORIZED_FOR_SERVICE', 'You are not the treating clinician and are not authorized for this service.');
+  }
+  function getDocumentation(user, sessionId) {
+    need(user, 'patients.read'); sweepTimers();
+    const s = one('SELECT * FROM treatment_sessions WHERE id=?', sessionId) || fail(404, 'SESSION_NOT_FOUND');
+    needVisible(user, s.visit_id);
+    const status = docEval(s);
+    const out = { session_id: s.id, status, schedule_status: status.complete ? 'ORANGE' : 'YELLOW', content: null, cpt_options: [] };
+    if (user.role === 'clinician' || user.role === 'supervisor') { // reception and administrators see completeness only, not clinical text
+      const d = one('SELECT d.*, c.code cpt_code FROM session_documentation d LEFT JOIN cpt_codes c ON c.id=d.cpt_code_id WHERE d.session_id=?', s.id);
+      out.content = { chief_complaint: d?.chief_complaint ?? '', diagnosis: d?.diagnosis ?? '', cpt_code: d?.cpt_code ?? '', progress_note: d?.progress_note ?? '' };
+      const dep = one('SELECT department_id FROM services WHERE id=?', s.service_id).department_id;
+      out.cpt_options = q('SELECT id,code,description,default_minutes FROM cpt_codes WHERE active=1 AND (department_id IS NULL OR department_id=?) ORDER BY code', dep);
+      audit(user, 'documentation.view', 'session', s.id);
+    }
+    return out;
+  }
+  function saveDocumentation(user, sessionId, input = {}) {
+    return tx(db, () => {
+      const s = one('SELECT * FROM treatment_sessions WHERE id=?', sessionId) || fail(404, 'SESSION_NOT_FOUND');
+      needVisible(user, s.visit_id); docWriter(user, s);
+      const cur = one('SELECT * FROM session_documentation WHERE session_id=?', s.id);
+      const before = docEval(s);
+      const next = { chief_complaint: cur?.chief_complaint ?? '', diagnosis: cur?.diagnosis ?? '', progress_note: cur?.progress_note ?? '', cpt_code_id: cur?.cpt_code_id ?? null };
+      const changed = []; const bad = {};
+      for (const k of ['chief_complaint', 'diagnosis', 'progress_note']) {
+        if (input[k] === undefined) continue;
+        const v = String(input[k] ?? '').trim();
+        if (v.length > DOC_TEXT_MAX) { bad[k] = `Maximum ${DOC_TEXT_MAX} characters.`; continue; }
+        if (v !== next[k]) { next[k] = v; changed.push(k); }
+      }
+      if (input.cpt_code !== undefined) {
+        const code = String(input.cpt_code ?? '').trim();
+        if (!code) { if (next.cpt_code_id != null) { next.cpt_code_id = null; changed.push('procedure'); } }
+        else {
+          const c = one('SELECT c.*, 1 x FROM cpt_codes c WHERE upper(c.code)=upper(?)', code);
+          const dep = one('SELECT department_id FROM services WHERE id=?', s.service_id).department_id;
+          if (!c || !c.active || (c.department_id != null && c.department_id !== dep)) bad.cpt_code = `“${code}” is not an approved procedure code for this service. Choose one from the approved list (Settings → Procedure codes).`;
+          else if (c.id !== next.cpt_code_id) { next.cpt_code_id = c.id; changed.push('procedure'); }
+        }
+      }
+      if (Object.keys(bad).length) fail(400, 'VALIDATION', 'Please correct the highlighted fields. Nothing was saved.', { fields: bad });
+      const ts = now();
+      if (!cur) run('INSERT INTO session_documentation(session_id,chief_complaint,diagnosis,cpt_code_id,progress_note,saved_by,saved_at) VALUES (?,?,?,?,?,?,?)', s.id, next.chief_complaint, next.diagnosis, next.cpt_code_id, next.progress_note, user.id, ts);
+      else if (changed.length) run('UPDATE session_documentation SET chief_complaint=?,diagnosis=?,cpt_code_id=?,progress_note=?,saved_by=?,saved_at=? WHERE session_id=?', next.chief_complaint, next.diagnosis, next.cpt_code_id, next.progress_note, user.id, ts, s.id);
+      if (!cur || changed.length) {
+        const after = docEval(s); const v = getVisit(s.visit_id);
+        run('UPDATE session_documentation SET complete_since=? WHERE session_id=?', after.complete ? (before.complete && before.complete_since ? before.complete_since : ts) : null, s.id);
+        // events and audit carry field names and completeness only, never clinical text
+        event(v, 'DOCUMENTATION_SAVED', user, { sessionId: s.id, ts, data: { fields: changed, completed: after.completed, required: 4 } });
+        if (after.complete && !before.complete) event(v, 'DOCUMENTATION_COMPLETE', user, { sessionId: s.id, ts, data: {} });
+        if (!after.complete && before.complete) event(v, 'DOCUMENTATION_INCOMPLETE', user, { sessionId: s.id, ts, data: { problems: Object.keys(after.problems).filter((k) => after.problems[k]) } });
+        audit(user, 'documentation.save', 'session', s.id, { fields: changed, complete: after.complete });
+      }
+      return getDocumentation(user, s.id);
+    });
+  }
 
   /** Record (once) that a running timer reached its scheduled end. Does NOT complete the treatment or free the room. */
   function sweepTimers() {
@@ -96,9 +186,12 @@ export function makeOps(db) {
     for (const { id } of due) tx(db, () => {
       const s = one('SELECT * FROM treatment_sessions WHERE id=?', id);
       if (!s || s.status !== 'ACTIVE' || s.timer_elapsed_at || s.scheduled_end_at > now()) return;
-      run('UPDATE treatment_sessions SET timer_elapsed_at=? WHERE id=?', s.scheduled_end_at, id);
+      run("UPDATE treatment_sessions SET timer_elapsed_at=?, operational_checkout_at=COALESCE(operational_checkout_at,?), operational_checkout_kind=COALESCE(operational_checkout_kind,'AUTO') WHERE id=?", s.scheduled_end_at, s.scheduled_end_at, id);
       const v = getVisit(s.visit_id);
       event(v, 'TIMER_ELAPSED', null, { sessionId: id, ts: s.scheduled_end_at, data: { planned_minutes: s.planned_minutes, scheduled_end_at: s.scheduled_end_at, recorded_at: now() } });
+      // Operational check-out is its own record: it is not verified clinical completion, not documentation, and not physical departure.
+      event(v, 'OPERATIONAL_CHECKOUT', null, { sessionId: id, ts: s.scheduled_end_at, data: { automatic: true, verified_completion: false, documentation_complete: docEval(s).complete, physical_departure: false, recorded_at: now() } });
+      audit(null, 'session.operational_checkout', 'session', id, { automatic: true });
       if (setting('timer_auto_close') === '1') closeSession(s.id, null, 'AUTO', s.scheduled_end_at);
     });
     return due.length;
@@ -108,6 +201,7 @@ export function makeOps(db) {
     const s = one('SELECT * FROM treatment_sessions WHERE id=?', id); const ts = now();
     run('UPDATE session_pauses SET resumed_at=? WHERE session_id=? AND resumed_at IS NULL', ts, id);
     run("UPDATE treatment_sessions SET status='COMPLETED', ended_at=?, completion_kind=?, confirmed_at=? WHERE id=?", endedAt, kind, kind === 'AUTO' ? null : ts, id);
+    if (!s.operational_checkout_at) run('UPDATE treatment_sessions SET operational_checkout_at=?, operational_checkout_kind=? WHERE id=?', endedAt, kind === 'AUTO' ? 'AUTO' : 'MANUAL', id);
     event(getVisit(s.visit_id), 'TREATMENT_COMPLETED', user, { sessionId: id, ts, data: { kind, ended_at: endedAt, scheduled_end_at: s.scheduled_end_at, planned_minutes: s.planned_minutes, verified: kind !== 'AUTO' } });
     if (!one("SELECT 1 x FROM treatment_sessions WHERE clinician_id=? AND status IN ('ACTIVE','PAUSED')", s.clinician_id))
       run("UPDATE staff_availability SET status='AVAILABLE', updated_at=?, updated_by=? WHERE user_id=? AND status='BUSY'", ts, user?.id ?? null, s.clinician_id);
@@ -399,7 +493,8 @@ export function makeOps(db) {
           LEFT JOIN staff_availability a ON a.user_id=u.id WHERE ss.service_id=? AND u.active=1 ORDER BY u.name`, sv.id);
         return { ...sv, authorized, can_start_as_me: authorized.some((c) => c.id === user.id) };
       });
-      return { ...d, services };
+      const cpt_codes = q('SELECT id,code,description,default_minutes FROM cpt_codes WHERE active=1 AND (department_id IS NULL OR department_id=?) ORDER BY code', id);
+      return { ...d, services, cpt_codes };
     });
     return {
       visit_id: v.id, ready,
@@ -411,7 +506,7 @@ export function makeOps(db) {
     };
   }
 
-  function startSession(user, visitId, { serviceId, clinicianId, idemKey, plannedMinutes }) {
+  function startSession(user, visitId, { serviceId, clinicianId, idemKey, plannedMinutes, cptCodeId }) {
     need(user, 'session.run');
     return tx(db, () => {
       if (idemKey) { const ex = one('SELECT * FROM treatment_sessions WHERE idem_key=?', idemKey); if (ex) return sessionView(ex); }
@@ -441,15 +536,29 @@ export function makeOps(db) {
       if (!occ.entered_at) fail(409, 'NOT_IN_ROOM', 'Confirm that the patient has entered the room before starting treatment.');
       if (one("SELECT 1 x FROM treatment_sessions WHERE visit_id=? AND service_id=? AND clinician_id=? AND status IN ('ACTIVE','PAUSED')", v.id, svc.id, clin))
         fail(409, 'SESSION_EXISTS', `${onBehalf ? who.name : 'You'} already ${onBehalf ? 'has' : 'have'} an open “${svc.name}” session for this visit. Complete it first.`);
+      // The same treatment resource (bed, else room) cannot start a new patient until the configured gap after the previous operational check-out.
+      const gapMin = Math.max(0, Number(setting('resource_gap_minutes') ?? 1) || 0);
+      if (gapMin > 0) {
+        const last = one(`SELECT MAX(operational_checkout_at) t FROM treatment_sessions WHERE visit_id<>? AND operational_checkout_at IS NOT NULL
+          AND ((? IS NOT NULL AND station_id=?) OR (? IS NULL AND room_id=?))`, v.id, occ.station_id, occ.station_id, occ.station_id, occ.room_id).t;
+        const waitMs = last ? Date.parse(last) + gapMin * 60000 - nowMs() : 0;
+        if (waitMs > 0) fail(409, 'RESOURCE_GAP', `${locLabel(occ.room_id, occ.station_id)} was checked out ${Math.round((gapMin * 60000 - waitMs) / 1000)} s ago. The next patient can start after a ${gapMin}-minute gap (in ${Math.ceil(waitMs / 1000)} s).`, { retry_after_s: Math.ceil(waitMs / 1000) });
+      }
+      // Optional approved procedure code drives the default duration (30 / 40 / 55 min and so on).
+      let cpt = null;
+      if (cptCodeId != null && cptCodeId !== '') {
+        cpt = one('SELECT * FROM cpt_codes WHERE id=?', Number(cptCodeId));
+        if (!cpt || !cpt.active || (cpt.department_id != null && cpt.department_id !== svc.department_id)) fail(400, 'VALIDATION', 'That procedure code is not approved for this service.', { fields: { cpt_code_id: 'Choose an approved procedure code.' } });
+      }
       // Planned duration: any whole number of minutes inside the service's configured range.
-      const planned = plannedMinutes == null || plannedMinutes === '' ? svc.default_minutes : Number(plannedMinutes);
+      const planned = plannedMinutes == null || plannedMinutes === '' ? (cpt ? cpt.default_minutes : svc.default_minutes) : Number(plannedMinutes);
       if (!Number.isInteger(planned)) fail(400, 'VALIDATION', 'Treatment duration must be a whole number of minutes.', { fields: { planned_minutes: 'Enter whole minutes, for example 20, 40, 50, 55 or 60.' } });
       if (planned < svc.min_minutes || planned > svc.max_minutes) fail(400, 'VALIDATION', `Duration for “${svc.name}” must be between ${svc.min_minutes} and ${svc.max_minutes} minutes.`, { fields: { planned_minutes: `Allowed range: ${svc.min_minutes}–${svc.max_minutes} minutes.` } });
-      if (!svc.allow_override && planned !== svc.default_minutes) fail(400, 'VALIDATION', `The duration for “${svc.name}” is fixed at ${svc.default_minutes} minutes by clinic policy. An administrator can allow overrides in Settings → Services.`, { fields: { planned_minutes: `Fixed at ${svc.default_minutes} minutes.` } });
+      if (!svc.allow_override && planned !== svc.default_minutes && !(cpt && planned === cpt.default_minutes)) fail(400, 'VALIDATION', `The duration for “${svc.name}” is fixed at ${svc.default_minutes} minutes by clinic policy. An administrator can allow overrides in Settings → Services.`, { fields: { planned_minutes: `Fixed at ${svc.default_minutes} minutes.` } });
       const ts = now();
       const endAt = new Date(Date.parse(ts) + planned * 60000).toISOString();
-      const r = run('INSERT INTO treatment_sessions(idem_key,visit_id,patient_id,service_id,clinician_id,room_id,station_id,started_at,planned_minutes,scheduled_end_at) VALUES (?,?,?,?,?,?,?,?,?,?)',
-        idemKey || null, v.id, v.patient_id, svc.id, clin, occ.room_id, occ.station_id, ts, planned, endAt);
+      const r = run('INSERT INTO treatment_sessions(idem_key,visit_id,patient_id,service_id,clinician_id,room_id,station_id,started_at,planned_minutes,scheduled_end_at,planned_cpt_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+        idemKey || null, v.id, v.patient_id, svc.id, clin, occ.room_id, occ.station_id, ts, planned, endAt, cpt?.id ?? null);
       const id = Number(r.lastInsertRowid);
       event(v, 'TREATMENT_STARTED', user, { sessionId: id, occupancyId: occ.id, ts, data: { service: svc.name, clinician_id: clin, clinician: who.name, on_behalf: onBehalf, location: locLabel(occ.room_id, occ.station_id), planned_minutes: planned, scheduled_end_at: endAt } });
       run("UPDATE staff_availability SET status='BUSY', updated_at=?, updated_by=? WHERE user_id=? AND status='AVAILABLE'", ts, user.id, clin);
@@ -517,6 +626,20 @@ export function makeOps(db) {
     return q(`SELECT ts.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, sv.name service, sv.name_ar service_ar, u.name clinician
       FROM treatment_sessions ts JOIN patients p ON p.id=ts.patient_id JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id
       WHERE ts.status IN ('ACTIVE','PAUSED') AND (? IS NULL OR sv.department_id=?) ORDER BY ts.started_at`, s, s)
+      .map((r) => ({ ...sessionView(r), room: locLabel(r.room_id, r.station_id) }));
+  }
+
+  /** Day schedule: every treatment session started in the date range, with its documentation colour. */
+  function scheduleList(user, f = {}) {
+    need(user, 'patients.read'); sweepTimers();
+    const tz = setting('timezone'); const day = (iso) => new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date(iso));
+    const from = /^\d{4}-\d{2}-\d{2}$/.test(f.from || '') ? f.from : day(now()); const to = /^\d{4}-\d{2}-\d{2}$/.test(f.to || '') ? f.to : from;
+    const lo = new Date(Date.parse(`${from}T00:00:00Z`) - 2 * 864e5).toISOString(); const hi = new Date(Date.parse(`${to}T00:00:00Z`) + 3 * 864e5).toISOString();
+    const sc = deptScope(user);
+    return q(`SELECT ts.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, sv.name service, sv.name_ar service_ar, sv.department_id, u.name clinician
+      FROM treatment_sessions ts JOIN patients p ON p.id=ts.patient_id JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id
+      WHERE ts.started_at >= ? AND ts.started_at <= ? AND (? IS NULL OR sv.department_id=?) ORDER BY ts.started_at`, lo, hi, sc, sc)
+      .filter((r) => day(r.started_at) >= from && day(r.started_at) <= to)
       .map((r) => ({ ...sessionView(r), room: locLabel(r.room_id, r.station_id) }));
   }
 
@@ -616,6 +739,7 @@ export function makeOps(db) {
     assignRoom, enterRoom, exitRoom, transferRoom, setRoomStatus,
     checkIn, checkOut, callNext, setPriority, queueList,
     sweepTimers, visitTiming, timerOf, treatmentOptions, visitDepartments, startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
+    getDocumentation, saveDocumentation, scheduleList, visitScheduleStatus,
     timeline, requestCorrection, decideCorrection, locLabel,
   };
 }

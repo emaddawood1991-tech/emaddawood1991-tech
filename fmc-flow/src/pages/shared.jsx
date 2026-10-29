@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { api, usePoll, newKey, useTicker } from '../api.js';
+import { api, usePoll, newKey, useTicker, useNet } from '../api.js';
 import { useI18n, fmtMs, fmtCountdown, fmtWait, waitingView, timerView } from '../i18n.jsx';
 import { Modal, Chip, useAction, useToast, Empty } from '../ui.jsx';
 
@@ -11,12 +11,67 @@ export function activeMs(s, now) {
   return Math.max(0, end - Date.parse(s.started_at) - paused);
 }
 
+/** Schedule colour as a labelled badge (never colour alone). YELLOW = treatment started / documentation incomplete; ORANGE = documentation complete. */
+export function ScheduleBadge({ status, doc, compact }) {
+  const { t } = useI18n();
+  if (!status) return null;
+  const label = t(status === 'ORANGE' ? 'schedOrange' : 'schedYellow');
+  return <span className={`sched sched-${status.toLowerCase()}`} title={label}><i aria-hidden="true" />{compact ? t(status === 'ORANGE' ? 'schedOrangeShort' : 'schedYellowShort') : label}{doc ? ` · ${doc.completed}/4` : ''}</span>;
+}
+
+/** Step 4 clinical documentation. Only the treating clinician edits; everyone else sees completeness only. Unsaved text never counts. */
+export function DocumentationModal({ session, user, onClose, onSaved }) {
+  const { t } = useI18n(); const toast = useToast(); const net = useNet();
+  const [d, setD] = useState(null); const [f, setF] = useState(null); const [errs, setErrs] = useState({}); const [busy, setBusy] = useState(false);
+  const load = async () => { try { const r = await api.get(`/sessions/${session.id}/documentation`); setD(r); setF(r.content ? { ...r.content } : null); } catch (e) { toast(e.message, true); } };
+  useEffect(() => { load(); }, [session.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const canEdit = user?.role === 'clinician' && !!d?.content;
+  const dirty = !!(d?.content && f && Object.keys(f).some((k) => f[k] !== d.content[k]));
+  const save = async () => {
+    setBusy(true); setErrs({});
+    try { const r = await api.put(`/sessions/${session.id}/documentation`, f); setD(r); setF({ ...r.content }); toast(t('docSavedToast')); onSaved?.(r); }
+    catch (e) { if (e.code === 'NETWORK' || net.offline) toast(t('offline'), true); else { setErrs(e.details?.fields || {}); toast(e.message, true); } }
+    finally { setBusy(false); }
+  };
+  const st = d?.status;
+  const mark = (k) => (st?.fields[k] ? <span className="ok" role="status">✓ {t('docSaved')}</span> : <span className="small err">{t(`docProb_${st?.problems[k] || 'EMPTY'}`)}</span>);
+  const opts = d?.cpt_options || [];
+  const known = opts.some((o) => o.code === f?.cpt_code);
+  return (
+    <Modal title={`${t('docTitle')} — ${session.patient_name || ''} ${session.service || ''}`.trim()} onClose={onClose}>
+      {!d ? <p className="muted">{t('loading')}</p> : (
+        <div className="stack">
+          <div className="row" style={{ justifyContent: 'space-between' }}><ScheduleBadge status={d.schedule_status} doc={st} /><span className="small muted">{t('docCount').replace('{n}', st.completed)}</span></div>
+          {!canEdit && <p className="small muted">{t('docReadOnly')}</p>}
+          {canEdit && dirty && <div className="banner warn" role="status">{t('docUnsaved')}</div>}
+          <div className="field"><label htmlFor="doc-cc">{t('chiefComplaint')} <span className="req" aria-hidden="true">*</span></label>
+            {canEdit ? <textarea id="doc-cc" rows={2} value={f.chief_complaint} aria-invalid={errs.chief_complaint ? 'true' : undefined} onChange={(e) => setF({ ...f, chief_complaint: e.target.value })} /> : null}
+            {mark('chief_complaint')}{errs.chief_complaint && <div className="field-err" role="alert">{errs.chief_complaint}</div>}</div>
+          <div className="field"><label htmlFor="doc-dx">{t('diagnosisLabel')} <span className="req" aria-hidden="true">*</span></label>
+            {canEdit ? <input id="doc-dx" value={f.diagnosis} onChange={(e) => setF({ ...f, diagnosis: e.target.value })} /> : null}
+            {mark('diagnosis')}{errs.diagnosis && <div className="field-err" role="alert">{errs.diagnosis}</div>}</div>
+          <div className="field"><label htmlFor="doc-cpt">{t('procedureCpt')} <span className="req" aria-hidden="true">*</span></label>
+            {canEdit ? <select id="doc-cpt" value={f.cpt_code} aria-invalid={errs.cpt_code ? 'true' : undefined} onChange={(e) => setF({ ...f, cpt_code: e.target.value })}>
+              <option value="">—</option>
+              {f.cpt_code && !known && <option value={f.cpt_code}>{f.cpt_code} ({t('docProb_CPT_NOT_APPROVED')})</option>}
+              {opts.map((o) => <option key={o.id} value={o.code}>{o.code}{o.description ? ` — ${o.description}` : ''}</option>)}</select> : null}
+            {canEdit && opts.length === 0 && <small className="hint">{t('docNoCpt')}</small>}
+            {mark('procedure')}{errs.cpt_code && <div className="field-err" role="alert">{errs.cpt_code}</div>}</div>
+          <div className="field"><label htmlFor="doc-pn">{t('progressNote')} <span className="req" aria-hidden="true">*</span></label>
+            {canEdit ? <textarea id="doc-pn" rows={4} value={f.progress_note} onChange={(e) => setF({ ...f, progress_note: e.target.value })} /> : null}
+            {mark('progress_note')}{errs.progress_note && <div className="field-err" role="alert">{errs.progress_note}</div>}</div>
+          {canEdit && <button className="btn" disabled={busy || !dirty} onClick={save}>{t('docSave')}</button>}
+        </div>)}
+    </Modal>
+  );
+}
+
 const TIMER_TONE = { RUNNING: 'ACTIVE', PAUSED: 'PAUSED', ELAPSED: 'REJECTED', DONE: 'COMPLETED' };
 
 /** One treatment: live countdown from stored timestamps, with Pause/Resume, End early, Confirm completion and Request correction. */
-export function SessionControls({ s, now, onChange, onCorrect }) {
+export function SessionControls({ s, now, onChange, onCorrect, user }) {
   const { t, loc, fmt } = useI18n(); const { run, busy } = useAction(); const toast = useToast();
-  const [confirmEarly, setConfirmEarly] = useState(false);
+  const [confirmEarly, setConfirmEarly] = useState(false); const [docOpen, setDocOpen] = useState(false);
   const tv = timerView(s, now);
   const prev = useRef(tv.state);
   useEffect(() => { // one visible notification when the scheduled time is reached while this screen is open
@@ -31,6 +86,7 @@ export function SessionControls({ s, now, onChange, onCorrect }) {
         <div>
           <b>{loc(s, 'service') || s.service}</b> <Chip s={tv.legacy ? s.status : TIMER_TONE[tv.state]} label={tv.legacy ? undefined : t(`TIMER_${tv.state}`)} />
           <div className="small muted">{s.patient_name && `${s.patient_name} · `}{s.room}{s.clinician && ` · ${s.clinician}`}</div>
+          <div style={{ margin: '4px 0' }}><ScheduleBadge status={s.schedule_status} doc={s.documentation} /></div>
           {!tv.legacy && <div className="small muted">{t('planned')} {s.planned_minutes} {t('minShort')} · {t('scheduledEnd')} <b>{fmt(s.scheduled_end_at)}</b></div>}
         </div>
         <div style={{ textAlign: 'end' }}>
@@ -39,6 +95,7 @@ export function SessionControls({ s, now, onChange, onCorrect }) {
         </div>
       </div>
       {tv.state === 'ELAPSED' && <div className="banner bad" role="alert" style={{ margin: '8px 0' }}>{t('elapsedNotice')}</div>}
+      {s.operational_checkout_at && <div className="small muted">{t('opCheckout')}: <b>{fmt(s.operational_checkout_at)}</b> · {s.operational_checkout_kind === 'AUTO' ? t('opCheckoutAuto') : t('opCheckoutManual')}</div>}
       <div className="row" style={{ marginTop: 6 }}>
         {tv.state === 'ELAPSED' ? <>
           <button className="btn sm" disabled={busy} onClick={() => go('complete', { mode: 'scheduled' })}>{t('confirmCompletion')}</button>
@@ -50,8 +107,10 @@ export function SessionControls({ s, now, onChange, onCorrect }) {
             : confirmEarly ? <><button className="btn red sm" disabled={busy} onClick={() => go('complete')}>{t('confirmEndEarly')}</button><button className="btn ghost sm" onClick={() => setConfirmEarly(false)}>{t('cancel')}</button></>
               : <button className="btn sm" disabled={busy} onClick={() => setConfirmEarly(true)}>{t('endEarly')}</button>}
         </>}
+        {user && <button className="btn ghost sm" onClick={() => setDocOpen(true)}>{t('docBtn')}</button>}
         {onCorrect && <button className="btn ghost sm" onClick={() => onCorrect({ kind: 'SESSION_END', entity_id: s.id, started: s.started_at, open: true })}>{t('requestCorrection')}</button>}
       </div>
+      {docOpen && <DocumentationModal session={s} user={user} onClose={() => setDocOpen(false)} onSaved={() => onChange?.()} />}
     </div>
   );
 }
@@ -100,6 +159,8 @@ export function TimelineModal({ visitId, onClose, onCorrect }) {
     if (e.type.startsWith('CORRECTION')) return [d.kind, d.original && `${fmt(d.original)} → ${fmt(d.corrected)}`, d.reason, d.note].filter(Boolean).join(' · ');
     if (e.type === 'TREATMENT_STARTED') return [d.service, d.location, d.planned_minutes && `${d.planned_minutes} ${t('minShort')}`, d.scheduled_end_at && `→ ${fmt(d.scheduled_end_at)}`].filter(Boolean).join(' · ');
     if (e.type === 'TIMER_ELAPSED') return `${t('scheduledEnd')} ${fmt(d.scheduled_end_at)}`;
+    if (e.type === 'OPERATIONAL_CHECKOUT') return `${t('opCheckoutAuto')}`;
+    if (e.type === 'DOCUMENTATION_SAVED') return `${d.completed}/4`;
     if (e.type === 'TREATMENT_COMPLETED' && d.kind) return `${t(`completionKind_${d.kind}`)}${d.kind !== 'AUTO' ? ` · ${t('actualEnd')} ${fmt(d.ended_at)}` : ''}`;
     return [d.queue, d.service, d.room, d.station, d.location, d.ref, d.late_close && 'late close'].filter(Boolean).join(' · ');
   };
@@ -172,32 +233,33 @@ export function StartSessionModal({ visit, user, onClose, onDone }) {
   const { t, loc } = useI18n(); const { run, busy } = useAction();
   const key = useRef(newKey()); // stable across retries/double clicks → server returns the same session
   const { data, error } = usePoll(`/visits/${visit.id}/treatment-options`, 0);
-  const [deptId, setDeptId] = useState(''); const [serviceId, setServiceId] = useState(''); const [clinId, setClinId] = useState(''); const [problem, setProblem] = useState(''); const [minutes, setMinutes] = useState('');
+  const [deptId, setDeptId] = useState(''); const [serviceId, setServiceId] = useState(''); const [clinId, setClinId] = useState(''); const [problem, setProblem] = useState(''); const [minutes, setMinutes] = useState(''); const [cptId, setCptId] = useState('');
   const isAdmin = user.role === 'admin';
   const forOthers = !!data?.viewer.can_start_for_others;
   const dept = data?.departments.find((d) => String(d.id) === String(deptId)) || data?.departments[0];
   const services = dept?.services || [];
   const svc = services.find((x) => String(x.id) === String(serviceId));
   const authorized = svc?.authorized || [];
+  const cptList = dept?.cpt_codes || []; const cptSel = cptList.find((c) => String(c.id) === String(cptId));
   const iCan = (x) => x.can_start_as_me;
   const clinician = forOthers ? authorized.find((c) => String(c.id) === String(clinId)) : authorized.find((c) => c.id === user.id);
   const needSettings = (txt) => (isAdmin ? `${txt.a}` : `${txt.o}`);
   const pickService = (id) => {
-    setServiceId(id); setProblem('');
+    setServiceId(id); setProblem(''); setCptId('');
     setMinutes(String(services.find((x) => String(x.id) === String(id))?.default_minutes ?? ''));
     const sv = services.find((x) => String(x.id) === String(id));
     const auth = sv?.authorized || [];
     setClinId(auth.some((c) => c.id === user.id) ? String(user.id) : auth.length === 1 ? String(auth[0].id) : '');
   };
   const hasAnyOwn = services.some(iCan);
-  const nMin = Number(minutes); const minOk = svc && /^\d+$/.test(String(minutes).trim()) && nMin >= svc.min_minutes && nMin <= svc.max_minutes && (svc.allow_override || nMin === svc.default_minutes);
+  const nMin = Number(minutes); const minOk = svc && /^\d+$/.test(String(minutes).trim()) && nMin >= svc.min_minutes && nMin <= svc.max_minutes && (svc.allow_override || nMin === svc.default_minutes || nMin === cptSel?.default_minutes);
   const fill = (txt) => txt.replace('{min}', svc?.min_minutes).replace('{max}', svc?.max_minutes).replace('{def}', svc?.default_minutes);
   const canConfirm = data?.ready && svc && clinician && minOk && !busy;
   const goSettings = () => { onClose(); try { location.hash = '/settings'; } catch { /* hash unavailable */ } };
   const submit = async () => {
     setProblem('');
     const r = await run(async () => {
-      try { return await api.post(`/visits/${visit.id}/sessions`, { service_id: Number(serviceId), clinician_id: forOthers ? Number(clinId) : undefined, planned_minutes: Number(minutes), idem_key: key.current }); }
+      try { return await api.post(`/visits/${visit.id}/sessions`, { service_id: Number(serviceId), clinician_id: forOthers ? Number(clinId) : undefined, planned_minutes: Number(minutes), cpt_code_id: cptId ? Number(cptId) : undefined, idem_key: key.current }); }
       catch (e) { if (e.code !== 'NETWORK') setProblem(e.message); throw e; }
     }, `${t('treatmentStarted')}: ${loc(svc)} — ${loc(clinician)} · ${nMin} ${t('minShort')}`);
     if (r) { onDone(); onClose(); }
@@ -241,6 +303,9 @@ export function StartSessionModal({ visit, user, onClose, onDone }) {
                 <div><dt>{t('summaryPatient')}</dt><dd>{loc(data.patient)} · {data.patient.mrn}</dd></div><div><dt>{t('department')}</dt><dd>{loc(dept)}</dd></div>
                 <div><dt>{t('service')}</dt><dd>{loc(svc)}</dd></div><div><dt>{t('clinician')}</dt><dd>{loc(clinician)}</dd></div><div><dt>{t('summaryRoom')}</dt><dd>{data.location || '—'}</dd></div>
               </dl>
+              {cptList.length > 0 && <div className="field"><label htmlFor="st-cpt">{t('startCpt')} <span className="opt">· {t('optionalWord')}</span></label>
+                <select id="st-cpt" value={cptId} onChange={(e) => { setCptId(e.target.value); const c = cptList.find((x) => String(x.id) === e.target.value); if (c) setMinutes(String(c.default_minutes)); }}>
+                  <option value="">—</option>{cptList.map((c) => <option key={c.id} value={c.id}>{c.code} · {c.default_minutes} {t('minShort')}{c.description ? ` — ${c.description}` : ''}</option>)}</select></div>}
               <div className="field"><label htmlFor="st-minutes">{t('durationMin')} <span className="req" aria-hidden="true">*</span><span className="sr-only"> ({t('requiredWord')})</span></label>
                 <input id="st-minutes" type="number" inputMode="numeric" min={svc.min_minutes} max={svc.max_minutes} step="1" aria-required="true" aria-invalid={!minOk ? 'true' : undefined} aria-describedby="st-minutes-hint" disabled={!svc.allow_override} value={minutes} onChange={(e) => setMinutes(e.target.value)} />
                 {minOk ? <small id="st-minutes-hint" className="hint">{svc.allow_override ? fill(t('durationHint')) : fill(t('durationFixed'))}</small> : <div id="st-minutes-hint" className="field-err" role="alert">{fill(t('durationInvalid'))}</div>}

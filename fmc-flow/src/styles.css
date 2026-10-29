@@ -108,3 +108,10 @@ input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--ba
 .tgrid.compact { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .detail-row td { background: rgba(255, 255, 255, .35); }
 .rtimers { display: grid; gap: 2px; font-variant-numeric: tabular-nums; }
+
+.sched{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;font-size:.78rem;font-weight:600;border:1px solid transparent}
+.sched i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.sched-yellow{background:#fff6c2;color:#5a4600;border-color:#e3bf00}.sched-yellow i{background:#e3bf00}
+.sched-orange{background:#ffe0bd;color:#7a3500;border-color:#f08a00}.sched-orange i{background:#f08a00}
+.sched-row-yellow td:first-child{border-inline-start:4px solid #e3bf00}.sched-row-orange td:first-child{border-inline-start:4px solid #f08a00}
+.ok{color:#16794a;font-size:.8rem}

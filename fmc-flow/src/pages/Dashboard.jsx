@@ -42,7 +42,7 @@ export default function Dashboard({ user, staff }) {
         <div className="card"><h2>{t('sessions')}</h2>
           {sessions.length === 0 ? <Empty /> : sessions.map((s) => <div key={s.id} style={{ padding: '6px 0', borderTop: '1px solid rgba(46,85,178,.1)' }}>
             {user.role === 'reception' ? <div className="row" style={{ justifyContent: 'space-between' }}><span><b>{s.patient_name}</b> · {s.service} · {s.room}</span><span className="timer">{(() => { const v = timerView(s, now); return v.legacy ? fmtMs(now - Date.parse(s.started_at)) : v.state === 'ELAPSED' ? t('TIMER_ELAPSED') : fmtCountdown(v.remaining); })()}</span></div>
-              : <SessionControls s={s} now={now} onChange={sess.reload} />}</div>)}
+              : <SessionControls s={s} now={now} user={user} onChange={sess.reload} />}</div>)}
         </div>
       </div>
       <div className="card"><h2>{t('rooms')}</h2>

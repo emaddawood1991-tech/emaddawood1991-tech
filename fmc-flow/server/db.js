@@ -110,6 +110,18 @@ CREATE TABLE IF NOT EXISTS treatment_sessions (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS one_open_session_per_service ON treatment_sessions(visit_id, service_id, clinician_id)
   WHERE status IN ('ACTIVE','PAUSED');
+-- Approved procedure (CPT) codes. Entered and maintained by an administrator; the application ships no code list.
+CREATE TABLE IF NOT EXISTS cpt_codes (
+  id INTEGER PRIMARY KEY, code TEXT NOT NULL, description TEXT NOT NULL DEFAULT '',
+  department_id INTEGER REFERENCES departments(id), default_minutes INTEGER NOT NULL DEFAULT 30, active INTEGER NOT NULL DEFAULT 1
+);
+CREATE UNIQUE INDEX IF NOT EXISTS cpt_code_upper ON cpt_codes(upper(code));
+-- Clinical documentation for a treatment session. Only saved rows exist here, so an unsaved draft can never count.
+CREATE TABLE IF NOT EXISTS session_documentation (
+  session_id INTEGER PRIMARY KEY REFERENCES treatment_sessions(id),
+  chief_complaint TEXT NOT NULL DEFAULT '', diagnosis TEXT NOT NULL DEFAULT '', cpt_code_id INTEGER REFERENCES cpt_codes(id), progress_note TEXT NOT NULL DEFAULT '',
+  saved_by INTEGER REFERENCES users(id), saved_at TEXT NOT NULL, complete_since TEXT
+);
 CREATE TABLE IF NOT EXISTS session_pauses (
   id INTEGER PRIMARY KEY, session_id INTEGER NOT NULL REFERENCES treatment_sessions(id),
   paused_at TEXT NOT NULL, resumed_at TEXT
@@ -174,13 +186,16 @@ export const DEFAULT_SETTINGS = {
   registration_require_phone: '0',
   require_service_at_checkin: '0',
   timer_auto_close: '0',
+  doc_min_chars: '3',
+  diagnosis_pattern: '',
+  resource_gap_minutes: '1',
   gender_options: JSON.stringify([{ code: 'M', en: 'Male', ar: 'ذكر' }, { code: 'F', en: 'Female', ar: 'أنثى' }]),
 };
 
 // Additive, non-destructive column upgrades (safe on existing databases; no data is touched).
 const ADDED_COLUMNS = {
   services: { min_minutes: 'INTEGER NOT NULL DEFAULT 5', max_minutes: 'INTEGER NOT NULL DEFAULT 180', allow_override: 'INTEGER NOT NULL DEFAULT 1' },
-  treatment_sessions: { planned_minutes: 'INTEGER', scheduled_end_at: 'TEXT', timer_elapsed_at: 'TEXT', confirmed_at: 'TEXT', completion_kind: 'TEXT' },
+  treatment_sessions: { planned_minutes: 'INTEGER', scheduled_end_at: 'TEXT', timer_elapsed_at: 'TEXT', confirmed_at: 'TEXT', completion_kind: 'TEXT', planned_cpt_id: 'INTEGER', operational_checkout_at: 'TEXT', operational_checkout_kind: 'TEXT' },
 };
 function ensureColumns(db) {
   for (const [table, cols] of Object.entries(ADDED_COLUMNS)) {

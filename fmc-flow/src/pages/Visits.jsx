@@ -3,7 +3,7 @@ import { api, usePoll, useTicker } from '../api.js';
 import { useI18n, fmtWait, waitingView } from '../i18n.jsx';
 import { Chip, Empty, useAction, useToast } from '../ui.jsx';
 import PatientFormModal from './PatientForm.jsx';
-import { CorrectionModal, RoomPickerModal, SessionControls, StartSessionModal, TimelineModal, TimingGrid } from './shared.jsx';
+import { CorrectionModal, RoomPickerModal, ScheduleBadge, SessionControls, StartSessionModal, TimelineModal, TimingGrid } from './shared.jsx';
 
 function CheckIn({ config, staff, onDone, canWrite }) {
   const { t, loc, fmt } = useI18n(); const { run, busy } = useAction(); const toast = useToast();
@@ -85,10 +85,10 @@ export default function Visits({ user, staff }) {
               <Fragment key={v.id}>
               <tr>
                 <td><span className="q-no">{v.queue?.display || '—'}</span>{v.queue && <div><Chip s={v.queue.status} /></div>}</td>
-                <td><b>{loc(v, 'patient_name') || v.patient_name}</b><div className="small muted">{v.mrn}</div></td>
+                <td><b>{loc(v, 'patient_name') || v.patient_name}</b><div className="small muted">{v.mrn}</div>{v.schedule_status && <div><ScheduleBadge status={v.schedule_status} compact /></div>}</td>
                 <td>{fmt(v.arrived_at, { hour: '2-digit', minute: '2-digit' })}<div className="small muted" title={t('waitTotal')}>{t('waiting')}: {fmtWait(wv.total)}{wv.live ? ' ●' : ''}</div></td>
                 <td>{o ? <><b>{o.room_code}{o.station_code ? `/${o.station_code}` : ''}</b><div className="small muted">{o.entered_at ? t('IN_ROOM') : t('pending')}</div></> : '—'}</td>
-                <td style={{ minWidth: 260 }}>{ss.map((s) => <SessionControls key={s.id} s={{ ...s, patient_name: undefined }} now={now} onChange={reload} onCorrect={(target) => setModal({ k: 'correct', v, target })} />)}</td>
+                <td style={{ minWidth: 260 }}>{ss.map((s) => <SessionControls key={s.id} s={{ ...s, patient_name: undefined }} now={now} user={user} onChange={reload} onCorrect={(target) => setModal({ k: 'correct', v, target })} />)}</td>
                 <td><div className="row">
                   {!o && <button className="btn sm" onClick={() => setModal({ k: 'assign', v })}>{t('assignRoom')}</button>}
                   {o && !o.entered_at && <button className="btn sm" onClick={() => post(`/visits/${v.id}/room/enter`, t('enterRoom'))}>{t('enterRoom')}</button>}

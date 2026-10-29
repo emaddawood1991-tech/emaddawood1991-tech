@@ -24,8 +24,13 @@ const CONFIG = {
   rooms: ['department_id', 'code', 'name', 'name_ar', 'capacity', 'cleaning_after_use', 'active'],
   stations: ['room_id', 'code', 'active'],
   services: ['department_id', 'name', 'name_ar', 'default_minutes', 'min_minutes', 'max_minutes', 'allow_override', 'active'],
+  cpt_codes: ['code', 'description', 'department_id', 'default_minutes', 'active'],
 };
 
+function checkCpt(b, creating) {
+  if (creating || b.code !== undefined) { const c = String(b.code ?? '').trim(); if (!/^[A-Za-z0-9]{4,10}$/.test(c)) throw new HttpError(400, 'VALIDATION', 'A procedure code is 4–10 letters or digits.', { fields: { code: 'Use 4–10 letters or digits, for example the code exactly as FMC bills it.' } }); b.code = c.toUpperCase(); }
+  if (creating || b.default_minutes !== undefined) { const m = Number(b.default_minutes); if (!Number.isInteger(m) || m < 1 || m > 600) throw new HttpError(400, 'VALIDATION', 'Default duration must be whole minutes from 1 to 600.', { fields: { default_minutes: '1–600 whole minutes.' } }); }
+}
 function checkDurationRange(b) {
   const n = (v) => (v === undefined || v === null || v === '' ? null : Number(v));
   const [d, lo, hi] = [n(b.default_minutes), n(b.min_minutes), n(b.max_minutes)];
@@ -112,6 +117,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       departments: q('SELECT * FROM departments ORDER BY name'),
       rooms: q('SELECT * FROM rooms ORDER BY code').map(ops.roomState),
       services: q('SELECT * FROM services ORDER BY name'),
+      cpt_codes: q('SELECT * FROM cpt_codes ORDER BY code'),
       scope_department: s,
       settings: Object.fromEntries(q('SELECT * FROM settings').map((r) => [r.key, r.value])),
     });
@@ -128,6 +134,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       const vals = cols.filter((c) => req.body[c] !== undefined);
       if (!vals.length) throw new HttpError(400, 'EMPTY');
       if (table === 'services') checkDurationRange(req.body);
+      if (table === 'cpt_codes') checkCpt(req.body, true);
       let r;
       try { r = run(`INSERT INTO ${table}(${vals.join(',')}) VALUES (${vals.map(() => '?').join(',')})`, ...vals.map((c) => req.body[c])); }
       catch (e) { throw new HttpError(400, 'INVALID', String(e.message).replace(/^.*constraint failed: /, '')); }
@@ -137,6 +144,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     app.patch(`/api/config/${table}/:id`, guard('config.manage'), (req, res) => {
       const vals = cols.filter((c) => req.body[c] !== undefined);
       if (!vals.length) throw new HttpError(400, 'EMPTY');
+      if (table === 'cpt_codes') checkCpt(req.body, false);
       if (table === 'services') { const cur = one('SELECT default_minutes,min_minutes,max_minutes FROM services WHERE id=?', req.params.id) || {}; checkDurationRange({ ...cur, ...req.body }); }
       if (table === 'rooms' && req.body.active === 0 && ops.one('SELECT 1 x FROM occupancy WHERE room_id=? AND exited_at IS NULL', req.params.id)) throw new HttpError(409, 'ROOM_OCCUPIED');
       try { run(`UPDATE ${table} SET ${vals.map((c) => `${c}=?`).join(',')} WHERE id=?`, ...vals.map((c) => req.body[c]), req.params.id); }
@@ -146,12 +154,15 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     });
   }
   app.patch('/api/config/settings', guard('config.manage'), (req, res) => {
+    const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60] };
     const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin', 'timer_auto_close'];
-    const allowed = ['timezone', 'session_idle_hours', 'gender_options', ...flags];
+    const allowed = ['timezone', 'session_idle_hours', 'gender_options', 'diagnosis_pattern', ...Object.keys(numeric), ...flags];
     const body = req.body || {};
     for (const [k, v] of Object.entries(body)) {
       if (!allowed.includes(k)) continue;
       if (flags.includes(k) && !['0', '1'].includes(String(v))) throw new HttpError(400, 'INVALID', `${k} must be 0 or 1`);
+      if (numeric[k]) { const n = Number(v); if (!Number.isInteger(n) || n < numeric[k][0] || n > numeric[k][1]) throw new HttpError(400, 'INVALID', `${k} must be a whole number from ${numeric[k][0]} to ${numeric[k][1]}`); }
+      if (k === 'diagnosis_pattern') { const pat = String(v ?? ''); if (pat.length > 200) throw new HttpError(400, 'INVALID', 'Diagnosis pattern is limited to 200 characters.'); try { new RegExp(pat); } catch { throw new HttpError(400, 'INVALID', 'Diagnosis pattern is not a valid regular expression.'); } }
       if (k === 'gender_options') {
         const list = typeof v === 'string' ? (() => { try { return JSON.parse(v); } catch { return null; } })() : v;
         if (!Array.isArray(list) || !list.length || list.some((g) => !g || !/^[A-Za-z0-9_-]{1,10}$/.test(String(g.code)) || !String(g.en || '').trim()) || new Set(list.map((g) => g.code)).size !== list.length)
@@ -260,6 +271,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       occupancy: one(`SELECT o.id,o.room_id,o.station_id,o.entered_at,r.code room_code,st.code station_code FROM occupancy o JOIN rooms r ON r.id=o.room_id LEFT JOIN stations st ON st.id=o.station_id WHERE o.visit_id=? AND o.exited_at IS NULL`, v.id) || null,
       open_sessions: q("SELECT id,status,service_id FROM treatment_sessions WHERE visit_id=? AND status IN ('ACTIVE','PAUSED')", v.id),
       timing: ops.visitTiming(v),
+      schedule_status: ops.visitScheduleStatus(v.id),
     })));
   });
   app.get('/api/visits/:id/timeline', guard('patients.read'), (req, res) => res.json(ops.timeline(req.user, Number(req.params.id))));
@@ -279,7 +291,10 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   // ---- sessions ----
   app.get('/api/sessions/active', guard('patients.read'), (req, res) => res.json({ server_time: now(), sessions: ops.activeSessions(req.user) }));
   app.get('/api/visits/:id/treatment-options', guard('session.run'), (req, res) => res.json(ops.treatmentOptions(req.user, Number(req.params.id))));
-  app.post('/api/visits/:id/sessions', guard(), (req, res) => res.status(201).json(ops.startSession(req.user, Number(req.params.id), { serviceId: req.body.service_id, clinicianId: req.body.clinician_id, idemKey: req.body.idem_key, plannedMinutes: req.body.planned_minutes })));
+  app.post('/api/visits/:id/sessions', guard(), (req, res) => res.status(201).json(ops.startSession(req.user, Number(req.params.id), { serviceId: req.body.service_id, clinicianId: req.body.clinician_id, idemKey: req.body.idem_key, plannedMinutes: req.body.planned_minutes, cptCodeId: req.body.cpt_code_id })));
+  app.get('/api/sessions/:id/documentation', guard('patients.read'), (req, res) => res.json(ops.getDocumentation(req.user, Number(req.params.id))));
+  app.put('/api/sessions/:id/documentation', guard('session.run'), (req, res) => res.json(ops.saveDocumentation(req.user, Number(req.params.id), req.body || {})));
+  app.get('/api/schedule', guard('patients.read'), (req, res) => res.json({ server_time: now(), sessions: ops.scheduleList(req.user, req.query) }));
   app.post('/api/sessions/:id/pause', guard(), (req, res) => res.json(ops.pauseSession(req.user, Number(req.params.id))));
   app.post('/api/sessions/:id/resume', guard(), (req, res) => res.json(ops.resumeSession(req.user, Number(req.params.id))));
   app.post('/api/sessions/:id/complete', guard(), (req, res) => res.json(ops.completeSession(req.user, Number(req.params.id), { mode: req.body.mode })));

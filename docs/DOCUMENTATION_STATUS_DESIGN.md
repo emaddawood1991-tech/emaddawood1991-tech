@@ -1,0 +1,10 @@
+# Clinical documentation → schedule colour, and operational check-out
+
+- **Four required fields** per treatment session: chief complaint, diagnosis, procedure (approved code), progress note. Stored only when saved (`session_documentation`); a draft in the browser never counts.
+- **Colour is derived, never stored or set by hand.** `YELLOW` = treatment started / documentation incomplete (any field missing, whitespace-only, shorter than `doc_min_chars`, failing the optional `diagnosis_pattern`, or a code that is not an active approved code for the service's department). `ORANGE` = all four valid and saved. It is re-evaluated on every read, so editing, clearing, or retiring a code returns it to YELLOW. A visit shows ORANGE only when every one of its sessions is.
+- **Approved procedure codes** are entered by an administrator (Settings → Procedure codes, table `cpt_codes`). The application ships no codes. A code can set the default duration at Start Treatment (for example 30/40/55 minutes); the documented procedure is a separate, later entry and is never pre-filled.
+- **Who:** only a clinician who is the session's clinician or authorized for the service may save. Supervisors, administrators and reception cannot. Reception and administrators see completeness only; text is visible to clinicians and supervisors. Events and audit entries hold field names and counts, never clinical text.
+- **Operational check-out** is recorded automatically at the scheduled end (`operational_checkout_at`, kind `AUTO`; event `OPERATIONAL_CHECKOUT`). It is separate from verified clinical completion (`confirmed_at`, `completion_kind`) and from physical departure (room exit). It never changes documentation and does not free the room.
+- **Resource gap:** a new patient cannot start treatment on the same bed (else room) until `resource_gap_minutes` (default 1) after the previous operational check-out (error `RESOURCE_GAP`).
+- **Tests:** `tests/documentation.test.js` (13) and `tests/e2e-documentation.cjs` (15).
+- **Rollback:** commit `874a236`. Migrations are additive (two tables, three columns, three settings).

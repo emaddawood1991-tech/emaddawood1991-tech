@@ -113,7 +113,7 @@ test('13-14: after the timer elapses the clinician confirms; scheduled end and v
   assert.equal((await rec.post(`/api/visits/${a.v}/checkout`)).status, 200);
   const tl = (await rec.get(`/api/visits/${a.v}/timeline`)).body;
   assert.equal(tl.visit.status, 'CHECKED_OUT'); assert.ok(tl.timing.total_visit_ms > 20 * MIN && tl.timing.departed_at && tl.timing.room_exit_at && tl.timing.last_treatment_end_at);
-  assert.deepEqual(tl.events.map((e) => e.type), ['ARRIVED', 'QUEUE_ENTERED', 'ROOM_ASSIGNED', 'ROOM_ENTERED', 'TREATMENT_STARTED', 'TIMER_ELAPSED', 'TREATMENT_COMPLETED', 'ROOM_EXITED', 'CLINIC_DEPARTED']);
+  assert.deepEqual(tl.events.map((e) => e.type), ['ARRIVED', 'QUEUE_ENTERED', 'ROOM_ASSIGNED', 'ROOM_ENTERED', 'TREATMENT_STARTED', 'TIMER_ELAPSED', 'OPERATIONAL_CHECKOUT', 'TREATMENT_COMPLETED', 'ROOM_EXITED', 'CLINIC_DEPARTED']);
   for (const r of globalThis.__elapsed.slice(1)) { // tidy remaining
     if (r.id !== b.id) await pt1.post(`/api/sessions/${r.id}/complete`);
     await pt1.post(`/api/visits/${r.v}/room/exit`);

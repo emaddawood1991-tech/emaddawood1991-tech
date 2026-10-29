@@ -88,6 +88,20 @@ function GenderEditor({ config, reload }) {
   );
 }
 
+function DocSettings({ config, reload }) {
+  const { t } = useI18n(); const { run } = useAction();
+  const [v, setV] = useState({ doc_min_chars: config.settings.doc_min_chars ?? '3', diagnosis_pattern: config.settings.diagnosis_pattern ?? '', resource_gap_minutes: config.settings.resource_gap_minutes ?? '1' });
+  const save = async () => { const r = await run(() => api.patch('/config/settings', v), t('save')); if (r) reload(); };
+  return (
+    <fieldset className="mrn-box"><legend>{t('docTitle')}</legend>
+      <label>{t('docMinChars')}<input type="number" min="1" max="200" value={v.doc_min_chars} onChange={(e) => setV({ ...v, doc_min_chars: e.target.value })} /></label>
+      <label>{t('diagnosisPattern')}<input value={v.diagnosis_pattern} maxLength={200} onChange={(e) => setV({ ...v, diagnosis_pattern: e.target.value })} /></label>
+      <label>{t('resourceGap')}<input type="number" min="0" max="60" value={v.resource_gap_minutes} onChange={(e) => setV({ ...v, resource_gap_minutes: e.target.value })} /></label>
+      <button type="button" className="btn sm" onClick={save}>{t('save')}</button>
+    </fieldset>
+  );
+}
+
 export default function Settings({ staff, reloadStaff }) {
   const { t, loc } = useI18n(); const { run } = useAction();
   const cfg = usePoll('/config', 0); const [tab, setTab] = useState('departments');
@@ -97,17 +111,19 @@ export default function Settings({ staff, reloadStaff }) {
   const setPol = async (k, v) => { await run(() => api.patch('/config/settings', { [k]: v ? '1' : '0' }), t('save')); cfg.reload(); };
   return (
     <>
-      <div className="tabs">{['departments', 'rooms', 'services', 'staff', 'policy'].map((k) => <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{t(k === 'rooms' ? 'rooms' : k)}</button>)}</div>
+      <div className="tabs">{['departments', 'rooms', 'services', 'cptCodes', 'staff', 'policy'].map((k) => <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{t(k === 'rooms' ? 'rooms' : k)}</button>)}</div>
       {tab === 'departments' && <Table title={t('departments')} endpoint="departments" rows={config.departments} reload={reload} fields={[{ k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'queue_prefix', label: t('prefix') }, { k: 'queue_start', label: t('startNo'), type: 'num', def: 1 }, { k: 'queue_reset_daily', label: t('resetDaily'), type: 'bool', def: 1 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />}
       {tab === 'rooms' && <>
         <Table title={t('rooms')} endpoint="rooms" rows={config.rooms} reload={reload} fields={[{ k: 'department_id', label: t('department'), type: 'ref', opts: depOpts }, { k: 'code', label: 'Code' }, { k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'capacity', label: t('capacity'), type: 'num', def: 1 }, { k: 'cleaning_after_use', label: t('cleaningAfter'), type: 'bool' }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />
         <Table title={t('stations')} endpoint="stations" rows={config.rooms.flatMap((r) => r.stations.map((s) => ({ ...s, room_code: r.code })))} reload={reload} fields={[{ k: 'room_id', label: t('room'), type: 'ref', lock: true, opts: config.rooms.map((r) => [r.id, r.code]) }, { k: 'code', label: t('station') }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />
       </>}
       {tab === 'services' && <><p className="small muted">{t('authHelp')}</p><Table title={t('services')} endpoint="services" rows={config.services} reload={reload} extraCols={[{ label: t('authorizedClinicians'), render: (r) => { const who = staff.filter((u) => u.active && u.service_ids.includes(r.id)); return who.length ? <span className="small">{who.map((u) => loc(u)).join(', ')}</span> : r.active ? <Chip s="REJECTED" label={t('noAuthorizedChip')} /> : '—'; } }]} fields={[{ k: 'department_id', label: t('department'), type: 'ref', opts: depOpts }, { k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'default_minutes', label: t('defaultMin'), type: 'num', def: 30 }, { k: 'min_minutes', label: t('minMin'), type: 'num', def: 5 }, { k: 'max_minutes', label: t('maxMin'), type: 'num', def: 180 }, { k: 'allow_override', label: t('allowOverride'), type: 'bool', def: 1 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} /></>}
+      {tab === 'cptCodes' && <><p className="small muted">{t('cptHelp')}</p><Table title={t('cptCodes')} endpoint="cpt_codes" rows={config.cpt_codes || []} reload={reload} fields={[{ k: 'code', label: t('cptCode') }, { k: 'description', label: t('cptDesc') }, { k: 'department_id', label: t('department'), type: 'ref', opts: [['', '—'], ...depOpts] }, { k: 'default_minutes', label: t('cptMinutes'), type: 'num', def: 30 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} /></>}
       {tab === 'staff' && <StaffAdmin staff={staff} config={config} reload={reload} />}
       {tab === 'policy' && <div className="card stack"><h2>{t('policy')}</h2>
         {[['correction_requires_approval', 'policyApproval'], ['transfer_reason_required', 'policyTransfer'], ['registration_require_name_ar', 'policyNameAr'], ['registration_require_phone', 'policyPhone'], ['require_service_at_checkin', 'policyService'], ['timer_auto_close', 'timerAutoClose']].map(([k, label]) => (
           <label key={k} className="chk"><input type="checkbox" checked={config.settings[k] === '1'} onChange={(e) => setPol(k, e.target.checked)} />{t(label)}</label>))}
+        <DocSettings config={config} reload={cfg.reload} />
         <GenderEditor config={config} reload={cfg.reload} />
         <p className="small muted">Retention periods and backup schedule are set from verified requirements and FMC policy — see docs/BACKUP_AND_RECOVERY.md.</p></div>}
     </>
