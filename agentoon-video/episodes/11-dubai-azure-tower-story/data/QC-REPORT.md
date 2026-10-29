@@ -8,6 +8,8 @@ File: `final/dubai-azure-tower-story-PREVIEW.mp4` (76.9 s, 1080x1920, 30 fps, H.
 - INFO narration 159 wpm while speaking (147 wpm over the whole length, which includes the intro pad and the closing card)
 - HyperFrames check: 0 errors; remaining warnings are decorative door labels, caption blink hold times and the ruler odometer (texture)
 
+- INFO motion-profile.sh: 8 motion bursts (door transitions + zooms), mean energy 2.2; static stretches of 2.5+ s at 2-6.5 s (hook pull-back), 19-31 s (brief cards, code typing) and 58.5-66 s (result cards, slow drift only); longest gap between bursts 11 s (reference ~2.5 s). Not fixed in this pass; candidate polish: add card parallax/tilt in the result scene and a mid-scene camera move in the code scene.
+
 ## Story and honesty checklist
 - PASS finished tower on screen in the first frame; "50 FLOORS. DUBAI. AI." title; "~30 MIN OF PROMPTING · MY COUNT" attributed to the owner
 - PASS hero footage is the owner's real animatic; same building in every shot; nothing generated or re-modelled
