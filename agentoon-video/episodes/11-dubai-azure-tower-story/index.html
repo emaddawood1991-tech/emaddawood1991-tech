@@ -149,11 +149,11 @@
   const sx = 60 + 19, sy = 300 + 19;                                   /* screen origin in scene coords */
   const rowY = i => sy + R0 + i * LH + LH / 2;
   const tTw = PW("p4", "twist"), tFin = PW("p4", "72"), tH = PW("p4", "height");
-  tl.to(hl[0], { scaleX: 1, duration: 0.35, ease: "power2.out" }, tH - 0.1); zoomTo(cam4, 540, rowY(0) + 90, 1.22, tH - 0.2, 0.7);
-  tl.to(hl[7], { scaleX: 1, duration: 0.35, ease: "power2.out" }, tTw - 0.2); zoomTo(cam4, 540, rowY(7) - 40, 1.28, tTw - 0.3, 0.7);
-  tl.to(hl[10], { scaleX: 1, duration: 0.35, ease: "power2.out" }, tFin - 0.2); zoomTo(cam4, 540, rowY(10) - 120, 1.28, tFin - 0.3, 0.6); zoomOut(cam4, tFin + 1.1, 0.8);
+  tl.to(hl[0], { scaleX: 1, duration: 0.35, ease: "power2.out" }, tH - 0.1); zoomTo(cam4, 540, 300, 1.16, tH - 0.2, 0.7);
+  tl.to(hl[7], { scaleX: 1, duration: 0.35, ease: "power2.out" }, tTw - 0.2); zoomTo(cam4, 540, 300, 1.18, tTw - 0.3, 0.7);
+  tl.to(hl[10], { scaleX: 1, duration: 0.35, ease: "power2.out" }, tFin - 0.2); zoomTo(cam4, 540, 300, 1.18, tFin - 0.3, 0.6); zoomOut(cam4, tFin + 1.1, 0.8);
   const nums = [["50 FLOORS", tH], ["96° TWIST", tTw], ["72 FINS", tFin]];
-  nums.forEach(([t, at], i) => { const c = chip(s4i, "n4" + i, 60 + i * 330, 1130, t, { size: 30, bd: BZ, fg: "#fff" }); tl.from(c, { opacity: 0, y: 40, scale: 0.9, duration: 0.35, ease: "back.out(1.8)" }, at); });
+  nums.forEach(([t, at], i) => { const c = chip(s4i, "n4" + i, 60 + i * 330, 1215, t, { size: 30, bd: BZ, fg: "#fff" }); tl.from(c, { opacity: 0, y: 40, scale: 0.9, duration: 0.35, ease: "back.out(1.8)" }, at); });
   const bot4 = presenter(botAt(s4i, "bot4", 860, 1310, 170), "s4", -1); speak(bot4, "p4"); bot4.react(tl, tFin + 0.5, "nod");
 
   /* ================================================================= S5 THE BUILD: real command + real output, then the real result above */
