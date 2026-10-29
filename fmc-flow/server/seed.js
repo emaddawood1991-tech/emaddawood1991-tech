@@ -3,6 +3,7 @@
 import { openDb, tx } from './db.js';
 import { hashPassword } from './app.js';
 import { now } from './ops.js';
+import { ensureCategories, setupDefaults } from './schedule.js';
 import { pathToFileURL } from 'node:url';
 
 export const DEMO_PASSWORD = process.env.SEED_PASSWORD || 'Demo-Passw0rd!';
@@ -85,6 +86,8 @@ function migrateCatalog(db) {
 }
 
 export function seed(db) {
+  // Daily Schedule: editable operational categories for every database (durations left for the administrator).
+  ensureCategories(db);
   const hasData = db.prepare('SELECT COUNT(*) c FROM departments').get().c > 0;
   const migrated = db.prepare("SELECT 1 x FROM settings WHERE key='catalog_v2'").get();
   if (hasData && migrated) return false;
@@ -103,6 +106,7 @@ export function seed(db) {
         db.prepare('INSERT INTO appointments(ref,patient_id,department_id,service_id,clinician_id,scheduled_at,created_at) VALUES (?,?,?,?,?,?,?)')
           .run(`APT-${String(i + 1).padStart(6, '0')}`, pid, dep(pt ? 'Physiotherapy' : 'Orthopedics'), svc(pt ? 'PT Treatment' : 'Orthopedic Consultation'), usr(pt ? 'pt.one' : 'dr.ort'), new Date(base.getTime() + (i + 1) * 30 * 60000).toISOString(), now());
       });
+      setupDefaults(db); // synthetic demo timetable from the demo staff; administrators change it in Daily Schedule
     } else migrateCatalog(db);
     db.prepare("INSERT OR IGNORE INTO settings(key,value) VALUES ('catalog_v2','1')").run();
   });

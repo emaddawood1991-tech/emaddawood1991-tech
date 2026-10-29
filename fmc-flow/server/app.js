@@ -4,6 +4,7 @@ import { existsSync, readdirSync, statSync } from 'node:fs';
 import { openDb, tx } from './db.js';
 import { makeOps, HttpError, now, nowMs, clock } from './ops.js';
 import { makeRegistration } from './registration.js';
+import { makeSchedule } from './schedule.js';
 import { can, deptScope } from './perms.js';
 
 export function hashPassword(pw) {
@@ -25,7 +26,12 @@ const CONFIG = {
   stations: ['room_id', 'code', 'active'],
   services: ['department_id', 'name', 'name_ar', 'default_minutes', 'min_minutes', 'max_minutes', 'allow_override', 'active'],
   cpt_codes: ['code', 'description', 'department_id', 'default_minutes', 'active'],
+  appointment_categories: ['name', 'name_ar', 'color', 'default_minutes', 'active', 'sort_order'],
+  schedule_groups: ['name', 'name_ar', 'department_id', 'interval_minutes', 'active', 'sort_order'],
+  schedule_columns: ['group_id', 'time', 'label', 'active'],
+  schedule_rows: ['group_id', 'user_id', 'label', 'label_ar', 'department_id', 'capacity', 'active', 'sort_order'],
 };
+const SCHEDULE_TABLES = ['appointment_categories', 'schedule_groups', 'schedule_columns', 'schedule_rows'];
 
 function checkCpt(b, creating) {
   if (creating || b.code !== undefined) { const c = String(b.code ?? '').trim(); if (!/^[A-Za-z0-9]{4,10}$/.test(c)) throw new HttpError(400, 'VALIDATION', 'A procedure code is 4–10 letters or digits.', { fields: { code: 'Use 4–10 letters or digits, for example the code exactly as FMC bills it.' } }); b.code = c.toUpperCase(); }
@@ -44,6 +50,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   const ops = makeOps(db);
   const { q, one, run, audit, fail } = ops;
   const reg = makeRegistration(db, ops);
+  const sched = makeSchedule(db, ops);
   const app = express();
   app.disable('x-powered-by');
   app.use(express.json({ limit: '200kb' }));
@@ -66,7 +73,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       const s = one('SELECT * FROM auth_sessions WHERE token_hash=?', sha(tok));
       const maxIdle = Number(ops.setting('session_idle_hours') || 12) * 3600e3;
       if (s && nowMs() - Date.parse(s.last_seen) < maxIdle) {
-        const u = one('SELECT id,username,name,name_ar,role,department_id,active FROM users WHERE id=?', s.user_id);
+        const u = one('SELECT id,username,name,name_ar,role,department_id,active,schedule_override FROM users WHERE id=?', s.user_id);
         if (u?.active) { req.user = u; run('UPDATE auth_sessions SET last_seen=? WHERE token_hash=?', now(), s.token_hash); }
       }
     }
@@ -118,12 +125,13 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       rooms: q('SELECT * FROM rooms ORDER BY code').map(ops.roomState),
       services: q('SELECT * FROM services ORDER BY name'),
       cpt_codes: q('SELECT * FROM cpt_codes ORDER BY code'),
+      appointment_categories: q('SELECT * FROM appointment_categories ORDER BY sort_order, name'),
       scope_department: s,
       settings: Object.fromEntries(q('SELECT * FROM settings').map((r) => [r.key, r.value])),
     });
   });
   app.get('/api/staff', guard(), (_req, res) => {
-    res.json(q(`SELECT u.id,u.username,u.name,u.name_ar,u.role,u.department_id,u.active, COALESCE(a.status,'OFF_DUTY') availability, a.updated_at availability_updated,
+    res.json(q(`SELECT u.id,u.username,u.name,u.name_ar,u.role,u.department_id,u.active,u.schedule_override, COALESCE(a.status,'OFF_DUTY') availability, a.updated_at availability_updated,
       (SELECT group_concat(service_id) FROM staff_services WHERE user_id=u.id) service_ids FROM users u LEFT JOIN staff_availability a ON a.user_id=u.id ORDER BY u.name`)
       .map((r) => ({ ...r, service_ids: r.service_ids ? r.service_ids.split(',').map(Number) : [] })));
   });
@@ -135,6 +143,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       if (!vals.length) throw new HttpError(400, 'EMPTY');
       if (table === 'services') checkDurationRange(req.body);
       if (table === 'cpt_codes') checkCpt(req.body, true);
+      if (SCHEDULE_TABLES.includes(table)) sched.checkConfig(table, req.body, true);
       let r;
       try { r = run(`INSERT INTO ${table}(${vals.join(',')}) VALUES (${vals.map(() => '?').join(',')})`, ...vals.map((c) => req.body[c])); }
       catch (e) { throw new HttpError(400, 'INVALID', String(e.message).replace(/^.*constraint failed: /, '')); }
@@ -145,6 +154,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       const vals = cols.filter((c) => req.body[c] !== undefined);
       if (!vals.length) throw new HttpError(400, 'EMPTY');
       if (table === 'cpt_codes') checkCpt(req.body, false);
+      if (SCHEDULE_TABLES.includes(table)) sched.checkConfig(table, req.body, false, one(`SELECT * FROM ${table} WHERE id=?`, req.params.id) || {});
       if (table === 'services') { const cur = one('SELECT default_minutes,min_minutes,max_minutes FROM services WHERE id=?', req.params.id) || {}; checkDurationRange({ ...cur, ...req.body }); }
       if (table === 'rooms' && req.body.active === 0 && ops.one('SELECT 1 x FROM occupancy WHERE room_id=? AND exited_at IS NULL', req.params.id)) throw new HttpError(409, 'ROOM_OCCUPIED');
       try { run(`UPDATE ${table} SET ${vals.map((c) => `${c}=?`).join(',')} WHERE id=?`, ...vals.map((c) => req.body[c]), req.params.id); }
@@ -201,7 +211,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       req.body.service_ids = ids;
     }
     tx(db, () => {
-      for (const c of ['name', 'name_ar', 'role', 'department_id', 'active']) if (req.body[c] !== undefined) run(`UPDATE users SET ${c}=? WHERE id=?`, req.body[c], id);
+      for (const c of ['name', 'name_ar', 'role', 'department_id', 'active', 'schedule_override']) if (req.body[c] !== undefined) run(`UPDATE users SET ${c}=? WHERE id=?`, req.body[c], id);
       if (req.body.password) { if (String(req.body.password).length < 10) throw new HttpError(400, 'WEAK_PASSWORD'); run('UPDATE users SET pass_hash=? WHERE id=?', hashPassword(req.body.password), id); run('DELETE FROM auth_sessions WHERE user_id=?', id); }
       if (diff) { run('DELETE FROM staff_services WHERE user_id=?', id); for (const s of req.body.service_ids) run('INSERT INTO staff_services VALUES (?,?)', id, s); }
     });
@@ -260,6 +270,30 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   // ---- visits / queue ----
   app.post('/api/visits/checkin', guard(), (req, res) => res.status(201).json(ops.checkIn(req.user, req.body)));
   app.post('/api/visits/:id/checkout', guard(), (req, res) => res.json(ops.checkOut(req.user, Number(req.params.id))));
+  // ---- Daily Schedule ----
+  const nid = (v) => Number(v);
+  app.get('/api/schedule/board', guard('schedule.view'), (req, res) => res.json(sched.board(req.user, req.query)));
+  app.post('/api/schedule/appointments', guard('schedule.manage'), (req, res) => res.status(201).json(sched.createAppointments(req.user, req.body || {})));
+  app.patch('/api/schedule/appointments/:id', guard('schedule.manage'), (req, res) => res.json(sched.updateAppointment(req.user, nid(req.params.id), req.body || {})));
+  app.post('/api/schedule/appointments/:id/cancel', guard('schedule.manage'), (req, res) => res.json(sched.cancelAppointment(req.user, nid(req.params.id), req.body || {})));
+  app.post('/api/schedule/appointments/:id/arrive', guard('visit.manage'), (req, res) => res.json(sched.arrive(req.user, nid(req.params.id))));
+  app.get('/api/schedule/appointments/:id/history', guard('schedule.view'), (req, res) => res.json(sched.appointmentHistory(req.user, nid(req.params.id))));
+  app.post('/api/schedule/blocks', guard('schedule.block'), (req, res) => res.status(201).json(sched.createBlocks(req.user, req.body || {})));
+  app.post('/api/schedule/blocks/:id/remove', guard('schedule.block'), (req, res) => res.json(sched.removeBlock(req.user, nid(req.params.id), !!req.body?.whole_series)));
+  app.get('/api/schedule/waiting', guard('schedule.view'), (req, res) => res.json(sched.listWaiting(req.user, req.query)));
+  app.post('/api/schedule/waiting', guard('schedule.manage'), (req, res) => res.status(201).json(sched.addWaiting(req.user, req.body || {})));
+  app.patch('/api/schedule/waiting/:id', guard('schedule.manage'), (req, res) => res.json(sched.updateWaiting(req.user, nid(req.params.id), req.body || {})));
+  app.get('/api/schedule/cancellations', guard('schedule.view'), (req, res) => res.json(sched.listCancellations(req.user, req.query)));
+  app.get('/api/schedule/tasks', guard('schedule.view'), (req, res) => res.json(sched.listTasks(req.user, req.query)));
+  app.post('/api/schedule/tasks', guard('schedule.manage'), (req, res) => res.status(201).json(sched.addTask(req.user, req.body || {})));
+  app.patch('/api/schedule/tasks/:id', guard('schedule.manage'), (req, res) => res.json(sched.updateTask(req.user, nid(req.params.id), req.body || {})));
+  app.post('/api/schedule/setup', guard('config.manage'), (req, res) => res.status(201).json(sched.setup(req.user, req.body || {})));
+  app.post('/api/schedule/groups/:id/sync-staff', guard('config.manage'), (req, res) => res.json(sched.syncStaff(req.user, nid(req.params.id))));
+  app.post('/api/schedule/columns/bulk', guard('config.manage'), (req, res) => res.status(201).json(sched.addColumns(req.user, req.body || {})));
+  app.post('/api/schedule/rows/reorder', guard('config.manage'), (req, res) => res.json(sched.reorderRows(req.user, req.body?.ids)));
+  app.post('/api/schedule/rows/:id/remove', guard('config.manage'), (req, res) => res.json(sched.removeRow(req.user, nid(req.params.id))));
+  app.post('/api/schedule/columns/:id/remove', guard('config.manage'), (req, res) => res.json(sched.removeColumn(req.user, nid(req.params.id))));
+
   app.get('/api/visits/open', guard('patients.read'), (req, res) => {
     ops.sweepTimers();
     const s = deptScope(req.user);

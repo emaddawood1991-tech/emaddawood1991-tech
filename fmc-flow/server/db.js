@@ -122,6 +122,50 @@ CREATE TABLE IF NOT EXISTS session_documentation (
   chief_complaint TEXT NOT NULL DEFAULT '', diagnosis TEXT NOT NULL DEFAULT '', cpt_code_id INTEGER REFERENCES cpt_codes(id), progress_note TEXT NOT NULL DEFAULT '',
   saved_by INTEGER REFERENCES users(id), saved_at TEXT NOT NULL, complete_since TEXT
 );
+-- ---- Daily Schedule (additive) ----
+CREATE TABLE IF NOT EXISTS appointment_categories (
+  id INTEGER PRIMARY KEY, name TEXT NOT NULL, name_ar TEXT NOT NULL DEFAULT '', color TEXT NOT NULL DEFAULT '#c7d7f2',
+  default_minutes INTEGER, active INTEGER NOT NULL DEFAULT 1, sort_order INTEGER NOT NULL DEFAULT 0
+);
+CREATE UNIQUE INDEX IF NOT EXISTS appointment_category_name ON appointment_categories(upper(name));
+-- A schedule group is one timetable block: its own time columns and its own staff/resource rows (so groups can use different intervals).
+CREATE TABLE IF NOT EXISTS schedule_groups (
+  id INTEGER PRIMARY KEY, name TEXT NOT NULL, name_ar TEXT NOT NULL DEFAULT '', department_id INTEGER REFERENCES departments(id),
+  interval_minutes INTEGER NOT NULL DEFAULT 30, active INTEGER NOT NULL DEFAULT 1, sort_order INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS schedule_columns (
+  id INTEGER PRIMARY KEY, group_id INTEGER NOT NULL REFERENCES schedule_groups(id), time TEXT NOT NULL, label TEXT NOT NULL DEFAULT '',
+  active INTEGER NOT NULL DEFAULT 1, UNIQUE(group_id, time)
+);
+CREATE TABLE IF NOT EXISTS schedule_rows (
+  id INTEGER PRIMARY KEY, group_id INTEGER NOT NULL REFERENCES schedule_groups(id), user_id INTEGER REFERENCES users(id),
+  label TEXT NOT NULL DEFAULT '', label_ar TEXT NOT NULL DEFAULT '', department_id INTEGER REFERENCES departments(id),
+  capacity INTEGER NOT NULL DEFAULT 1, active INTEGER NOT NULL DEFAULT 1, sort_order INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS schedule_blocks (
+  id INTEGER PRIMARY KEY, group_id INTEGER REFERENCES schedule_groups(id), row_id INTEGER REFERENCES schedule_rows(id), user_id INTEGER REFERENCES users(id),
+  start_at TEXT NOT NULL, end_at TEXT NOT NULL, kind TEXT NOT NULL DEFAULT 'BREAK' CHECK (kind IN ('BREAK','LEAVE','MEETING','MAINTENANCE','OTHER')),
+  note TEXT NOT NULL DEFAULT '', series_id TEXT, active INTEGER NOT NULL DEFAULT 1, created_by INTEGER, created_at TEXT NOT NULL, removed_by INTEGER, removed_at TEXT
+);
+CREATE TABLE IF NOT EXISTS appointment_history (
+  id INTEGER PRIMARY KEY, appointment_id INTEGER NOT NULL REFERENCES appointments(id), ts TEXT NOT NULL, actor_id INTEGER, action TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '{}'
+);
+CREATE INDEX IF NOT EXISTS appointment_history_appt ON appointment_history(appointment_id, id);
+CREATE TABLE IF NOT EXISTS waiting_list (
+  id INTEGER PRIMARY KEY, patient_id INTEGER NOT NULL REFERENCES patients(id), department_id INTEGER NOT NULL REFERENCES departments(id),
+  clinician_id INTEGER REFERENCES users(id), preferred_date TEXT, preferred_time TEXT, contact_status TEXT NOT NULL DEFAULT 'NOT_CONTACTED',
+  notes TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'WAITING' CHECK (status IN ('WAITING','BOOKED','REMOVED')), appointment_id INTEGER REFERENCES appointments(id),
+  created_by INTEGER, created_at TEXT NOT NULL, updated_at TEXT
+);
+CREATE TABLE IF NOT EXISTS schedule_tasks (
+  id INTEGER PRIMARY KEY, kind TEXT NOT NULL CHECK (kind IN ('FOLLOW_UP','APPROVAL','REJECTION','FOR_DOCTOR','EVALUATION')),
+  patient_id INTEGER REFERENCES patients(id), department_id INTEGER REFERENCES departments(id), appointment_id INTEGER REFERENCES appointments(id),
+  title TEXT NOT NULL DEFAULT '', notes TEXT NOT NULL DEFAULT '', assigned_to INTEGER REFERENCES users(id), due_date TEXT,
+  status TEXT NOT NULL DEFAULT 'OPEN' CHECK (status IN ('OPEN','IN_PROGRESS','DONE','CANCELLED')),
+  created_by INTEGER, created_at TEXT NOT NULL, updated_at TEXT, completed_by INTEGER, completed_at TEXT
+);
+CREATE TRIGGER IF NOT EXISTS appt_hist_no_update BEFORE UPDATE ON appointment_history BEGIN SELECT RAISE(ABORT,'appointment_history is append-only'); END;
+CREATE TRIGGER IF NOT EXISTS appt_hist_no_delete BEFORE DELETE ON appointment_history BEGIN SELECT RAISE(ABORT,'appointment_history is append-only'); END;
 CREATE TABLE IF NOT EXISTS session_pauses (
   id INTEGER PRIMARY KEY, session_id INTEGER NOT NULL REFERENCES treatment_sessions(id),
   paused_at TEXT NOT NULL, resumed_at TEXT
@@ -189,12 +233,15 @@ export const DEFAULT_SETTINGS = {
   doc_min_chars: '3',
   diagnosis_pattern: '',
   resource_gap_minutes: '1',
+  schedule_default_minutes: '30',
   gender_options: JSON.stringify([{ code: 'M', en: 'Male', ar: 'ذكر' }, { code: 'F', en: 'Female', ar: 'أنثى' }]),
 };
 
 // Additive, non-destructive column upgrades (safe on existing databases; no data is touched).
 const ADDED_COLUMNS = {
   services: { min_minutes: 'INTEGER NOT NULL DEFAULT 5', max_minutes: 'INTEGER NOT NULL DEFAULT 180', allow_override: 'INTEGER NOT NULL DEFAULT 1' },
+  appointments: { duration_minutes: 'INTEGER', ends_at: 'TEXT', category_id: 'INTEGER', notes: "TEXT NOT NULL DEFAULT ''", row_id: 'INTEGER', recurrence_id: 'TEXT', cancel_reason: 'TEXT', cancelled_at: 'TEXT', cancelled_by: 'INTEGER', rebooks_id: 'INTEGER', created_by: 'INTEGER', updated_at: 'TEXT' },
+  users: { schedule_override: 'INTEGER NOT NULL DEFAULT 0' },
   treatment_sessions: { planned_minutes: 'INTEGER', scheduled_end_at: 'TEXT', timer_elapsed_at: 'TEXT', confirmed_at: 'TEXT', completion_kind: 'TEXT', planned_cpt_id: 'INTEGER', operational_checkout_at: 'TEXT', operational_checkout_kind: 'TEXT' },
 };
 function ensureColumns(db) {

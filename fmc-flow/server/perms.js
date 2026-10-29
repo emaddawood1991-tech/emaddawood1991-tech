@@ -21,6 +21,9 @@ export const PERMS = {
   'reports.view': ['admin', 'supervisor'],
   'audit.view': ['admin', 'supervisor'],
   'health.view': ['admin'],
+  'schedule.view': ALL,
+  'schedule.manage': ['admin', 'supervisor', 'reception'],
+  'schedule.block': ['admin', 'supervisor'],
 };
 
 export const can = (user, perm) => !!user && (PERMS[perm] || []).includes(user.role);
