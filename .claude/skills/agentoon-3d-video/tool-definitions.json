@@ -1,0 +1,48 @@
+{
+  "note": "Function-tool definitions for agent platforms. Each tool is run as: node agentoon-tool.mjs <tool name> '<JSON arguments>' and returns one JSON object on stdout ({ok:true,...} or {ok:false,error}). Free, local, no API keys.",
+  "invocation": "node scripts/agentoon-tool.mjs <name> '<json>'",
+  "tools": [
+    {
+      "name": "render_3d_video",
+      "description": "Render a code-generated 3D scene (villas, pool, trees, paths, sun and shadows, orbiting or fly-through camera) to an MP4. Use only when the user asks for something 3D. Render a small preview first, look at the contact sheet, fix the spec, then render the final. See spec-reference.md for the spec.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "spec": { "description": "Scene spec object, or a path to a spec JSON file.", "type": ["object", "string"] },
+          "out": { "type": "string", "description": "Output .mp4 path. Use a new filename each time." },
+          "width": { "type": "integer", "default": 720 },
+          "height": { "type": "integer", "default": 1280 },
+          "fps": { "type": "integer" },
+          "seconds": { "type": "number", "description": "Override the spec duration." },
+          "frames": { "type": "integer", "description": "Render only the first N frames (fast preview)." },
+          "contact_sheet": { "type": "string", "description": "Optional .png path for a contact sheet to review the result." }
+        },
+        "required": ["spec", "out"]
+      }
+    },
+    {
+      "name": "edit_video",
+      "description": "Edit video files with FFmpeg: info, trim, resize (fill 9:16), speed, join with cross-fades, mix audio to about -15 LUFS, contact sheet. Use only when the user asks to edit, join or assemble video. Always write to a new output file.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "op": { "type": "string", "enum": ["info", "trim", "resize", "speed", "join", "audio", "sheet"] },
+          "input": { "type": "string", "description": "Input video (info, trim, resize, speed, audio, sheet)." },
+          "inputs": { "type": "array", "items": { "type": "string" }, "description": "Clips in order (join)." },
+          "audio": { "type": "string", "description": "Audio file (audio)." },
+          "out": { "type": "string", "description": "Output path." },
+          "start": { "type": "number" },
+          "end": { "type": "number" },
+          "width": { "type": "integer" },
+          "height": { "type": "integer" },
+          "fps": { "type": "integer" },
+          "factor": { "type": "number", "description": "Speed multiplier (2 = twice as fast)." },
+          "fade": { "type": "number", "description": "Cross-fade seconds (join).", "default": 0.4 },
+          "lufs": { "type": "number", "default": -15 },
+          "count": { "type": "integer", "description": "Frames in the contact sheet.", "default": 8 }
+        },
+        "required": ["op"]
+      }
+    }
+  ]
+}

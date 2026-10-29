@@ -15,7 +15,10 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, wr
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { detectAvailable, findBlender } from "./available.mjs";
+import { xfadeFilter } from "./edit.mjs";
 import { routeScene } from "./route.mjs";
+
+export { xfadeFilter };
 
 const here = dirname(fileURLToPath(import.meta.url));
 const abs = (p) => resolve(here, p);
@@ -24,21 +27,6 @@ const sh = (cmd, args, opts = {}) => spawnSync(cmd, args, { encoding: "utf8", ma
 function duration(file) {
   const r = sh("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", file]);
   return Number(r.stdout.trim());
-}
-
-export function xfadeFilter(durations, T) {
-  if (durations.length === 1) return { filter: "[0:v]null[vout]", total: durations[0] };
-  let filter = "";
-  let label = "[0:v]";
-  let acc = durations[0];
-  for (let i = 1; i < durations.length; i++) {
-    const offset = +(acc - i * T).toFixed(3);
-    const out = i === durations.length - 1 ? "[vout]" : `[v${i}]`;
-    filter += `${label}[${i}:v]xfade=transition=fade:duration=${T}:offset=${offset}${out};`;
-    label = out;
-    acc += durations[i];
-  }
-  return { filter: filter.replace(/;$/, ""), total: +(acc - (durations.length - 1) * T).toFixed(3) };
 }
 
 function resolveScene(scene, i, ctx) {
