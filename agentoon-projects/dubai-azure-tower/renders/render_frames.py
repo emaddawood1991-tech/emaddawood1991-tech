@@ -1,15 +1,21 @@
 """Resumable Cycles frame renderer.
 python render_frames.py scene.blend outdir start end stride resx samples [threads]
+(AZURE_DEVICE=GPU env var switches Cycles to GPU on your PC)
 Skips frames that already exist, so an interrupted run resumes."""
 import sys, os, time
 import bpy
-blend, outdir = sys.argv[1], sys.argv[2]
-start, end, stride, resx, samples = [int(x) for x in sys.argv[3:8]]
-threads = int(sys.argv[8]) if len(sys.argv) > 8 else 4
+# usable as `python render_frames.py <blend> <out> ...` or `blender -b x.blend -P render_frames.py -- <out> ...`
+A = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
+if "--" in sys.argv:
+    blend, outdir, rest = bpy.data.filepath, A[0], A[1:]
+else:
+    blend, outdir, rest = A[0], A[1], A[2:]
+    bpy.ops.wm.open_mainfile(filepath=blend)
+start, end, stride, resx, samples = [int(x) for x in rest[:5]]
+threads = int(rest[5]) if len(rest) > 5 else 4
 os.makedirs(outdir, exist_ok=True)
-bpy.ops.wm.open_mainfile(filepath=blend)
 sc = bpy.context.scene
-sc.render.engine = "CYCLES"; sc.cycles.device = "CPU"
+sc.render.engine = "CYCLES"; sc.cycles.device = os.environ.get("AZURE_DEVICE", "CPU")  # set AZURE_DEVICE=GPU on the PC
 sc.cycles.samples = samples; sc.cycles.use_denoising = True
 sc.cycles.denoiser = "OPENIMAGEDENOISE"
 sc.cycles.max_bounces = 6; sc.cycles.diffuse_bounces = 3; sc.cycles.glossy_bounces = 4

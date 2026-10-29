@@ -75,14 +75,14 @@ def ceiling_lights(c, name, cx, cy, z, w, d, nx, ny, energy, size=1.2):
 def sofa(c, name, x, y, z, rot=0.0, length=3.0, fabric="IntFabric"):
     o = bpy.data.objects.new(name, None); 
     kids = [
-        box(f"{name}_seat", c, M(fabric), x, y, z + 0.0, length, 0.95, 0.45, rot),
-        box(f"{name}_back", c, M(fabric), x, y, z + 0.0, length, 0.28, 0.95, rot),
+        box(f"{name}_seat", c, M(fabric), x, y, z + 0.05, length - 0.6, 0.94, 0.4, rot),
+        box(f"{name}_back", c, M(fabric), x, y, z + 0.0, length - 0.04, 0.28, 0.95, rot),
     ]
     # offset back toward -local Y
     dx, dy = -math.sin(rot) * -0.34, math.cos(rot) * -0.34
     kids[1].location.x += dx; kids[1].location.y += dy
     for k, sx in ((-1, 1), (1, 1)):
-        a = box(f"{name}_arm{k}", c, M(fabric), x + math.cos(rot) * k * (length / 2 - 0.15), y + math.sin(rot) * k * (length / 2 - 0.15), z, 0.3, 0.95, 0.7, rot)
+        a = box(f"{name}_arm{k}", c, M(fabric), x + math.cos(rot) * k * (length / 2 - 0.15), y + math.sin(rot) * k * (length / 2 - 0.15), z, 0.3, 0.99, 0.7, rot)
     return kids[0]
 
 
@@ -138,8 +138,8 @@ def lobby(c, cx, cy, z0):
         a = math.radians(-60 + k * 15)
         x = cx - 4 + math.sin(a) * 5.0
         y = cy - 2 + (1 - math.cos(a)) * -4.0
-        box(f"Lobby_desk{k}", c, M("IntMarbleDark"), x, y, z0, 1.6, 0.7, 1.15, -a)
-        box(f"Lobby_desktop{k}", c, M("IntMarble"), x, y, z0 + 1.17, 2.3, 1.15, 0.06, -a)
+        box(f"Lobby_desk{k}", c, M("IntMarbleDark"), x, y, z0, 1.6, 0.7, 1.12 + 0.002 * k, -a)
+        box(f"Lobby_desktop{k}", c, M("IntMarble"), x, y, z0 + 1.17 + 0.004 * k, 2.3, 1.15, 0.06, -a)
     box("Lobby_deskglow", c, M("IntLight"), cx - 4, cy - 5.9, z0 + 0.3, 7.0, 0.04, 0.05)
     # lounge seating
     for (x, y, r) in ((cx + 6, cy + 2, 0.0), (cx + 6, cy - 3.5, math.pi), (cx + 9.5, cy - 0.7, -math.pi / 2)):

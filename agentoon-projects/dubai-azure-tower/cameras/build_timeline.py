@@ -102,15 +102,15 @@ def build_timeline():
 
     # S04 low landscape flythrough along the arrival court and terraces
     s = TF["S04"]
-    pos = [(-112, -150, 2.4), (-62, -98, 2.6), (-18, -62, 3.0), (30, -40, 3.2), (66, -4, 3.6), (82, 40, 4.2)]
-    tgt = [(-70, -110, 8), (-24, -70, 10), (24, -40, 14), (64, -8, 22), (60, 30, 40), (10, 20, 70)]
+    pos = [(-112, -150, 2.4), (-62, -104, 2.8), (-15, -78, 3.6), (32, -68, 5.0), (74, -50, 8.5), (82, -8, 10.0), (80, 38, 10.5)]
+    tgt = [(-70, -110, 6), (-24, -72, 8), (24, -58, 22), (62, -30, 30), (66, 4, 34), (40, 30, 30), (10, 20, 45)]
     cams.append((s[0], make_cam("CAM_S04", 24, s[0], s[1], lambda u: catmull(pos, u), lambda u: catmull(tgt, u), ease_k=0.4)))
 
     # S05 entrance -> (hidden cut) -> lobby dolly
     s = TF["S05"]
     cut = s[0] + 150
     cams.append((s[0], make_cam("CAM_S05a", 24, s[0], cut - 1, lerp3((0, -112, 2.1), (0, -34, 2.4)), lerp3((0, -24, 6.5), (0, 0, 7.5)), ease_k=0.3)))
-    cams.append((cut, make_cam("CAM_S05b", 20, cut, s[1], lerp3((LX + 0.5, LY - 9.0, 1.85), (LX - 1.5, LY - 0.5, 1.95)), lerp3((LX - 4, LY + 4, 2.6), (LX - 3, LY + 6, 2.9)), ease_k=0.5)))
+    cams.append((cut, make_cam("CAM_S05b", 20, cut, s[1], lerp3((LX + 3.2, LY - 9.0, 1.85), (LX + 3.8, LY - 0.5, 1.95)), lerp3((LX - 3, LY - 2, 1.4), (LX + 0.5, LY + 5, 2.8)), ease_k=0.5)))
 
     # S06 apartment walkthrough
     s = TF["S06"]

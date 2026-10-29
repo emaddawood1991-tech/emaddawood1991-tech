@@ -38,7 +38,7 @@ for name, (s0, s1) in TF.items():
     if a.stride > 1:
         vf.append(f"minterpolate=fps=30:mi_mode={a.interp}:mc_mode=aobmc:vsbmc=1" if a.interp != "dup" else "fps=30")
     vf.append(f"scale={a.w}:{a.h}:flags=lanczos,setsar=1,format=yuv420p")
-    vf.append(f"trim=end_frame={n_out},setpts=PTS-STARTPTS")
+    vf.append(f"tpad=stop_mode=clone:stop=12,trim=end_frame={n_out},setpts=PTS-STARTPTS")
     vf.append(f"fade=t=in:st=0:d={fade/30}:color=black,fade=t=out:st={(n_out-fade)/30}:d={fade/30}:color=black")
     run(["ffmpeg", "-loglevel", "error", "-y", "-framerate", str(30 // a.stride), "-i", os.path.join(d, "s%04d.png"),
          "-vf", ",".join(vf), "-r", "30", "-frames:v", str(n_out), "-c:v", "libx264", "-crf", "12", "-preset", "veryfast", "-pix_fmt", "yuv420p", seg])
