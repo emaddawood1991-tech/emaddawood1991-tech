@@ -1,0 +1,3 @@
+built in 0.9s, objects=1843
+Info: Saved as "out.blend"
+5.2.3 LTS

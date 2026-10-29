@@ -1,0 +1,10 @@
+{"music":[{"from":"p1","to":"p1","mood":"hook","to_off":0.8},{"from":"p2","to":"p7.end","mood":"demo","to_off":0.2},{"from":"p8","to":"p9.end","mood":"result","to_off":0.7}],
+ "sfx":[{"name":"pop","at":"p1:50-floor","off":0.0,"gain":0.45},
+  {"name":"whoosh","at":"S:s2","off":-0.3,"gain":0.45},{"name":"sparkle","at":"S:s2","off":0.05,"gain":0.3},{"name":"pop","at":"p2:fictional","gain":0.4},
+  {"name":"whoosh","at":"S:s3","off":-0.3,"gain":0.45},{"name":"sparkle","at":"S:s3","off":0.05,"gain":0.3},{"name":"pop","at":"p3:50","gain":0.4},{"name":"pop","at":"p3:glass","gain":0.4},{"name":"pop","at":"p3:Landscaping","gain":0.4},{"name":"pop","at":"p3:interiors","gain":0.4},
+  {"name":"whoosh","at":"S:s4","off":-0.3,"gain":0.45},{"name":"sparkle","at":"S:s4","off":0.05,"gain":0.3},{"name":"type","at":"S:s4","off":0.6,"dur":4.6,"cps":16,"gain":0.3},{"name":"pop","at":"p4:twist","gain":0.45},{"name":"pop","at":"p4:72","gain":0.45},
+  {"name":"whoosh","at":"S:s5","off":-0.3,"gain":0.45},{"name":"sparkle","at":"S:s5","off":0.05,"gain":0.3},{"name":"type","at":"S:s5","off":0.5,"dur":1.4,"cps":22,"gain":0.3},{"name":"pop","at":"p5:second","gain":0.45},{"name":"pop","at":"p5:1800","gain":0.45},
+  {"name":"whoosh","at":"S:s6","off":-0.3,"gain":0.45},{"name":"sparkle","at":"S:s6","off":0.05,"gain":0.3},{"name":"tick","at":"p6:twists","gain":0.4},{"name":"pop","at":"p6:arrival","gain":0.4},
+  {"name":"whoosh","at":"S:s7","off":-0.3,"gain":0.45},{"name":"sparkle","at":"S:s7","off":0.05,"gain":0.3},{"name":"tick","at":"p7:lobby","gain":0.4},{"name":"tick","at":"p7:office","gain":0.4},{"name":"tick","at":"p7:apartment","gain":0.4},{"name":"tick","at":"p7:penthouse","gain":0.4},
+  {"name":"whoosh","at":"S:s8","off":-0.3,"gain":0.45},{"name":"sparkle","at":"S:s8","off":0.05,"gain":0.3},{"name":"pop","at":"p8:30","gain":0.45},{"name":"pop","at":"p8:hours","gain":0.4},{"name":"pop","at":"p8:approved","gain":0.4},
+  {"name":"whoosh","at":"S:s9","off":-0.3,"gain":0.45},{"name":"sparkle","at":"S:s9","off":0.05,"gain":0.3}]}

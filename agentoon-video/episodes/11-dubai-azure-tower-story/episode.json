@@ -1,0 +1,73 @@
+{
+ "title": "I Built a 50-Floor Dubai Skyscraper Concept With AI",
+ "voice": "am_michael",
+ "speed": 1.1,
+ "total": 86.0,
+ "music": [],
+ "sfx": [],
+ "phrases": [
+  {
+   "id": "p1",
+   "speak": "I built this fifty-floor Dubai skyscraper concept with AI. Here is how it really happened.",
+   "show": "I built this 50-floor Dubai skyscraper concept with AI. Here is how it really happened.",
+   "map": null,
+   "pad": 0.7
+  },
+  {
+   "id": "p2",
+   "speak": "It started with an idea. A twisting glass tower on the Dubai coast. A fictional site, inspired by Jumeirah. Not a real plot.",
+   "show": "It started with an idea. A twisting glass tower on the Dubai coast. A fictional site, inspired by Jumeirah. Not a real plot.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p3",
+   "speak": "Then I briefed Claude Code. Fifty floors. A glass skin. Landscaping. And real interiors.",
+   "show": "Then I briefed Claude Code. 50 floors. A glass skin. Landscaping. And real interiors.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p4",
+   "speak": "Claude Code wrote the project as Python scripts for Blender. The height, the ninety-six degree twist, even the seventy-two bronze fins, are just numbers in a file.",
+   "show": "Claude Code wrote the project as Python scripts for Blender. The height, the 96-degree twist, even the 72 bronze fins, are just numbers in a file.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p5",
+   "speak": "Run the build, and in under a second Blender creates the whole scene. More than eighteen hundred objects, with no manual modeling.",
+   "show": "Run the build, and in under a second Blender creates the whole scene. More than 1,800 objects, with no manual modeling.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p6",
+   "speak": "Then the cameras take over. A glass facade that twists as you rise. Palm trees. A grand arrival court.",
+   "show": "Then the cameras take over. A glass facade that twists as you rise. Palm trees. A grand arrival court.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p7",
+   "speak": "And the same tower, inside. A lobby. An office floor. An apartment. And a duplex penthouse with a feature stair.",
+   "show": "And the same tower, inside. A lobby. An office floor. An apartment. And a duplex penthouse with a feature stair.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p8",
+   "speak": "By my own count, the first concept took about thirty minutes of prompting. Rendering the film took a few hours. And it is only a concept. Not approved. Not built.",
+   "show": "By my own count, the first concept took about 30 minutes of prompting. Rendering the film took a few hours. And it is only a concept. Not approved. Not built.",
+   "map": null,
+   "pad": 0.6
+  },
+  {
+   "id": "p9",
+   "speak": "This is what AI-assisted creation really looks like. Follow Agentoon dot A I, for more real AI experiments.",
+   "show": "This is what AI-assisted creation really looks like. Follow Agentoon.ai, for more real AI experiments.",
+   "map": null,
+   "pad": 0.3
+  }
+ ]
+}

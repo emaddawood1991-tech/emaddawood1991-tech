@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 11 Dubai Azure Tower story</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Elevator Ascent". A 50-floor ruler climbs the right edge, elevator doors carry every scene change, dusk-gold to glass-blue to night.
+     Every 3D picture is the user's real Blender animatic or render; terminal/code text is verbatim from the project. Nothing is a recorded website. */
+  :root { --navy: #060D1C; --az: #4CC3FF; --bz: #D9A85B; --glass: #E8F5FF; --ink: #0B1630; }
+  .chip { position: absolute; white-space: nowrap; z-index: 8; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .rv { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
+  .ser { position: absolute; font-family: var(--display); font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+  .mono { font-family: var(--mono); white-space: pre; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+<script src="data/lipsync.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="76.9">
+  <section id="s1" class="clip scene" data-start="0.0" data-duration="7.11"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="6.66" data-duration="9.54"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="15.75" data-duration="7.12"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="22.42" data-duration="11.86"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="33.83" data-duration="8.78"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="42.16" data-duration="7.92"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="49.63" data-duration="8.23"><div id="s7i" class="inner"></div></section>
+  <section id="s8" class="clip scene" data-start="57.41" data-duration="11.36"><div id="s8i" class="inner"></div></section>
+  <section id="s9" class="clip scene" data-start="68.32" data-duration="8.58"><div id="s9i" class="inner"></div></section>
+  <video id="v2" class="rv" src="assets/v2.mp4" muted playsinline data-start="6.66" data-duration="9.54" data-media-start="0" data-track-index="2"></video>
+  <video id="v5" class="rv" src="assets/v5.mp4" muted playsinline data-start="33.83" data-duration="8.78" data-media-start="0" data-track-index="3"></video>
+  <video id="v6" class="rv" src="assets/v6.mp4" muted playsinline data-start="42.16" data-duration="7.92" data-media-start="0" data-track-index="4"></video>
+  <video id="v7" class="rv" src="assets/v7.mp4" muted playsinline data-start="49.63" data-duration="8.23" data-media-start="0" data-track-index="5"></video>
+  <video id="v9" class="rv" src="assets/v9.mp4" muted playsinline data-start="68.32" data-duration="8.58" data-media-start="0" data-track-index="6"></video>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="76.9" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, S = E.scenes, LIP = window.LIPSYNC, $ = id => document.getElementById(id);
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word " + pid + ":" + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const BZ = "#D9A85B", AZ = "#4CC3FF", NV = "#060D1C", GL = "#E8F5FF";
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + Math.max(28, o.size || 28) + "px/1 var(--mono);letter-spacing:.05em;color:" + (o.fg || "#FFF6E8") + ";background:" + (o.bg || "rgba(6,13,28,.86)") + ";border:2px solid " + (o.bd || BZ), text); };
+  const dark = (k) => { const inn = $(k + "i"); el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 40%,#10294A 0%,#081428 60%,#050B18 100%)"); return inn; };
+  const img = (host, id, src, css) => { const i = document.createElement("img"); i.id = id; i.src = "assets/" + src; i.style.cssText = "position:absolute;" + (css || ""); host.appendChild(i); return i; };
+  const wrapScene = (k) => { const inn = $(k + "i"), w = el(inn, "cam" + k, "", "left:0;top:0;width:1080px;height:1920px;will-change:transform"); Array.from(inn.children).filter(c => c !== w && !/^bg/.test(c.id)).forEach(c => w.appendChild(c)); Cam.frame(w, 540, 960, 1); return w; };
+  const zoomTo = (cam, cx, cy, s, at, dur) => tl.to(cam, { scale: s, x: 540 - cx * s, y: cy * (1 - s), duration: dur || 0.7, ease: "power2.inOut" }, at);
+  const zoomOut = (cam, at, dur) => tl.to(cam, { scale: 1, x: 0, y: 0, duration: dur || 0.7, ease: "power2.inOut" }, at);
+  const presenter = (bot, k, face) => { bot.face(tl, 0, face || -1, 0.01); bot.rise(tl, S[k].start + 0.4, 420, 0.4); bot.blinks(tl, S[k].start, S[k].end, 1.1); bot.P.wrap.style.zIndex = 12; return bot; };
+  const speak = (bot, pid) => { const p = P(pid); bot.speak(tl, LIP, p.start, p.end); };
+  const tag = (host, id, text, t0, o) => { const c = chip(host, id, 60, 236, text, o); c.style.zIndex = 9; tl.from(c, { opacity: 0, x: -30, duration: 0.3 }, t0); return c; };
+
+  /* ---------- 50-floor ruler (right edge): marker + odometer move by pure transforms, no callbacks, so every frame is deterministic ---------- */
+  const fx = $("fx"), RT = 330, RH = 940, FL = RH / 50, yOf = f => RT + RH - (f - 0.5) * FL;
+  const rul = el(fx, "rul", "", "left:0;top:0;width:1080px;height:1920px;opacity:0;z-index:20");
+  for (let i = 1; i <= 50; i++) { const major = i % 10 === 0 || i === 1; el(rul, "tk" + i, "", "left:" + (1062 - (major ? 30 : 14)) + "px;top:" + (yOf(i) - 1) + "px;width:" + (major ? 30 : 14) + "px;height:2px;background:" + (major ? BZ : "rgba(232,245,255,.55)")); }
+  const mk = el(rul, "mk", "", "left:952px;top:0;width:110px;height:44px;border-radius:10px 0 0 10px;background:" + BZ + ";overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.5)");
+  const strip = el(mk, "mks", "", "left:0;top:0;width:76px;height:2200px;font:900 34px/44px var(--mono);color:" + NV + ";text-align:center;white-space:pre");
+  strip.setAttribute("data-layout-ignore", ""); mk.setAttribute("data-layout-ignore", ""); strip.textContent = Array.from({ length: 50 }, (_, i) => String(i + 1).padStart(2, "0")).join("\n");
+  el(mk, "mkf", "", "right:8px;top:0;width:26px;height:44px;font:800 20px/44px var(--mono);color:" + NV, "F");
+  const setF = (f) => { gsap.set(mk, { y: yOf(f) - 22 }); gsap.set(strip, { y: -(f - 1) * 44 }); };
+  const moveF = (f, at, dur, ease) => { tl.to(mk, { y: yOf(f) - 22, duration: dur, ease: ease || "power2.inOut" }, at); tl.to(strip, { y: -(f - 1) * 44, duration: dur, ease: ease || "power2.inOut" }, at); };
+  const ruler = (show, at) => tl.to(rul, { opacity: show ? 1 : 0, duration: 0.25 }, at);
+  setF(1); ruler(false, 0);
+
+  /* ================================================================= S1 HOOK: the finished tower first, pull-back reveal */
+  const s1i = dark("s1");
+  const hp = img(s1i, "hp", "hero_poster.jpg", "left:-110px;top:-90px;width:1300px;height:2920px;transform-origin:50% 38%");
+  tl.fromTo(hp, { scale: 1.16 }, { scale: 1.0, duration: 4.6, ease: "power2.out" }, 0);
+  tl.fromTo(hp, { y: 60 }, { y: 0, duration: 4.6, ease: "power2.out" }, 0);
+  el(s1i, "g1", "", "position:absolute;left:0;top:0;width:1080px;height:640px;background:linear-gradient(180deg,rgba(6,13,28,.94) 0%,rgba(6,13,28,.84) 62%,rgba(6,13,28,0) 100%);z-index:3");
+  el(s1i, "g2", "", "position:absolute;left:0;top:1250px;width:1080px;height:670px;background:linear-gradient(0deg,rgba(6,13,28,.92) 0%,rgba(6,13,28,.5) 55%,rgba(6,13,28,0) 100%);z-index:3");
+  const t50 = PW("p1", "50-floor");
+  const a1 = el(s1i, "a1", "ser", "left:70px;top:210px;font-size:150px;line-height:1;color:#fff;z-index:9;text-shadow:0 8px 30px rgba(0,0,0,.5)", "50 FLOORS.");
+  const a2 = el(s1i, "a2", "ser", "left:70px;top:360px;font-size:150px;line-height:1;color:" + BZ + ";z-index:9;text-shadow:0 8px 30px rgba(0,0,0,.5)", "DUBAI.");
+  const a3 = el(s1i, "a3", "ser", "left:650px;top:360px;font-size:150px;line-height:1;color:" + AZ + ";z-index:9;text-shadow:0 8px 30px rgba(0,0,0,.5)", "AI.");
+  [a1, a2, a3].forEach((a, i) => tl.from(a, { opacity: 0, y: 70, scale: 1.18, duration: 0.45, ease: "back.out(1.7)" }, 0.15 + i * 0.35));
+  const k1 = chip(s1i, "k1", 70, 560, "FICTIONAL CONCEPT · THE BRIEF SAYS 50 FLOORS", { size: 24, bd: BZ }); k1.style.zIndex = 9; tl.from(k1, { opacity: 0, x: -40, duration: 0.3 }, 1.4);
+  const k2 = chip(s1i, "k2", 70, 626, "~30 MIN OF PROMPTING · MY COUNT", { size: 28, bd: AZ, fg: GL }); k2.style.zIndex = 9; tl.from(k2, { opacity: 0, x: -40, duration: 0.3 }, 2.1);
+  setF(1); ruler(true, 0.3); moveF(50, 0.4, 3.6, "power2.inOut"); ruler(false, S.s1.end - 0.4);
+  const bot1 = presenter(botAt(s1i, "bot1", 860, 1290, 190), "s1", -1); speak(bot1, "p1"); bot1.react(tl, t50 + 0.6, "wow");
+
+  /* ================================================================= S2 THE IDEA: a fictional coast site (honest label, not Google Maps) */
+  const s2i = dark("s2"); const vS2 = $("v2"); s2i.appendChild(vS2);
+  tl.fromTo(vS2, { scale: 1.0 }, { scale: 1.06, duration: S.s2.len, ease: "none" }, S.s2.start);
+  tag(s2i, "h2", "THE IDEA · A TOWER ON THE DUBAI COAST", S.s2.start + 0.25, { bd: AZ });
+  const brk = (x, y, rx, ry) => { const g = el(s2i, "br" + x + y, "", "left:" + x + "px;top:" + y + "px;width:70px;height:70px;z-index:6"); const sv = svgEl(g, "svg", { viewBox: "0 0 70 70", width: 70, height: 70 }); svgEl(sv, "path", { d: "M" + (rx < 0 ? 66 : 4) + " " + (ry < 0 ? 40 : 30) + " L" + (rx < 0 ? 66 : 4) + " " + (ry < 0 ? 66 : 4) + " L" + (rx < 0 ? 40 : 30) + " " + (ry < 0 ? 66 : 4), fill: "none", stroke: BZ, "stroke-width": 6, "stroke-linecap": "round" }); return g; };
+  [[22, 548, 1, 1], [988, 548, -1, 1], [22, 1112, 1, -1], [988, 1112, -1, -1]].forEach(([x, y, rx, ry], i) => { const b = brk(x, y, rx, ry); tl.from(b, { opacity: 0, scale: 1.8, duration: 0.4, ease: "power3.out" }, S.s2.start + 0.5 + i * 0.08); });
+  const tFic = PW("p2", "fictional");
+  const w2a = el(s2i, "w2a", "ser", "left:0;right:0;top:1190px;text-align:center;font-size:84px;line-height:1;color:#fff", "A FICTIONAL SITE"); tl.from(w2a, { opacity: 0, y: 50, duration: 0.45, ease: "power3.out" }, tFic - 0.1);
+  const w2b = chip(s2i, "w2b", 150, 300, "INSPIRED BY JUMEIRAH · NOT A REAL PLOT", { size: 24, bd: BZ }); tl.from(w2b, { opacity: 0, x: -40, duration: 0.3 }, PW("p2", "Jumeirah") - 0.2);
+  const w2c = chip(s2i, "w2c", 60, 370, "NOT GOOGLE MAPS · A BLENDER SCENE", { size: 24, bd: AZ }); tl.from(w2c, { opacity: 0, x: -40, duration: 0.3 }, PW("p2", "site") - 0.1);
+  const bot2 = presenter(botAt(s2i, "bot2", 860, 1310, 170), "s2", -1); speak(bot2, "p2"); bot2.react(tl, tFic + 0.4, "think");
+
+  /* ================================================================= S3 THE BRIEF: four requirements build on the narrated words */
+  const s3i = dark("s3");
+  const gr = el(s3i, "gr3", "", "position:absolute;inset:0;background-image:linear-gradient(rgba(76,195,255,.10) 2px,transparent 2px),linear-gradient(90deg,rgba(76,195,255,.10) 2px,transparent 2px);background-size:90px 90px");
+  tl.to(gr, { backgroundPosition: "0px -360px", duration: S.s3.len, ease: "none" }, S.s3.start);
+  tag(s3i, "h3", "STEP 1 · THE BRIEF FOR CLAUDE CODE", S.s3.start + 0.2, { bd: AZ });
+  const sm = chip(s3i, "sm3", 60, 296, "BRIEF SUMMARY · NOT A SCREEN RECORDING", { size: 22, bd: BZ }); tl.from(sm, { opacity: 0, duration: 0.3 }, S.s3.start + 0.6);
+  const ic = {
+    floors: '<rect x="14" y="8" width="52" height="9" rx="2"/><rect x="14" y="22" width="52" height="9" rx="2"/><rect x="14" y="36" width="52" height="9" rx="2"/><rect x="14" y="50" width="52" height="9" rx="2"/><rect x="14" y="64" width="52" height="9" rx="2"/>',
+    glass: '<path d="M40 6 L70 40 L40 74 L10 40 Z"/><path d="M40 6 L40 74 M10 40 L70 40 M25 23 L55 57 M55 23 L25 57"/>',
+    land: '<path d="M40 74 C40 50 38 36 30 24 M40 74 C42 52 48 38 58 30"/><path d="M30 24 C16 22 10 30 8 38 M30 24 C38 12 52 12 60 18 M58 30 C70 30 74 40 72 46"/>',
+    inter: '<rect x="12" y="32" width="56" height="24" rx="6"/><rect x="6" y="40" width="14" height="22" rx="5"/><rect x="60" y="40" width="14" height="22" rx="5"/><path d="M20 66 L20 74 M60 66 L60 74"/>'
+  };
+  const reqs = [["50 FLOORS", "floors", PW("p3", "50") - 0.25], ["GLASS FAÇADE", "glass", PW("p3", "glass") - 0.25], ["LANDSCAPING", "land", PW("p3", "Landscaping") - 0.25], ["INTERIOR DESIGN", "inter", PW("p3", "interiors") - 0.25]];
+  reqs.forEach(([txt, key, at], i) => {
+    const y = 380 + i * 222, c = el(s3i, "rq" + i, "", "left:70px;top:" + y + "px;width:940px;height:190px;border-radius:26px;background:rgba(232,245,255,.07);border:2px solid rgba(217,168,91,.7);z-index:5;overflow:hidden");
+    const sv = svgEl(el(c, "rqi" + i, "", "left:34px;top:55px;width:80px;height:80px"), "svg", { viewBox: "0 0 80 80", width: 80, height: 80, fill: "none", stroke: AZ, "stroke-width": 4, "stroke-linejoin": "round", "stroke-linecap": "round" }); sv.innerHTML = ic[key];
+    el(c, "rqt" + i, "ser", "left:150px;top:0;height:190px;font-size:74px;line-height:190px;color:#fff", txt);
+    const ul = el(c, "rqu" + i, "", "left:0;bottom:0;width:940px;height:8px;background:" + BZ + ";transform-origin:0 50%"); gsap.set(ul, { scaleX: 0 });
+    tl.from(c, { opacity: 0, x: 120, duration: 0.45, ease: "power3.out" }, at); tl.to(ul, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at + 0.15);
+  });
+  const bot3 = presenter(botAt(s3i, "bot3", 860, 1310, 170), "s3", -1); speak(bot3, "p3"); bot3.react(tl, PW("p3", "interiors") + 0.3, "nod");
+
+  /* ================================================================= S4 THE FILE: real tower_params.json lines, verbatim, zoomed on the narrated numbers */
+  const s4i = dark("s4");
+  const lw = 960, lidH = 744, g4 = el(s4i, "l4", "", "left:60px;top:300px;width:" + lw + "px;height:" + (lidH + 34) + "px");
+  const lid = el(g4, "l4lid", "", "left:0;top:0;width:" + lw + "px;height:" + lidH + "px;border-radius:22px 22px 8px 8px;background:linear-gradient(180deg,#2B3A55,#121A2C);border:3px solid " + BZ + ";box-shadow:0 34px 70px rgba(0,0,0,.55)");
+  const scr = el(lid, "l4scr", "", "left:19px;top:19px;width:" + (lw - 44) + "px;height:700px;overflow:hidden;border-radius:6px;background:#0B1630");
+  el(g4, "l4base", "", "left:" + (-lw * 0.04) + "px;top:" + lidH + "px;width:" + (lw * 1.08) + "px;height:22px;border-radius:0 0 22px 22px;background:linear-gradient(180deg,#C9C2B5,#8F877A);box-shadow:0 14px 30px rgba(0,0,0,.5)");
+  el(scr, "l4b", "", "left:0;top:0;width:" + (lw - 44) + "px;height:56px;background:#16294F;border-bottom:2px solid " + BZ);
+  [0, 1, 2].forEach(i => el(scr, "l4d" + i, "", "left:" + (22 + i * 28) + "px;top:20px;width:16px;height:16px;border-radius:50%;background:" + AZ + ";opacity:" + (0.9 - i * 0.25)));
+  el(scr, "l4t", "", "left:120px;top:0;font:700 28px/56px var(--body);color:#DDEBFF", "architecture/tower_params.json  ·  excerpt");
+  const rows = [['    "floors": 50,', "#FFE08A"], ['    "lobby_height": 9.0,'], ['    "floor_height": 4.0,'], ['    "base_radius": 24.0,'], ['    "taper": 0.36,'], ['    "lobe_amplitude": 0.15,'], ['    "lobe_count": 3,'], ['    "twist_degrees": 96,', "#FFE08A"], ['    "twist_exponent": 1.15,'], ['    "ring_points": 144,'], ['    "fin_count": 72,', "#FFE08A"]];
+  const LH = 52, R0 = 84, hl = {};
+  [7, 10, 0].forEach(i => { const h = el(scr, "hl" + i, "", "left:14px;top:" + (R0 + i * LH - 4) + "px;width:" + (lw - 72) + "px;height:" + (LH - 4) + "px;border-radius:8px;background:rgba(217,168,91,.28);border:2px solid " + BZ + ";transform-origin:0 50%"); gsap.set(h, { scaleX: 0 }); hl[i] = h; });
+  let tt = S.s4.start + 0.5;
+  rows.forEach((r, i) => { const d = el(scr, "r4" + i, "mono", "left:26px;top:" + (R0 + i * LH) + "px;font:600 32px/" + LH + "px var(--mono);color:" + (r[1] ? "#fff" : "#DDEBFF"), r[0]), n = r[0].length, dur = n / 40; d.style.clipPath = "inset(0 100% 0 0)"; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + n + ")" }, tt); tt += dur + 0.08; });
+  const cam4 = wrapScene("s4");
+  tag(s4i, "h4", "CLAUDE CODE WROTE THE PROJECT AS PYTHON + JSON", S.s4.start + 0.2, { size: 24, bd: AZ });
+  const sx = 60 + 19, sy = 300 + 19;                                   /* screen origin in scene coords */
+  const rowY = i => sy + R0 + i * LH + LH / 2;
+  const tTw = PW("p4", "twist"), tFin = PW("p4", "72"), tH = PW("p4", "height");
+  tl.to(hl[0], { scaleX: 1, duration: 0.35, ease: "power2.out" }, tH - 0.1); zoomTo(cam4, 540, rowY(0) + 90, 1.22, tH - 0.2, 0.7);
+  tl.to(hl[7], { scaleX: 1, duration: 0.35, ease: "power2.out" }, tTw - 0.2); zoomTo(cam4, 540, rowY(7) - 40, 1.28, tTw - 0.3, 0.7);
+  tl.to(hl[10], { scaleX: 1, duration: 0.35, ease: "power2.out" }, tFin - 0.2); zoomTo(cam4, 540, rowY(10) - 120, 1.28, tFin - 0.3, 0.6); zoomOut(cam4, tFin + 1.1, 0.8);
+  const nums = [["50 FLOORS", tH], ["96° TWIST", tTw], ["72 FINS", tFin]];
+  nums.forEach(([t, at], i) => { const c = chip(s4i, "n4" + i, 60 + i * 330, 1130, t, { size: 30, bd: BZ, fg: "#fff" }); tl.from(c, { opacity: 0, y: 40, scale: 0.9, duration: 0.35, ease: "back.out(1.8)" }, at); });
+  const bot4 = presenter(botAt(s4i, "bot4", 860, 1310, 170), "s4", -1); speak(bot4, "p4"); bot4.react(tl, tFin + 0.5, "nod");
+
+  /* ================================================================= S5 THE BUILD: real command + real output, then the real result above */
+  const s5i = dark("s5"); const vS5 = $("v5"); s5i.appendChild(vS5);
+  tag(s5i, "h5", "RUN IN THIS SESSION · REAL OUTPUT · bpy 5.2.3", S.s5.start + 0.2, { size: 22, bd: AZ });
+  const tcard = el(s5i, "t5", "", "left:40px;top:920px;width:1000px;height:290px;overflow:hidden;border-radius:22px;background:#0B1630;border:3px solid " + BZ + ";box-shadow:0 30px 60px rgba(0,0,0,.55);z-index:6");
+  el(tcard, "t5b", "", "left:0;top:0;width:1000px;height:56px;background:#16294F;border-bottom:2px solid " + BZ);
+  [0, 1, 2].forEach(i => el(tcard, "t5d" + i, "", "left:" + (22 + i * 28) + "px;top:20px;width:16px;height:16px;border-radius:50%;background:" + AZ + ";opacity:" + (0.9 - i * 0.25)));
+  el(tcard, "t5t", "", "left:120px;top:0;font:700 28px/56px var(--body);color:#DDEBFF", "terminal · dubai-azure-tower");
+  const T5 = S.s5.start + 0.5, tSec = PW("p5", "second"), tObj = PW("p5", "1800");
+  const L5 = [['$ python architecture/build_all.py out.blend', "#fff", T5, 44 / 30], ['built in 0.9s, objects=1843', "#7CF2C0", tSec - 0.1, 0.0], ['Info: Saved as "out.blend"', "#9FB3D9", tSec + 0.5, 0.0]];
+  L5.forEach(([txt, col, at, dur], i) => { const d = el(tcard, "t5r" + i, "mono", "left:26px;top:" + (84 + i * 64) + "px;font:600 33px/60px var(--mono);color:" + col, txt); if (dur > 0) { d.style.clipPath = "inset(0 100% 0 0)"; tl.fromTo(d, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: dur, ease: "steps(" + txt.length + ")" }, at); } else { tl.from(d, { opacity: 0, x: -20, duration: 0.2 }, at); } });
+  const o5 = el(s5i, "o5", "", "left:40px;top:1228px;width:1000px;text-align:center;z-index:7;font:800 62px/1 var(--display);color:" + BZ, "1,843 OBJECTS · FROM CODE"); tl.from(o5, { opacity: 0, scale: 0.85, y: 30, duration: 0.45, ease: "back.out(1.7)" }, tObj - 0.2);
+  const o5b = chip(s5i, "o5b", 40, 1308, "NO MANUAL MODELING", { size: 28, bd: AZ, fg: GL }); tl.from(o5b, { opacity: 0, x: -50, duration: 0.3 }, PW("p5", "manual") - 0.1); o5b.style.left = "60px";
+  const ca = chip(s5i, "ca5", 60, 300, "THE BUILT SCENE · BLENDER", { size: 22, bd: BZ }); ca.style.zIndex = 9; tl.from(ca, { opacity: 0, x: -30, duration: 0.3 }, tObj);
+  const bot5 = presenter(botAt(s5i, "bot5", 860, 1330, 160), "s5", -1); speak(bot5, "p5"); bot5.react(tl, tObj + 0.5, "celebrate");
+
+  /* ================================================================= S6 EXTERIOR: facade rise (ruler climbs), then arrival court */
+  const s6i = dark("s6"); const vS6 = $("v6"); s6i.appendChild(vS6);
+  tag(s6i, "h6", "THE TOWER · REAL BLENDER ANIMATION", S.s6.start + 0.2, { bd: AZ });
+  const tFa = PW("p6", "facade"), tPalm = PW("p6", "palm"), tArr = PW("p6", "arrival");
+  const e1 = chip(s6i, "e1", 60, 1330, "GLASS + BRONZE FINS", { size: 26, bd: BZ }); e1.style.zIndex = 9; tl.from(e1, { opacity: 0, x: -40, duration: 0.3 }, tFa);
+  const e2 = chip(s6i, "e2", 60, 1330, "PALMS · ARRIVAL COURT", { size: 26, bd: BZ }); e2.style.zIndex = 9; tl.set(e2, { opacity: 0 }, 0); tl.set(e1, { opacity: 0 }, tPalm - 0.25); tl.fromTo(e2, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.3 }, tPalm - 0.2);
+  setF(1); ruler(true, S.s6.start + 0.3); moveF(50, S.s6.start + 0.4, 3.3, "power1.inOut"); ruler(false, S.s6.start + 4.2);
+  const bot6 = presenter(botAt(s6i, "bot6", 860, 1310, 170), "s6", -1); speak(bot6, "p6"); bot6.react(tl, tArr + 0.2, "wow");
+
+  /* ================================================================= S7 INSIDE: four real rooms on their real floors (ruler jumps 1 → 12 → 31 → 48) */
+  const s7i = dark("s7"); const vS7 = $("v7"); s7i.appendChild(vS7); vS7.style.filter = "brightness(0.86) saturate(0.9)";
+  tag(s7i, "h7", "INSIDE · REAL BLENDER ANIMATION", S.s7.start + 0.2, { bd: AZ });
+  const rooms = [["LOBBY · FLOOR 1", PW("p7", "lobby") - 0.15, 1], ["OFFICE · FLOOR 12", PW("p7", "office") - 0.15, 12], ["APARTMENT · FLOOR 31", PW("p7", "apartment") - 0.15, 31], ["PENTHOUSE · FLOOR 48", PW("p7", "penthouse") - 0.15, 48]];
+  ruler(true, S.s7.start + 0.3);
+  rooms.forEach(([t, at, fl], i) => {
+    const c = chip(s7i, "rm" + i, 60, 1330, t, { size: 30, bd: BZ, fg: "#fff" }); c.style.zIndex = 9; tl.set(c, { opacity: 0 }, 0);
+    tl.fromTo(c, { opacity: 0, y: 30, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.7)" }, at); if (i < 3) tl.to(c, { opacity: 0, duration: 0.2 }, rooms[i + 1][1] - 0.05);
+    moveF(fl, at - 0.05, i === 0 ? 0.01 : 0.55, "expo.inOut");
+  });
+  ruler(false, S.s7.end - 0.5);
+  const bot7 = presenter(botAt(s7i, "bot7", 860, 1310, 170), "s7", -1); speak(bot7, "p7"); bot7.react(tl, PW("p7", "penthouse") + 0.1, "wow");
+
+  /* ================================================================= S8 THE REAL TAKEAWAY: exterior + interior side by side, honest timing, disclaimer */
+  const s8i = dark("s8");
+  tag(s8i, "h8", "THE RESULT · CONCEPT VISUALIZATION", S.s8.start + 0.2, { bd: AZ });
+  const kA = el(s8i, "kA", "", "left:30px;top:300px;width:500px;height:760px;border-radius:22px;overflow:hidden;border:3px solid " + BZ + ";box-shadow:0 26px 60px rgba(0,0,0,.55);z-index:4");
+  const kB = el(s8i, "kB", "", "left:550px;top:300px;width:500px;height:760px;border-radius:22px;overflow:hidden;border:3px solid " + BZ + ";box-shadow:0 26px 60px rgba(0,0,0,.55);z-index:4");
+  img(kA, "kAi", "card_tower.jpg", "left:0;top:0;width:500px;height:760px;object-fit:cover"); img(kB, "kBi", "card_interior.jpg", "left:0;top:0;width:500px;height:760px;object-fit:cover");
+  chip(kA, "kAl", 14, 700, "EXTERIOR", { size: 24, pad: "8px 16px 10px" }); chip(kB, "kBl", 14, 700, "INTERIOR", { size: 24, pad: "8px 16px 10px" });
+  [kA, kB].forEach((k, i) => tl.fromTo(k, { opacity: 0, y: 140, rotation: (i ? 6 : -6) }, { opacity: 1, y: 0, rotation: 0, duration: 0.55, ease: "back.out(1.4)" }, S.s8.start + 0.3 + i * 0.25));
+  tl.fromTo(kA.firstChild, { scale: 1.0 }, { scale: 1.1, duration: S.s8.len, ease: "none" }, S.s8.start); tl.fromTo(kB.firstChild, { scale: 1.1 }, { scale: 1.0, duration: S.s8.len, ease: "none" }, S.s8.start);
+  const t30 = PW("p8", "30"), tHr = PW("p8", "hours"), tNA = PW("p8", "approved");
+  const m1 = el(s8i, "m1", "", "left:40px;top:1078px;width:500px;height:150px;border-radius:24px;background:" + NV + ";border:3px solid " + AZ + ";z-index:6;text-align:center;font:800 70px/130px var(--display);color:#fff", "≈ 30 MIN"); el(m1, "m1s", "mono", "left:0;right:0;top:104px;font:700 28px/1 var(--mono);color:" + AZ, "PROMPTING · MY COUNT");
+  m1.style.lineHeight = "100px";
+  const m2 = el(s8i, "m2", "", "left:560px;top:1078px;width:480px;height:150px;border-radius:24px;background:" + NV + ";border:3px solid " + BZ + ";z-index:6;text-align:center;font:800 60px/100px var(--display);color:#fff", "A FEW HOURS"); el(m2, "m2s", "mono", "left:0;right:0;top:104px;font:700 28px/1 var(--mono);color:" + BZ, "OF RENDERING");
+  tl.from(m1, { opacity: 0, scale: 0.85, y: 40, duration: 0.45, ease: "back.out(1.7)" }, t30 - 0.2); tl.from(m2, { opacity: 0, scale: 0.85, y: 40, duration: 0.45, ease: "back.out(1.7)" }, tHr - 0.2);
+  const wn = el(s8i, "wn", "", "left:40px;right:40px;top:1248px;padding:18px 26px;border-radius:22px;background:" + NV + ";border:3px solid " + BZ + ";font:800 34px/1.2 var(--body);color:#FFF6E8;text-align:center;z-index:6;white-space:pre", "CONCEPT VISUALIZATION\nNOT AN APPROVED ARCHITECTURAL DESIGN"); tl.from(wn, { opacity: 0, y: 50, scale: 0.94, duration: 0.45, ease: "back.out(1.6)" }, tNA - 0.2);
+  const bot8 = presenter(botAt(s8i, "bot8", 880, 1385, 140), "s8", -1); bot8.P.wrap.style.zIndex = 12; speak(bot8, "p8"); bot8.react(tl, tNA + 0.6, "nod");
+
+  /* ================================================================= S9 FINALE: the night shot, then the signature ending */
+  const s9i = dark("s9"); const vS9 = $("v9"); s9i.appendChild(vS9);
+  tag(s9i, "h9", "DUBAI AZURE TOWER · FICTIONAL CONCEPT", S.s9.start + 0.2, { size: 24, bd: BZ });
+  const tFol = PW("p9", "Follow") - 0.35, tExp = PW("p9", "experiments");
+  const f1 = el(s9i, "f1", "ser", "left:0;right:0;top:330px;text-align:center;font-size:110px;line-height:1.02;color:#fff;white-space:pre", "REAL AI\nEXPERIMENTS"); tl.from(f1, { opacity: 0, y: 60, scale: 1.1, duration: 0.5, ease: "back.out(1.6)" }, tExp - 0.4);
+  const bot9 = presenter(botAt(s9i, "bot9", 860, 1310, 170), "s9", -1); speak(bot9, "p9"); tl.set(bot9.P.wrap, { opacity: 0 }, tFol);
+  const botO = botAt(s9i, "botO", -400, 470, 300);
+  Outro.build(tl, s9i, tFol, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" }); speak(botO, "p9");
+
+  /* ---------- elevator-door transitions: doors close over the old scene, the cut happens behind them, doors open on the new one ---------- */
+  const doorL = el(fx, "dL", "", "left:0;top:0;width:541px;height:1920px;z-index:30;background:linear-gradient(90deg,#0d1422 0%,#2b374c 70%,#6c7c97 100%);border-right:3px solid " + BZ);
+  const doorR = el(fx, "dR", "", "left:539px;top:0;width:541px;height:1920px;z-index:30;background:linear-gradient(270deg,#0d1422 0%,#2b374c 70%,#6c7c97 100%);border-left:3px solid " + BZ);
+  const ind = el(fx, "ind", "", "left:340px;top:820px;width:400px;height:96px;border-radius:18px;background:" + NV + ";border:3px solid " + BZ + ";z-index:31;text-align:center;font:800 44px/90px var(--mono);color:" + BZ + ";letter-spacing:.06em;opacity:0", "");
+  gsap.set(doorL, { x: -541 }); gsap.set(doorR, { x: 541 });
+  const names = { s2: "▲ 02 · SITE", s3: "▲ 03 · BRIEF", s4: "▲ 04 · CODE", s5: "▲ 05 · BUILD", s6: "▲ 06 · EXTERIOR", s7: "▲ 07 · INTERIOR", s8: "▲ 08 · RESULT", s9: "▲ 09 · FINALE" };
+  Object.keys(names).forEach(k => {
+    const b = S[k].b, lbl = el(ind, "ind" + k, "", "left:0;top:0;width:400px;height:96px;opacity:0;white-space:nowrap", names[k]); lbl.setAttribute("data-layout-ignore", "");
+    tl.to(doorL, { x: 0, duration: 0.28, ease: "power3.in" }, b - 0.3); tl.to(doorR, { x: 0, duration: 0.28, ease: "power3.in" }, b - 0.3);
+    tl.set(lbl, { opacity: 1 }, b - 0.06); tl.set(ind, { opacity: 1 }, b - 0.06); tl.set(ind, { opacity: 0 }, b + 0.12); tl.set(lbl, { opacity: 0 }, b + 0.14);
+    tl.to(doorL, { x: -541, duration: 0.34, ease: "power3.out" }, b + 0.02); tl.to(doorR, { x: 541, duration: 0.34, ease: "power3.out" }, b + 0.02);
+  });
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 300, active: "#FFFFFF", block: "#B8782A", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+[0.1-5.9s] I built this 50-floor Dubai skyscraper concept with AI. Here is how it really happened.
+
+[6.7-15.1s] It started with an idea. A twisting glass tower on the Dubai coast. A fictional site, inspired by Jumeirah. Not a real plot.
+
+[15.8-21.8s] Then I briefed Claude Code. 50 floors. A glass skin. Landscaping. And real interiors.
+
+[22.5-33.2s] Claude Code wrote the project as Python scripts for Blender. The height, the 96-degree twist, even the 72 bronze fins, are just numbers in a file.
+
+[33.9-41.5s] Run the build, and in under a second Blender creates the whole scene. More than 1,800 objects, with no manual modeling.
+
+[42.2-49.0s] Then the cameras take over. A glass facade that twists as you rise. Palm trees. A grand arrival court.
+
+[49.7-56.8s] And the same tower, inside. A lobby. An office floor. An apartment. And a duplex penthouse with a feature stair.
+
+[57.5-67.7s] By my own count, the first concept took about 30 minutes of prompting. Rendering the film took a few hours. And it is only a concept. Not approved. Not built.
+
+[68.4-76.2s] This is what AI-assisted creation really looks like. Follow Agentoon.ai, for more real AI experiments.
