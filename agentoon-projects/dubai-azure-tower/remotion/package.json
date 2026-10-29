@@ -1,0 +1,20 @@
+{
+  "name": "dubai-azure-tower-remotion",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts AzureTower out/Dubai_Azure_Tower_4K.mp4 --codec=h264 --crf=14 --pixel-format=yuv420p",
+    "still": "remotion still src/index.ts AzureTower out/poster.png --frame=3560"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.250",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.250"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.3",
+    "typescript": "5.5.4"
+  }
+}
