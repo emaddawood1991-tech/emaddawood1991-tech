@@ -1,0 +1,66 @@
+{
+  "name": "Dubai Azure Tower",
+  "subtitle": "A Conceptual Architectural Vision",
+  "status": "FICTIONAL CONCEPT. Not approved, not built, not for sale. Conceptual site inspired by the Jumeirah coastline; no real plot boundary is implied.",
+  "units": "metres, Z up, +Y = Arabian Gulf (north-west in reality), +X = east",
+  "film": { "fps": 30, "seconds": 120, "frames": 3600, "width": 3840, "height": 2160 },
+  "tower": {
+    "floors": 50,
+    "lobby_height": 9.0,
+    "floor_height": 4.0,
+    "base_radius": 24.0,
+    "taper": 0.36,
+    "lobe_amplitude": 0.15,
+    "lobe_count": 3,
+    "twist_degrees": 96,
+    "twist_exponent": 1.15,
+    "ring_points": 144,
+    "fin_count": 72,
+    "balcony_floors": [22, 46],
+    "balcony_span_degrees": 30,
+    "balcony_depth": 2.6,
+    "crown_height": 32.0,
+    "spire_height": 28.0,
+    "zoning": {
+      "lobby": [1, 1],
+      "offices": [2, 20],
+      "residences": [21, 46],
+      "penthouses": [47, 50]
+    },
+    "showcase_floors": { "office": 12, "apartment": 31, "penthouse": 48 }
+  },
+  "site": {
+    "tower_xy": [0, 0],
+    "coastline_y": 330,
+    "burj_al_arab_xy": [-1150, 620],
+    "podium_levels": [
+      { "name": "arrival", "z": 0.0, "half": [78, 62] },
+      { "name": "terrace_1", "z": 5.5, "half": [64, 50] },
+      { "name": "terrace_2", "z": 11.0, "half": [48, 38] }
+    ],
+    "interior_sets": {
+      "apartment": [-620, -260],
+      "penthouse": [-620, 0],
+      "office": [-620, 260]
+    }
+  },
+  "timeline_frames": {
+    "S01": [1, 360],
+    "S02": [361, 840],
+    "S03": [841, 1260],
+    "S04": [1261, 1710],
+    "S05": [1711, 2070],
+    "S06": [2071, 2550],
+    "S07": [2551, 2970],
+    "S08": [2971, 3390],
+    "S09": [3391, 3600]
+  },
+  "night": { "start": 3391, "full": 3520 },
+  "palette": {
+    "glass": [0.07, 0.30, 0.55],
+    "bronze": [0.78, 0.58, 0.36],
+    "stone": [0.82, 0.77, 0.67],
+    "crown_light": [0.55, 0.88, 1.0],
+    "warm_light": [1.0, 0.78, 0.5]
+  }
+}
