@@ -66,14 +66,19 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   ok(true, 'clearing a field and saving returns the status to YELLOW'); await closeModal(pt);
   await openDoc(); await pt.fill('#doc-pn', 'Pain 5/10 after treatment'); await pt.click('.modal button:has-text("Save documentation")'); await pt.waitForSelector('.modal .sched-orange'); await closeModal(pt);
 
-  // timer expires → automatic operational check-out; documentation stays complete; nothing else changes
-  await advance(adm, 31); await pt.waitForSelector(`tr:has-text("${N}") .sess-elapsed`, { timeout: 12000 });
-  await pt.waitForSelector(`tr:has-text("${N}") :text("Operational check-out")`, { timeout: 12000 }); // appears on the next poll after the server records it
-  const txt = await row(pt).textContent();
-  ok(/Operational check-out/.test(txt) && /automatic/.test(txt), 'automatic operational check-out is shown at the scheduled end');
-  ok(await row(pt).locator('.sched-orange').count() >= 1, 'documentation remains complete (ORANGE) after the automatic check-out');
-  ok(await row(pt).locator('button:has-text("Confirm completion")').count() === 1 && await row(pt).locator('button:has-text("Exit room")').count() === 0, 'clinical completion still needs the clinician; the patient is not marked as left');
-  await pt.screenshot({ path: `${out}/doc3-operational-checkout.png` });
+  // timer expires (default automatic mode): stops and checks out at exactly the entered duration; documentation untouched
+  await advance(adm, 31);
+  await pt.waitForSelector(`tr:has-text("${N}") button:has-text("Exit room")`, { timeout: 14000 });
+  ok(await row(pt).locator('.timer, .sess-elapsed').count() === 0 && !/overtime/i.test(await row(pt).textContent()), 'the treatment stopped at its scheduled end — no running timer and no overtime');
+  ok(await row(pt).locator('button:has-text("Confirm completion")').count() === 0, 'nothing to click: the check-out already happened');
+  await rec.click('.nav a:has-text("Schedule")');
+  await rec.waitForSelector(`.sched-row:has-text("${N}"):has-text("Operational check-out")`, { timeout: 9000 });
+  const sch = await rec.locator(`.sched-row:has-text("${N}")`).textContent();
+  ok(/Completed/.test(sch) && /automatic/i.test(sch), 'schedule shows the automatic check-out, not clinician-verified');
+  ok(await rec.locator(`.sched-row:has-text("${N}") .sched-orange`).count() === 1, 'documentation remains complete (ORANGE) after the automatic check-out');
+  await rec.screenshot({ path: `${out}/doc3-operational-checkout.png` });
+  // the patient is still physically in the room until the exit step
+  ok(await row(pt).locator('button:has-text("Transfer")').count() === 1, 'the patient is still in the room until room exit is recorded');
   ok(errors.length === 0, `no browser console errors${errors.length ? ': ' + errors[0] : ''}`);
   await b.close();
 })().catch((e) => { console.error(e); process.exit(1); });

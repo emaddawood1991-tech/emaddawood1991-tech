@@ -185,7 +185,7 @@ export const DEFAULT_SETTINGS = {
   registration_require_name_ar: '0',
   registration_require_phone: '0',
   require_service_at_checkin: '0',
-  timer_auto_close: '0',
+  timer_auto_close: '1',
   doc_min_chars: '3',
   diagnosis_pattern: '',
   resource_gap_minutes: '1',
@@ -212,6 +212,13 @@ export function openDb(path = DB_PATH) {
   ensureColumns(db);
   const ins = db.prepare('INSERT OR IGNORE INTO settings(key,value) VALUES (?,?)');
   for (const [k, v] of Object.entries(DEFAULT_SETTINGS)) ins.run(k, v);
+  // One-time: automatic stop + check-out at the scheduled end is now the default. Databases created earlier hold the old default ('0');
+  // switch them over only if no administrator ever changed that setting, so a deliberate choice is never overwritten.
+  if (!db.prepare("SELECT 1 x FROM settings WHERE key='timer_auto_close_default_v2'").get()) {
+    const chosen = db.prepare("SELECT 1 x FROM audit_log WHERE action='config.settings' AND entity_id='timer_auto_close'").get();
+    if (!chosen) db.prepare("UPDATE settings SET value='1' WHERE key='timer_auto_close'").run();
+    db.prepare("INSERT INTO settings(key,value) VALUES ('timer_auto_close_default_v2','1')").run();
+  }
   return db;
 }
 

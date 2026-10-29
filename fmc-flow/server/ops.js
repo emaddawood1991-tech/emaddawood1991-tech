@@ -88,7 +88,7 @@ export function makeOps(db) {
     const asOf = nowMs(); const iv = sessionIntervals(s, asOf);
     const documentation = docEval(s);
     return { ...s, ended_effective: effEnd(s), active_ms: sumMs(iv), ...timerOf(s, asOf), pauses: q('SELECT paused_at,resumed_at FROM session_pauses WHERE session_id=? ORDER BY id', s.id),
-      documentation, schedule_status: documentation.complete ? 'ORANGE' : 'YELLOW' };
+      documentation, schedule_status: documentation.complete ? 'ORANGE' : 'YELLOW', auto_close: setting('timer_auto_close') === '1' };
   };
 
   // ---------- clinical documentation (Step 4) ----------

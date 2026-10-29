@@ -3,10 +3,11 @@ import { openDb } from '../server/db.js';
 import { seed, DEMO_PASSWORD } from '../server/seed.js';
 
 // `gap` is the one-minute same-resource gap (production default 1). Older suites reuse one room back-to-back and do not test the gap, so they run with 0.
-export async function boot({ gap = 0 } = {}) {
+export async function boot({ gap = 0, autoClose = 0 } = {}) {
   const db = openDb(':memory:');
   seed(db);
   db.prepare("UPDATE settings SET value=? WHERE key='resource_gap_minutes'").run(String(gap));
+  db.prepare("UPDATE settings SET value=? WHERE key='timer_auto_close'").run(String(autoClose)); // production default is 1; older suites test the confirm-after-elapsed mode
   const { app, ops } = createApp({ db });
   const server = await new Promise((r) => { const s = app.listen(0, () => r(s)); });
   const base = `http://127.0.0.1:${server.address().port}`;

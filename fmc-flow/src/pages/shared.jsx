@@ -94,10 +94,10 @@ export function SessionControls({ s, now, onChange, onCorrect, user }) {
           {tv.state === 'ELAPSED' && <div className="small err">+{fmtCountdown(tv.overtime)} {t('overtime')}</div>}
         </div>
       </div>
-      {tv.state === 'ELAPSED' && <div className="banner bad" role="alert" style={{ margin: '8px 0' }}>{t('elapsedNotice')}</div>}
+      {tv.state === 'ELAPSED' && (s.auto_close ? <div className="banner warn" role="status" style={{ margin: '8px 0' }}>{t('autoClosing')}</div> : <div className="banner bad" role="alert" style={{ margin: '8px 0' }}>{t('elapsedNotice')}</div>)}
       {s.operational_checkout_at && <div className="small muted">{t('opCheckout')}: <b>{fmt(s.operational_checkout_at)}</b> · {s.operational_checkout_kind === 'AUTO' ? t('opCheckoutAuto') : t('opCheckoutManual')}</div>}
       <div className="row" style={{ marginTop: 6 }}>
-        {tv.state === 'ELAPSED' ? <>
+        {tv.state === 'ELAPSED' && s.auto_close ? null : tv.state === 'ELAPSED' ? <>
           <button className="btn sm" disabled={busy} onClick={() => go('complete', { mode: 'scheduled' })}>{t('confirmCompletion')}</button>
           <button className="btn ghost sm" disabled={busy} onClick={() => go('complete', { mode: 'now' })}>{t('continuedEndNow')}</button>
         </> : <>

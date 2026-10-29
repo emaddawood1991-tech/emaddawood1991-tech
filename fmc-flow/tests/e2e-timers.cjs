@@ -9,6 +9,7 @@ const secs = (s) => s.trim().split(':').reduce((a, b) => a * 60 + Number(b), 0);
   const login = async (u, w = 1440) => { const ctx = await b.newContext({ viewport: { width: w, height: 900 } }); const p = await ctx.newPage(); p.on('pageerror', (e) => errors.push(e.message)); p.on('console', (m) => m.type() === 'error' && !/Failed to load|status of 4\d\d/.test(m.text()) && errors.push(m.text())); await p.goto(base); await p.fill('input[autocomplete=username]', u); await p.fill('input[type=password]', PW); await p.click('button.btn:has-text("Sign in")'); await p.waitForSelector('.shell'); return p; };
   const advance = (p, minutes) => p.evaluate(async (m) => (await fetch('/api/__test/advance-clock', { method: 'POST', headers: { 'content-type': 'application/json', 'x-requested-with': 'fmc' }, body: JSON.stringify({ minutes: m }) })).status, minutes);
   const api = (p, path) => p.evaluate(async (x) => (await (await fetch('/api' + x)).json()), path);
+  const adm0 = await login('admin'); await adm0.evaluate(() => fetch('/api/config/settings', { method: 'PATCH', headers: { 'content-type': 'application/json', 'x-requested-with': 'fmc' }, body: JSON.stringify({ timer_auto_close: '0' }) })); // this suite covers the confirm-after-elapsed mode; e2e-documentation covers the default automatic mode
   const rec = await login('reception'); const adm = await login('admin'); const pt = await login('pt.one');
   await rec.click('.nav a:has-text("Visits")');
   const arrive = async (name, room) => {
