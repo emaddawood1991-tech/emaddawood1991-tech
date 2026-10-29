@@ -68,9 +68,9 @@ export function makeRegistration(db, ops) {
     const mode = input.mrn_mode === 'manual' || (input.mrn_mode == null && String(input.mrn ?? '').trim()) ? 'manual' : 'auto';
     if (mode === 'manual') {
       const mrn = String(input.mrn ?? '').trim().toUpperCase();
-      if (!MRN_RE.test(mrn)) bad({ mrn: 'MRN must be 3–30 characters: letters, numbers, “-” or “/”.' });
+      if (!MRN_RE.test(mrn)) bad({ mrn: 'EMR number must be 3–30 characters: letters, numbers, “-” or “/”.' });
       const ex = one('SELECT id,mrn,name,name_ar,dob,phone FROM patients WHERE upper(mrn)=?', mrn);
-      if (ex) throw new HttpError(409, 'MRN_DUPLICATE', `MRN ${mrn} already belongs to another patient. Nothing was changed.`, { fields: { mrn: 'This MRN is already in use.' }, existing: ex });
+      if (ex) throw new HttpError(409, 'MRN_DUPLICATE', `EMR number ${mrn} already belongs to another patient. Nothing was changed.`, { fields: { mrn: 'This EMR number is already in use.' }, existing: ex });
       return mrn;
     }
     let n = one('SELECT COUNT(*) c FROM patients').c + 1;

@@ -173,7 +173,7 @@ export function makeSchedule(db, ops) {
   }
   function resolve(user, b, cur = null) {
     const patientId = Number(b.patient_id ?? cur?.patient_id);
-    const patient = one('SELECT id,mrn,name FROM patients WHERE id=?', patientId) || bad({ patient_id: 'Choose a patient (search by MRN, name or phone).' });
+    const patient = one('SELECT id,mrn,name FROM patients WHERE id=?', patientId) || bad({ patient_id: 'Choose a patient (search by EMR number, name or phone).' });
     const row = rowOf(b.row_id ?? cur?.row_id ?? null);
     const departmentId = Number(b.department_id ?? cur?.department_id ?? row?.department_id ?? 0);
     const dep = one('SELECT id,active FROM departments WHERE id=?', departmentId); if (!dep) bad({ department_id: 'Choose a department.' });
