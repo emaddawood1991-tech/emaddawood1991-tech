@@ -359,7 +359,7 @@ export function makeSchedule(db, ops) {
   // ---------- cancellations ----------
   function listCancellations(user, f = {}) {
     need(user, 'schedule.view'); const sc = scope(user); const z = tz();
-    const from = f.from ? validDate(f.from, 'from') : addDays(today(), -30); const to = f.to ? validDate(f.to, 'to') : addDays(today(), 60);
+    const from = f.from ? validDate(f.from, 'from') : '0000-00-00'; const to = f.to ? validDate(f.to, 'to') : '9999-12-31'; // newest first; optional date range
     return q(`${apptSelect} WHERE a.status='CANCELLED' AND (? IS NULL OR a.department_id=?) ORDER BY a.cancelled_at DESC LIMIT 300`, sc, sc).map((a) => {
       const d = decorate(a); const rb = one('SELECT id,ref,scheduled_at FROM appointments WHERE rebooks_id=? AND status<>\'CANCELLED\' ORDER BY id DESC', a.id);
       const by = a.cancelled_by ? one('SELECT name FROM users WHERE id=?', a.cancelled_by)?.name : null;

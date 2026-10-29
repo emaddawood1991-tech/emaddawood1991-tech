@@ -48,7 +48,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   ok(await pt.locator('.modal:has-text("unsaved changes")').count() === 1 && await pt.locator('.modal .sched-yellow').count() === 1, 'four fields typed but unsaved → warning shown and status still YELLOW');
   await closeModal(pt);
   await pt.waitForTimeout(500);
-  await rec.click('.nav a:has-text("Schedule")'); await rec.waitForSelector('.sched-row');
+  await rec.click('.nav a:has-text("Treatment Board")'); await rec.waitForSelector('.sched-row');
   ok(await rec.locator(`.sched-row:has-text("${N}") .sched-yellow`).count() === 1, 'schedule (reception) still shows YELLOW while the 4th field is unsaved');
   // save → orange
   await openDoc(); await pt.fill('#doc-pn', 'Pain 6/10, exercise program given'); await pt.click('.modal button:has-text("Save documentation")'); await pt.waitForSelector('.modal .sched-orange');
@@ -71,7 +71,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   await pt.waitForSelector(`tr:has-text("${N}") button:has-text("Exit room")`, { timeout: 14000 });
   ok(await row(pt).locator('.timer, .sess-elapsed').count() === 0 && !/overtime/i.test(await row(pt).textContent()), 'the treatment stopped at its scheduled end — no running timer and no overtime');
   ok(await row(pt).locator('button:has-text("Confirm completion")').count() === 0, 'nothing to click: the check-out already happened');
-  await rec.click('.nav a:has-text("Schedule")');
+  await rec.click('.nav a:has-text("Treatment Board")');
   await rec.waitForSelector(`.sched-row:has-text("${N}"):has-text("Operational check-out")`, { timeout: 9000 });
   const sch = await rec.locator(`.sched-row:has-text("${N}")`).textContent();
   ok(/Completed/.test(sch) && /automatic/i.test(sch), 'schedule shows the automatic check-out, not clinician-verified');

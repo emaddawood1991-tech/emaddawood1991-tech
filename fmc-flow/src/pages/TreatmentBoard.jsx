@@ -5,14 +5,14 @@ import { Empty } from '../ui.jsx';
 import { DocumentationModal, ScheduleBadge } from './shared.jsx';
 
 /** Day schedule: one row per treatment session, coloured by documentation status (YELLOW incomplete, ORANGE complete). */
-export default function Schedule({ user }) {
+export default function TreatmentBoard({ user }) {
   const { t, loc, fmt } = useI18n(); const now = useTicker(1000);
   const [day, setDay] = useState(() => new Intl.DateTimeFormat('en-CA', { timeZone: window.__tz || 'Asia/Dubai' }).format(new Date(serverNow())));
   const [doc, setDoc] = useState(null);
   const list = usePoll(`/schedule?from=${day}&to=${day}`, 5000);
   const rows = list.data?.sessions || [];
   return (
-    <div className="card"><h2>{t('schedule')}</h2>
+    <div className="card"><h2>{t('treatmentboard')}</h2>
       <div className="row" style={{ marginBottom: 10, alignItems: 'center' }}>
         <label htmlFor="sch-day">{t('scheduleDay')}</label>
         <input id="sch-day" type="date" style={{ width: 180 }} value={day} onChange={(e) => e.target.value && setDay(e.target.value)} />

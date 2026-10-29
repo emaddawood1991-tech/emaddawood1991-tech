@@ -8,7 +8,8 @@ import Visits from './pages/Visits.jsx';
 import Queue from './pages/Queue.jsx';
 import Rooms from './pages/Rooms.jsx';
 import Sessions from './pages/Sessions.jsx';
-import Schedule from './pages/Schedule.jsx';
+import TreatmentBoard from './pages/TreatmentBoard.jsx';
+import DailySchedule from './pages/DailySchedule.jsx';
 import Corrections from './pages/Corrections.jsx';
 import Search from './pages/Search.jsx';
 import Reports from './pages/Reports.jsx';
@@ -17,7 +18,7 @@ import System from './pages/System.jsx';
 
 const ALL = ['admin', 'supervisor', 'reception', 'clinician'];
 const PAGES = [
-  ['dashboard', Dashboard, ALL], ['visits', Visits, ALL], ['queue', Queue, ALL], ['rooms', Rooms, ALL], ['sessions', Sessions, ['admin', 'supervisor', 'clinician']], ['schedule', Schedule, ALL],
+  ['dashboard', Dashboard, ALL], ['visits', Visits, ALL], ['queue', Queue, ALL], ['dailyschedule', DailySchedule, ALL], ['rooms', Rooms, ALL], ['sessions', Sessions, ['admin', 'supervisor', 'clinician']], ['treatmentboard', TreatmentBoard, ALL],
   ['corrections', Corrections, ALL], ['search', Search, ALL], ['reports', Reports, ['admin', 'supervisor']], ['settings', Settings, ['admin']], ['system', System, ['admin', 'supervisor']],
 ];
 

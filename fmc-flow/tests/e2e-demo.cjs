@@ -30,6 +30,8 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   await page.click('button:has-text("Sign out")'); await login('admin');
   await page.click('.nav a:has-text("System")'); await page.waitForSelector('text=System health'); await page.screenshot({ path: `${out}/d2-system.png` });
   await page.click('.nav a:has-text("Reports")'); await page.waitForSelector('.kpis'); await page.screenshot({ path: `${out}/d3-reports.png` });
+  await page.click('.nav a:has-text("Daily Schedule")'); await page.waitForSelector('table.sch'); await page.click('button:has-text("Add Appointment")'); await page.waitForSelector('#ds-patient-q'); await page.fill('#ds-patient-q', 'Sample Patient C'); await page.click('.patient-row:has-text("Sample Patient C")'); await page.selectOption('#ds-dept', { label: 'Physiotherapy' }); await page.fill('#ds-time', '16:00'); await page.click('.modal button:has-text("Save appointment")'); await page.waitForSelector('.modal', { state: 'detached' });
+  ok(await page.locator('.sch-appt:has-text("Sample Patient C")').count() >= 1, 'Daily Schedule works in the demo (booking saved in the in-browser database)');
   ok(errors.length === 0, `no console errors ${errors.slice(0, 3).join(' | ')}`);
   await b.close();
 })().catch((e) => { console.error(e); process.exit(1); });

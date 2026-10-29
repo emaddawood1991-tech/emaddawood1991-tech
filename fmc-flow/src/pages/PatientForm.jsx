@@ -16,7 +16,7 @@ export function Field({ id, label, required, note, error, hint, children }) {
 }
 export const aria = (id, error, hint, required) => ({ id, 'aria-invalid': error ? 'true' : undefined, 'aria-required': required ? 'true' : undefined, 'aria-describedby': error ? `${id}-err` : hint ? `${id}-hint` : undefined });
 
-export default function PatientFormModal({ config, staff, onClose, onSaved, onUse }) {
+export default function PatientFormModal({ config, staff, onClose, onSaved, onUse, saveOnly }) {
   const { t, loc, lang } = useI18n(); const net = useNet(); const toast = useToast();
   const S = config.settings;
   const needAr = S.registration_require_name_ar === '1'; const needPhone = S.registration_require_phone === '1'; const needService = S.require_service_at_checkin === '1';
@@ -107,7 +107,7 @@ export default function PatientFormModal({ config, staff, onClose, onSaved, onUs
             <input {...aria('pf-phone', errors.phone, true, needPhone)} type="tel" inputMode="tel" dir="ltr" autoComplete="off" placeholder="+971 50 123 4567" maxLength={24} value={f.phone} onChange={set('phone')} />
           </Field>
         </div>
-        <h3>{t('visitDetails')}</h3>
+        <div hidden={!!saveOnly}><h3>{t('visitDetails')}</h3>
         <div className="form-grid two">
           <Field id="pf-department_id" label={t('department')} note={t('requiredForCheckIn')} error={errors.department_id}>
             <select {...aria('pf-department_id', errors.department_id)} value={f.department_id} onChange={set('department_id')}><option value="">—</option>{depts.map((d) => <option key={d.id} value={d.id}>{loc(d)}</option>)}</select>
@@ -118,9 +118,9 @@ export default function PatientFormModal({ config, staff, onClose, onSaved, onUs
           <Field id="pf-clinician_id" label={t('clinician')} error={errors.clinician_id}>
             <select {...aria('pf-clinician_id', errors.clinician_id)} disabled={!f.department_id} value={f.clinician_id} onChange={set('clinician_id')}><option value="">—</option>{clinicians.map((s) => <option key={s.id} value={s.id}>{loc(s)}</option>)}</select>
           </Field>
-        </div>
+        </div></div>
         <div className="row form-actions">
-          <button type="button" className="btn" disabled={busy} onClick={() => submit(true)}>{busy ? t('saving') : t('saveCheckIn')}</button>
+          <button type="button" className="btn" hidden={!!saveOnly} disabled={busy} onClick={() => submit(true)}>{busy ? t('saving') : t('saveCheckIn')}</button>
           <button type="button" className="btn ghost" disabled={busy} onClick={() => submit(false)}>{t('savePatient')}</button>
           <button type="button" className="btn ghost" onClick={onClose}>{t('cancel')}</button>
         </div>
