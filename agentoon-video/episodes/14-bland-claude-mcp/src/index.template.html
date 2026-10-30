@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 14 Claude + Bland MCP</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Switchboard". Dark navy and clean paper scenes alternate like a patch panel; cyan cable lines plug Claude into Bland.
+     All on-screen product text is verbatim from the official Bland docs (read through the Bland MCP) or the Claude custom-connector
+     help article; nothing is a mock-up of a website or app. Missing recordings are labelled, never faked. */
+  :root { --cy: #60CDFF; --navy: #0B1630; --paper: #EAF2FB; --amber: #FFB23E; --green: #7CF2C0; }
+  .chip { position: absolute; white-space: nowrap; z-index: 8; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .ser { position: absolute; font-family: var(--display); font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .card { position: absolute; border-radius: 22px; box-sizing: border-box; overflow: hidden; }
+  .dk { background: #0F1D38; border: 3px solid #60CDFF; color: #fff; box-shadow: 0 26px 60px rgba(0,0,0,.45); }
+  .lt { background: #fff; border: 3px solid #0B1630; color: #0B1630; box-shadow: 0 22px 50px rgba(11,22,48,.25); }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+<script src="data/lipsync.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="{{TOTAL}}">
+{{SECTIONS}}
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, LIP = window.LIPSYNC, $ = id => document.getElementById(id), S = {{SCENES}};
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”']/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word " + pid + ":" + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const CY = "#60CDFF", NV = "#0B1630", AM = "#FFB23E", GR = "#7CF2C0";
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + Math.max(28, o.size || 28) + "px/1 var(--mono);letter-spacing:.04em;color:" + (o.fg || "#fff") + ";background:" + (o.bg || NV) + ";border:2px solid " + (o.bd || CY), text); };
+  const dbg = (k) => { const inn = $(k + "i"); el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 30%,#14274A 0%,#0B1630 62%,#060D1C 100%)"); return inn; };
+  const lbg = (k) => { const inn = $(k + "i"); el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(110% 80% at 50% 30%,#F5F9FE 0%,#EAF2FB 60%,#D5E3F4 100%)"); const g = el(inn, "bgg" + k, "", "position:absolute;inset:0;background-image:linear-gradient(rgba(11,22,48,.06) 2px,transparent 2px),linear-gradient(90deg,rgba(11,22,48,.06) 2px,transparent 2px);background-size:90px 90px"); tl.to(g, { backgroundPosition: "180px 180px", duration: S[k].len, ease: "none" }, S[k].start); return inn; };
+  const presenter = (bot, k) => { bot.face(tl, 0, -1, 0.01); bot.rise(tl, S[k].start + 0.3, 420, 0.4); bot.blinks(tl, S[k].start, S[k].end, 1.1); bot.P.wrap.style.zIndex = 12; return bot; };
+  const speak = (bot, pid) => { const p = P(pid); bot.speak(tl, LIP, p.start, p.end); };
+  const tag = (host, id, text, t0, light) => { const c = chip(host, id, 60, 236, text, { bd: light ? NV : CY, bg: light ? "#fff" : NV, fg: light ? NV : "#fff" }); c.style.zIndex = 9; tl.from(c, { opacity: 0, x: -30, duration: 0.3 }, t0); return c; };
+  const src = (host, id, text, t0, y, light) => { const c = chip(host, id, 40, y, text, { size: 28, bd: light ? "#7B8BA6" : "#5B6B85", fg: light ? "#33415C" : "#DDEBFF", bg: light ? "#fff" : NV, pad: "8px 16px 10px" }); c.style.zIndex = 9; tl.from(c, { opacity: 0, duration: 0.3 }, t0); return c; };
+  const mkRing = (host, id, x, y, w, h, col) => { const sv = svgEl(host, "svg", { id: id + "s", width: 1080, height: 1920, viewBox: "0 0 1080 1920" }); sv.style.cssText = "position:absolute;left:0;top:0;pointer-events:none;z-index:9;overflow:visible"; const r = svgEl(sv, "rect", { id, x, y, width: w, height: h, rx: 16, fill: "none", stroke: col || "#60CDFF", "stroke-width": 6 }); gsap.set(r, { opacity: 0 }); return r; };
+  const ringTo = (r, x, y, w, h, at, dur) => tl.to(r, { attr: { x, y, width: w, height: h }, duration: dur == null ? 0.28 : dur, ease: "power3.out" }, at);
+  const trans = (k, prev, kind) => { const b = S[k].b, o = "#" + prev + "i", n = "#" + k + "i"; if (kind === "push") Cam.push(tl, b, 0.5, { out: o, inn: n, ox: 540, oy: 640, scale: 3.2 }); else if (kind === "iris") Cam.iris(tl, b, 0.6, { inn: n, cx: 540, cy: 700, ring: "#60CDFF", host: $("fx"), id: "ir-" + k }); else Cam.whip(tl, b, 0.5, { out: o, inn: n, dir: kind === "whipL" ? -1 : 1, blur: 24 }); };
+  const rowsCard = (host, id, x, y, w, rows, light, fs, rh, t0, step) => rows.forEach((t, i) => { const r = el(host, id + i, "card " + (light ? "lt" : "dk"), "left:" + x + "px;top:" + (y + i * rh) + "px;width:" + w + "px;height:" + (rh - 14) + "px;font:700 " + fs + "px/1.2 var(--body);padding:12px 22px;display:flex;align-items:center;white-space:pre-wrap", t); tl.from(r, { opacity: 0, x: 90, duration: 0.35, ease: "power3.out" }, t0 + i * (step || 0.12)); });
+
+  /* ===== S1 HOOK: robot at the desk, a phone rings (concept visual) ===== */
+  const s1 = dbg("s1");
+  const t1a = el(s1, "t1a", "ser", "left:0;right:0;top:215px;text-align:center;font-size:104px;line-height:1;color:#fff", "CLAUDE +"), t1b = el(s1, "t1b", "ser", "left:0;right:0;top:335px;text-align:center;font-size:104px;line-height:1;color:" + CY, "PHONE CALLS");
+  tl.from(t1a, { opacity: 0, y: -50, duration: 0.4, ease: "back.out(1.6)" }, 0.15); tl.from(t1b, { opacity: 0, y: 50, duration: 0.4, ease: "back.out(1.6)" }, 0.35);
+  const desk = el(s1, "desk", "", "left:60px;top:1050px;width:960px;height:44px;border-radius:12px;background:linear-gradient(180deg,#24406F,#16294F);box-shadow:0 20px 40px rgba(0,0,0,.5)"); tl.from(desk, { opacity: 0, scaleX: 0.6, duration: 0.5, transformOrigin: "50% 50%" }, 0.2);
+  const ph = el(s1, "ph", "", "left:700px;top:880px;width:150px;height:170px;transform-origin:50% 100%");
+  const phs = svgEl(ph, "svg", { viewBox: "0 0 150 170", width: 150, height: 170 });
+  svgEl(phs, "rect", { x: 30, y: 10, width: 90, height: 150, rx: 16, fill: "#0F1D38", stroke: CY, "stroke-width": 6 }); svgEl(phs, "rect", { x: 40, y: 24, width: 70, height: 106, rx: 6, fill: "#14274A" }); svgEl(phs, "circle", { cx: 75, cy: 144, r: 6, fill: CY });
+  const tCall = PW("p1", "call");
+  [0, 1, 2].forEach(i => { const a = el(s1, "ar" + i, "", "left:" + (680 - i * 22) + "px;top:" + (900 - i * 22) + "px;width:" + (190 + i * 44) + "px;height:" + (190 + i * 44) + "px;border-radius:50%;border:5px solid " + CY + ";opacity:0"); [0, 0.9].forEach(d => { tl.fromTo(a, { opacity: 0.9, scale: 0.7 }, { opacity: 0, scale: 1.15, duration: 0.8, ease: "power2.out" }, tCall + d + i * 0.15); }); });
+  [0, 0.9].forEach(d => { for (let k = 0; k < 6; k++) tl.to(ph, { rotation: k % 2 ? -9 : 9, duration: 0.07 }, tCall + d + k * 0.07); tl.to(ph, { rotation: 0, duration: 0.1 }, tCall + d + 0.45); });
+  const cn = chip(s1, "cn1", 60, 1130, "CONCEPT VISUAL · NOT A REAL CALL", { bd: AM }); tl.from(cn, { opacity: 0, x: -50, duration: 0.3 }, 0.8);
+  const bot1 = botAt(s1, "bot1", 300, 650, 300); presenter(bot1, "s1"); speak(bot1, "p1"); bot1.aimPoint(tl, tCall - 0.1, { x: 300, y: 650, target: [770, 960], hold: 1.4 }); bot1.react(tl, tCall + 0.3, "wow");
+
+  /* ===== S2 OPEN BLAND AI (paper) ===== */
+  const s2 = lbg("s2"); tag(s2, "t2", "STEP 1 · CREATE AN ACCOUNT", S.s2.start + 0.2, true);
+  const a2 = el(s2, "a2", "card lt", "left:40px;top:320px;width:1000px;height:300px"); el(a2, "a2t", "ser", "left:36px;top:26px;font-size:112px;line-height:1;color:" + NV, "Bland AI");
+  el(a2, "a2s", "", "left:36px;top:160px;width:930px;font:700 34px/1.25 var(--body);color:#33415C;white-space:normal", "Tools for voice agents, phone calls, phone numbers, conversational pathways, and call analytics.");
+  tl.from(a2, { opacity: 0, y: 60, duration: 0.45, ease: "power3.out" }, S.s2.start + 0.3);
+  const b2 = el(s2, "b2", "card lt", "left:40px;top:660px;width:1000px;height:200px"); el(b2, "b2t", "", "left:30px;top:24px;width:940px;font:800 42px/1.25 var(--body);color:" + NV + ";white-space:normal", "Sign in at v2.app.bland.ai with your phone number, Google, or SSO.");
+  tl.from(b2, { opacity: 0, y: 60, duration: 0.45, ease: "power3.out" }, PW("p2b", "sign") - 0.3);
+  const k2 = chip(s2, "k2", 40, 900, "SIGN-UP SCREEN: NOT RECORDED YET", { bd: AM, bg: "#fff", fg: NV }); tl.from(k2, { opacity: 0, x: -50, duration: 0.3 }, PW("p2", "account") + 0.2);
+  src(s2, "so2", "FROM THE BLAND DOCS (oauth page)", PW("p2b", "sign") + 0.3, 960, true);
+  const bot2 = botAt(s2, "bot2", 870, 1120, 160); presenter(bot2, "s2"); speak(bot2, "p2"); speak(bot2, "p2b"); bot2.aimPoint(tl, PW("p2", "Bland") - 0.1, { x: 870, y: 1120, target: [520, 470], hold: 1.2 }); bot2.react(tl, PW("p2b", "Google") + 0.2, "nod");
+
+  /* ===== S3 FIND THE MCP URL (paper) ===== */
+  const s3 = lbg("s3"); tag(s3, "t3", "STEP 2 · COPY THE MCP URL", S.s3.start + 0.2, true);
+  const a3 = el(s3, "a3", "card lt", "left:40px;top:320px;width:1000px;height:620px"); el(a3, "a3t", "ser", "left:36px;top:26px;font-size:80px;line-height:1;color:" + NV, "Bland MCP Server");
+  el(a3, "a3s", "", "left:36px;top:130px;width:930px;font:700 34px/1.3 var(--body);color:#33415C;white-space:normal", "A remote MCP server hosted by Bland. There's nothing to run locally.");
+  const ub = el(a3, "ub", "", "left:36px;top:290px;width:928px;height:130px;border-radius:16px;background:" + NV + ";font:800 46px/130px var(--mono);color:#fff;text-align:center;white-space:nowrap", "https://api.bland.ai/v1/mcp"); const tU = PW("p3", "URL");
+  const ul = el(a3, "ul", "", "left:36px;top:432px;width:928px;height:10px;border-radius:5px;background:" + CY + ";transform-origin:0 50%"); gsap.set(ul, { scaleX: 0 });
+  el(a3, "a3m", "mono", "left:36px;top:480px;font:800 34px/1.4 var(--mono);color:#33415C", "Transport: Streamable HTTP");
+  tl.from(a3, { opacity: 0, y: 60, duration: 0.45, ease: "power3.out" }, S.s3.start + 0.3); tl.from(ub, { scale: 0.92, duration: 0.4, ease: "back.out(1.6)" }, tU - 0.5); tl.to(ul, { scaleX: 1, duration: 0.5, ease: "power2.out" }, tU);
+  const cp = chip(s3, "cp3", 40, 980, "COPY THIS URL", { bd: CY, bg: "#fff", fg: NV, size: 34 }); tl.from(cp, { opacity: 0, scale: 0.8, duration: 0.3, ease: "back.out(1.8)" }, tU + 0.1);
+  const mn = chip(s3, "mn3", 40, 1060, "MCP PAGE ON bland.ai: NOT RECORDED YET", { bd: AM, bg: "#fff", fg: NV }); tl.from(mn, { opacity: 0, x: -50, duration: 0.3 }, PW("p3b", "hosted") + 0.1);
+  src(s3, "so3", "FROM THE BLAND DOCS (MCP overview)", PW("p3b", "hosted") + 0.3, 1130, true);
+  const bot3 = botAt(s3, "bot3", 870, 1160, 160); presenter(bot3, "s3"); speak(bot3, "p3"); speak(bot3, "p3b"); bot3.aimPoint(tl, tU - 0.2, { x: 870, y: 1160, target: [600, 560], hold: 1.2 }); bot3.react(tl, PW("p3b", "install") + 0.1, "nod");
+
+  /* ===== S4 ADD THE CONNECTOR IN CLAUDE (navy): verbatim steps from the Claude help article ===== */
+  const s4 = dbg("s4"); tag(s4, "t4", "STEP 3 · ADD THE CONNECTOR", S.s4.start + 0.2, false);
+  const r4 = ["Navigate to Customize > Connectors.", "Click “+ Add” then “Add custom connector.”", "Enter a name for the connector.", "Add your connector's remote MCP server URL. Click “Continue.”", "Review the authentication settings Claude detected… Click “Continue.”"];
+  rowsCard(s4, "r4", 40, 310, 1000, r4, false, 34, 112, S.s4.start + 0.4, 0.1);
+  const rg = mkRing(s4, "rg4", 34, 304, 1012, 104, "#fff");
+  const hops4 = [[0, PW("p4", "Customize") - 0.2], [1, PW("p4", "custom") - 0.3], [2, PW("p4", "name") - 0.2], [3, PW("p4", "paste") - 0.3], [4, PW("p4b", "authentication") - 0.3]];
+  tl.to(rg, { opacity: 1, duration: 0.2 }, hops4[0][1] - 0.1); hops4.forEach(([i, at]) => ringTo(rg, 34, 304 + i * 112, 1012, 104, at));
+  const nm = chip(s4, "nm4", 40, 900, "NAME:  Bland AI", { size: 34, bd: GR }), ur = chip(s4, "ur4", 40, 985, "URL:  https://api.bland.ai/v1/mcp", { size: 34, bd: GR });
+  tl.from(nm, { opacity: 0, x: -60, duration: 0.3 }, PW("p4", "name") - 0.1); tl.from(ur, { opacity: 0, x: -60, duration: 0.3 }, PW("p4", "paste") - 0.1);
+  const cb = el(s4, "cb4", "", "left:40px;top:1110px;width:1000px;height:120px"); const j1 = el(cb, "j1", "", "left:0;top:20px;width:250px;height:80px;border-radius:16px;border:3px solid " + CY + ";background:#0F1D38;font:800 34px/74px var(--body);color:#fff;text-align:center", "Claude"), j2 = el(cb, "j2", "", "left:750px;top:20px;width:250px;height:80px;border-radius:16px;border:3px solid " + CY + ";background:#0F1D38;font:800 34px/74px var(--body);color:#fff;text-align:center", "Bland MCP");
+  const cab = el(cb, "cab", "", "left:250px;top:56px;width:500px;height:8px;border-radius:4px;background:" + CY + ";transform-origin:0 50%"); gsap.set(cab, { scaleX: 0 }); tl.from(cb, { opacity: 0, y: 40, duration: 0.35 }, PW("p4", "paste") - 0.3); tl.to(cab, { scaleX: 1, duration: 0.7, ease: "power2.inOut" }, PW("p4", "paste") + 0.3);
+  src(s4, "so4", "FROM THE CLAUDE HELP ARTICLE (verbatim)", S.s4.start + 1.0, 1260);
+  const bot4 = botAt(s4, "bot4", 870, 1240, 150); presenter(bot4, "s4"); speak(bot4, "p4"); speak(bot4, "p4b"); bot4.react(tl, PW("p4", "paste") + 0.5, "nod");
+
+  /* ===== S5 SIGN IN + PERMISSIONS (+ Claude Code route) (paper) ===== */
+  const s5 = lbg("s5"); tag(s5, "t5", "STEP 4 · SIGN IN AND CONNECT", S.s5.start + 0.2, true);
+  const r5 = ["Sign in with your phone number, Google, or SSO", "Choose the organization the connection acts in", "Review the permissions. Uncheck “Create and change your agents” for read-only"];
+  rowsCard(s5, "r5", 40, 310, 1000, r5, true, 36, 130, S.s5.start + 0.4, 0.1);
+  const pl = chip(s5, "pl5", 40, 710, "CALLS NEED THE “PLACE PHONE CALLS” PERMISSION", { bd: AM, bg: "#fff", fg: NV, size: 28 }); tl.from(pl, { opacity: 0, x: -60, duration: 0.3 }, PW("p5", "permissions") + 0.1);
+  const cc = el(s5, "cc5", "card dk", "left:40px;top:800px;width:1000px;height:330px"); el(cc, "cc5h", "mono", "left:24px;top:14px;font:800 28px/1 var(--mono);color:" + AM, "OPTIONAL · CLAUDE CODE (TERMINAL)");
+  const c1 = el(cc, "cc5a", "mono", "left:24px;top:62px;font:700 30px/44px var(--mono);color:" + GR, "claude mcp add --transport http bland \\\n  https://api.bland.ai/v1/mcp"), c2 = el(cc, "cc5b", "mono", "left:24px;top:200px;font:700 30px/44px var(--mono);color:" + GR, "claude mcp login bland");
+  [c1, c2].forEach((c, i) => { c.style.clipPath = "inset(0 100% 0 0)"; tl.to(c, { clipPath: "inset(0 0% 0 0)", duration: i ? 0.8 : 1.4, ease: "steps(34)" }, PW("p5c", "command") - 0.3 + i * 1.4); }); tl.from(cc, { opacity: 0, y: 50, duration: 0.4 }, PW("p5c", "Prefer") - 0.2);
+  src(s5, "so5", "FROM THE BLAND DOCS (sign-in + Claude Code)", S.s5.start + 1.0, 1160, true);
+  const bot5 = botAt(s5, "bot5", 870, 1180, 160); presenter(bot5, "s5"); speak(bot5, "p5"); speak(bot5, "p5b"); speak(bot5, "p5c"); bot5.react(tl, PW("p5", "tools") + 0.2, "wow");
+
+  /* ===== S6 VERIFY (navy): a REAL result from the connected Bland MCP; the call is NOT performed ===== */
+  const s6 = dbg("s6"); tag(s6, "t6", "STEP 5 · VERIFY THE CONNECTION", S.s6.start + 0.2, false);
+  const v6 = el(s6, "v6", "card dk", "left:40px;top:310px;width:1000px;height:360px"); v6.style.borderColor = GR; el(v6, "v6h", "mono", "left:24px;top:14px;font:800 28px/1 var(--mono);color:" + GR, "REAL RESULT · BLAND CONNECTOR");
+  const vl = ["tool:    list_agents", "status:  success", "agents:  2 returned"]; const vls = vl.map((t, i) => { const d = el(v6, "v6r" + i, "mono", "left:24px;top:" + (74 + i * 74) + "px;font:700 40px/74px var(--mono);color:#fff", t); d.style.clipPath = "inset(0 100% 0 0)"; return d; });
+  const tLi = PW("p6", "list"); vls.forEach((d, i) => tl.to(d, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "steps(20)" }, tLi + i * 0.6)); tl.from(v6, { opacity: 0, y: 60, duration: 0.45 }, S.s6.start + 0.4);
+  const rg6 = mkRing(s6, "rg6", 34, 300, 1012, 82, "#fff"); tl.to(rg6, { opacity: 1, duration: 0.2 }, tLi - 0.2); ringTo(rg6, 34, 372, 1012, 82, tLi - 0.1); ringTo(rg6, 34, 446, 1012, 82, tLi + 0.5); ringTo(rg6, 34, 520, 1012, 82, tLi + 1.1);
+  const ok = chip(s6, "ok6", 40, 700, "CONNECTED · RESULT FROM THIS SESSION · NAMES HIDDEN", { size: 28, bd: GR }); tl.from(ok, { opacity: 0, x: -60, duration: 0.3 }, PW("p6", "connected") - 0.2);
+  const nc = el(s6, "nc6", "card dk", "left:40px;top:790px;width:1000px;height:330px"); nc.style.borderColor = AM; el(nc, "nc6h", "mono", "left:24px;top:14px;font:800 28px/1 var(--mono);color:" + AM, "TEST CALL · NOT PLACED IN THIS VIDEO");
+  el(nc, "nc6a", "", "left:24px;top:62px;width:950px;font:800 40px/1.25 var(--body);color:#fff;white-space:normal", "Needs your approval, your own number and Bland credits.");
+  el(nc, "nc6b", "mono", "left:24px;top:210px;font:700 29px/1.5 var(--mono);color:#9FB3D9", "create_call · wait_for_call · stop_call · get_call_log");
+  tl.from(nc, { opacity: 0, y: 60, duration: 0.45 }, PW("p6b", "approval") - 0.8);
+  src(s6, "so6", "TOOL NAMES FROM THE BLAND DOCS", PW("p6b", "approval") + 0.2, 1160);
+  const bot6 = botAt(s6, "bot6", 870, 1220, 150); presenter(bot6, "s6"); speak(bot6, "p6"); speak(bot6, "p6b"); bot6.react(tl, PW("p6", "connected") + 0.2, "celebrate");
+
+  /* ===== S7 WHAT CAN YOU DO (paper) ===== */
+  const s7 = lbg("s7"); tag(s7, "t7", "WHAT CAN YOU DO?", S.s7.start + 0.2, true);
+  const fl = el(s7, "fl7", "", "left:40px;top:320px;width:1000px;height:200px");
+  const nodes = [["CLAUDE", 0], ["BLAND MCP", 350], ["PHONE CALL", 700]]; nodes.forEach(([t, x], i) => { const n = el(fl, "n7" + i, "card lt", "left:" + x + "px;top:30px;width:300px;height:140px;font:800 36px/134px var(--body);text-align:center", t); tl.from(n, { opacity: 0, scale: 0.8, duration: 0.35, ease: "back.out(1.6)" }, S.s7.start + 0.4 + i * 0.4); });
+  [0, 1].forEach(i => { const c = el(fl, "c7" + i, "", "left:" + (300 + i * 350) + "px;top:96px;width:50px;height:8px;border-radius:4px;background:" + CY + ";transform-origin:0 50%"); gsap.set(c, { scaleX: 0 }); tl.to(c, { scaleX: 1, duration: 0.3 }, S.s7.start + 0.8 + i * 0.4); });
+  const uc = ["PERSONAL REMINDERS", "APPOINTMENT CONFIRMATIONS", "SIMPLE BUSINESS CALLS"], tR = PW("p7", "reminders"), tCf = PW("p7", "confirmations"), tOt = PW("p7", "approved");
+  uc.forEach((t, i) => { const c = el(s7, "u7" + i, "card lt", "left:40px;top:" + (580 + i * 120) + "px;width:1000px;height:100px;font:800 40px/94px var(--body);padding-left:30px"); c.textContent = t; tl.from(c, { opacity: 0, x: 100, duration: 0.35, ease: "power3.out" }, [tR, tCf, tOt][i] - 0.3); });
+  const am = el(s7, "am7", "card lt", "left:40px;top:960px;width:1000px;height:150px;font:800 36px/1.25 var(--body);padding:18px 26px;white-space:pre-wrap"); am.style.borderColor = AM; am.textContent = "MCP is the connection. Bland bills the calls: they may need credits or a paid plan."; tl.from(am, { opacity: 0, y: 50, duration: 0.4 }, PW("p7", "credits") - 0.8);
+  const bot7 = botAt(s7, "bot7", 870, 1160, 160); presenter(bot7, "s7"); speak(bot7, "p7"); bot7.aimPoint(tl, tR - 0.1, { x: 870, y: 1160, target: [600, 630], hold: 1.2 }); bot7.react(tl, PW("p7", "credits") + 0.3, "think");
+
+  /* ===== S8 CTA ===== */
+  const s8 = dbg("s8");
+  const sv = el(s8, "sv8", "ser", "left:0;right:0;top:480px;text-align:center;font-size:110px;line-height:1.05;color:#fff;white-space:pre", "SAVE · SHARE\nFOLLOW"); tl.from(sv, { opacity: 0, y: 60, scale: 1.1, duration: 0.5, ease: "back.out(1.6)" }, S.s8.start + 0.3);
+  const tFo = PW("p8", "follow") - 0.35, botO = botAt(s8, "botO", -400, 470, 300);
+  const bot8 = botAt(s8, "bot8", 870, 1120, 160); presenter(bot8, "s8"); speak(bot8, "p8"); tl.set(bot8.P.wrap, { opacity: 0 }, tFo);
+  tl.set(sv, { opacity: 0 }, tFo + 0.05);
+  Outro.build(tl, s8, tFo, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" }); speak(botO, "p8");
+
+  trans("s2", "s1", "whipR"); trans("s3", "s2", "push"); trans("s4", "s3", "whipL"); trans("s5", "s4", "push"); trans("s6", "s5", "whipR"); trans("s7", "s6", "whipL"); trans("s8", "s7", "iris");
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 300, active: "#FFFFFF", block: "#1F7FB8", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>
