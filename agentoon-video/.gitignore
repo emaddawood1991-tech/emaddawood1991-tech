@@ -2,3 +2,5 @@ node_modules/
 .hyperframes/
 **/audio/mix_raw.wav
 **/out/*-review/
+__pycache__/
+*.pyc
