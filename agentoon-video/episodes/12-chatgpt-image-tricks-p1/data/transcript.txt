@@ -1,0 +1,37 @@
+[0.3-4.4s] 15 ChatGPT image tricks. Watch what one prompt can do.
+
+[5.0-9.7s] These aren't built-in commands. They're 15 powerful prompts you can copy and try.
+
+[10.3-14.5s] One, nightfix. Brighten dark photos without turning night into day.
+
+[15.3-19.3s] Two, photorestore. Bring old damaged photos back to life.
+
+[20.4-24.5s] Three, objectremove. Erase distractions and rebuild the background.
+
+[25.4-29.7s] Four, bgremove. Cut out the subject with a transparent background.
+
+[30.4-34.6s] Five, outzoom. Extend the photo beyond its original edges.
+
+[35.4-39.2s] Six, wormseyeview. Drop the camera to the ground, looking up.
+
+[40.4-44.5s] Seven, goldenhour. Turn flat daylight into warm sunset light.
+
+[45.4-49.1s] Eight, bokeh. Keep the subject sharp, blur the background softly.
+
+[50.4-54.5s] Nine, reflection. Add believable reflections to shiny surfaces.
+
+[55.4-59.4s] Ten, motionblur. Add cinematic speed behind a sharp subject.
+
+[60.4-64.6s] Eleven, proshot. Turn a casual portrait into a professional headshot.
+
+[65.3-69.3s] Twelve, bgstudio. Swap any background for a clean studio.
+
+[70.3-74.4s] Thirteen, foodcinematic. Make an ordinary dish look editorial.
+
+[75.3-79.4s] Fourteen, productshot. Create a clean commercial product photo.
+
+[80.3-84.4s] Fifteen, sketch2real. Turn a drawing into a realistic image.
+
+[85.3-91.6s] 15 prompts. 15 transformations. Copy them, paste them, and try them on your own photos.
+
+[97.3-102.0s] Part one is done. Follow Agentoon.ai, and get ready for part two.

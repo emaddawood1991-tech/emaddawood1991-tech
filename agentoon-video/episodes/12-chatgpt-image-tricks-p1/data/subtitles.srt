@@ -1,0 +1,235 @@
+1
+00:00:00,300 --> 00:00:02,134
+15 ChatGPT image tricks.
+
+2
+00:00:02,134 --> 00:00:04,094
+Watch what one prompt can
+
+3
+00:00:04,094 --> 00:00:04,410
+do.
+
+4
+00:00:05,050 --> 00:00:06,827
+These aren't built-in commands.
+
+5
+00:00:06,827 --> 00:00:08,653
+They're 15 powerful prompts you
+
+6
+00:00:08,653 --> 00:00:09,739
+can copy and try.
+
+7
+00:00:10,350 --> 00:00:11,244
+One, nightfix.
+
+8
+00:00:11,244 --> 00:00:13,453
+Brighten dark photos without turning
+
+9
+00:00:13,453 --> 00:00:14,452
+night into day.
+
+10
+00:00:15,350 --> 00:00:16,592
+Two, photorestore.
+
+11
+00:00:16,592 --> 00:00:18,662
+Bring old damaged photos back
+
+12
+00:00:18,662 --> 00:00:19,313
+to life.
+
+13
+00:00:20,350 --> 00:00:21,611
+Three, objectremove.
+
+14
+00:00:21,611 --> 00:00:23,804
+Erase distractions and rebuild the
+
+15
+00:00:23,804 --> 00:00:24,517
+background.
+
+16
+00:00:25,350 --> 00:00:26,375
+Four, bgremove.
+
+17
+00:00:26,375 --> 00:00:28,082
+Cut out the subject with
+
+18
+00:00:28,082 --> 00:00:29,733
+a transparent background.
+
+19
+00:00:30,350 --> 00:00:31,404
+Five, outzoom.
+
+20
+00:00:31,404 --> 00:00:33,450
+Extend the photo beyond its
+
+21
+00:00:33,450 --> 00:00:34,566
+original edges.
+
+22
+00:00:35,350 --> 00:00:36,460
+Six, wormseyeview.
+
+23
+00:00:36,460 --> 00:00:37,940
+Drop the camera to the
+
+24
+00:00:37,940 --> 00:00:39,155
+ground, looking up.
+
+25
+00:00:40,350 --> 00:00:41,578
+Seven, goldenhour.
+
+26
+00:00:41,578 --> 00:00:43,567
+Turn flat daylight into warm
+
+27
+00:00:43,567 --> 00:00:44,503
+sunset light.
+
+28
+00:00:45,350 --> 00:00:46,147
+Eight, bokeh.
+
+29
+00:00:46,147 --> 00:00:47,542
+Keep the subject sharp,
+
+30
+00:00:47,542 --> 00:00:49,136
+blur the background softly.
+
+31
+00:00:50,350 --> 00:00:51,503
+Nine, reflection.
+
+32
+00:00:51,503 --> 00:00:53,866
+Add believable reflections to shiny
+
+33
+00:00:53,866 --> 00:00:54,499
+surfaces.
+
+34
+00:00:55,350 --> 00:00:56,447
+Ten, motionblur.
+
+35
+00:00:56,447 --> 00:00:58,411
+Add cinematic speed behind a
+
+36
+00:00:58,411 --> 00:00:59,393
+sharp subject.
+
+37
+00:01:00,350 --> 00:01:01,360
+Eleven, proshot.
+
+38
+00:01:01,360 --> 00:01:03,115
+Turn a casual portrait into
+
+39
+00:01:03,115 --> 00:01:04,604
+a professional headshot.
+
+40
+00:01:05,350 --> 00:01:06,531
+Twelve, bgstudio.
+
+41
+00:01:06,531 --> 00:01:08,361
+Swap any background for a
+
+42
+00:01:08,361 --> 00:01:09,305
+clean studio.
+
+43
+00:01:10,350 --> 00:01:11,895
+Thirteen, foodcinematic.
+
+44
+00:01:11,895 --> 00:01:13,727
+Make an ordinary dish look
+
+45
+00:01:13,727 --> 00:01:14,413
+editorial.
+
+46
+00:01:15,350 --> 00:01:16,741
+Fourteen, productshot.
+
+47
+00:01:16,741 --> 00:01:18,910
+Create a clean commercial product
+
+48
+00:01:18,910 --> 00:01:19,355
+photo.
+
+49
+00:01:20,350 --> 00:01:21,744
+Fifteen, sketch2real.
+
+50
+00:01:21,744 --> 00:01:23,313
+Turn a drawing into a
+
+51
+00:01:23,313 --> 00:01:24,417
+realistic image.
+
+52
+00:01:25,300 --> 00:01:26,155
+15 prompts.
+
+53
+00:01:26,155 --> 00:01:27,499
+15 transformations.
+
+54
+00:01:27,499 --> 00:01:29,148
+Copy them, paste them,
+
+55
+00:01:29,148 --> 00:01:30,736
+and try them on your
+
+56
+00:01:30,736 --> 00:01:31,591
+own photos.
+
+57
+00:01:37,300 --> 00:01:38,621
+Part one is done.
+
+58
+00:01:38,621 --> 00:01:40,963
+Follow Agentoon.ai, and get ready
+
+59
+00:01:40,963 --> 00:01:41,984
+for part two.
