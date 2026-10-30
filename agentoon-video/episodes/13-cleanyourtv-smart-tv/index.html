@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 13 CleanYourTV</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Remote Control". A white D-pad focus ring hops across real UI like a TV remote, TV bezels frame every real screenshot,
+     scene changes channel-flip. Everything on screen is the project's own README text, files or photos (MIT repo Gathin23/cleanyourtv);
+     steps/diagrams are labelled as such. No TV was connected in this production, so no live demo is shown. */
+  :root { --mint: #CFFFCF; --amber: #FFB23E; --ink: #0A0F18; --cy: #60CDFF; }
+  .chip { position: absolute; white-space: nowrap; z-index: 8; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .ser { position: absolute; font-family: var(--display); font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .bezel { position: absolute; border-radius: 22px; background: #05080D; border: 3px solid #2A3548; box-shadow: 0 30px 70px rgba(0,0,0,.6); overflow: hidden; }
+  .bezel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ring { position: absolute; border: 6px solid #fff; border-radius: 18px; box-shadow: 0 0 0 3px rgba(10,15,24,.6); z-index: 9; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+<script src="data/lipsync.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="74.6">
+  <section id="s1" class="clip scene" data-start="0.0" data-duration="6.1"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="5.5" data-duration="13.69"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="18.59" data-duration="12.3"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="30.29" data-duration="11.66"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="41.35" data-duration="10.25"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="51.0" data-duration="13.72"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="64.12" data-duration="10.48"><div id="s7i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="74.6" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, LIP = window.LIPSYNC, $ = id => document.getElementById(id), S = {"s1": {"b": 0.0, "start": 0.0, "end": 6.1, "len": 6.1}, "s2": {"b": 5.5, "start": 5.5, "end": 19.19, "len": 13.69}, "s3": {"b": 18.59, "start": 18.59, "end": 30.89, "len": 12.3}, "s4": {"b": 30.29, "start": 30.29, "end": 41.95, "len": 11.66}, "s5": {"b": 41.35, "start": 41.35, "end": 51.6, "len": 10.25}, "s6": {"b": 51.0, "start": 51.0, "end": 64.72, "len": 13.72}, "s7": {"b": 64.12, "start": 64.12, "end": 74.6, "len": 10.48}};
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”']/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word " + pid + ":" + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const MINT = "#CFFFCF", AM = "#FFB23E", CY = "#60CDFF";
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + Math.max(28, o.size || 28) + "px/1 var(--mono);letter-spacing:.04em;color:" + (o.fg || "#FFF6E8") + ";background:" + (o.bg || "rgba(10,15,24,.9)") + ";border:2px solid " + (o.bd || MINT), text); };
+  const bg = (k) => { const inn = $(k + "i"); el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 30%,#14233A 0%,#0C1522 60%,#070B12 100%)"); return inn; };
+  const img = (host, id, f, css) => { const i = document.createElement("img"); i.id = id; i.src = "assets/" + f; i.style.cssText = css || ""; host.appendChild(i); return i; };
+  const bez = (host, id, x, y, w, h, f) => { const b = el(host, id, "bezel", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px"); if (f) img(b, id + "i", f); return b; };
+  const presenter = (bot, k, face) => { bot.face(tl, 0, face || -1, 0.01); bot.rise(tl, S[k].start + 0.3, 420, 0.4); bot.blinks(tl, S[k].start, S[k].end, 1.1); bot.P.wrap.style.zIndex = 12; return bot; };
+  const speak = (bot, pid) => { const p = P(pid); bot.speak(tl, LIP, p.start, p.end); };
+  const tag = (host, id, text, t0, o) => { const c = chip(host, id, 60, 236, text, o); c.style.zIndex = 9; tl.from(c, { opacity: 0, x: -30, duration: 0.3 }, t0); return c; };
+  const src = (host, id, text, t0) => { const c = chip(host, id, 40, 1270, text, { size: 28, bd: "#5B6B85", fg: "#DDEBFF", pad: "8px 16px 10px" }); c.style.zIndex = 9; tl.from(c, { opacity: 0, duration: 0.3 }, t0); return c; };
+  /* D-pad focus ring: an SVG rect, moved by attribute tweens (no layout snapping) */
+  const mkRing = (host, id, x, y, w, h) => { const sv = svgEl(host, "svg", { id: id + "s", width: 1080, height: 1920, viewBox: "0 0 1080 1920" }); sv.style.cssText = "position:absolute;left:0;top:0;pointer-events:none;z-index:9;overflow:visible"; const r = svgEl(sv, "rect", { id, x, y, width: w, height: h, rx: 18, fill: "none", stroke: "#FFFFFF", "stroke-width": 6 }); gsap.set(r, { opacity: 0 }); return r; };
+  const ringTo = (r, x, y, w, h, at, dur) => tl.to(r, { attr: { x, y, width: w, height: h }, duration: dur == null ? 0.28 : dur, ease: "power3.out" }, at);
+  const trans = (k, prev, kind) => {
+    const b = S[k].b, o = "#" + prev + "i", n = "#" + k + "i";
+    if (kind === "push") Cam.push(tl, b, 0.5, { out: o, inn: n, ox: 540, oy: 640, scale: 3.2 });
+    else if (kind === "iris") Cam.iris(tl, b, 0.6, { inn: n, cx: 540, cy: 700, ring: "#CFFFCF", host: $("fx"), id: "ir-" + k });
+    else Cam.whip(tl, b, 0.5, { out: o, inn: n, dir: kind === "whipL" ? -1 : 1, blur: 24 });
+  };
+
+  /* ===== S1 HOOK: the project's stock-vs-new photos. Sponsored row first, clean home second ===== */
+  const s1 = bg("s1");
+  const h1 = el(s1, "h1", "ser", "left:0;right:0;top:196px;text-align:center;font-size:86px;line-height:1;color:#fff", "TV FULL OF ADS?"); tl.from(h1, { opacity: 0, y: -40, duration: 0.4, ease: "power3.out" }, 0.1);
+  const tv1 = bez(s1, "tv1", 40, 330, 1000, 750, null);
+  const a1 = img(tv1, "tv1a", "cytv-stock-home.jpg"), b1 = img(tv1, "tv1b", "cytv-new-home.jpg"); b1.style.clipPath = "inset(0 100% 0 0)";
+  const ad = el(tv1, "ad", "", "left:137px;top:220px;width:726px;height:158px;border:6px solid #FF5A4D;border-radius:14px;z-index:5"); tl.from(ad, { opacity: 0, scale: 1.25, duration: 0.35, ease: "back.out(1.8)" }, 0.9);
+  const adt = chip(tv1, "adt", 140, 164, "SPONSORED ROW", { size: 28, bd: "#FF5A4D", fg: "#fff", bg: "#7A1F18" }); adt.style.zIndex = 6; tl.from(adt, { opacity: 0, y: 20, duration: 0.3 }, 1.0);
+  const tTr = PW("p1", "transform");
+  tl.to(ad, { opacity: 0, duration: 0.2 }, tTr - 0.25); tl.to(adt, { opacity: 0, duration: 0.2 }, tTr - 0.25);
+  const wd = el(tv1, "wd", "", "left:0;top:0;width:6px;height:750px;background:#fff;z-index:6;opacity:0"); tl.set(wd, { opacity: 1 }, tTr - 0.1); tl.fromTo(wd, { x: 0 }, { x: 1000, duration: 0.9, ease: "power2.inOut" }, tTr - 0.1); tl.set(wd, { opacity: 0 }, tTr + 0.82);
+  tl.to(b1, { clipPath: "inset(0 0% 0 0)", duration: 0.9, ease: "power2.inOut" }, tTr - 0.1);
+  const k1 = chip(tv1, "k1", 16, 690, "BEFORE", { size: 28, pad: "8px 16px 10px", bd: "#FF5A4D" }), k2 = chip(tv1, "k2", 810, 690, "AFTER", { size: 28, pad: "8px 16px 10px", bd: MINT }); gsap.set(k2, { opacity: 0 }); tl.to(k1, { opacity: 0, duration: 0.2 }, tTr + 0.2); tl.to(k2, { opacity: 1, duration: 0.3 }, tTr + 0.5);
+  tl.fromTo(tv1, { scale: 1.0 }, { scale: 1.04, duration: S.s1.len, ease: "none" }, 0);
+  src(s1, "so1", "PROJECT PHOTOS · NOT MY TV", 0.4); $("so1").style.top = "1090px";
+  const bot1 = presenter(botAt(s1, "bot1", 870, 1190, 160), "s1", -1); speak(bot1, "p1"); bot1.react(tl, 1.3, "worried"); bot1.react(tl, tTr + 0.9, "wow");
+
+  /* ===== S2 THE IDEA: real banner, repo name, licence, official site ===== */
+  const s2 = bg("s2"); tag(s2, "t2", "THE PROJECT · OPEN SOURCE", S.s2.start + 0.2, { bd: MINT });
+  const bn = bez(s2, "bn", 40, 320, 1000, 275, "cytv-banner.png"); bn.style.background = "#0F1722"; tl.from(bn, { opacity: 0, y: 60, duration: 0.5, ease: "power3.out" }, S.s2.start + 0.3);
+  const tCy = PW("p2", "CleanYourTV");
+  const rp = el(s2, "rp", "", "left:40px;top:640px;width:1000px;height:130px;border-radius:22px;background:#0F1722;border:3px solid " + MINT + ";font:800 50px/130px var(--mono);color:#fff;text-align:center;white-space:nowrap", "Gathin23/cleanyourtv"); tl.from(rp, { opacity: 0, scale: 0.92, duration: 0.4, ease: "back.out(1.6)" }, tCy - 0.2);
+  const lic = chip(s2, "lic", 40, 800, "MIT LICENSE", { size: 32, bd: MINT }), site = chip(s2, "site", 40, 880, "OFFICIAL SITE · cleanyour.tv", { size: 32, bd: CY });
+  tl.from(lic, { opacity: 0, x: -60, duration: 0.3 }, PW("p2b", "MIT") - 0.15); tl.from(site, { opacity: 0, x: -60, duration: 0.3 }, PW("p2b", "official") - 0.1);
+  const nh = bez(s2, "nh", 40, 980, 1000, 280, "cytv-new-home.jpg"); nh.firstChild.style.objectPosition = "50% 72%"; tl.from(nh, { opacity: 0, y: 60, duration: 0.5 }, S.s2.start + 1.2);
+  src(s2, "so2", "SOURCE: README + docs (MIT)", S.s2.start + 1.5); $("so2").style.top = "1280px";
+  const bot2 = presenter(botAt(s2, "bot2", 870, 1190, 160), "s2", -1); speak(bot2, "p2"); speak(bot2, "p2b"); bot2.aimPoint(tl, tCy + 0.1, { x: 870, y: 1190, target: [500, 705], hold: 1.0 });
+
+  /* ===== S3 HOW IT CONNECTS: D-pad focus ring walks the README's steps ===== */
+  const s3 = bg("s3"); tag(s3, "t3", "STEP 1 · ON YOUR OWN TV", S.s3.start + 0.2, { bd: AM });
+  const steps = ["Settings", "Device Preferences", "About · OK on Build ×7", "Developer options", "USB debugging  ON"];
+  steps.forEach((t, i) => { const c = el(s3, "m" + i, "", "left:60px;top:" + (320 + i * 92) + "px;width:700px;height:78px;border-radius:16px;background:#142033;border:2px solid #2A3548;font:800 38px/78px var(--body);color:#fff;padding-left:26px;box-sizing:border-box;white-space:nowrap", t); tl.from(c, { opacity: 0, x: -80, duration: 0.3, ease: "power3.out" }, S.s3.start + 0.4 + i * 0.12); });
+  const r3 = mkRing(s3, "r3", 54, 314, 712, 90); tl.to(r3, { opacity: 1, duration: 0.2 }, S.s3.start + 0.9);
+  const tDbg = PW("p3", "debugging"), tAuth = PW("p3", "authorize"), tIns = PW("p3", "inspect");
+  const hops = [[0, S.s3.start + 1.0], [1, S.s3.start + 1.9], [2, tDbg - 1.0], [3, tDbg - 0.4], [4, tDbg + 0.1]];
+  hops.forEach(([i, at]) => ringTo(r3, 54, 314 + i * 92, 712, 90, at));
+  const flow = el(s3, "flow", "", "left:40px;top:800px;width:1000px;height:200px");
+  const mk = (id, x, w, label) => { const c = el(flow, id, "", "left:" + x + "px;top:30px;width:" + w + "px;height:130px;border-radius:20px;background:#142033;border:3px solid " + MINT + ";font:800 36px/130px var(--body);color:#fff;text-align:center", label); return c; };
+  const pc = mk("pc3", 0, 300, "COMPUTER"), tvb = mk("tv3", 700, 300, "YOUR TV");
+  const ln = el(flow, "ln3", "", "left:310px;top:92px;width:380px;height:6px;background:" + MINT + ";transform-origin:0 50%"); gsap.set(ln, { scaleX: 0 });
+  const wl = el(flow, "wl3", "mono", "left:310px;top:112px;width:380px;text-align:center;font:800 28px/1 var(--mono);color:" + CY, "SAME Wi-Fi · ADB");
+  tl.from(pc, { opacity: 0, x: -60, duration: 0.35 }, tAuth - 0.6); tl.from(tvb, { opacity: 0, x: 60, duration: 0.35 }, tAuth - 0.6); tl.to(ln, { scaleX: 1, duration: 0.5, ease: "power2.out" }, tAuth - 0.1); tl.from(wl, { opacity: 0, duration: 0.3 }, tAuth + 0.2);
+  const al = chip(s3, "al3", 60, 1020, "TV ASKS: “Allow USB debugging?”  →  YOU ACCEPT", { size: 28, bd: AM }); tl.from(al, { opacity: 0, y: 30, duration: 0.3 }, PW("p3b", "allow") - 0.3);
+  const own = chip(s3, "own3", 60, 1100, "ONLY A TV YOU OWN OR MAY TEST", { size: 28, bd: "#FF5A4D" }); tl.from(own, { opacity: 0, x: -60, duration: 0.3 }, PW("p3b", "Wi-Fi") - 0.3);
+  const tm = el(s3, "tm3", "", "left:40px;top:1170px;width:1000px;height:120px;border-radius:16px;background:#0A1018;border:2px solid #2A3548;overflow:hidden");
+  const l1 = el(tm, "tml1", "mono", "left:22px;top:12px;font:700 30px/48px var(--mono);color:#7CF2C0", "$ export TV_HOST=192.168.1.50"), l2 = el(tm, "tml2", "mono", "left:22px;top:60px;font:700 30px/48px var(--mono);color:#fff", "$ tools/venv/bin/python -I tools/tv.py --probe");
+  [l1, l2].forEach((l, i) => { l.style.clipPath = "inset(0 100% 0 0)"; tl.to(l, { clipPath: "inset(0 0% 0 0)", duration: 1.2, ease: "steps(30)" }, tIns - 1.8 + i * 1.0); });
+  src(s3, "so3", "FROM THE README · NOT RUN", S.s3.start + 1.0); $("so3").style.top = "1300px";
+  const bot3 = presenter(botAt(s3, "bot3", 870, 330, 160), "s3", -1); speak(bot3, "p3"); speak(bot3, "p3b"); bot3.react(tl, tDbg + 0.4, "nod");
+
+  /* ===== S4 CLEANING: the project's real Xiaomi list; ring on the lines; owner decides ===== */
+  const s4 = bg("s4"); tag(s4, "t4", "STEP 2 · BACKUP, THEN REVIEW", S.s4.start + 0.2, { bd: AM });
+  const card = el(s4, "c4", "", "left:40px;top:310px;width:1000px;height:790px;border-radius:22px;background:#0A1018;border:3px solid " + MINT + ";overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.6)");
+  el(card, "c4h", "", "left:0;top:0;width:1000px;height:64px;background:#16243A;border-bottom:2px solid " + MINT + ";font:700 28px/64px var(--mono);color:#DDEBFF;padding-left:24px;box-sizing:border-box;white-space:nowrap", "examples/xiaomi-mi-tv-4a/debloat.txt");
+  const L4 = [["# Everything is DISABLED, not uninstalled.", "#9FB3D9"], ["# Comment out any line you want to keep.", "#9FB3D9"], ["", ""], ["# Xiaomi telemetry", "#FFE08A"], ["com.miui.tv.analytics", "#fff"], ["com.xiaomi.statistic", "#fff"], ["", ""], ["# PatchWall and Mi content rows / promos", "#FFE08A"], ["com.mitv.tvhome.atv", "#fff"], ["com.mitv.tvhome.michannel", "#fff"], ["com.xm.webcontent", "#fff"], ["", ""], ["# Preloaded apps nobody asked for", "#FFE08A"], ["com.xiaomi.mimusic2", "#fff"]];
+  const LH4 = 50, R4 = 84;
+  L4.forEach(([t, c], i) => { if (!t) return; const d = el(card, "c4r" + i, "mono", "left:24px;top:" + (R4 + i * LH4) + "px;font:700 33px/" + LH4 + "px var(--mono);color:" + c, t); d.style.clipPath = "inset(0 100% 0 0)"; tl.to(d, { clipPath: "inset(0 0% 0 0)", duration: Math.max(0.3, t.length / 45), ease: "steps(" + t.length + ")" }, S.s4.start + 0.5 + i * 0.28); });
+  const r4 = mkRing(s4, "r4", 50, 310 + R4 + 3 * LH4 - 4, 980, LH4 + 8);
+  const tBk = PW("p4", "backs"), tUn = PW("p4", "unwanted"), tDe = PW("p4b", "decide");
+  tl.to(r4, { opacity: 1, duration: 0.2 }, tBk + 0.1); ringTo(r4, 50, 310 + R4 + 0 * LH4 - 4, 980, LH4 + 8, tBk + 0.1, 0.01); ringTo(r4, 50, 310 + R4 + 4 * LH4 - 4, 980, LH4 * 2 + 8, tUn - 0.2); ringTo(r4, 50, 310 + R4 + 8 * LH4 - 4, 980, LH4 * 3 + 8, tUn + 1.0); ringTo(r4, 50, 310 + R4 + 13 * LH4 - 4, 980, LH4 + 8, tDe - 0.6);
+  const bk = chip(s4, "bk4", 60, 1130, "1 · BACK UP FIRST", { size: 30, bd: MINT }), rv = chip(s4, "rv4", 60, 1200, "2 · YOU DECIDE WHAT STAYS", { size: 30, bd: AM });
+  tl.from(bk, { opacity: 0, x: -60, duration: 0.3 }, tBk); tl.from(rv, { opacity: 0, x: -60, duration: 0.3 }, tDe - 0.2);
+  src(s4, "so4", "REAL FILE FROM THE REPO · NOT RUN", S.s4.start + 1.0); $("so4").style.top = "1280px";
+  const bot4 = presenter(botAt(s4, "bot4", 870, 1130, 160), "s4", -1); speak(bot4, "p4"); speak(bot4, "p4b"); bot4.react(tl, tDe + 0.4, "nod");
+
+  /* ===== S5 TRANSFORMATION: project screenshots, comparison, launcher features ===== */
+  const s5 = bg("s5"); tag(s5, "t5", "STEP 3 · THE CLEAN LAUNCHER", S.s5.start + 0.2, { bd: MINT });
+  const sd = bez(s5, "sd", 40, 320, 1000, 563, "cytv-stock-vs-new-side.jpg"); tl.from(sd, { opacity: 0, scale: 0.92, duration: 0.5, ease: "back.out(1.3)" }, S.s5.start + 0.3);
+  const tCl = PW("p5", "cleaner"), tFav = PW("p5", "favorite"), tPers = PW("p5", "personalized");
+  const sw = (id, f, at, until) => { const b = bez(s5, id, 40, 320, 1000, 563, f); gsap.set(b, { opacity: 0 }); tl.to(b, { opacity: 1, scale: 1, duration: 0.35 }, at); tl.to(b, { opacity: 0, duration: 0.2 }, until); b.style.zIndex = 5; return b; };
+  sw("f1", "cytv-focus-2-up-netflix.png", tFav - 0.2, PW("p5b", "dock") - 0.1); sw("f2", "cytv-app-library.jpg", PW("p5b", "dock") - 0.1, PW("p5b", "themes") + 0.8);
+  tl.fromTo(sd, { scale: 1.0 }, { scale: 1.03, duration: S.s5.len, ease: "none" }, S.s5.start + 0.8);
+  const r5 = mkRing(s5, "r5", 36, 316, 1008, 571); tl.to(r5, { opacity: 1, duration: 0.2 }, tCl);
+  const ch = [["BEFORE → AFTER", tCl, AM], ["YOUR FAVORITE APPS IN A DOCK", tFav, MINT], ["APP LIBRARY · THEMES", PW("p5b", "dock"), CY]];
+  ch.forEach(([t, at, c], i) => { const x = chip(s5, "c5" + i, 40, 930, t, { size: 32, bd: c }); gsap.set(x, { opacity: 0 }); tl.set(x, { opacity: 1 }, at - 0.1); if (i < 2) tl.set(x, { opacity: 0 }, ch[i + 1][1] - 0.15); tl.from(x, { y: 30, duration: 0.3 }, at - 0.1); });
+  src(s5, "so5", "PROJECT SCREENSHOTS · NOT MY TV", S.s5.start + 0.8); $("so5").style.top = "1280px";
+  const bot5 = presenter(botAt(s5, "bot5", 870, 1010, 160), "s5", -1); speak(bot5, "p5"); speak(bot5, "p5b"); bot5.aimPoint(tl, tCl + 0.2, { x: 870, y: 1010, target: [700, 600], hold: 1.3 }); bot5.react(tl, PW("p5", "personalized") + 0.2, "wow");
+
+  /* ===== S6 RESTORE + COMPATIBILITY: README lines verbatim ===== */
+  const s6 = bg("s6"); tag(s6, "t6", "UNDO IT · CHECK YOUR TV", S.s6.start + 0.2, { bd: AM });
+  const rc = el(s6, "rc", "", "left:40px;top:310px;width:1000px;height:340px;border-radius:22px;background:#0A1018;border:3px solid " + MINT + ";overflow:hidden");
+  el(rc, "rch", "", "left:0;top:0;width:1000px;height:64px;background:#16243A;border-bottom:2px solid " + MINT + ";font:700 28px/64px var(--mono);color:#DDEBFF;padding-left:24px;box-sizing:border-box", "README · Restoring your TV");
+  const rl = ["TV_HOST=192.168.1.50 \\", "  tools/restore.sh \\", "  examples/<your tv>/debloat.txt"];
+  rl.forEach((t, i) => { const d = el(rc, "rl" + i, "mono", "left:24px;top:" + (88 + i * 62) + "px;font:700 36px/62px var(--mono);color:#7CF2C0", t); d.style.clipPath = "inset(0 100% 0 0)"; tl.to(d, { clipPath: "inset(0 0% 0 0)", duration: 0.9, ease: "steps(26)" }, PW("p6", "restore") - 0.2 + i * 0.7); });
+  const tSam = PW("p6b", "Samsung"), tDeb = PW("p6b", "debugging");
+  const rows = [["WORKS", "Android TV · Google TV", MINT], ["DEBLOAT ONLY", "Fire TV", AM], ["NOT SUPPORTED (NO ADB)", "Samsung · LG · Roku · Vizio · Hisense VIDAA", "#FF5A4D"]];
+  rows.forEach(([a, b, c], i) => { const r = el(s6, "cm" + i, "", "left:40px;top:" + (690 + i * 150) + "px;width:1000px;height:130px;border-radius:18px;background:#0F1722;border:3px solid " + c + ";box-sizing:border-box;padding:12px 24px"); el(r, "cma" + i, "mono", "left:24px;top:12px;font:800 28px/1 var(--mono);color:" + c, a); el(r, "cmb" + i, "", "left:24px;top:52px;font:800 38px/1.2 var(--body);color:#fff;white-space:nowrap", b); tl.from(r, { opacity: 0, x: 100, duration: 0.35, ease: "power3.out" }, (i === 2 ? tSam : PW("p6b", "Android")) - 0.3 + (i === 1 ? 0.4 : 0)); });
+  const off = chip(s6, "off6", 60, 1150, "TURN DEBUGGING OFF WHEN YOU'RE DONE", { size: 30, bd: AM }); tl.from(off, { opacity: 0, y: 30, duration: 0.3 }, tDeb - 0.3);
+  src(s6, "so6", "FROM THE README + restore.md", S.s6.start + 1.0); $("so6").style.top = "1280px";
+  const bot6 = presenter(botAt(s6, "bot6", 870, 1130, 160), "s6", -1); speak(bot6, "p6"); speak(bot6, "p6b"); bot6.react(tl, PW("p6", "restore") + 0.3, "nod");
+
+  /* ===== S7 CTA ===== */
+  const s7 = bg("s7");
+  const t7 = bez(s7, "tv7", 40, 330, 1000, 563, "cytv-new-home.jpg"); tl.from(t7, { opacity: 0, scale: 0.94, duration: 0.5 }, S.s7.start + 0.3); tl.fromTo(t7, { scale: 1.0 }, { scale: 1.04, duration: 6, ease: "none" }, S.s7.start + 0.8);
+  tag(s7, "t7", "A CLEANER HOME SCREEN", S.s7.start + 0.2, { bd: MINT });
+  const wn = el(s7, "wn7", "", "left:40px;top:930px;width:1000px;padding:20px 24px;border-radius:20px;background:#0F1722;border:3px solid " + AM + ";font:800 40px/1.2 var(--body);color:#fff;text-align:center;white-space:pre;box-sizing:border-box", "DOESN'T REMOVE EVERY AD\nINSIDE STREAMING APPS"); tl.from(wn, { opacity: 0, y: 40, duration: 0.4, ease: "back.out(1.5)" }, PW("p7", "remove") - 0.2);
+  src(s7, "so7", "PROJECT PHOTO · NOT MY TV", S.s7.start + 1.0); $("so7").style.top = "1080px";
+  const tFo = PW("p7", "Follow") - 0.35, botO = botAt(s7, "botO", -400, 470, 300);
+  const bot7 = presenter(botAt(s7, "bot7", 870, 1190, 160), "s7", -1); speak(bot7, "p7"); tl.set(bot7.P.wrap, { opacity: 0 }, tFo);
+  [t7, $("t7"), $("so7"), wn].forEach(e => tl.set(e, { opacity: 0 }, tFo + 0.05));
+  Outro.build(tl, s7, tFo, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" }); speak(botO, "p7");
+
+  trans("s2", "s1", "whipR"); trans("s3", "s2", "push"); trans("s4", "s3", "whipL"); trans("s5", "s4", "push"); trans("s6", "s5", "whipR"); trans("s7", "s6", "iris");
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 300, active: "#FFFFFF", block: "#2F8F5B", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

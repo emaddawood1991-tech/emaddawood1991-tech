@@ -1,0 +1,3 @@
+{ "title": "TODO", "voice": "am_michael", "speed": 1.1, "total": 75.0,
+  "phrases": [ {"id": "p0", "speak": "TODO hook line.", "show": "TODO hook line."} ],
+  "music": [ {"t0": 0, "t1": 75, "mood": "hook"} ], "sfx": [] }

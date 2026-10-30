@@ -1,0 +1,23 @@
+[0.2-5.3s] Your smart TV is packed with ads? Claude Code can help transform its home screen!
+
+[5.6-12.5s] There's an open-source project called CleanYourTV that helps customize supported Android and Google TVs.
+
+[12.8-18.3s] It's on GitHub under an MIT license, with an official site, cleanyour.tv.
+
+[18.7-25.3s] On your own TV, enable debugging, authorize your computer, and let the tool inspect what's installed.
+
+[25.6-30.0s] Your computer must be on the same Wi-Fi, and the TV asks you to allow it.
+
+[30.4-36.2s] It backs up your settings, then helps identify unwanted preinstalled apps and recommendations.
+
+[36.5-41.1s] Nothing is uninstalled. Apps are only disabled, and you decide what stays.
+
+[41.4-46.9s] Then you can switch to a cleaner launcher, with your favorite apps and a more personalized home screen.
+
+[47.1-50.7s] It's a small launcher with a dock, an app library and themes.
+
+[51.1-56.7s] And because the changes can be reversed, you can restore the previous setup if something doesn't work.
+
+[57.0-63.9s] It works on Android and Google TVs, not Samsung, LG or Roku. Turn debugging off afterward.
+
+[64.2-73.9s] It won't remove every ad inside streaming apps, but it can make your TV home screen much cleaner. Follow Agentoon.ai for more AI tools!

@@ -1,0 +1,179 @@
+1
+00:00:00,200 --> 00:00:01,711
+Your smart TV is packed
+
+2
+00:00:01,711 --> 00:00:02,336
+with ads?
+
+3
+00:00:02,336 --> 00:00:04,212
+Claude Code can help transform
+
+4
+00:00:04,212 --> 00:00:05,254
+its home screen!
+
+5
+00:00:05,604 --> 00:00:08,103
+There's an open-source project called
+
+6
+00:00:08,103 --> 00:00:10,892
+CleanYourTV that helps customize supported
+
+7
+00:00:10,892 --> 00:00:12,519
+Android and Google TVs.
+
+8
+00:00:12,799 --> 00:00:14,666
+It's on GitHub under an
+
+9
+00:00:14,666 --> 00:00:16,920
+MIT license, with an official
+
+10
+00:00:16,920 --> 00:00:18,337
+site, cleanyour.tv.
+
+11
+00:00:18,687 --> 00:00:19,815
+On your own TV,
+
+12
+00:00:19,815 --> 00:00:22,520
+enable debugging, authorize your computer,
+
+13
+00:00:22,520 --> 00:00:24,211
+and let the tool inspect
+
+14
+00:00:24,211 --> 00:00:25,338
+what's installed.
+
+15
+00:00:25,618 --> 00:00:27,093
+Your computer must be on
+
+16
+00:00:27,093 --> 00:00:28,027
+the same Wi-Fi,
+
+17
+00:00:28,027 --> 00:00:29,256
+and the TV asks you
+
+18
+00:00:29,256 --> 00:00:30,043
+to allow it.
+
+19
+00:00:30,393 --> 00:00:32,119
+It backs up your settings,
+
+20
+00:00:32,119 --> 00:00:34,653
+then helps identify unwanted preinstalled
+
+21
+00:00:34,653 --> 00:00:36,217
+apps and recommendations.
+
+22
+00:00:36,497 --> 00:00:37,925
+Nothing is uninstalled.
+
+23
+00:00:37,925 --> 00:00:39,406
+Apps are only disabled,
+
+24
+00:00:39,406 --> 00:00:41,099
+and you decide what stays.
+
+25
+00:00:41,449 --> 00:00:42,691
+Then you can switch to
+
+26
+00:00:42,691 --> 00:00:43,711
+a cleaner launcher,
+
+27
+00:00:43,711 --> 00:00:45,175
+with your favorite apps and
+
+28
+00:00:45,175 --> 00:00:46,861
+a more personalized home screen.
+
+29
+00:00:47,141 --> 00:00:48,700
+It's a small launcher with
+
+30
+00:00:48,700 --> 00:00:50,064
+a dock, an app library
+
+31
+00:00:50,064 --> 00:00:50,746
+and themes.
+
+32
+00:00:51,096 --> 00:00:52,644
+And because the changes can
+
+33
+00:00:52,644 --> 00:00:54,239
+be reversed, you can restore
+
+34
+00:00:54,239 --> 00:00:55,975
+the previous setup if something
+
+35
+00:00:55,975 --> 00:00:56,725
+doesn't work.
+
+36
+00:00:57,005 --> 00:00:58,867
+It works on Android and
+
+37
+00:00:58,867 --> 00:01:00,729
+Google TVs, not Samsung,
+
+38
+00:01:00,729 --> 00:01:01,692
+LG or Roku.
+
+39
+00:01:01,692 --> 00:01:03,874
+Turn debugging off afterward.
+
+40
+00:01:04,224 --> 00:01:06,033
+It won't remove every ad
+
+41
+00:01:06,033 --> 00:01:07,601
+inside streaming apps,
+
+42
+00:01:07,601 --> 00:01:09,168
+but it can make your
+
+43
+00:01:09,168 --> 00:01:11,218
+TV home screen much cleaner.
+
+44
+00:01:11,218 --> 00:01:13,388
+Follow Agentoon.ai for more AI
+
+45
+00:01:13,388 --> 00:01:13,871
+tools!

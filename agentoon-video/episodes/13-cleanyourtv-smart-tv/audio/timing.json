@@ -1,0 +1,1031 @@
+{
+ "voice": "am_michael",
+ "speed": 1.1,
+ "wpm": 165,
+ "total": 74.6,
+ "phrases": [
+  {
+   "id": "p1",
+   "scene": "s1",
+   "start": 0.2,
+   "end": 5.254,
+   "show": "Your smart TV is packed with ads? Claude Code can help transform its home screen!",
+   "speak": "Your smart TV is packed with ads? Claude Code can help transform its home screen!"
+  },
+  {
+   "id": "p2",
+   "scene": "s2",
+   "start": 5.604,
+   "end": 12.519,
+   "show": "There's an open-source project called CleanYourTV that helps customize supported Android and Google TVs.",
+   "speak": "There's an open-source project called CleanYourTV that helps customize supported Android and Google TVs."
+  },
+  {
+   "id": "p2b",
+   "scene": "s2",
+   "start": 12.799,
+   "end": 18.337,
+   "show": "It's on GitHub under an MIT license, with an official site, cleanyour.tv.",
+   "speak": "It's on GitHub under an M I T license, with an official site, cleanyour dot T V."
+  },
+  {
+   "id": "p3",
+   "scene": "s3",
+   "start": 18.687,
+   "end": 25.338,
+   "show": "On your own TV, enable debugging, authorize your computer, and let the tool inspect what's installed.",
+   "speak": "On your own TV, enable debugging, authorize your computer, and let the tool inspect what's installed."
+  },
+  {
+   "id": "p3b",
+   "scene": "s3",
+   "start": 25.618,
+   "end": 30.043,
+   "show": "Your computer must be on the same Wi-Fi, and the TV asks you to allow it.",
+   "speak": "Your computer must be on the same Wi-Fi, and the TV asks you to allow it."
+  },
+  {
+   "id": "p4",
+   "scene": "s4",
+   "start": 30.393,
+   "end": 36.217,
+   "show": "It backs up your settings, then helps identify unwanted preinstalled apps and recommendations.",
+   "speak": "It backs up your settings, then helps identify unwanted preinstalled apps and recommendations."
+  },
+  {
+   "id": "p4b",
+   "scene": "s4",
+   "start": 36.497,
+   "end": 41.099,
+   "show": "Nothing is uninstalled. Apps are only disabled, and you decide what stays.",
+   "speak": "Nothing is uninstalled. Apps are only disabled, and you decide what stays."
+  },
+  {
+   "id": "p5",
+   "scene": "s5",
+   "start": 41.449,
+   "end": 46.861,
+   "show": "Then you can switch to a cleaner launcher, with your favorite apps and a more personalized home screen.",
+   "speak": "Then you can switch to a cleaner launcher, with your favorite apps and a more personalized home screen."
+  },
+  {
+   "id": "p5b",
+   "scene": "s5",
+   "start": 47.141,
+   "end": 50.746,
+   "show": "It's a small launcher with a dock, an app library and themes.",
+   "speak": "It's a small launcher with a dock, an app library and themes."
+  },
+  {
+   "id": "p6",
+   "scene": "s6",
+   "start": 51.096,
+   "end": 56.725,
+   "show": "And because the changes can be reversed, you can restore the previous setup if something doesn't work.",
+   "speak": "And because the changes can be reversed, you can restore the previous setup if something doesn't work."
+  },
+  {
+   "id": "p6b",
+   "scene": "s6",
+   "start": 57.005,
+   "end": 63.874,
+   "show": "It works on Android and Google TVs, not Samsung, LG or Roku. Turn debugging off afterward.",
+   "speak": "It works on Android and Google TVs, not Samsung, LG or Roku. Turn debugging off afterward."
+  },
+  {
+   "id": "p7",
+   "scene": "s7",
+   "start": 64.224,
+   "end": 73.871,
+   "show": "It won't remove every ad inside streaming apps, but it can make your TV home screen much cleaner. Follow Agentoon.ai for more AI tools!",
+   "speak": "It won't remove every ad inside streaming apps, but it can make your TV home screen much cleaner. Follow Agentoon dot A I for more AI tools!"
+  }
+ ],
+ "words": [
+  {
+   "w": "Your",
+   "s": 0.2,
+   "e": 0.513
+  },
+  {
+   "w": "smart",
+   "s": 0.513,
+   "e": 0.877
+  },
+  {
+   "w": "TV",
+   "s": 0.877,
+   "e": 1.086
+  },
+  {
+   "w": "is",
+   "s": 1.086,
+   "e": 1.294
+  },
+  {
+   "w": "packed",
+   "s": 1.294,
+   "e": 1.711
+  },
+  {
+   "w": "with",
+   "s": 1.711,
+   "e": 2.024
+  },
+  {
+   "w": "ads?",
+   "s": 2.024,
+   "e": 2.336
+  },
+  {
+   "w": "Claude",
+   "s": 2.336,
+   "e": 2.753
+  },
+  {
+   "w": "Code",
+   "s": 2.753,
+   "e": 3.066
+  },
+  {
+   "w": "can",
+   "s": 3.066,
+   "e": 3.326
+  },
+  {
+   "w": "help",
+   "s": 3.326,
+   "e": 3.639
+  },
+  {
+   "w": "transform",
+   "s": 3.639,
+   "e": 4.212
+  },
+  {
+   "w": "its",
+   "s": 4.212,
+   "e": 4.473
+  },
+  {
+   "w": "home",
+   "s": 4.473,
+   "e": 4.785
+  },
+  {
+   "w": "screen!",
+   "s": 4.785,
+   "e": 5.254
+  },
+  {
+   "w": "There's",
+   "s": 5.604,
+   "e": 6.127
+  },
+  {
+   "w": "an",
+   "s": 6.127,
+   "e": 6.36
+  },
+  {
+   "w": "open-source",
+   "s": 6.36,
+   "e": 7.115
+  },
+  {
+   "w": "project",
+   "s": 7.115,
+   "e": 7.638
+  },
+  {
+   "w": "called",
+   "s": 7.638,
+   "e": 8.103
+  },
+  {
+   "w": "CleanYourTV",
+   "s": 8.103,
+   "e": 8.858
+  },
+  {
+   "w": "that",
+   "s": 8.858,
+   "e": 9.207
+  },
+  {
+   "w": "helps",
+   "s": 9.207,
+   "e": 9.613
+  },
+  {
+   "w": "customize",
+   "s": 9.613,
+   "e": 10.252
+  },
+  {
+   "w": "supported",
+   "s": 10.252,
+   "e": 10.892
+  },
+  {
+   "w": "Android",
+   "s": 10.892,
+   "e": 11.415
+  },
+  {
+   "w": "and",
+   "s": 11.415,
+   "e": 11.705
+  },
+  {
+   "w": "Google",
+   "s": 11.705,
+   "e": 12.17
+  },
+  {
+   "w": "TVs.",
+   "s": 12.17,
+   "e": 12.519
+  },
+  {
+   "w": "It's",
+   "s": 12.799,
+   "e": 13.185
+  },
+  {
+   "w": "on",
+   "s": 13.185,
+   "e": 13.443
+  },
+  {
+   "w": "GitHub",
+   "s": 13.443,
+   "e": 13.958
+  },
+  {
+   "w": "under",
+   "s": 13.958,
+   "e": 14.409
+  },
+  {
+   "w": "an",
+   "s": 14.409,
+   "e": 14.666
+  },
+  {
+   "w": "MIT",
+   "s": 14.666,
+   "e": 14.988
+  },
+  {
+   "w": "license,",
+   "s": 14.988,
+   "e": 15.632
+  },
+  {
+   "w": "with",
+   "s": 15.632,
+   "e": 16.019
+  },
+  {
+   "w": "an",
+   "s": 16.019,
+   "e": 16.276
+  },
+  {
+   "w": "official",
+   "s": 16.276,
+   "e": 16.92
+  },
+  {
+   "w": "site,",
+   "s": 16.92,
+   "e": 17.371
+  },
+  {
+   "w": "cleanyour.tv.",
+   "s": 17.371,
+   "e": 18.337
+  },
+  {
+   "w": "On",
+   "s": 18.687,
+   "e": 18.913
+  },
+  {
+   "w": "your",
+   "s": 18.913,
+   "e": 19.251
+  },
+  {
+   "w": "own",
+   "s": 19.251,
+   "e": 19.533
+  },
+  {
+   "w": "TV,",
+   "s": 19.533,
+   "e": 19.815
+  },
+  {
+   "w": "enable",
+   "s": 19.815,
+   "e": 20.265
+  },
+  {
+   "w": "debugging,",
+   "s": 20.265,
+   "e": 20.942
+  },
+  {
+   "w": "authorize",
+   "s": 20.942,
+   "e": 21.562
+  },
+  {
+   "w": "your",
+   "s": 21.562,
+   "e": 21.9
+  },
+  {
+   "w": "computer,",
+   "s": 21.9,
+   "e": 22.52
+  },
+  {
+   "w": "and",
+   "s": 22.52,
+   "e": 22.802
+  },
+  {
+   "w": "let",
+   "s": 22.802,
+   "e": 23.084
+  },
+  {
+   "w": "the",
+   "s": 23.084,
+   "e": 23.365
+  },
+  {
+   "w": "tool",
+   "s": 23.365,
+   "e": 23.704
+  },
+  {
+   "w": "inspect",
+   "s": 23.704,
+   "e": 24.211
+  },
+  {
+   "w": "what's",
+   "s": 24.211,
+   "e": 24.662
+  },
+  {
+   "w": "installed.",
+   "s": 24.662,
+   "e": 25.338
+  },
+  {
+   "w": "Your",
+   "s": 25.618,
+   "e": 25.913
+  },
+  {
+   "w": "computer",
+   "s": 25.913,
+   "e": 26.405
+  },
+  {
+   "w": "must",
+   "s": 26.405,
+   "e": 26.7
+  },
+  {
+   "w": "be",
+   "s": 26.7,
+   "e": 26.897
+  },
+  {
+   "w": "on",
+   "s": 26.897,
+   "e": 27.093
+  },
+  {
+   "w": "the",
+   "s": 27.093,
+   "e": 27.339
+  },
+  {
+   "w": "same",
+   "s": 27.339,
+   "e": 27.634
+  },
+  {
+   "w": "Wi-Fi,",
+   "s": 27.634,
+   "e": 28.027
+  },
+  {
+   "w": "and",
+   "s": 28.027,
+   "e": 28.273
+  },
+  {
+   "w": "the",
+   "s": 28.273,
+   "e": 28.519
+  },
+  {
+   "w": "TV",
+   "s": 28.519,
+   "e": 28.716
+  },
+  {
+   "w": "asks",
+   "s": 28.716,
+   "e": 29.011
+  },
+  {
+   "w": "you",
+   "s": 29.011,
+   "e": 29.256
+  },
+  {
+   "w": "to",
+   "s": 29.256,
+   "e": 29.453
+  },
+  {
+   "w": "allow",
+   "s": 29.453,
+   "e": 29.797
+  },
+  {
+   "w": "it.",
+   "s": 29.797,
+   "e": 30.043
+  },
+  {
+   "w": "It",
+   "s": 30.393,
+   "e": 30.609
+  },
+  {
+   "w": "backs",
+   "s": 30.609,
+   "e": 30.986
+  },
+  {
+   "w": "up",
+   "s": 30.986,
+   "e": 31.202
+  },
+  {
+   "w": "your",
+   "s": 31.202,
+   "e": 31.525
+  },
+  {
+   "w": "settings,",
+   "s": 31.525,
+   "e": 32.119
+  },
+  {
+   "w": "then",
+   "s": 32.119,
+   "e": 32.442
+  },
+  {
+   "w": "helps",
+   "s": 32.442,
+   "e": 32.82
+  },
+  {
+   "w": "identify",
+   "s": 32.82,
+   "e": 33.359
+  },
+  {
+   "w": "unwanted",
+   "s": 33.359,
+   "e": 33.898
+  },
+  {
+   "w": "preinstalled",
+   "s": 33.898,
+   "e": 34.653
+  },
+  {
+   "w": "apps",
+   "s": 34.653,
+   "e": 34.977
+  },
+  {
+   "w": "and",
+   "s": 34.977,
+   "e": 35.246
+  },
+  {
+   "w": "recommendations.",
+   "s": 35.246,
+   "e": 36.217
+  },
+  {
+   "w": "Nothing",
+   "s": 36.497,
+   "e": 36.973
+  },
+  {
+   "w": "is",
+   "s": 36.973,
+   "e": 37.185
+  },
+  {
+   "w": "uninstalled.",
+   "s": 37.185,
+   "e": 37.925
+  },
+  {
+   "w": "Apps",
+   "s": 37.925,
+   "e": 38.242
+  },
+  {
+   "w": "are",
+   "s": 38.242,
+   "e": 38.507
+  },
+  {
+   "w": "only",
+   "s": 38.507,
+   "e": 38.824
+  },
+  {
+   "w": "disabled,",
+   "s": 38.824,
+   "e": 39.406
+  },
+  {
+   "w": "and",
+   "s": 39.406,
+   "e": 39.671
+  },
+  {
+   "w": "you",
+   "s": 39.671,
+   "e": 39.935
+  },
+  {
+   "w": "decide",
+   "s": 39.935,
+   "e": 40.358
+  },
+  {
+   "w": "what",
+   "s": 40.358,
+   "e": 40.676
+  },
+  {
+   "w": "stays.",
+   "s": 40.676,
+   "e": 41.099
+  },
+  {
+   "w": "Then",
+   "s": 41.449,
+   "e": 41.715
+  },
+  {
+   "w": "you",
+   "s": 41.715,
+   "e": 41.937
+  },
+  {
+   "w": "can",
+   "s": 41.937,
+   "e": 42.159
+  },
+  {
+   "w": "switch",
+   "s": 42.159,
+   "e": 42.513
+  },
+  {
+   "w": "to",
+   "s": 42.513,
+   "e": 42.691
+  },
+  {
+   "w": "a",
+   "s": 42.691,
+   "e": 42.824
+  },
+  {
+   "w": "cleaner",
+   "s": 42.824,
+   "e": 43.223
+  },
+  {
+   "w": "launcher,",
+   "s": 43.223,
+   "e": 43.711
+  },
+  {
+   "w": "with",
+   "s": 43.711,
+   "e": 43.977
+  },
+  {
+   "w": "your",
+   "s": 43.977,
+   "e": 44.243
+  },
+  {
+   "w": "favorite",
+   "s": 44.243,
+   "e": 44.687
+  },
+  {
+   "w": "apps",
+   "s": 44.687,
+   "e": 44.953
+  },
+  {
+   "w": "and",
+   "s": 44.953,
+   "e": 45.175
+  },
+  {
+   "w": "a",
+   "s": 45.175,
+   "e": 45.308
+  },
+  {
+   "w": "more",
+   "s": 45.308,
+   "e": 45.574
+  },
+  {
+   "w": "personalized",
+   "s": 45.574,
+   "e": 46.195
+  },
+  {
+   "w": "home",
+   "s": 46.195,
+   "e": 46.461
+  },
+  {
+   "w": "screen.",
+   "s": 46.461,
+   "e": 46.861
+  },
+  {
+   "w": "It's",
+   "s": 47.141,
+   "e": 47.433
+  },
+  {
+   "w": "a",
+   "s": 47.433,
+   "e": 47.579
+  },
+  {
+   "w": "small",
+   "s": 47.579,
+   "e": 47.92
+  },
+  {
+   "w": "launcher",
+   "s": 47.92,
+   "e": 48.407
+  },
+  {
+   "w": "with",
+   "s": 48.407,
+   "e": 48.7
+  },
+  {
+   "w": "a",
+   "s": 48.7,
+   "e": 48.846
+  },
+  {
+   "w": "dock,",
+   "s": 48.846,
+   "e": 49.187
+  },
+  {
+   "w": "an",
+   "s": 49.187,
+   "e": 49.382
+  },
+  {
+   "w": "app",
+   "s": 49.382,
+   "e": 49.625
+  },
+  {
+   "w": "library",
+   "s": 49.625,
+   "e": 50.064
+  },
+  {
+   "w": "and",
+   "s": 50.064,
+   "e": 50.307
+  },
+  {
+   "w": "themes.",
+   "s": 50.307,
+   "e": 50.746
+  },
+  {
+   "w": "And",
+   "s": 51.096,
+   "e": 51.33
+  },
+  {
+   "w": "because",
+   "s": 51.33,
+   "e": 51.753
+  },
+  {
+   "w": "the",
+   "s": 51.753,
+   "e": 51.987
+  },
+  {
+   "w": "changes",
+   "s": 51.987,
+   "e": 52.409
+  },
+  {
+   "w": "can",
+   "s": 52.409,
+   "e": 52.644
+  },
+  {
+   "w": "be",
+   "s": 52.644,
+   "e": 52.832
+  },
+  {
+   "w": "reversed,",
+   "s": 52.832,
+   "e": 53.348
+  },
+  {
+   "w": "you",
+   "s": 53.348,
+   "e": 53.582
+  },
+  {
+   "w": "can",
+   "s": 53.582,
+   "e": 53.817
+  },
+  {
+   "w": "restore",
+   "s": 53.817,
+   "e": 54.239
+  },
+  {
+   "w": "the",
+   "s": 54.239,
+   "e": 54.474
+  },
+  {
+   "w": "previous",
+   "s": 54.474,
+   "e": 54.943
+  },
+  {
+   "w": "setup",
+   "s": 54.943,
+   "e": 55.271
+  },
+  {
+   "w": "if",
+   "s": 55.271,
+   "e": 55.459
+  },
+  {
+   "w": "something",
+   "s": 55.459,
+   "e": 55.975
+  },
+  {
+   "w": "doesn't",
+   "s": 55.975,
+   "e": 56.397
+  },
+  {
+   "w": "work.",
+   "s": 56.397,
+   "e": 56.725
+  },
+  {
+   "w": "It",
+   "s": 57.005,
+   "e": 57.262
+  },
+  {
+   "w": "works",
+   "s": 57.262,
+   "e": 57.711
+  },
+  {
+   "w": "on",
+   "s": 57.711,
+   "e": 57.968
+  },
+  {
+   "w": "Android",
+   "s": 57.968,
+   "e": 58.546
+  },
+  {
+   "w": "and",
+   "s": 58.546,
+   "e": 58.867
+  },
+  {
+   "w": "Google",
+   "s": 58.867,
+   "e": 59.381
+  },
+  {
+   "w": "TVs,",
+   "s": 59.381,
+   "e": 59.766
+  },
+  {
+   "w": "not",
+   "s": 59.766,
+   "e": 60.087
+  },
+  {
+   "w": "Samsung,",
+   "s": 60.087,
+   "e": 60.729
+  },
+  {
+   "w": "LG",
+   "s": 60.729,
+   "e": 60.985
+  },
+  {
+   "w": "or",
+   "s": 60.985,
+   "e": 61.242
+  },
+  {
+   "w": "Roku.",
+   "s": 61.242,
+   "e": 61.692
+  },
+  {
+   "w": "Turn",
+   "s": 61.692,
+   "e": 62.077
+  },
+  {
+   "w": "debugging",
+   "s": 62.077,
+   "e": 62.783
+  },
+  {
+   "w": "off",
+   "s": 62.783,
+   "e": 63.104
+  },
+  {
+   "w": "afterward.",
+   "s": 63.104,
+   "e": 63.874
+  },
+  {
+   "w": "It",
+   "s": 64.224,
+   "e": 64.465
+  },
+  {
+   "w": "won't",
+   "s": 64.465,
+   "e": 64.887
+  },
+  {
+   "w": "remove",
+   "s": 64.887,
+   "e": 65.37
+  },
+  {
+   "w": "every",
+   "s": 65.37,
+   "e": 65.792
+  },
+  {
+   "w": "ad",
+   "s": 65.792,
+   "e": 66.033
+  },
+  {
+   "w": "inside",
+   "s": 66.033,
+   "e": 66.515
+  },
+  {
+   "w": "streaming",
+   "s": 66.515,
+   "e": 67.179
+  },
+  {
+   "w": "apps,",
+   "s": 67.179,
+   "e": 67.601
+  },
+  {
+   "w": "but",
+   "s": 67.601,
+   "e": 67.902
+  },
+  {
+   "w": "it",
+   "s": 67.902,
+   "e": 68.143
+  },
+  {
+   "w": "can",
+   "s": 68.143,
+   "e": 68.445
+  },
+  {
+   "w": "make",
+   "s": 68.445,
+   "e": 68.806
+  },
+  {
+   "w": "your",
+   "s": 68.806,
+   "e": 69.168
+  },
+  {
+   "w": "TV",
+   "s": 69.168,
+   "e": 69.409
+  },
+  {
+   "w": "home",
+   "s": 69.409,
+   "e": 69.771
+  },
+  {
+   "w": "screen",
+   "s": 69.771,
+   "e": 70.253
+  },
+  {
+   "w": "much",
+   "s": 70.253,
+   "e": 70.615
+  },
+  {
+   "w": "cleaner.",
+   "s": 70.615,
+   "e": 71.218
+  },
+  {
+   "w": "Follow",
+   "s": 71.218,
+   "e": 71.7
+  },
+  {
+   "w": "Agentoon.ai",
+   "s": 71.7,
+   "e": 72.484
+  },
+  {
+   "w": "for",
+   "s": 72.484,
+   "e": 72.786
+  },
+  {
+   "w": "more",
+   "s": 72.786,
+   "e": 73.147
+  },
+  {
+   "w": "AI",
+   "s": 73.147,
+   "e": 73.388
+  },
+  {
+   "w": "tools!",
+   "s": 73.388,
+   "e": 73.871
+  }
+ ]
+}
