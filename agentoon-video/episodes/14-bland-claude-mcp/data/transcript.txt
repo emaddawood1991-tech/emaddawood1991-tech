@@ -1,0 +1,27 @@
+[0.2-5.0s] What if Claude could actually call your phone? Here's how to connect it using MCP.
+
+[5.4-11.5s] First, open Bland AI and create an account. It's a platform for AI-powered voice calls.
+
+[11.8-14.9s] You can sign in with a phone number, Google, or SSO.
+
+[15.3-20.9s] Next, open Bland's MCP integration page and copy its official server URL.
+
+[21.2-24.1s] It's a hosted server, so there's nothing to install.
+
+[24.5-32.9s] Now open Claude, go to Customize, then Connectors. Add a custom connector, name it Bland AI, and paste the MCP URL.
+
+[33.2-37.4s] Claude shows its authentication settings. Review them, then continue.
+
+[37.8-45.3s] Sign in to Bland, choose your organization, and review the permissions. Now Claude can access Bland's available tools.
+
+[45.6-49.6s] For read-only access, uncheck the permission to change your agents.
+
+[49.9-53.8s] Prefer Claude Code? Add the server with one command, then log in.
+
+[54.2-59.1s] Let's test it. Ask Claude to list your Bland agents. If it answers, you're connected.
+
+[59.4-63.9s] Placing a real call needs your approval, your own number, and Bland credits.
+
+[64.3-72.6s] You can use this for reminders, confirmations, and other approved phone tasks. Calling features may require credits or a paid plan.
+
+[73.0-79.2s] Save this tutorial, share it with a friend, and follow Agentoon.ai for more AI tools!

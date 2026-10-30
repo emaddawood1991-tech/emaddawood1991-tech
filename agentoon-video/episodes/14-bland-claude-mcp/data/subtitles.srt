@@ -1,0 +1,207 @@
+1
+00:00:00,200 --> 00:00:01,912
+What if Claude could actually
+
+2
+00:00:01,912 --> 00:00:02,890
+call your phone?
+
+3
+00:00:02,890 --> 00:00:04,357
+Here's how to connect it
+
+4
+00:00:04,357 --> 00:00:04,993
+using MCP.
+
+5
+00:00:05,393 --> 00:00:07,160
+First, open Bland AI and
+
+6
+00:00:07,160 --> 00:00:08,456
+create an account.
+
+7
+00:00:08,456 --> 00:00:10,576
+It's a platform for AI-powered
+
+8
+00:00:10,576 --> 00:00:11,459
+voice calls.
+
+9
+00:00:11,759 --> 00:00:13,025
+You can sign in with
+
+10
+00:00:13,025 --> 00:00:13,950
+a phone number,
+
+11
+00:00:13,950 --> 00:00:14,874
+Google, or SSO.
+
+12
+00:00:15,274 --> 00:00:17,913
+Next, open Bland's MCP integration
+
+13
+00:00:17,913 --> 00:00:20,025
+page and copy its official
+
+14
+00:00:20,025 --> 00:00:20,948
+server URL.
+
+15
+00:00:21,248 --> 00:00:22,436
+It's a hosted server,
+
+16
+00:00:22,436 --> 00:00:24,082
+so there's nothing to install.
+
+17
+00:00:24,482 --> 00:00:25,713
+Now open Claude,
+
+18
+00:00:25,713 --> 00:00:26,944
+go to Customize,
+
+19
+00:00:26,944 --> 00:00:28,114
+then Connectors.
+
+20
+00:00:28,114 --> 00:00:29,838
+Add a custom connector,
+
+21
+00:00:29,838 --> 00:00:31,193
+name it Bland AI,
+
+22
+00:00:31,193 --> 00:00:32,916
+and paste the MCP URL.
+
+23
+00:00:33,216 --> 00:00:35,683
+Claude shows its authentication settings.
+
+24
+00:00:35,683 --> 00:00:37,362
+Review them, then continue.
+
+25
+00:00:37,762 --> 00:00:38,977
+Sign in to Bland,
+
+26
+00:00:38,977 --> 00:00:40,577
+choose your organization,
+
+27
+00:00:40,577 --> 00:00:42,344
+and review the permissions.
+
+28
+00:00:42,344 --> 00:00:44,275
+Now Claude can access Bland's
+
+29
+00:00:44,275 --> 00:00:45,324
+available tools.
+
+30
+00:00:45,624 --> 00:00:46,900
+For read-only access,
+
+31
+00:00:46,900 --> 00:00:48,839
+uncheck the permission to change
+
+32
+00:00:48,839 --> 00:00:49,604
+your agents.
+
+33
+00:00:49,904 --> 00:00:51,064
+Prefer Claude Code?
+
+34
+00:00:51,064 --> 00:00:52,526
+Add the server with one
+
+35
+00:00:52,526 --> 00:00:53,836
+command, then log in.
+
+36
+00:00:54,236 --> 00:00:55,095
+Let's test it.
+
+37
+00:00:55,095 --> 00:00:56,479
+Ask Claude to list your
+
+38
+00:00:56,479 --> 00:00:57,243
+Bland agents.
+
+39
+00:00:57,243 --> 00:00:58,102
+If it answers,
+
+40
+00:00:58,102 --> 00:00:59,056
+you're connected.
+
+41
+00:00:59,356 --> 00:01:00,921
+Placing a real call needs
+
+42
+00:01:00,921 --> 00:01:02,788
+your approval, your own number,
+
+43
+00:01:02,788 --> 00:01:03,898
+and Bland credits.
+
+44
+00:01:04,298 --> 00:01:05,710
+You can use this for
+
+45
+00:01:05,710 --> 00:01:08,427
+reminders, confirmations, and other approved
+
+46
+00:01:08,427 --> 00:01:09,241
+phone tasks.
+
+47
+00:01:09,241 --> 00:01:11,523
+Calling features may require credits
+
+48
+00:01:11,523 --> 00:01:12,609
+or a paid plan.
+
+49
+00:01:13,009 --> 00:01:14,418
+Save this tutorial,
+
+50
+00:01:14,418 --> 00:01:16,194
+share it with a friend,
+
+51
+00:01:16,194 --> 00:01:18,460
+and follow Agentoon.ai for more
+
+52
+00:01:18,460 --> 00:01:19,195
+AI tools!
