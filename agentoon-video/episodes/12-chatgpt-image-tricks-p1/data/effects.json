@@ -1,0 +1,142 @@
+{
+ "series": "15 ChatGPT Image Tricks",
+ "part": "1 of 3 (50-trick series)",
+ "note": "These labels are organizational shortcuts, not official ChatGPT slash commands.",
+ "effects": [
+  {
+   "n": 1,
+   "label": "/nightfix",
+   "prompt": "Improve this low-light photograph. Carefully brighten the subject, recover visible shadow detail, correct color noise, and preserve the realistic nighttime atmosphere. Avoid artificial daylight.",
+   "source_type": "Dark nighttime city photo.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 2,
+   "label": "/photorestore",
+   "prompt": "Restore the appearance of this old damaged photograph. Reduce scratches, stains, dust, fading, and discoloration. Improve clarity and contrast while preserving the original people and composition. Do not invent missing historical details unnecessarily.",
+   "source_type": "Damaged vintage portrait.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 3,
+   "label": "/objectremove",
+   "prompt": "Remove the unwanted object from this photograph and naturally reconstruct the area behind it. Keep all other people, objects, lighting, and framing unchanged as much as possible.",
+   "source_type": "Street photo with a distracting object.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 4,
+   "label": "/bgremove",
+   "prompt": "Remove the entire background from this image. Preserve the subject's edges, fine details, and natural appearance. Return the cutout with a genuinely transparent background.",
+   "source_type": "Product or person photograph.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 5,
+   "label": "/outzoom",
+   "prompt": "Expand this photograph beyond its original borders. Generate realistic surrounding scenery that matches the perspective, lighting, and visual style. Keep the original subject unchanged and centered appropriately.",
+   "source_type": "Tightly cropped photograph.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 6,
+   "label": "/wormseyeview",
+   "prompt": "Reimagine this scene from an extremely low ground-level camera angle looking upward. Create a dramatic worm's-eye perspective with realistic proportions and lighting while preserving the subject's recognizable appearance.",
+   "source_type": "Ordinary street portrait.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 7,
+   "label": "/goldenhour",
+   "prompt": "Transform the lighting into realistic golden-hour sunlight. Introduce warm highlights, gentle shadows, and a natural sunset atmosphere without excessively changing the subject or environment.",
+   "source_type": "Outdoor daytime photograph.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 8,
+   "label": "/bokeh",
+   "prompt": "Create a professional shallow-depth-of-field effect. Keep the main subject sharp and recognizable while softly blurring the background into natural photographic bokeh.",
+   "source_type": "Portrait with a distracting background.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 9,
+   "label": "/reflection",
+   "prompt": "Add realistic reflections to suitable surfaces within this scene, preserving correct perspective, light direction, and physical consistency. Keep the original composition recognizable.",
+   "source_type": "Scene with reflective surfaces.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 10,
+   "label": "/motionblur",
+   "prompt": "Create a cinematic sense of movement using directional background motion blur while keeping the main subject appropriately sharp. Maintain realistic perspective and proportions.",
+   "source_type": "Street or vehicle photograph.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 11,
+   "label": "/proshot",
+   "prompt": "Enhance this casual portrait into a natural professional headshot. Improve lighting, composition, and tonal balance while preserving facial identity, skin texture, hairstyle, and recognizable features.",
+   "source_type": "Casual portrait.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 12,
+   "label": "/bgstudio",
+   "prompt": "Replace the existing background with a clean, professional photography-studio setting. Match the lighting, shadows, and camera perspective while preserving the original subject.",
+   "source_type": "Portrait or product in an everyday setting.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 13,
+   "label": "/foodcinematic",
+   "prompt": "Transform this food photograph into premium editorial food photography. Improve lighting, texture visibility, composition, and color balance while keeping the dish realistic and recognizable.",
+   "source_type": "Ordinary food photograph.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 14,
+   "label": "/productshot",
+   "prompt": "Create a professional commercial product photograph from this reference. Preserve product shape, colors, branding, and packaging details as accurately as possible. Use clean lighting, realistic shadows, and an elegant composition.",
+   "source_type": "Basic product photograph.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  },
+  {
+   "n": 15,
+   "label": "/sketch2real",
+   "prompt": "Use this drawing as a composition reference and transform it into a realistic image. Preserve the important shapes, arrangement, and design intent while adding convincing materials, lighting, and environmental details.",
+   "source_type": "Original or appropriately licensed interior sketch.",
+   "source": null,
+   "result": null,
+   "status": "BLOCKED: no source photo yet (Pexels not reachable); no ChatGPT result yet"
+  }
+ ]
+}

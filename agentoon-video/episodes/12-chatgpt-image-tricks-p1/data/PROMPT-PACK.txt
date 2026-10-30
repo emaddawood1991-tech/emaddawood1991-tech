@@ -1,0 +1,66 @@
+15 CHATGPT IMAGE TRICKS · PART 1 OF 3 · PROMPT PACK
+
+These labels are organizational shortcuts, not official ChatGPT slash commands.
+Typing /nightfix does nothing by itself. To use a trick: open ChatGPT, upload your photo, and paste the full prompt below.
+Images in ChatGPT: https://help.openai.com/en/articles/11084440-images-in-chatgpt
+Results vary by photo and by model version; check faces, text and small details before you use an edit.
+
+01 · /nightfix
+Prompt: "Improve this low-light photograph. Carefully brighten the subject, recover visible shadow detail, correct color noise, and preserve the realistic nighttime atmosphere. Avoid artificial daylight."
+Use it on: dark nighttime city photo.
+
+02 · /photorestore
+Prompt: "Restore the appearance of this old damaged photograph. Reduce scratches, stains, dust, fading, and discoloration. Improve clarity and contrast while preserving the original people and composition. Do not invent missing historical details unnecessarily."
+Use it on: damaged vintage portrait.
+
+03 · /objectremove
+Prompt: "Remove the unwanted object from this photograph and naturally reconstruct the area behind it. Keep all other people, objects, lighting, and framing unchanged as much as possible."
+Use it on: street photo with a distracting object.
+
+04 · /bgremove
+Prompt: "Remove the entire background from this image. Preserve the subject's edges, fine details, and natural appearance. Return the cutout with a genuinely transparent background."
+Use it on: product or person photograph.
+
+05 · /outzoom
+Prompt: "Expand this photograph beyond its original borders. Generate realistic surrounding scenery that matches the perspective, lighting, and visual style. Keep the original subject unchanged and centered appropriately."
+Use it on: tightly cropped photograph.
+
+06 · /wormseyeview
+Prompt: "Reimagine this scene from an extremely low ground-level camera angle looking upward. Create a dramatic worm's-eye perspective with realistic proportions and lighting while preserving the subject's recognizable appearance."
+Use it on: ordinary street portrait.
+
+07 · /goldenhour
+Prompt: "Transform the lighting into realistic golden-hour sunlight. Introduce warm highlights, gentle shadows, and a natural sunset atmosphere without excessively changing the subject or environment."
+Use it on: outdoor daytime photograph.
+
+08 · /bokeh
+Prompt: "Create a professional shallow-depth-of-field effect. Keep the main subject sharp and recognizable while softly blurring the background into natural photographic bokeh."
+Use it on: portrait with a distracting background.
+
+09 · /reflection
+Prompt: "Add realistic reflections to suitable surfaces within this scene, preserving correct perspective, light direction, and physical consistency. Keep the original composition recognizable."
+Use it on: scene with reflective surfaces.
+
+10 · /motionblur
+Prompt: "Create a cinematic sense of movement using directional background motion blur while keeping the main subject appropriately sharp. Maintain realistic perspective and proportions."
+Use it on: street or vehicle photograph.
+
+11 · /proshot
+Prompt: "Enhance this casual portrait into a natural professional headshot. Improve lighting, composition, and tonal balance while preserving facial identity, skin texture, hairstyle, and recognizable features."
+Use it on: casual portrait.
+
+12 · /bgstudio
+Prompt: "Replace the existing background with a clean, professional photography-studio setting. Match the lighting, shadows, and camera perspective while preserving the original subject."
+Use it on: portrait or product in an everyday setting.
+
+13 · /foodcinematic
+Prompt: "Transform this food photograph into premium editorial food photography. Improve lighting, texture visibility, composition, and color balance while keeping the dish realistic and recognizable."
+Use it on: ordinary food photograph.
+
+14 · /productshot
+Prompt: "Create a professional commercial product photograph from this reference. Preserve product shape, colors, branding, and packaging details as accurately as possible. Use clean lighting, realistic shadows, and an elegant composition."
+Use it on: basic product photograph.
+
+15 · /sketch2real
+Prompt: "Use this drawing as a composition reference and transform it into a realistic image. Preserve the important shapes, arrangement, and design intent while adding convincing materials, lighting, and environmental details."
+Use it on: original or appropriately licensed interior sketch.
