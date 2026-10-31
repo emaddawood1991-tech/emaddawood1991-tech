@@ -29,3 +29,7 @@
 5. In Claude: ask it to list your Bland agents (result visible).
 6. Optional, only with the owner's explicit approval, the owner's own number and credits: one short test call; screen of the phone ringing, answer screen and Bland's call result. No call evidence may be staged.
 7. Optional: terminal recording of the two Claude Code commands.
+
+## Added in v2 (hook graphic)
+- Claude icon: official favicon from https://support.claude.com/favicon.ico (94x94 PNG, saved as `assets/claude-mark-source-94px.png`, upscaled in `assets/claude-mark.png`). Used in the hook graphic (Claude -> Bland MCP cloud -> phone, labelled "CONCEPT VISUAL · NOT A REAL CALL") and in the "Claude -> Bland MCP -> Phone call" flow.
+- Real Bland website footage still missing (bland.ai hosts unreachable here). `capture_bland.js` is ready to capture the real pages once the hosts are allowed, or the owner's screen recordings can be used.
