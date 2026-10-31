@@ -65,19 +65,39 @@
   const trans = (k, prev, kind) => { const b = S[k].b, o = "#" + prev + "i", n = "#" + k + "i"; if (kind === "push") Cam.push(tl, b, 0.5, { out: o, inn: n, ox: 540, oy: 640, scale: 3.2 }); else if (kind === "iris") Cam.iris(tl, b, 0.6, { inn: n, cx: 540, cy: 700, ring: "#60CDFF", host: $("fx"), id: "ir-" + k }); else Cam.whip(tl, b, 0.5, { out: o, inn: n, dir: kind === "whipL" ? -1 : 1, blur: 24 }); };
   const rowsCard = (host, id, x, y, w, rows, light, fs, rh, t0, step) => rows.forEach((t, i) => { const r = el(host, id + i, "card " + (light ? "lt" : "dk"), "left:" + x + "px;top:" + (y + i * rh) + "px;width:" + w + "px;height:" + (rh - 14) + "px;font:700 " + fs + "px/1.2 var(--body);padding:12px 22px;display:flex;align-items:center;white-space:pre-wrap", t); tl.from(r, { opacity: 0, x: 90, duration: 0.35, ease: "power3.out" }, t0 + i * (step || 0.12)); });
 
-  /* ===== S1 HOOK: robot at the desk, a phone rings (concept visual) ===== */
+  /* ===== S1 HOOK: the Claude mark calls the phone through the Bland MCP cloud (concept graphic) ===== */
   const s1 = dbg("s1");
   const t1a = el(s1, "t1a", "ser", "left:0;right:0;top:215px;text-align:center;font-size:104px;line-height:1;color:#fff", "CLAUDE +"), t1b = el(s1, "t1b", "ser", "left:0;right:0;top:335px;text-align:center;font-size:104px;line-height:1;color:" + CY, "PHONE CALLS");
   tl.from(t1a, { opacity: 0, y: -50, duration: 0.4, ease: "back.out(1.6)" }, 0.15); tl.from(t1b, { opacity: 0, y: 50, duration: 0.4, ease: "back.out(1.6)" }, 0.35);
-  const desk = el(s1, "desk", "", "left:60px;top:1050px;width:960px;height:44px;border-radius:12px;background:linear-gradient(180deg,#24406F,#16294F);box-shadow:0 20px 40px rgba(0,0,0,.5)"); tl.from(desk, { opacity: 0, scaleX: 0.6, duration: 0.5, transformOrigin: "50% 50%" }, 0.2);
-  const ph = el(s1, "ph", "", "left:700px;top:880px;width:150px;height:170px;transform-origin:50% 100%");
-  const phs = svgEl(ph, "svg", { viewBox: "0 0 150 170", width: 150, height: 170 });
-  svgEl(phs, "rect", { x: 30, y: 10, width: 90, height: 150, rx: 16, fill: "#0F1D38", stroke: CY, "stroke-width": 6 }); svgEl(phs, "rect", { x: 40, y: 24, width: 70, height: 106, rx: 6, fill: "#14274A" }); svgEl(phs, "circle", { cx: 75, cy: 144, r: 6, fill: CY });
   const tCall = PW("p1", "call");
-  [0, 1, 2].forEach(i => { const a = el(s1, "ar" + i, "", "left:" + (680 - i * 22) + "px;top:" + (900 - i * 22) + "px;width:" + (190 + i * 44) + "px;height:" + (190 + i * 44) + "px;border-radius:50%;border:5px solid " + CY + ";opacity:0"); [0, 0.9].forEach(d => { tl.fromTo(a, { opacity: 0.9, scale: 0.7 }, { opacity: 0, scale: 1.15, duration: 0.8, ease: "power2.out" }, tCall + d + i * 0.15); }); });
-  [0, 0.9].forEach(d => { for (let k = 0; k < 6; k++) tl.to(ph, { rotation: k % 2 ? -9 : 9, duration: 0.07 }, tCall + d + k * 0.07); tl.to(ph, { rotation: 0, duration: 0.1 }, tCall + d + 0.45); });
-  const cn = chip(s1, "cn1", 60, 1130, "CONCEPT VISUAL · NOT A REAL CALL", { bd: AM }); tl.from(cn, { opacity: 0, x: -50, duration: 0.3 }, 0.8);
-  const bot1 = botAt(s1, "bot1", 300, 650, 300); presenter(bot1, "s1"); speak(bot1, "p1"); bot1.aimPoint(tl, tCall - 0.1, { x: 300, y: 650, target: [770, 960], hold: 1.4 }); bot1.react(tl, tCall + 0.3, "wow");
+  /* Claude mark (official icon from support.claude.com) */
+  const cm = el(s1, "cm1", "", "left:50px;top:560px;width:250px;height:250px;border-radius:50%;background:#14274A;border:4px solid " + CY + ";z-index:6;overflow:hidden");
+  const cmi = document.createElement("img"); cmi.src = "assets/claude-mark.png"; cmi.style.cssText = "position:absolute;left:35px;top:35px;width:180px;height:180px"; cm.appendChild(cmi);
+  const cml = el(s1, "cml1", "ser", "left:50px;top:826px;width:250px;text-align:center;font-size:44px;line-height:1;color:#fff", "Claude");
+  tl.from(cm, { opacity: 0, scale: 0.5, duration: 0.5, ease: "back.out(1.7)" }, 0.5); tl.from(cml, { opacity: 0, y: 20, duration: 0.3 }, 0.8);
+  /* the cloud = Bland MCP (hosted remote server) */
+  const cl = el(s1, "cl1", "", "left:380px;top:560px;width:320px;height:230px;z-index:6"); const cls = svgEl(cl, "svg", { viewBox: "0 0 320 230", width: 320, height: 230 });
+  svgEl(cls, "path", { d: "M80 190 C30 190 20 120 70 108 C70 55 135 35 170 70 C195 30 270 50 265 108 C315 112 305 190 255 190 Z", fill: "#14274A", stroke: CY, "stroke-width": 6, "stroke-linejoin": "round" });
+  const clt = el(cl, "clt1", "ser", "left:0;right:0;top:108px;text-align:center;font-size:34px;line-height:1;color:#fff", "Bland MCP"); const clu = el(cl, "clu1", "mono", "left:0;right:0;top:150px;text-align:center;font:800 22px/1 var(--mono);color:" + CY, "in the cloud");
+  tl.from(cl, { opacity: 0, scale: 0.6, duration: 0.5, ease: "back.out(1.5)", transformOrigin: "50% 50%" }, 0.7);
+  /* the phone */
+  const pho = el(s1, "ph1", "", "left:790px;top:470px;width:240px;height:470px;z-index:6;transform-origin:50% 100%"); const phs = svgEl(pho, "svg", { viewBox: "0 0 240 470", width: 240, height: 470 });
+  svgEl(phs, "rect", { x: 8, y: 8, width: 224, height: 454, rx: 36, fill: "#0A1426", stroke: CY, "stroke-width": 8 }); svgEl(phs, "rect", { x: 24, y: 40, width: 192, height: 390, rx: 18, fill: "#14274A" }); svgEl(phs, "rect", { x: 90, y: 18, width: 60, height: 10, rx: 5, fill: "#2A3A5C" });
+  const phm = document.createElement("img"); phm.src = "assets/claude-mark.png"; phm.style.cssText = "position:absolute;left:80px;top:100px;width:80px;height:80px"; pho.appendChild(phm);
+  const phn = el(pho, "phn1", "ser", "left:0;right:0;top:200px;text-align:center;font-size:36px;line-height:1;color:#fff", "Claude"); const phc = el(pho, "phc1", "mono", "left:0;right:0;top:250px;text-align:center;font:800 22px/1 var(--mono);color:" + GR, "CALLING...");
+  const ans = el(pho, "ans1", "", "left:84px;top:320px;width:72px;height:72px;border-radius:50%;background:#24B36B"); const ansv = svgEl(ans, "svg", { viewBox: "0 0 72 72", width: 72, height: 72 }); svgEl(ansv, "path", { d: "M22 20 L30 20 L34 29 L29 33 C32 40 36 44 43 47 L47 42 L56 46 L56 52 C56 55 53 57 50 57 C33 56 17 40 16 24 C16 21 19 19 22 20 Z", fill: "#fff" });
+  tl.from(pho, { opacity: 0, x: 80, duration: 0.5, ease: "back.out(1.4)" }, 0.9);
+  /* call path: Claude -> cloud -> phone, travelling pulses (concept) */
+  const cab1 = svgEl(svgEl(s1, "svg", { id: "cab1s", width: 1080, height: 1920, viewBox: "0 0 1080 1920" }), "path", { d: "M300 685 L380 685 M700 685 L790 685", fill: "none", stroke: CY, "stroke-width": 6, "stroke-dasharray": "14 12", "stroke-linecap": "round" }); cab1.parentNode.style.cssText = "position:absolute;left:0;top:0;pointer-events:none;z-index:5"; gsap.set(cab1, { opacity: 0 });
+  tl.set(cab1, { opacity: 1 }, tCall - 0.2); tl.fromTo(cab1, { attr: { "stroke-dashoffset": 0 } }, { attr: { "stroke-dashoffset": -104 }, duration: 2.6, ease: "none" }, tCall - 0.2);
+  const pulse = (x0, x1, at) => { const d = el(s1, "pl" + Math.round(at * 100), "", "left:" + (x0 - 14) + "px;top:671px;width:28px;height:28px;border-radius:50%;background:" + CY + ";z-index:7;opacity:0"); tl.fromTo(d, { x: 0, opacity: 0 }, { x: x1 - x0, opacity: 1, duration: 0.35, ease: "power1.in" }, at); tl.to(d, { opacity: 0, duration: 0.15 }, at + 0.35); };
+  pulse(300, 380, tCall - 0.1); pulse(700, 790, tCall + 0.45); pulse(300, 380, tCall + 1.0); pulse(700, 790, tCall + 1.55);
+  tl.fromTo(cm, { scale: 1 }, { scale: 1.12, duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut", transformOrigin: "50% 50%" }, tCall - 0.2);
+  [0, 0.9].forEach(d => { for (let k = 0; k < 6; k++) tl.to(pho, { rotation: k % 2 ? -6 : 6, duration: 0.07 }, tCall + 0.6 + d + k * 0.07); tl.to(pho, { rotation: 0, duration: 0.1 }, tCall + 0.6 + d + 0.45); });
+  [0, 1, 2].forEach(i => { const a = el(s1, "ar" + i, "", "left:" + (770 - i * 26) + "px;top:" + (450 - i * 26) + "px;width:" + (280 + i * 52) + "px;height:" + (280 + i * 52) + "px;border-radius:50%;border:5px solid " + CY + ";opacity:0;z-index:4"); [0.6, 1.5].forEach(d => { tl.fromTo(a, { opacity: 0.8, scale: 0.7 }, { opacity: 0, scale: 1.1, duration: 0.8, ease: "power2.out" }, tCall + d + i * 0.15); }); });
+  const cn = chip(s1, "cn1", 60, 1350, "CONCEPT VISUAL · NOT A REAL CALL", { bd: AM }); tl.from(cn, { opacity: 0, x: -50, duration: 0.3 }, 0.8);
+  const desk = el(s1, "desk", "", "left:60px;top:1290px;width:960px;height:40px;border-radius:12px;background:linear-gradient(180deg,#24406F,#16294F);box-shadow:0 20px 40px rgba(0,0,0,.5)"); tl.from(desk, { opacity: 0, scaleX: 0.6, duration: 0.5, transformOrigin: "50% 50%" }, 0.2);
+  const bot1 = botAt(s1, "bot1", 390, 900, 280); presenter(bot1, "s1"); speak(bot1, "p1"); bot1.aimPoint(tl, tCall - 0.1, { x: 390, y: 900, target: [900, 700], hold: 1.6 }); bot1.react(tl, tCall + 0.7, "wow");
 
   /* ===== S2 OPEN BLAND AI (paper) ===== */
   const s2 = lbg("s2"); tag(s2, "t2", "STEP 1 · CREATE AN ACCOUNT", S.s2.start + 0.2, true);
@@ -145,7 +165,7 @@
   /* ===== S7 WHAT CAN YOU DO (paper) ===== */
   const s7 = lbg("s7"); tag(s7, "t7", "WHAT CAN YOU DO?", S.s7.start + 0.2, true);
   const fl = el(s7, "fl7", "", "left:40px;top:320px;width:1000px;height:200px");
-  const nodes = [["CLAUDE", 0], ["BLAND MCP", 350], ["PHONE CALL", 700]]; nodes.forEach(([t, x], i) => { const n = el(fl, "n7" + i, "card lt", "left:" + x + "px;top:30px;width:300px;height:140px;font:800 36px/134px var(--body);text-align:center", t); tl.from(n, { opacity: 0, scale: 0.8, duration: 0.35, ease: "back.out(1.6)" }, S.s7.start + 0.4 + i * 0.4); });
+  const nodes = [["CLAUDE", 0], ["BLAND MCP", 350], ["PHONE CALL", 700]]; nodes.forEach(([t, x], i) => { const n = el(fl, "n7" + i, "card lt", "left:" + x + "px;top:30px;width:300px;height:140px;font:800 36px/134px var(--body);text-align:center", t); if (i === 0) { n.textContent = ""; const mi = document.createElement("img"); mi.src = "assets/claude-mark.png"; mi.style.cssText = "position:absolute;left:18px;top:30px;width:80px;height:80px"; n.appendChild(mi); el(n, "n7t0", "", "left:104px;top:0;font:800 36px/134px var(--body);color:#0B1630;white-space:nowrap", "CLAUDE"); } tl.from(n, { opacity: 0, scale: 0.8, duration: 0.35, ease: "back.out(1.6)" }, S.s7.start + 0.4 + i * 0.4); });
   [0, 1].forEach(i => { const c = el(fl, "c7" + i, "", "left:" + (300 + i * 350) + "px;top:96px;width:50px;height:8px;border-radius:4px;background:" + CY + ";transform-origin:0 50%"); gsap.set(c, { scaleX: 0 }); tl.to(c, { scaleX: 1, duration: 0.3 }, S.s7.start + 0.8 + i * 0.4); });
   const uc = ["PERSONAL REMINDERS", "APPOINTMENT CONFIRMATIONS", "SIMPLE BUSINESS CALLS"], tR = PW("p7", "reminders"), tCf = PW("p7", "confirmations"), tOt = PW("p7", "approved");
   uc.forEach((t, i) => { const c = el(s7, "u7" + i, "card lt", "left:40px;top:" + (580 + i * 120) + "px;width:1000px;height:100px;font:800 40px/94px var(--body);padding-left:30px"); c.textContent = t; tl.from(c, { opacity: 0, x: 100, duration: 0.35, ease: "power3.out" }, [tR, tCf, tOt][i] - 0.3); });
