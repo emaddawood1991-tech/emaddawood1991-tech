@@ -96,3 +96,6 @@ When the user provides Instagram/TikTok numbers, analyse retention drop points m
 - `scripts/mobile-check.sh` — phone-size frame extraction and contact sheet (read-only)
 - `scripts/validate-render.sh` — automated post-render checks and phone-size contact sheet
 - `scripts/motion-profile.sh` — motion energy, hard cuts, static stretches, longest gap between motion bursts (read-only)
+
+## Related slash skills (plan and specialise)
+Plan first with `/agentoon-director` (selects only the needed specialists and writes `data/PLAN.md`); execute with `/agentoon-motion`, `/agentoon-camera`, `/agentoon-typography`, `/agentoon-robot`, `/agentoon-ui`, `/agentoon-3d`, `/agentoon-morph`, `/agentoon-diagrams`, `/agentoon-audio`, `/agentoon-transitions`; finish with `/agentoon-qc`. This skill's hard rules and references still govern every production.

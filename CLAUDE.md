@@ -30,3 +30,6 @@ Always:
 - To stop renders, run ONLY: bash scripts/stop_renders.sh  (as its own Bash call).
 - Exit code 144 = the shell killed itself; nothing after it ran.
 - Edit files with the Edit tool or a python patch that asserts the old text exists.
+
+## Agentoon.ai slash-skill library (video production)
+Start any new video with **`/agentoon-director <topic or brief>`**: it audits the environment, selects only the specialist skills the story needs, and writes `data/PLAN.md`. Specialists (invoke individually when needed): `/agentoon-motion`, `/agentoon-camera`, `/agentoon-typography`, `/agentoon-robot`, `/agentoon-ui`, `/agentoon-3d`, `/agentoon-morph`, `/agentoon-diagrams`, `/agentoon-audio`, `/agentoon-transitions`, and `/agentoon-qc` (final gate, blocks FINAL when real demos are missing). They extend, never replace, `agentoon-video-producer` and its rules above. Never use every effect: each effect must serve a narrated beat, and every video needs a different hero technique, carrier and transition family. Validate the set with `python3 .claude/skills/agentoon-director/scripts/validate-skills.py`.
