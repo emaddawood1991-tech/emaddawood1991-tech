@@ -146,7 +146,7 @@
 
   /* ===== S10 REALITY CHECK (paper) ===== */
   const s10 = lbg("s10"); tag(s10, "t10", "REALITY CHECK", S.s10.start + 0.2, true, AM);
-  const rt = el(s10, "rt", "ser", "left:0;right:0;top:310px;text-align:center;font-size:104px;line-height:1;color:" + NV, "EARLY DEVELOPMENT"); tl.from(rt, { opacity: 0, scale: 1.25, duration: 0.5, ease: "back.out(1.5)" }, S.s10.start + 0.4);
+  const rt = el(s10, "rt", "ser", "left:0;right:0;top:310px;text-align:center;font-size:86px;line-height:1;color:" + NV, "EARLY DEVELOPMENT"); tl.from(rt, { opacity: 0, scale: 1.25, duration: 0.5, ease: "back.out(1.5)" }, S.s10.start + 0.4);
   const rows = [["photocraft", "EARLY ALPHA"], ["vectorcraft", "ALPHA"], ["filmcraft", "YOUNG & MOVING FAST"], ["lightcraft", "ALPHA"], ["effectcraft", "YOUNG & MOVING FAST"], ["pdfcraft", "ALPHA"], ["designcraft", "PRE-ALPHA"]];
   rows.forEach(([a, s], i) => {
     const r = el(s10, "rw" + i, "card lt", "left:40px;top:" + (450 + i * 96) + "px;width:1000px;height:84px;border-color:" + AC[a] + ";z-index:6"); const ii = document.createElement("img"); ii.src = "assets/icons/" + a + ".png"; ii.style.cssText = "position:absolute;left:12px;top:10px;width:60px;height:60px;border-radius:14px"; r.appendChild(ii);
