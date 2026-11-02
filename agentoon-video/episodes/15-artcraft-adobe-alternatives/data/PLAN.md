@@ -1,0 +1,4 @@
+# PLAN — Ep 15 "7 Free Adobe Alternatives" (PREVIEW)
+Takeaway: seven free open-source creative apps exist, but all are early; test before replacing pro tools. Engine: HyperFrames. Look: "Contact Sheet" (ink/paper alternation, per-app accent from README badge). Hero technique: real-screenshot windows with phase-timed push-in + crossfade; carrier: whip/push slides; transition family: whip + push. Palette ink #0E0F14 / paper #F3EFE7 + app accents. Typeface: display serif with italic accent.
+Skills used: agentoon-director (selection, plan), agentoon-video-producer (rules), -robot (lip-sync, aimPoint, reactions), -ui (real UI windows), -motion, -camera (Cam.push/whip), -typography, -audio, -transitions, -qc. Not used: -3d, -morph, -diagrams (no concept for them).
+Scenes: s1 hook (7 windows + robot) · s2 launcher · s3-s9 seven apps (Photo, Vector, Film, Light, Effect, Pdf, Design) · s10 reality check · s11 CTA.

@@ -1,0 +1,1142 @@
+{
+ "voice": "am_michael",
+ "speed": 1.22,
+ "wpm": 152,
+ "total": 84.8,
+ "phrases": [
+  {
+   "id": "p1",
+   "scene": "s1",
+   "start": 0.2,
+   "end": 6.221,
+   "show": "What if you could explore seven free, open-source alternatives to Adobe's creative apps? Meet ArtCraft!",
+   "speak": "What if you could explore seven free, open-source alternatives to Adobe's creative apps? Meet ArtCraft!"
+  },
+  {
+   "id": "p2",
+   "scene": "s2",
+   "start": 6.541,
+   "end": 13.254,
+   "show": "ArtCraft is building a collection of open-source creative tools, with desktop apps for Windows, Mac, and Linux.",
+   "speak": "ArtCraft is building a collection of open-source creative tools, with desktop apps for Windows, Mac, and Linux."
+  },
+  {
+   "id": "p2b",
+   "scene": "s2",
+   "start": 13.534,
+   "end": 15.556,
+   "show": "One launcher installs and updates them.",
+   "speak": "One launcher installs and updates them."
+  },
+  {
+   "id": "p3",
+   "scene": "s3",
+   "start": 15.876,
+   "end": 21.248,
+   "show": "PhotoCraft is the Photoshop-style editor, with familiar tools for working on layered images.",
+   "speak": "PhotoCraft is the Photoshop-style editor, with familiar tools for working on layered images."
+  },
+  {
+   "id": "p3b",
+   "scene": "s3",
+   "start": 21.528,
+   "end": 23.685,
+   "show": "It even opens real PSD files.",
+   "speak": "It even opens real PSD files."
+  },
+  {
+   "id": "p4",
+   "scene": "s4",
+   "start": 24.005,
+   "end": 29.071,
+   "show": "VectorCraft targets Illustrator-style design, with vector drawing and illustration tools.",
+   "speak": "VectorCraft targets Illustrator-style design, with vector drawing and illustration tools."
+  },
+  {
+   "id": "p4b",
+   "scene": "s4",
+   "start": 29.351,
+   "end": 33.025,
+   "show": "It has Pathfinder, live effects, and SVG and PDF support.",
+   "speak": "It has Pathfinder, live effects, and SVG and PDF support."
+  },
+  {
+   "id": "p5",
+   "scene": "s5",
+   "start": 33.345,
+   "end": 38.992,
+   "show": "FilmCraft is the developing Premiere-style video editor, designed around a professional timeline workflow.",
+   "speak": "FilmCraft is the developing Premiere-style video editor, designed around a professional timeline workflow."
+  },
+  {
+   "id": "p5b",
+   "scene": "s5",
+   "start": 39.272,
+   "end": 41.813,
+   "show": "Its color workspace includes live video scopes.",
+   "speak": "Its color workspace includes live video scopes."
+  },
+  {
+   "id": "p6",
+   "scene": "s6",
+   "start": 42.133,
+   "end": 47.272,
+   "show": "LightCraft focuses on photo libraries and RAW development, similar to Lightroom.",
+   "speak": "LightCraft focuses on photo libraries and RAW development, similar to Lightroom."
+  },
+  {
+   "id": "p6b",
+   "scene": "s6",
+   "start": 47.552,
+   "end": 48.996,
+   "show": "It has tone curves and masking.",
+   "speak": "It has tone curves and masking."
+  },
+  {
+   "id": "p7",
+   "scene": "s7",
+   "start": 49.316,
+   "end": 53.749,
+   "show": "EffectCraft is aiming at After Effects-style motion graphics and visual effects.",
+   "speak": "EffectCraft is aiming at After Effects-style motion graphics and visual effects."
+  },
+  {
+   "id": "p7b",
+   "scene": "s7",
+   "start": 54.029,
+   "end": 56.602,
+   "show": "It has keyframes, a graph editor, and a render queue.",
+   "speak": "It has keyframes, a graph editor, and a render queue."
+  },
+  {
+   "id": "p8",
+   "scene": "s8",
+   "start": 56.922,
+   "end": 62.964,
+   "show": "PdfCraft handles PDF tasks like viewing, organizing, combining, and splitting documents.",
+   "speak": "PdfCraft handles PDF tasks like viewing, organizing, combining, and splitting documents."
+  },
+  {
+   "id": "p9",
+   "scene": "s9",
+   "start": 63.284,
+   "end": 67.832,
+   "show": "DesignCraft targets InDesign-style page layout for documents and publications.",
+   "speak": "DesignCraft targets InDesign-style page layout for documents and publications."
+  },
+  {
+   "id": "p9b",
+   "scene": "s9",
+   "start": 68.112,
+   "end": 70.531,
+   "show": "Threaded text can flow across a magazine spread.",
+   "speak": "Threaded text can flow across a magazine spread."
+  },
+  {
+   "id": "p10",
+   "scene": "s10",
+   "start": 70.851,
+   "end": 75.881,
+   "show": "These apps are still evolving, so test them before replacing your everyday professional tools.",
+   "speak": "These apps are still evolving, so test them before replacing your everyday professional tools."
+  },
+  {
+   "id": "p10b",
+   "scene": "s10",
+   "start": 76.161,
+   "end": 79.039,
+   "show": "Most are alpha, and DesignCraft is still pre-alpha.",
+   "speak": "Most are alpha, and DesignCraft is still pre-alpha."
+  },
+  {
+   "id": "p11",
+   "scene": "s11",
+   "start": 79.359,
+   "end": 83.977,
+   "show": "Save this guide and follow Agentoon.ai for more free creative tools!",
+   "speak": "Save this guide and follow Agentoon dot A I for more free creative tools!"
+  }
+ ],
+ "words": [
+  {
+   "w": "What",
+   "s": 0.2,
+   "e": 0.504
+  },
+  {
+   "w": "if",
+   "s": 0.504,
+   "e": 0.706
+  },
+  {
+   "w": "you",
+   "s": 0.706,
+   "e": 0.959
+  },
+  {
+   "w": "could",
+   "s": 0.959,
+   "e": 1.313
+  },
+  {
+   "w": "explore",
+   "s": 1.313,
+   "e": 1.769
+  },
+  {
+   "w": "seven",
+   "s": 1.769,
+   "e": 2.123
+  },
+  {
+   "w": "free,",
+   "s": 2.123,
+   "e": 2.477
+  },
+  {
+   "w": "open-source",
+   "s": 2.477,
+   "e": 3.135
+  },
+  {
+   "w": "alternatives",
+   "s": 3.135,
+   "e": 3.843
+  },
+  {
+   "w": "to",
+   "s": 3.843,
+   "e": 4.046
+  },
+  {
+   "w": "Adobe's",
+   "s": 4.046,
+   "e": 4.501
+  },
+  {
+   "w": "creative",
+   "s": 4.501,
+   "e": 5.007
+  },
+  {
+   "w": "apps?",
+   "s": 5.007,
+   "e": 5.361
+  },
+  {
+   "w": "Meet",
+   "s": 5.361,
+   "e": 5.665
+  },
+  {
+   "w": "ArtCraft!",
+   "s": 5.665,
+   "e": 6.221
+  },
+  {
+   "w": "ArtCraft",
+   "s": 6.541,
+   "e": 7.062
+  },
+  {
+   "w": "is",
+   "s": 7.062,
+   "e": 7.27
+  },
+  {
+   "w": "building",
+   "s": 7.27,
+   "e": 7.79
+  },
+  {
+   "w": "a",
+   "s": 7.79,
+   "e": 7.946
+  },
+  {
+   "w": "collection",
+   "s": 7.946,
+   "e": 8.571
+  },
+  {
+   "w": "of",
+   "s": 8.571,
+   "e": 8.779
+  },
+  {
+   "w": "open-source",
+   "s": 8.779,
+   "e": 9.455
+  },
+  {
+   "w": "creative",
+   "s": 9.455,
+   "e": 9.975
+  },
+  {
+   "w": "tools,",
+   "s": 9.975,
+   "e": 10.392
+  },
+  {
+   "w": "with",
+   "s": 10.392,
+   "e": 10.704
+  },
+  {
+   "w": "desktop",
+   "s": 10.704,
+   "e": 11.172
+  },
+  {
+   "w": "apps",
+   "s": 11.172,
+   "e": 11.484
+  },
+  {
+   "w": "for",
+   "s": 11.484,
+   "e": 11.745
+  },
+  {
+   "w": "Windows,",
+   "s": 11.745,
+   "e": 12.265
+  },
+  {
+   "w": "Mac,",
+   "s": 12.265,
+   "e": 12.577
+  },
+  {
+   "w": "and",
+   "s": 12.577,
+   "e": 12.837
+  },
+  {
+   "w": "Linux.",
+   "s": 12.837,
+   "e": 13.254
+  },
+  {
+   "w": "One",
+   "s": 13.534,
+   "e": 13.753
+  },
+  {
+   "w": "launcher",
+   "s": 13.753,
+   "e": 14.193
+  },
+  {
+   "w": "installs",
+   "s": 14.193,
+   "e": 14.633
+  },
+  {
+   "w": "and",
+   "s": 14.633,
+   "e": 14.853
+  },
+  {
+   "w": "updates",
+   "s": 14.853,
+   "e": 15.249
+  },
+  {
+   "w": "them.",
+   "s": 15.249,
+   "e": 15.556
+  },
+  {
+   "w": "PhotoCraft",
+   "s": 15.876,
+   "e": 16.485
+  },
+  {
+   "w": "is",
+   "s": 16.485,
+   "e": 16.687
+  },
+  {
+   "w": "the",
+   "s": 16.687,
+   "e": 16.941
+  },
+  {
+   "w": "Photoshop-style",
+   "s": 16.941,
+   "e": 17.802
+  },
+  {
+   "w": "editor,",
+   "s": 17.802,
+   "e": 18.258
+  },
+  {
+   "w": "with",
+   "s": 18.258,
+   "e": 18.562
+  },
+  {
+   "w": "familiar",
+   "s": 18.562,
+   "e": 19.069
+  },
+  {
+   "w": "tools",
+   "s": 19.069,
+   "e": 19.424
+  },
+  {
+   "w": "for",
+   "s": 19.424,
+   "e": 19.677
+  },
+  {
+   "w": "working",
+   "s": 19.677,
+   "e": 20.133
+  },
+  {
+   "w": "on",
+   "s": 20.133,
+   "e": 20.336
+  },
+  {
+   "w": "layered",
+   "s": 20.336,
+   "e": 20.792
+  },
+  {
+   "w": "images.",
+   "s": 20.792,
+   "e": 21.248
+  },
+  {
+   "w": "It",
+   "s": 21.528,
+   "e": 21.768
+  },
+  {
+   "w": "even",
+   "s": 21.768,
+   "e": 22.128
+  },
+  {
+   "w": "opens",
+   "s": 22.128,
+   "e": 22.547
+  },
+  {
+   "w": "real",
+   "s": 22.547,
+   "e": 22.907
+  },
+  {
+   "w": "PSD",
+   "s": 22.907,
+   "e": 23.206
+  },
+  {
+   "w": "files.",
+   "s": 23.206,
+   "e": 23.685
+  },
+  {
+   "w": "VectorCraft",
+   "s": 24.005,
+   "e": 24.664
+  },
+  {
+   "w": "targets",
+   "s": 24.664,
+   "e": 25.12
+  },
+  {
+   "w": "Illustrator-style",
+   "s": 25.12,
+   "e": 26.082
+  },
+  {
+   "w": "design,",
+   "s": 26.082,
+   "e": 26.538
+  },
+  {
+   "w": "with",
+   "s": 26.538,
+   "e": 26.842
+  },
+  {
+   "w": "vector",
+   "s": 26.842,
+   "e": 27.248
+  },
+  {
+   "w": "drawing",
+   "s": 27.248,
+   "e": 27.704
+  },
+  {
+   "w": "and",
+   "s": 27.704,
+   "e": 27.957
+  },
+  {
+   "w": "illustration",
+   "s": 27.957,
+   "e": 28.666
+  },
+  {
+   "w": "tools.",
+   "s": 28.666,
+   "e": 29.071
+  },
+  {
+   "w": "It",
+   "s": 29.351,
+   "e": 29.567
+  },
+  {
+   "w": "has",
+   "s": 29.567,
+   "e": 29.838
+  },
+  {
+   "w": "Pathfinder,",
+   "s": 29.838,
+   "e": 30.54
+  },
+  {
+   "w": "live",
+   "s": 30.54,
+   "e": 30.864
+  },
+  {
+   "w": "effects,",
+   "s": 30.864,
+   "e": 31.404
+  },
+  {
+   "w": "and",
+   "s": 31.404,
+   "e": 31.674
+  },
+  {
+   "w": "SVG",
+   "s": 31.674,
+   "e": 31.944
+  },
+  {
+   "w": "and",
+   "s": 31.944,
+   "e": 32.215
+  },
+  {
+   "w": "PDF",
+   "s": 32.215,
+   "e": 32.485
+  },
+  {
+   "w": "support.",
+   "s": 32.485,
+   "e": 33.025
+  },
+  {
+   "w": "FilmCraft",
+   "s": 33.345,
+   "e": 33.863
+  },
+  {
+   "w": "is",
+   "s": 33.863,
+   "e": 34.051
+  },
+  {
+   "w": "the",
+   "s": 34.051,
+   "e": 34.286
+  },
+  {
+   "w": "developing",
+   "s": 34.286,
+   "e": 34.851
+  },
+  {
+   "w": "Premiere-style",
+   "s": 34.851,
+   "e": 35.604
+  },
+  {
+   "w": "video",
+   "s": 35.604,
+   "e": 35.933
+  },
+  {
+   "w": "editor,",
+   "s": 35.933,
+   "e": 36.357
+  },
+  {
+   "w": "designed",
+   "s": 36.357,
+   "e": 36.828
+  },
+  {
+   "w": "around",
+   "s": 36.828,
+   "e": 37.204
+  },
+  {
+   "w": "a",
+   "s": 37.204,
+   "e": 37.345
+  },
+  {
+   "w": "professional",
+   "s": 37.345,
+   "e": 38.004
+  },
+  {
+   "w": "timeline",
+   "s": 38.004,
+   "e": 38.475
+  },
+  {
+   "w": "workflow.",
+   "s": 38.475,
+   "e": 38.992
+  },
+  {
+   "w": "Its",
+   "s": 39.272,
+   "e": 39.503
+  },
+  {
+   "w": "color",
+   "s": 39.503,
+   "e": 39.827
+  },
+  {
+   "w": "workspace",
+   "s": 39.827,
+   "e": 40.335
+  },
+  {
+   "w": "includes",
+   "s": 40.335,
+   "e": 40.797
+  },
+  {
+   "w": "live",
+   "s": 40.797,
+   "e": 41.074
+  },
+  {
+   "w": "video",
+   "s": 41.074,
+   "e": 41.397
+  },
+  {
+   "w": "scopes.",
+   "s": 41.397,
+   "e": 41.813
+  },
+  {
+   "w": "LightCraft",
+   "s": 42.133,
+   "e": 42.804
+  },
+  {
+   "w": "focuses",
+   "s": 42.804,
+   "e": 43.306
+  },
+  {
+   "w": "on",
+   "s": 43.306,
+   "e": 43.53
+  },
+  {
+   "w": "photo",
+   "s": 43.53,
+   "e": 43.921
+  },
+  {
+   "w": "libraries",
+   "s": 43.921,
+   "e": 44.535
+  },
+  {
+   "w": "and",
+   "s": 44.535,
+   "e": 44.815
+  },
+  {
+   "w": "RAW",
+   "s": 44.815,
+   "e": 45.094
+  },
+  {
+   "w": "development,",
+   "s": 45.094,
+   "e": 45.876
+  },
+  {
+   "w": "similar",
+   "s": 45.876,
+   "e": 46.379
+  },
+  {
+   "w": "to",
+   "s": 46.379,
+   "e": 46.602
+  },
+  {
+   "w": "Lightroom.",
+   "s": 46.602,
+   "e": 47.272
+  },
+  {
+   "w": "It",
+   "s": 47.552,
+   "e": 47.704
+  },
+  {
+   "w": "has",
+   "s": 47.704,
+   "e": 47.894
+  },
+  {
+   "w": "tone",
+   "s": 47.894,
+   "e": 48.122
+  },
+  {
+   "w": "curves",
+   "s": 48.122,
+   "e": 48.426
+  },
+  {
+   "w": "and",
+   "s": 48.426,
+   "e": 48.616
+  },
+  {
+   "w": "masking.",
+   "s": 48.616,
+   "e": 48.996
+  },
+  {
+   "w": "EffectCraft",
+   "s": 49.316,
+   "e": 49.942
+  },
+  {
+   "w": "is",
+   "s": 49.942,
+   "e": 50.135
+  },
+  {
+   "w": "aiming",
+   "s": 50.135,
+   "e": 50.521
+  },
+  {
+   "w": "at",
+   "s": 50.521,
+   "e": 50.713
+  },
+  {
+   "w": "After",
+   "s": 50.713,
+   "e": 51.051
+  },
+  {
+   "w": "Effects-style",
+   "s": 51.051,
+   "e": 51.773
+  },
+  {
+   "w": "motion",
+   "s": 51.773,
+   "e": 52.159
+  },
+  {
+   "w": "graphics",
+   "s": 52.159,
+   "e": 52.641
+  },
+  {
+   "w": "and",
+   "s": 52.641,
+   "e": 52.881
+  },
+  {
+   "w": "visual",
+   "s": 52.881,
+   "e": 53.267
+  },
+  {
+   "w": "effects.",
+   "s": 53.267,
+   "e": 53.749
+  },
+  {
+   "w": "It",
+   "s": 54.029,
+   "e": 54.19
+  },
+  {
+   "w": "has",
+   "s": 54.19,
+   "e": 54.391
+  },
+  {
+   "w": "keyframes,",
+   "s": 54.391,
+   "e": 54.873
+  },
+  {
+   "w": "a",
+   "s": 54.873,
+   "e": 54.994
+  },
+  {
+   "w": "graph",
+   "s": 54.994,
+   "e": 55.275
+  },
+  {
+   "w": "editor,",
+   "s": 55.275,
+   "e": 55.637
+  },
+  {
+   "w": "and",
+   "s": 55.637,
+   "e": 55.838
+  },
+  {
+   "w": "a",
+   "s": 55.838,
+   "e": 55.959
+  },
+  {
+   "w": "render",
+   "s": 55.959,
+   "e": 56.281
+  },
+  {
+   "w": "queue.",
+   "s": 56.281,
+   "e": 56.602
+  },
+  {
+   "w": "PdfCraft",
+   "s": 56.922,
+   "e": 57.527
+  },
+  {
+   "w": "handles",
+   "s": 57.527,
+   "e": 58.07
+  },
+  {
+   "w": "PDF",
+   "s": 58.07,
+   "e": 58.372
+  },
+  {
+   "w": "tasks",
+   "s": 58.372,
+   "e": 58.795
+  },
+  {
+   "w": "like",
+   "s": 58.795,
+   "e": 59.158
+  },
+  {
+   "w": "viewing,",
+   "s": 59.158,
+   "e": 59.762
+  },
+  {
+   "w": "organizing,",
+   "s": 59.762,
+   "e": 60.547
+  },
+  {
+   "w": "combining,",
+   "s": 60.547,
+   "e": 61.272
+  },
+  {
+   "w": "and",
+   "s": 61.272,
+   "e": 61.574
+  },
+  {
+   "w": "splitting",
+   "s": 61.574,
+   "e": 62.239
+  },
+  {
+   "w": "documents.",
+   "s": 62.239,
+   "e": 62.964
+  },
+  {
+   "w": "DesignCraft",
+   "s": 63.284,
+   "e": 63.956
+  },
+  {
+   "w": "targets",
+   "s": 63.956,
+   "e": 64.421
+  },
+  {
+   "w": "InDesign-style",
+   "s": 64.421,
+   "e": 65.248
+  },
+  {
+   "w": "page",
+   "s": 65.248,
+   "e": 65.558
+  },
+  {
+   "w": "layout",
+   "s": 65.558,
+   "e": 65.971
+  },
+  {
+   "w": "for",
+   "s": 65.971,
+   "e": 66.23
+  },
+  {
+   "w": "documents",
+   "s": 66.23,
+   "e": 66.798
+  },
+  {
+   "w": "and",
+   "s": 66.798,
+   "e": 67.056
+  },
+  {
+   "w": "publications.",
+   "s": 67.056,
+   "e": 67.832
+  },
+  {
+   "w": "Threaded",
+   "s": 68.112,
+   "e": 68.536
+  },
+  {
+   "w": "text",
+   "s": 68.536,
+   "e": 68.791
+  },
+  {
+   "w": "can",
+   "s": 68.791,
+   "e": 69.003
+  },
+  {
+   "w": "flow",
+   "s": 69.003,
+   "e": 69.258
+  },
+  {
+   "w": "across",
+   "s": 69.258,
+   "e": 69.597
+  },
+  {
+   "w": "a",
+   "s": 69.597,
+   "e": 69.725
+  },
+  {
+   "w": "magazine",
+   "s": 69.725,
+   "e": 70.149
+  },
+  {
+   "w": "spread.",
+   "s": 70.149,
+   "e": 70.531
+  },
+  {
+   "w": "These",
+   "s": 70.851,
+   "e": 71.174
+  },
+  {
+   "w": "apps",
+   "s": 71.174,
+   "e": 71.451
+  },
+  {
+   "w": "are",
+   "s": 71.451,
+   "e": 71.682
+  },
+  {
+   "w": "still",
+   "s": 71.682,
+   "e": 72.005
+  },
+  {
+   "w": "evolving,",
+   "s": 72.005,
+   "e": 72.512
+  },
+  {
+   "w": "so",
+   "s": 72.512,
+   "e": 72.697
+  },
+  {
+   "w": "test",
+   "s": 72.697,
+   "e": 72.974
+  },
+  {
+   "w": "them",
+   "s": 72.974,
+   "e": 73.251
+  },
+  {
+   "w": "before",
+   "s": 73.251,
+   "e": 73.62
+  },
+  {
+   "w": "replacing",
+   "s": 73.62,
+   "e": 74.128
+  },
+  {
+   "w": "your",
+   "s": 74.128,
+   "e": 74.405
+  },
+  {
+   "w": "everyday",
+   "s": 74.405,
+   "e": 74.866
+  },
+  {
+   "w": "professional",
+   "s": 74.866,
+   "e": 75.512
+  },
+  {
+   "w": "tools.",
+   "s": 75.512,
+   "e": 75.881
+  },
+  {
+   "w": "Most",
+   "s": 76.161,
+   "e": 76.449
+  },
+  {
+   "w": "are",
+   "s": 76.449,
+   "e": 76.689
+  },
+  {
+   "w": "alpha,",
+   "s": 76.689,
+   "e": 77.073
+  },
+  {
+   "w": "and",
+   "s": 77.073,
+   "e": 77.313
+  },
+  {
+   "w": "DesignCraft",
+   "s": 77.313,
+   "e": 77.936
+  },
+  {
+   "w": "is",
+   "s": 77.936,
+   "e": 78.128
+  },
+  {
+   "w": "still",
+   "s": 78.128,
+   "e": 78.464
+  },
+  {
+   "w": "pre-alpha.",
+   "s": 78.464,
+   "e": 79.039
+  },
+  {
+   "w": "Save",
+   "s": 79.359,
+   "e": 79.706
+  },
+  {
+   "w": "this",
+   "s": 79.706,
+   "e": 80.052
+  },
+  {
+   "w": "guide",
+   "s": 80.052,
+   "e": 80.456
+  },
+  {
+   "w": "and",
+   "s": 80.456,
+   "e": 80.745
+  },
+  {
+   "w": "follow",
+   "s": 80.745,
+   "e": 81.206
+  },
+  {
+   "w": "Agentoon.ai",
+   "s": 81.206,
+   "e": 81.957
+  },
+  {
+   "w": "for",
+   "s": 81.957,
+   "e": 82.246
+  },
+  {
+   "w": "more",
+   "s": 82.246,
+   "e": 82.592
+  },
+  {
+   "w": "free",
+   "s": 82.592,
+   "e": 82.938
+  },
+  {
+   "w": "creative",
+   "s": 82.938,
+   "e": 83.515
+  },
+  {
+   "w": "tools!",
+   "s": 83.515,
+   "e": 83.977
+  }
+ ]
+}
