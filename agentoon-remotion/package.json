@@ -1,0 +1,24 @@
+{
+  "name": "agentoon-remotion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Figma -> Claude Code + Figma MCP -> Remotion -> MP4 1080x1920 (Agentoon.ai)",
+  "scripts": {
+    "dev": "remotion studio src/index.ts",
+    "validate": "node scripts/validate-spec.mjs",
+    "render": "node scripts/render.mjs",
+    "still": "node scripts/render.mjs --still",
+    "lint": "tsc"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.505",
+    "@remotion/transitions": "4.0.505",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.505"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  }
+}

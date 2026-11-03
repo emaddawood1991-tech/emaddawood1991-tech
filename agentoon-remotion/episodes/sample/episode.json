@@ -1,0 +1,36 @@
+{
+  "meta": { "title": "Sample (replace via Figma sync)", "slug": "sample", "width": 1080, "height": 1920, "fps": 30 },
+  "transitionSeconds": 0.4,
+  "scenes": [
+    {
+      "id": "s01", "figma": "S01_hook", "duration": 2.5,
+      "background": "linear-gradient(160deg,#1b1038 0%,#0b0b1f 100%)",
+      "layers": [
+        { "id": "s01-card", "type": "rect", "x": 80, "y": 560, "w": 920, "h": 640, "fill": "rgba(255,255,255,0.06)", "radius": 48, "stroke": "rgba(255,255,255,0.18)", "strokeWidth": 3, "anim": { "in": "scaleIn" } },
+        { "id": "s01-title", "type": "text", "figma": "title", "x": 140, "y": 650, "w": 800, "h": 300, "text": "Figma → Remotion", "fontFamily": "system-ui, sans-serif", "fontSize": 120, "fontWeight": 800, "color": "#ffffff", "align": "center", "anim": { "in": "fadeUp", "delay": 0.15 } },
+        { "id": "s01-sub", "type": "text", "figma": "subtitle", "x": 140, "y": 1000, "w": 800, "h": 120, "text": "Design once. Render 1080×1920.", "fontFamily": "system-ui, sans-serif", "fontSize": 48, "fontWeight": 500, "color": "#9be7ff", "align": "center", "anim": { "in": "fadeUp", "delay": 0.45 } }
+      ]
+    },
+    {
+      "id": "s02", "figma": "S02_steps", "duration": 3, "transition": "slideUp",
+      "background": "#0b0b1f",
+      "layers": [
+        { "id": "s02-h", "type": "text", "x": 100, "y": 400, "w": 880, "h": 140, "text": "3 steps", "fontFamily": "system-ui, sans-serif", "fontSize": 96, "fontWeight": 800, "color": "#ffffff", "anim": { "in": "slideRight" } },
+        { "id": "s02-a", "type": "text", "x": 100, "y": 620, "w": 880, "h": 100, "text": "1  Design frames in Figma", "fontFamily": "system-ui, sans-serif", "fontSize": 56, "color": "#ffffff", "anim": { "in": "fadeUp", "delay": 0.3 } },
+        { "id": "s02-b", "type": "text", "x": 100, "y": 760, "w": 880, "h": 100, "text": "2  Claude reads it via MCP", "fontFamily": "system-ui, sans-serif", "fontSize": 56, "color": "#ffffff", "anim": { "in": "fadeUp", "delay": 0.7 } },
+        { "id": "s02-c", "type": "text", "x": 100, "y": 900, "w": 880, "h": 100, "text": "3  Remotion renders the MP4", "fontFamily": "system-ui, sans-serif", "fontSize": 56, "color": "#ffffff", "anim": { "in": "fadeUp", "delay": 1.1 } }
+      ]
+    },
+    {
+      "id": "s03", "figma": "S03_cta", "duration": 2.5,
+      "background": "linear-gradient(200deg,#3b1d8f 0%,#0b0b1f 100%)",
+      "layers": [
+        { "id": "s03-t", "type": "text", "x": 100, "y": 760, "w": 880, "h": 300, "text": "Follow for the next tutorial", "fontFamily": "system-ui, sans-serif", "fontSize": 96, "fontWeight": 800, "color": "#ffffff", "align": "center", "anim": { "in": "pop" } }
+      ]
+    }
+  ],
+  "captions": [
+    { "text": "Design in Figma", "start": 0.3, "end": 2.2 },
+    { "text": "Render with Remotion", "start": 3.0, "end": 5.5 }
+  ]
+}
