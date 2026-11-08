@@ -46,3 +46,6 @@ Reference images live in `assets/medical/source/` (ref-*). `process_assets.py` p
 
 ## Project note: fmc-metatarsalgia
 Template `templates/metatarsalgia` (slide types cover/explain/causes/care/close) with original vector anatomy in `src/components/foot-anatomy.js` and `metatarsalgia-visuals.js`. Callouts are HTML overlays; leader-line anchors use foot viewBox coords (px = 140 + x, py = 40 + y). Pass `view` to `plantarFoot()` to crop; never replace the viewBox string afterwards.
+
+## Project note: fmc-low-back-pain
+Template `templates/lowback` (cover/causes/symptoms/warn/care). Original vector spine anatomy in `src/components/spine.js` (`backFigure` overlays: cover|pain|saddle; `lumbarPost`, `spineLateral`, `causeVisual`, `warnVisual`, `careVisual`). Pain-map callout anchors use viewBox coords with `MAP` constants in `index.js`. Red-flag slide wording is clinical (cauda equina signs) — keep user-supplied/NICE-consistent text unchanged.
