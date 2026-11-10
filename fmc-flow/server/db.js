@@ -1,5 +1,5 @@
 import { DatabaseSync } from 'node:sqlite';
-import { mkdirSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 
 export const DB_PATH = process.env.FMC_DB || new URL('../data/fmc.db', import.meta.url).pathname;
@@ -257,6 +257,7 @@ export function openDb(path = DB_PATH) {
   db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;');
   db.exec(SCHEMA);
   ensureColumns(db);
+  if (path !== ':memory:') for (const f of [path, `${path}-wal`, `${path}-shm`]) { try { if (existsSync(f)) chmodSync(f, 0o600); } catch { /* best effort on filesystems without modes */ } } // patient data is readable by the service account only
   const ins = db.prepare('INSERT OR IGNORE INTO settings(key,value) VALUES (?,?)');
   for (const [k, v] of Object.entries(DEFAULT_SETTINGS)) ins.run(k, v);
   // One-time: automatic stop + check-out at the scheduled end is now the default. Databases created earlier hold the old default ('0');

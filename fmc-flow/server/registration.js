@@ -1,6 +1,7 @@
 // Patient registration: validation, MRN handling, duplicate protection, register + check-in.
 import { tx } from './db.js';
 import { HttpError, now } from './ops.js';
+import { deptScope } from './perms.js';
 
 const ARABIC_LETTER = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
 const MRN_RE = /^[A-Z0-9][A-Z0-9\-/]{2,29}$/;
@@ -138,13 +139,19 @@ export function makeRegistration(db, ops) {
   function search(user, term) {
     need(user, 'patients.read');
     const raw = String(term ?? '').trim();
-    const like = `%${raw}%`;
+    const sc = deptScope(user); // a department-scoped user only finds patients who have an appointment, queue entry, session or waiting-list entry in their department
+    const like = `%${raw.replace(/[\\%_]/g, '\\$&')}%`; // wildcards typed by the user are literal characters
     const digits = raw.replace(/[٠-٩]/g, (c) => ARABIC_INDIC[c]).replace(/\D/g, '').replace(/^0+/, ''); // national numbers start with 0; stored numbers are +CC…
-    audit(user, 'patients.search', 'patient', null, { q_len: raw.length });
+    audit(user, 'patients.search', 'patient', null, { q_len: raw.length, scoped: sc != null });
+    if (raw.length < 3) return []; // at least 3 characters: no directory dumps
     return q(`SELECT p.*, (SELECT id FROM visits v WHERE v.patient_id=p.id AND v.status='OPEN') open_visit_id FROM patients p
-      WHERE p.name LIKE ? OR p.name_ar LIKE ? OR p.mrn LIKE ? OR CAST(p.id AS TEXT)=?
-        OR (? <> '' AND length(?) >= 4 AND REPLACE(COALESCE(p.phone,''),'+','') LIKE ?)
-      ORDER BY p.name LIMIT 30`, like, like, like, raw, digits, digits, `%${digits}%`);
+      WHERE (p.name LIKE ? ESCAPE '\\' OR p.name_ar LIKE ? ESCAPE '\\' OR p.mrn LIKE ? ESCAPE '\\' OR CAST(p.id AS TEXT)=?
+        OR (? <> '' AND length(?) >= 4 AND REPLACE(COALESCE(p.phone,''),'+','') LIKE ?))
+        AND (? IS NULL OR EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id=p.id AND a.department_id=?)
+          OR EXISTS (SELECT 1 FROM queue_entries qe JOIN visits vv ON vv.id=qe.visit_id WHERE vv.patient_id=p.id AND qe.department_id=?)
+          OR EXISTS (SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.patient_id=p.id AND sv.department_id=?)
+          OR EXISTS (SELECT 1 FROM waiting_list w WHERE w.patient_id=p.id AND w.department_id=?))
+      ORDER BY p.name LIMIT 30`, like, like, like, raw, digits, digits, `%${digits}%`, sc, sc, sc, sc, sc);
   }
 
   return { createPatient, register, search, validate, genders };

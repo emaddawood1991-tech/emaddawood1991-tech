@@ -12,7 +12,7 @@ function CheckIn({ config, staff, onDone, canWrite }) {
   const [errs, setErrs] = useState({}); const [open, setOpen] = useState(false);
   const appts = usePoll('/appointments', 0);
   const needService = config.settings.require_service_at_checkin === '1';
-  const search = async (v) => { setQ(v); if (v.trim().length < 2) return setFound(null); try { setFound(await api.get(`/patients?q=${encodeURIComponent(v.trim())}`)); } catch { /* connection banner explains */ } };
+  const search = async (v) => { setQ(v); if (v.trim().length < 3) return setFound(null); try { setFound(await api.get(`/patients?q=${encodeURIComponent(v.trim())}`)); } catch { /* connection banner explains */ } };
   const myAppts = (appts.data || []).filter((a) => a.patient_id === p?.id);
   const pick = (a) => setF({ appointmentId: a?.id || '', departmentId: a?.department_id || f.departmentId, serviceId: a?.service_id || '', clinicianId: a?.clinician_id || '' });
   const reset = () => { setP(null); setQ(''); setFound(null); setErrs({}); setF({ appointmentId: '', departmentId: '', serviceId: '', clinicianId: '' }); };

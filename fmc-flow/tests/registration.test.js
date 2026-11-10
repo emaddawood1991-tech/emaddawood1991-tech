@@ -133,7 +133,7 @@ test('department is required; services must belong to the department; clinicians
   const wrong = await rec.post('/api/registrations', { patient: { name: 'Wrong Service' }, department_id: dept('Physiotherapy').id, service_id: svc('Neurological Assessment').id });
   assert.equal(wrong.status, 400); assert.ok(wrong.body.error.fields.service_id);
   assert.equal(count(), n, 'whole registration rolled back — no orphan patient');
-  const clin = cfg.departments && (await rec.get('/api/staff')).body.find((s) => s.username === 'dr.ort');
+  const clin = cfg.departments && (await rec.get('/api/staff')).body.find((s) => s.name === 'Dr. Orthopedic (Demo)');
   const wrongClin = await rec.post('/api/registrations', { patient: { name: 'Wrong Clinician' }, department_id: dept('Physiotherapy').id, clinician_id: clin.id });
   assert.equal(wrongClin.status, 400); assert.equal(count(), n);
   await admin.patch('/api/config/settings', { require_service_at_checkin: '1' });

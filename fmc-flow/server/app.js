@@ -1,5 +1,5 @@
 import express from 'express';
-import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
+import { createHash, randomBytes, scrypt, scryptSync, timingSafeEqual } from 'node:crypto';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { openDb, tx } from './db.js';
 import { makeOps, HttpError, now, nowMs, clock } from './ops.js';
@@ -17,6 +17,16 @@ function verifyPassword(pw, stored) {
   const h = scryptSync(pw, Buffer.from(saltHex, 'hex'), 32);
   return timingSafeEqual(h, Buffer.from(hashHex, 'hex'));
 }
+const scryptAsync = (pw, salt, len) => new Promise((res, rej) => scrypt(pw, salt, len, (e, k) => (e ? rej(e) : res(k))));
+/** Same check as verifyPassword, but off the main thread so logins cannot stall other requests. */
+async function verifyPasswordAsync(pw, stored) {
+  const [, saltHex, hashHex] = String(stored).split('$');
+  if (!saltHex) return false;
+  const h = await scryptAsync(pw, Buffer.from(saltHex, 'hex'), 32);
+  return timingSafeEqual(h, Buffer.from(hashHex, 'hex'));
+}
+const DUMMY_HASH = hashPassword(randomBytes(12).toString('hex')); // verified against when the username does not exist, so timing does not reveal valid usernames
+const ROLES = ['admin', 'supervisor', 'reception', 'clinician'];
 const sha = (s) => createHash('sha256').update(s).digest('hex');
 
 // whitelisted columns for generic config CRUD
@@ -46,6 +56,22 @@ function checkDurationRange(b) {
   if (d !== null && hi !== null && d > hi) throw new HttpError(400, 'VALIDATION', 'The default duration is above the maximum.');
 }
 
+const USERNAME_RE = /^[A-Za-z0-9._-]{3,40}$/;
+/** Server-side validation for staff accounts (role, department, flags). Throws 400 with per-field messages. */
+function checkStaff(b, creating, one) {
+  const f = {};
+  if (creating) {
+    if (!USERNAME_RE.test(String(b.username || ''))) f.username = 'Use 3–40 letters, digits, dots, dashes or underscores.';
+    if (!String(b.name || '').trim()) f.name = 'Name is required.';
+  }
+  if (b.name !== undefined && (!String(b.name).trim() || String(b.name).length > 120)) f.name = 'Enter a name (up to 120 characters).';
+  if (b.name_ar !== undefined && String(b.name_ar ?? '').length > 120) f.name_ar = 'Up to 120 characters.';
+  if ((creating || b.role !== undefined) && !ROLES.includes(b.role)) f.role = `Role must be one of: ${ROLES.join(', ')}.`;
+  if (b.department_id !== undefined && b.department_id !== null && b.department_id !== '' && (!Number.isInteger(Number(b.department_id)) || !(one ? one('SELECT 1 x FROM departments WHERE id=?', Number(b.department_id)) : true))) f.department_id = 'Choose an existing department.';
+  for (const k of ['active', 'schedule_override']) if (b[k] !== undefined && ![0, 1, '0', '1', true, false].includes(b[k])) f[k] = 'Must be 0 or 1.';
+  if (Object.keys(f).length) throw new HttpError(400, 'VALIDATION', 'Please correct the highlighted fields.', { fields: f });
+}
+
 export function createApp({ db = openDb(), backupDir = new URL('../data/backups/', import.meta.url).pathname, staticDir } = {}) {
   const ops = makeOps(db);
   const { q, one, run, audit, fail } = ops;
@@ -53,11 +79,13 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   const sched = makeSchedule(db, ops);
   const app = express();
   app.disable('x-powered-by');
+  if (process.env.FMC_TRUST_PROXY) app.set('trust proxy', /^\d+$/.test(process.env.FMC_TRUST_PROXY) ? Number(process.env.FMC_TRUST_PROXY) : process.env.FMC_TRUST_PROXY); // set when running behind a TLS reverse proxy so rate limits see the real client address
   app.use(express.json({ limit: '200kb' }));
   app.use((req, res, next) => {
     res.set({
       'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'no-referrer',
-      'Cache-Control': 'no-store',
+      'Cache-Control': 'no-store', 'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()', 'Cross-Origin-Opener-Policy': 'same-origin', 'Cross-Origin-Resource-Policy': 'same-origin',
       'Content-Security-Policy': "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:",
     });
     next();
@@ -89,15 +117,20 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.use('/api', (_req, res, next) => { res.set('X-Server-Time', now()); next(); }); // every response carries the server clock so clients stay in step
   app.use('/api', authenticate);
 
-  app.post('/api/login', (req, res) => {
+  app.post('/api/login', async (req, res) => {
     const { username, password } = req.body || {};
     const key = `${req.ip}|${String(username).toLowerCase()}`;
-    const a = attempts.get(key);
-    if (a && a.n >= 5 && Date.now() - a.t < 60e3) throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Try again in a minute');
+    // Count the attempt BEFORE hashing: parallel guesses are all counted, not read from the same stale value after the await.
+    let a = attempts.get(key); const tNow = Date.now();
+    if (!a || tNow - a.t >= 60e3) a = { n: 0, t: tNow };
+    if (a.n >= 5) throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Try again in a minute');
+    a.n += 1; a.t = tNow; attempts.set(key, a);
     const u = one('SELECT * FROM users WHERE username=? AND active=1', String(username || ''));
-    if (!u || !verifyPassword(String(password || ''), u.pass_hash)) {
-      attempts.set(key, { n: (a && Date.now() - a.t < 60e3 ? a.n : 0) + 1, t: Date.now() });
-      audit(null, 'login.failed', 'user', null, { username: String(username).slice(0, 50) });
+    const passwordOk = await verifyPasswordAsync(String(password || ''), u ? u.pass_hash : DUMMY_HASH); // always hashes, so unknown usernames take as long as known ones
+    if (!u || !passwordOk) {
+      // never store what was typed: a mistyped password in the username box would otherwise be logged
+      const known = one('SELECT id FROM users WHERE username=?', String(username || ''));
+      audit(null, 'login.failed', 'user', known?.id ?? null, known ? {} : { unknown_username: true, length: String(username || '').length });
       throw new HttpError(401, 'BAD_CREDENTIALS', 'Invalid username or password');
     }
     attempts.delete(key);
@@ -130,10 +163,10 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       settings: Object.fromEntries(q('SELECT * FROM settings').map((r) => [r.key, r.value])),
     });
   });
-  app.get('/api/staff', guard(), (_req, res) => {
+  app.get('/api/staff', guard(), (req, res) => {
     res.json(q(`SELECT u.id,u.username,u.name,u.name_ar,u.role,u.department_id,u.active,u.schedule_override, COALESCE(a.status,'OFF_DUTY') availability, a.updated_at availability_updated,
       (SELECT group_concat(service_id) FROM staff_services WHERE user_id=u.id) service_ids FROM users u LEFT JOIN staff_availability a ON a.user_id=u.id ORDER BY u.name`)
-      .map((r) => ({ ...r, service_ids: r.service_ids ? r.service_ids.split(',').map(Number) : [] })));
+      .map(({ username, schedule_override, ...r }) => ({ ...r, ...(req.user.role === 'admin' ? { username, schedule_override } : {}), service_ids: r.service_ids ? r.service_ids.split(',').map(Number) : [] })));
   });
 
   // ---- config CRUD (admin) ----
@@ -185,6 +218,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   });
   app.post('/api/config/staff', guard('config.manage'), (req, res) => {
     const { username, name, name_ar = '', role, department_id = null, password, service_ids = [] } = req.body;
+    checkStaff({ username, name, name_ar, role, department_id }, true, one);
     if (!password || String(password).length < 10) throw new HttpError(400, 'WEAK_PASSWORD', 'Password must be at least 10 characters');
     const id = tx(db, () => {
       let r;
@@ -201,6 +235,11 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.patch('/api/config/staff/:id', guard('config.manage'), (req, res) => {
     const id = Number(req.params.id);
     if (!one('SELECT 1 x FROM users WHERE id=?', id)) throw new HttpError(404, 'NOT_FOUND', 'Staff member not found.');
+    checkStaff(req.body, false, one);
+    const cur = one('SELECT role,active FROM users WHERE id=?', id);
+    const staysAdmin = (req.body.role ?? cur.role) === 'admin' && Number(req.body.active ?? cur.active) === 1;
+    if (cur.role === 'admin' && cur.active === 1 && !staysAdmin && one("SELECT COUNT(*) c FROM users WHERE role='admin' AND active=1").c <= 1)
+      throw new HttpError(409, 'LAST_ADMIN', 'This is the only active administrator. Create or keep another administrator before changing or disabling this account.');
     let diff = null;
     if (Array.isArray(req.body.service_ids)) {
       const ids = [...new Set(req.body.service_ids.map(Number))];

@@ -33,4 +33,5 @@ const enc = (s) => (typeof s === 'string' ? new TextEncoder().encode(s) : Uint8A
 export const createHash = () => { let data = ''; return { update(s) { data += s; return this; }, digest: () => Buffer.from(sha256(enc(data))).toString('hex') }; };
 export const randomBytes = (n) => Buffer.from(crypto.getRandomValues(new Uint8Array(n)));
 export const scryptSync = (pw, salt) => Buffer.from(sha256(Uint8Array.from([...salt, ...enc(pw)])));
+export const scrypt = (pw, salt, len, cb) => { try { cb(null, scryptSync(pw, salt, len)); } catch (e) { cb(e); } };
 export const timingSafeEqual = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);

@@ -58,6 +58,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   await rec.screenshot({ path: `${out}/doc2-schedule-orange.png` });
   ok(await rec.locator('.sched-row .btn:has-text("Documentation")').first().isVisible(), 'reception can open documentation status (not edit)');
   await rec.locator(`.sched-row:has-text("${N}") button:has-text("Documentation")`).click(); await rec.waitForSelector('.modal');
+  await rec.waitForSelector('.modal .sched', { timeout: 8000 }); // the dialog loads its status from the server
   ok(await rec.locator('.modal textarea').count() === 0 && /Only the treating clinician/.test(await rec.locator('.modal').textContent()), 'reception sees completeness only, no clinical text, no edit fields');
   await closeModal(rec);
 

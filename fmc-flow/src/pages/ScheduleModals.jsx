@@ -14,7 +14,7 @@ export function PatientPicker({ value, onChange, config, staff, locked }) {
   const [q, setQ] = useState(''); const [found, setFound] = useState(null); const [open, setOpen] = useState(false); const seq = useRef(0);
   const search = async (v) => {
     setQ(v); const n = ++seq.current;
-    if (v.trim().length < 2) return setFound(null);
+    if (v.trim().length < 3) return setFound(null);
     try { const r = await api.get(`/patients?q=${encodeURIComponent(v.trim())}`); if (n === seq.current) setFound(r); } catch { /* the connection banner explains */ }
   };
   if (value) return (

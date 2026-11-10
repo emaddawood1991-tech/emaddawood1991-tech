@@ -1,6 +1,7 @@
 import { createApp } from './app.js';
 import { seed } from './seed.js';
 
+process.umask(0o077); // new files (database, WAL, backups) are private to the service account
 const staticDir = new URL('../dist/', import.meta.url).pathname;
 const { app, db, ops } = createApp({ staticDir });
 if (process.env.FMC_SEED !== '0' && seed(db)) console.log('Seeded synthetic development data (see npm run seed).');
