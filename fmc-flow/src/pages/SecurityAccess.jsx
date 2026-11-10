@@ -4,7 +4,7 @@ import { useI18n } from '../i18n.jsx';
 import { Modal, Empty, useToast } from '../ui.jsx';
 import { ActivityTable } from './Account.jsx';
 
-const EVENTS = ['LOGIN_OK', 'LOGIN_FAILED', 'LOGIN_BLOCKED', 'LOGOUT', 'PASSWORD_CHANGED', 'PASSWORD_CHANGE_FAILED', 'PASSWORD_RESET', 'SESSIONS_REVOKED', 'USERNAME_CHANGED'];
+const EVENTS = ['MFA_ENABLED', 'MFA_DISABLED', 'MFA_RESET', 'MFA_RECOVERY_USED', 'MFA_CODES_REGENERATED', 'LOGIN_OK', 'LOGIN_FAILED', 'LOGIN_BLOCKED', 'LOGOUT', 'PASSWORD_CHANGED', 'PASSWORD_CHANGE_FAILED', 'PASSWORD_RESET', 'SESSIONS_REVOKED', 'USERNAME_CHANGED'];
 const SUBS = [['accounts', 'saAccounts'], ['roles', 'saRoles'], ['activity', 'saLoginActivity'], ['audit', 'saAuditHistory'], ['settings', 'saSettings']];
 
 function Accounts() {
@@ -16,15 +16,16 @@ function Accounts() {
   return (
     <div className="card"><h2>{t('saAccounts')}</h2>
       {rows.length === 0 ? <Empty /> : <div className="tbl"><table>
-        <thead><tr><th>{t('name')}</th><th>{t('saRole')}</th><th>{t('saLastLogin')}</th><th>{t('saPwChanged')}</th><th>{t('saSessionsCount')}</th><th /></tr></thead>
+        <thead><tr><th>{t('name')}</th><th>{t('saRole')}</th><th>{t('saLastLogin')}</th><th>{t('saPwChanged')}</th><th>{t('saSessionsCount')}</th><th>{t('saMfa')}</th><th /></tr></thead>
         <tbody>{rows.map((u) => <tr key={u.id} className={u.active ? '' : 'sch-hidden-row'}>
           <td>{loc(u)}<div className="small muted">{u.username}{u.must_change_password ? ` · ${t('saForce')}` : ''}</div></td><td>{u.role}</td>
-          <td className="small">{u.last_login_at ? fmtDT(u.last_login_at) : t('saNever')}</td><td className="small">{u.password_changed_at ? fmtDT(u.password_changed_at) : '—'}</td><td>{u.sessions}</td>
-          <td><div className="row"><button className="btn ghost sm" onClick={() => setModal({ k: 'reset', u })}>{t('saResetPw')}</button><button className="btn ghost sm" disabled={!u.sessions} onClick={() => act(() => api.post(`/security/users/${u.id}/revoke-sessions`), t('saRevoked'))}>{t('saRevoke')}</button><button className="btn ghost sm" onClick={() => { setVal(u.username); setModal({ k: 'name', u }); }}>{t('saRename')}</button></div></td></tr>)}</tbody></table></div>}
+          <td className="small">{u.last_login_at ? fmtDT(u.last_login_at) : t('saNever')}</td><td className="small">{u.password_changed_at ? fmtDT(u.password_changed_at) : '—'}</td><td>{u.sessions}</td><td>{u.mfa_enabled ? <span className="chip ok">{t('mfaOn')}</span> : <span className="small muted">{t('mfaOff')}</span>}</td>
+          <td><div className="row"><button className="btn ghost sm" onClick={() => setModal({ k: 'reset', u })}>{t('saResetPw')}</button><button className="btn ghost sm" disabled={!u.sessions} onClick={() => act(() => api.post(`/security/users/${u.id}/revoke-sessions`), t('saRevoked'))}>{t('saRevoke')}</button><button className="btn ghost sm" onClick={() => { setVal(u.username); setModal({ k: 'name', u }); }}>{t('saRename')}</button>{u.mfa_enabled ? <button className="btn ghost sm" onClick={() => setModal({ k: 'mfa', u })}>{t('saResetMfa')}</button> : null}</div></td></tr>)}</tbody></table></div>}
       {modal?.k === 'reset' && <Modal title={`${t('saResetPw')} — ${loc(modal.u)}`} onClose={close}><div className="stack">
         <div className="field"><label htmlFor="sa-temp">{t('saTempPw')}</label><input id="sa-temp" type="password" autoComplete="new-password" autoFocus value={val} onChange={(e) => setVal(e.target.value)} />{err && <div className="field-err" role="alert">{err}</div>}</div>
         <small className="hint">{t('saTempHint')}</small>
         <div className="row"><button className="btn" disabled={!val} onClick={() => act(() => api.post(`/security/users/${modal.u.id}/reset-password`, { temporary_password: val }), t('saDone'))}>{t('saResetPw')}</button><button className="btn ghost" onClick={close}>{t('cancel')}</button></div></div></Modal>}
+      {modal?.k === 'mfa' && <Modal title={`${t('saResetMfa')} — ${loc(modal.u)}`} onClose={close}><div className="stack"><p>{t('saConfirmResetMfa')}</p><div className="row"><button className="btn red" onClick={() => act(() => api.post(`/security/users/${modal.u.id}/reset-mfa`), t('saDone'))}>{t('saResetMfa')}</button><button className="btn ghost" onClick={close}>{t('cancel')}</button></div></div></Modal>}
       {modal?.k === 'name' && <Modal title={`${t('saRename')} — ${loc(modal.u)}`} onClose={close}><div className="stack">
         <div className="field"><label htmlFor="sa-user">{t('saUsername')}</label><input id="sa-user" autoFocus value={val} onChange={(e) => setVal(e.target.value)} />{err && <div className="field-err" role="alert">{err}</div>}</div>
         <div className="row"><button className="btn" disabled={!val} onClick={() => act(() => api.post(`/security/users/${modal.u.id}/username`, { username: val }), t('saSaved'))}>{t('save')}</button><button className="btn ghost" onClick={close}>{t('cancel')}</button></div></div></Modal>}
@@ -69,12 +70,13 @@ function Audit() {
 function SecuritySettings({ config, reload }) {
   const { t } = useI18n(); const toast = useToast();
   const [v, setV] = useState({ password_min_length: config.settings.password_min_length ?? '10', session_idle_hours: config.settings.session_idle_hours ?? '12', session_absolute_hours: config.settings.session_absolute_hours ?? '14', max_concurrent_sessions: config.settings.max_concurrent_sessions ?? '3' });
-  const [err, setErr] = useState('');
-  const save = async () => { setErr(''); try { await api.patch('/config/settings', v); toast(t('saSaved')); reload(); } catch (e) { setErr(e.message); } };
+  const [err, setErr] = useState(''); const [roles, setRoles] = useState(() => String(config.settings.mfa_required_roles || '').split(',').filter(Boolean));
+  const save = async () => { setErr(''); try { await api.patch('/config/settings', { ...v, mfa_required_roles: roles.join(',') }); toast(t('saSaved')); reload(); } catch (e) { setErr(e.message); } };
   const N = ({ k, label, min, max }) => <div className="field"><label htmlFor={`ss-${k}`}>{label}</label><input id={`ss-${k}`} type="number" min={min} max={max} value={v[k]} onChange={(e) => setV({ ...v, [k]: e.target.value })} /></div>;
   return (
     <div className="card" style={{ maxWidth: 520 }}><h2>{t('saSettings')}</h2>
       <div className="stack"><N k="password_min_length" label={t('saMinLen')} min={10} max={64} /><N k="session_idle_hours" label={t('saIdleHours')} min={1} max={72} /><N k="session_absolute_hours" label={t('saAbsHours')} min={1} max={72} /><N k="max_concurrent_sessions" label={t('saMaxSessions')} min={0} max={20} />
+        <fieldset className="mrn-box"><legend>{t('saMfaRequiredRoles')}</legend>{['admin', 'supervisor', 'reception', 'clinician'].map((r) => <label key={r} className="chk"><input type="checkbox" checked={roles.includes(r)} onChange={(e) => setRoles(e.target.checked ? [...roles, r] : roles.filter((x) => x !== r))} />{r}</label>)}</fieldset>
         {err && <div className="field-err" role="alert">{err}</div>}<button className="btn" onClick={save}>{t('save')}</button></div></div>);
 }
 

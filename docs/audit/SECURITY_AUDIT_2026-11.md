@@ -27,6 +27,14 @@ Logout revokes the session server-side · fresh token on login (no fixation) · 
 | No Security & Access section | Settings → Security & Access: Employee accounts, Roles & Permissions (read-only matrix), Login Activity, Audit History, Security Settings | S2-10, browser suite |
 New tables: `login_events`, `password_history`. New columns: `users.must_change_password/password_changed_at/last_login_at`, `auth_sessions.sid/ip/user_agent`. Settings: `password_min_length`, `session_absolute_hours`, `max_concurrent_sessions`. Rollback: tag `checkpoint/pre-security-s2-7cbe2bc`.
 
+## Stage S3 (implemented): multi-factor authentication
+- TOTP (RFC 6238; SHA-1, 6 digits, 30 s, ±1 step) through the `otpauth` library, QR codes through `qrcode`; both audited (`npm audit`: 0 vulnerabilities).
+- Two-step sign-in: the password alone creates no session — only a short-lived (5 min) one-time challenge; each time step is accepted once (replay protection); 5 tries per challenge and a 15-minute lock after 5 wrong codes.
+- Ten single-use recovery codes, stored only as hashes. Authenticator secrets are stored AES-256-GCM encrypted under `FMC_MFA_KEY` (not in the database).
+- Roles that must use it are a setting (`mfa_required_roles`; seed `SEED_REQUIRE_MFA=1`): those users can sign in but reach only the set-up screen until enrolled, and cannot turn it off. Others may opt in and out with password + code.
+- Lost device: administrator reset (ends sessions) or server console `npm run mfa:reset -- <username>`; both audited.
+- New tables `user_mfa`, `mfa_recovery_codes`. Tests: `mfa.test.js` (9), `e2e-mfa.cjs` (18). Not available in the in-browser demo. Rollback: tag `checkpoint/pre-security-s3-6b6a418`.
+
 ## Still open (later stages)
-No MFA · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · patient reads not audited · audit not tamper-evident · no encryption at rest · permission matrix as role templates.
+MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · patient reads not audited · audit not tamper-evident · no encryption at rest · permission matrix as role templates.
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.

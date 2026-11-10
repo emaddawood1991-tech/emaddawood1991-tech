@@ -6,6 +6,7 @@ import { makeOps, HttpError, now, nowMs, clock } from './ops.js';
 import { makeRegistration } from './registration.js';
 import { makeSchedule } from './schedule.js';
 import { makeAccounts, passwordProblem } from './accounts.js';
+import { makeMfa } from './mfa.js';
 import { can, deptScope } from './perms.js';
 
 export function hashPassword(pw) {
@@ -27,6 +28,7 @@ async function verifyPasswordAsync(pw, stored) {
   return timingSafeEqual(h, Buffer.from(hashHex, 'hex'));
 }
 const DUMMY_HASH = hashPassword(randomBytes(12).toString('hex')); // verified against when the username does not exist, so timing does not reveal valid usernames
+const MFA_OK_PREFIX = '/api/mfa/'; // endpoints a person who must enrol in MFA may call, in addition to the set below
 const MUST_CHANGE_OK = new Set(['/api/me', '/api/logout', '/api/account', '/api/account/password', '/api/time']); // all a person who must change their password may call
 const ROLES = ['admin', 'supervisor', 'reception', 'clinician'];
 const sha = (s) => createHash('sha256').update(s).digest('hex');
@@ -74,11 +76,12 @@ function checkStaff(b, creating, one) {
   if (Object.keys(f).length) throw new HttpError(400, 'VALIDATION', 'Please correct the highlighted fields.', { fields: f });
 }
 
-export function createApp({ db = openDb(), backupDir = new URL('../data/backups/', import.meta.url).pathname, staticDir } = {}) {
+export function createApp({ db = openDb(), backupDir = new URL('../data/backups/', import.meta.url).pathname, staticDir, mfaKey = randomBytes(32) } = {}) { // mfaKey: 32 bytes from FMC_MFA_KEY (index.js); a random per-process key only for tests
   const ops = makeOps(db);
   const { q, one, run, audit, fail } = ops;
   const reg = makeRegistration(db, ops);
   const sched = makeSchedule(db, ops);
+  const mfa = makeMfa({ db, ops, key: mfaKey, HttpError, sha });
   const accounts = makeAccounts({ db, ops, tx, HttpError, hashPassword, verifyPasswordAsync, sha, randomBytes });
   const app = express();
   app.disable('x-powered-by');
@@ -108,14 +111,16 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       const maxIdle = Number(ops.setting('session_idle_hours') || 12) * 3600e3; const maxAge = Number(ops.setting('session_absolute_hours') || 14) * 3600e3;
       if (s && nowMs() - Date.parse(s.last_seen) < maxIdle && nowMs() - Date.parse(s.created_at) < maxAge) { // idle AND absolute lifetime
         const u = one('SELECT id,username,name,name_ar,role,department_id,active,schedule_override,must_change_password FROM users WHERE id=?', s.user_id);
-        if (u?.active) { req.user = u; run('UPDATE auth_sessions SET last_seen=? WHERE token_hash=?', now(), s.token_hash); }
+        if (u?.active) { u.mfa_setup_required = mfa.required(u) && !mfa.enabled(u.id) ? 1 : 0; req.user = u; run('UPDATE auth_sessions SET last_seen=? WHERE token_hash=?', now(), s.token_hash); }
       }
     }
     next();
   }
   const guard = (perm) => (req, _res, next) => {
     if (!req.user) return next(new HttpError(401, 'UNAUTHENTICATED', 'Please sign in'));
-    if (req.user.must_change_password && !MUST_CHANGE_OK.has(req.originalUrl.split('?')[0])) return next(new HttpError(403, 'PASSWORD_CHANGE_REQUIRED', 'You must choose a new password before continuing.'));
+    { const path = req.originalUrl.split('?')[0]; const okPath = MUST_CHANGE_OK.has(path) || path.startsWith(MFA_OK_PREFIX);
+      if (req.user.must_change_password && !MUST_CHANGE_OK.has(path)) return next(new HttpError(403, 'PASSWORD_CHANGE_REQUIRED', 'You must choose a new password before continuing.'));
+      if (req.user.mfa_setup_required && !okPath) return next(new HttpError(403, 'MFA_SETUP_REQUIRED', 'Your role requires multi-factor authentication. Set it up to continue.')); }
     if (perm && !can(req.user, perm)) return next(new HttpError(403, 'FORBIDDEN', `Missing permission: ${perm}`));
     // CSRF: state-changing requests must carry the custom header (cross-site forms cannot set it)
     if (req.method !== 'GET' && req.headers['x-requested-with'] !== 'fmc') return next(new HttpError(403, 'CSRF', 'Missing request header'));
@@ -142,6 +147,15 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       throw new HttpError(401, 'BAD_CREDENTIALS', 'Invalid username or password');
     }
     attempts.delete(key);
+    if (mfa.enabled(u.id)) { // second factor: no session yet, only a short-lived one-time challenge
+      const ch = randomBytes(24).toString('hex'); challenges.set(sha(ch), { userId: u.id, exp: nowMs() + 5 * 60e3, tries: 0 });
+      for (const [k, v] of challenges) if (v.exp < nowMs()) challenges.delete(k);
+      return res.json({ mfa_required: true, mfa_token: ch, server_time: now() });
+    }
+    startSession(req, res, u);
+  });
+  /** Creates the session after every required factor has been checked. */
+  function startSession(req, res, u, method = 'password') {
     // tidy: sessions past either lifetime are removed, then the new one is created
     run('DELETE FROM auth_sessions WHERE created_at < ? OR last_seen < ?', new Date(nowMs() - (Number(ops.setting('session_absolute_hours')) || 14) * 3600e3).toISOString(), new Date(nowMs() - (Number(ops.setting('session_idle_hours')) || 12) * 3600e3).toISOString());
     const token = randomBytes(32).toString('hex'); // always a fresh token, never one supplied by the client
@@ -154,9 +168,58 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     }
     run('UPDATE users SET last_login_at=? WHERE id=?', now(), u.id);
     setSessionCookie(res, token);
-    accounts.loginEvent(u.id, 'LOGIN_OK', req);
-    audit(u, 'login', 'user', u.id);
-    res.json({ user: { id: u.id, username: u.username, name: u.name, name_ar: u.name_ar, role: u.role, department_id: u.department_id, must_change_password: u.must_change_password }, server_time: now() });
+    accounts.loginEvent(u.id, 'LOGIN_OK', req, method === 'password' ? {} : { second_factor: method });
+    audit(u, 'login', 'user', u.id, method === 'password' ? {} : { second_factor: method });
+    res.json({ user: { id: u.id, username: u.username, name: u.name, name_ar: u.name_ar, role: u.role, department_id: u.department_id, must_change_password: u.must_change_password, mfa_setup_required: mfa.required(u) && !mfa.enabled(u.id) ? 1 : 0 }, server_time: now() });
+  }
+  const challenges = new Map(); // one-time second-factor challenges: token hash → { userId, exp, tries }
+  const mfaFailures = new Map(); // per-account lock after repeated wrong codes (15 minutes)
+  app.post('/api/login/mfa', (req, res) => {
+    const { mfa_token: tok, code, recovery_code: rc } = req.body || {};
+    const ch = challenges.get(sha(String(tok || '')));
+    if (!ch || ch.exp < nowMs()) { challenges.delete(sha(String(tok || ''))); throw new HttpError(401, 'MFA_CHALLENGE_EXPIRED', 'This sign-in expired. Enter your username and password again.'); }
+    const tNow = nowMs(); const lock = mfaFailures.get(ch.userId);
+    if (lock && lock.n >= 5 && tNow - lock.t < 15 * 60e3) { accounts.loginEvent(ch.userId, 'LOGIN_BLOCKED', req, { stage: 'mfa' }); throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Too many wrong codes. Try again in 15 minutes.'); }
+    const u = one('SELECT * FROM users WHERE id=? AND active=1', ch.userId); if (!u) throw new HttpError(401, 'BAD_CREDENTIALS', 'Invalid sign-in.');
+    ch.tries += 1;
+    const method = mfa.verifySecondFactor(u.id, { code, recovery_code: rc });
+    if (!method) {
+      const f = lock && tNow - lock.t < 15 * 60e3 ? lock : { n: 0, t: tNow }; f.n += 1; f.t = tNow; mfaFailures.set(ch.userId, f);
+      accounts.loginEvent(u.id, 'LOGIN_FAILED', req, { stage: 'mfa' }); audit(null, 'login.failed', 'user', u.id, { stage: 'mfa' });
+      if (ch.tries >= 5) challenges.delete(sha(String(tok)));
+      throw new HttpError(401, 'BAD_CODE', 'That code is not correct.');
+    }
+    challenges.delete(sha(String(tok))); mfaFailures.delete(u.id);
+    if (method === 'recovery') { accounts.loginEvent(u.id, 'MFA_RECOVERY_USED', req, { remaining: mfa.summary(u.id).recovery_codes_remaining }); audit(u, 'mfa.recovery.used', 'user', u.id); }
+    startSession(req, res, u, method);
+  });
+  // ---- multi-factor enrolment and management (the signed-in person) ----
+  app.get('/api/mfa/status', guard(), (req, res) => res.json({ available: true, ...mfa.status(req.user) }));
+  app.post('/api/mfa/setup', guard(), async (req, res) => res.json(await mfa.startSetup(req.user)));
+  app.post('/api/mfa/confirm', guard(), (req, res) => {
+    const codes = mfa.confirmSetup(req.user, req.body?.code);
+    accounts.loginEvent(req.user.id, 'MFA_ENABLED', req); audit(req.user, 'mfa.enable', 'user', req.user.id);
+    res.json({ ok: true, recovery_codes: codes });
+  });
+  app.post('/api/mfa/recovery-codes', guard(), (req, res) => {
+    if (!mfa.enabled(req.user.id)) throw new HttpError(409, 'MFA_NOT_ENABLED', 'Multi-factor authentication is not on.');
+    if (!mfa.checkTotp(req.user.id, req.body?.code)) throw new HttpError(400, 'VALIDATION', 'That code is not correct.', { fields: { code: 'That code is not correct.' } });
+    accounts.loginEvent(req.user.id, 'MFA_CODES_REGENERATED', req); audit(req.user, 'mfa.recovery.regenerate', 'user', req.user.id);
+    res.json({ recovery_codes: mfa.newRecoveryCodes(req.user.id) });
+  });
+  app.post('/api/mfa/disable', guard(), async (req, res) => {
+    if (mfa.required(req.user)) throw new HttpError(403, 'MFA_REQUIRED', 'Your role requires multi-factor authentication, so it cannot be turned off.');
+    const u = one('SELECT pass_hash FROM users WHERE id=?', req.user.id);
+    if (!(await verifyPasswordAsync(String(req.body?.password || ''), u.pass_hash)) || !mfa.checkTotp(req.user.id, req.body?.code)) throw new HttpError(400, 'VALIDATION', 'Password or code is not correct.', { fields: { password: 'Password or code is not correct.' } });
+    mfa.reset(req.user.id); accounts.loginEvent(req.user.id, 'MFA_DISABLED', req); audit(req.user, 'mfa.disable', 'user', req.user.id);
+    res.json({ ok: true });
+  });
+  // administrator: a person lost their device and recovery codes
+  app.post('/api/security/users/:id/reset-mfa', guard('config.manage'), (req, res) => {
+    const id = Number(req.params.id); if (!one('SELECT 1 x FROM users WHERE id=?', id)) throw new HttpError(404, 'NOT_FOUND', 'Account not found.');
+    mfa.reset(id); run('DELETE FROM auth_sessions WHERE user_id=?', id);
+    accounts.loginEvent(id, 'MFA_RESET', req, { by: req.user.id }); audit(req.user, 'mfa.reset', 'user', id);
+    res.json({ ok: true });
   });
   app.post('/api/logout', guard(), (req, res) => {
     const tok = cookieOf(req);
@@ -218,12 +281,13 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.patch('/api/config/settings', guard('config.manage'), (req, res) => {
     const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60], password_min_length: [10, 64], session_absolute_hours: [1, 72], session_idle_hours: [1, 72], max_concurrent_sessions: [0, 20] };
     const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin', 'timer_auto_close'];
-    const allowed = ['timezone', 'gender_options', 'diagnosis_pattern', ...Object.keys(numeric), ...flags];
+    const allowed = ['timezone', 'gender_options', 'diagnosis_pattern', 'mfa_required_roles', ...Object.keys(numeric), ...flags];
     const body = req.body || {};
     for (const [k, v] of Object.entries(body)) {
       if (!allowed.includes(k)) continue;
       if (flags.includes(k) && !['0', '1'].includes(String(v))) throw new HttpError(400, 'INVALID', `${k} must be 0 or 1`);
       if (numeric[k]) { const n = Number(v); if (!Number.isInteger(n) || n < numeric[k][0] || n > numeric[k][1]) throw new HttpError(400, 'INVALID', `${k} must be a whole number from ${numeric[k][0]} to ${numeric[k][1]}`); }
+      if (k === 'mfa_required_roles') { const list = String(v ?? '').split(',').map((x) => x.trim()).filter(Boolean); if (list.some((x) => !ROLES.includes(x))) throw new HttpError(400, 'INVALID', `mfa_required_roles must list roles from: ${ROLES.join(', ')}`); run('INSERT INTO settings(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', k, [...new Set(list)].join(',')); audit(req.user, 'config.settings', 'settings', k, { v: [...new Set(list)].join(',') }); continue; }
       if (k === 'diagnosis_pattern') { const pat = String(v ?? ''); if (pat.length > 200) throw new HttpError(400, 'INVALID', 'Diagnosis pattern is limited to 200 characters.'); try { new RegExp(pat); } catch { throw new HttpError(400, 'INVALID', 'Diagnosis pattern is not a valid regular expression.'); } }
       if (k === 'gender_options') {
         const list = typeof v === 'string' ? (() => { try { return JSON.parse(v); } catch { return null; } })() : v;

@@ -10,7 +10,7 @@ export default defineConfig({
   resolve: { alias: [
     { find: 'node:sqlite', replacement: d('sqlite-adapter.js') }, { find: 'node:crypto', replacement: d('crypto-shim.js') },
     { find: 'node:fs', replacement: d('node-stubs.js') }, { find: 'node:path', replacement: d('node-stubs.js') }, { find: 'node:url', replacement: d('node-stubs.js') },
-    { find: /^express$/, replacement: d('express-shim.js') },
+    { find: /^express$/, replacement: d('express-shim.js') }, { find: /^\.\/mfa\.js$/, replacement: d('mfa-stub.js') },
   ] },
   define: { 'import.meta.url': JSON.stringify('file:///demo/server/x.js') },
   build: { outDir: 'dist-demo', emptyOutDir: true, assetsInlineLimit: 100000000, rollupOptions: { input: 'demo.html' }, chunkSizeWarningLimit: 6000 },

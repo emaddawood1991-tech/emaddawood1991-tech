@@ -50,8 +50,8 @@ const strong = await U.admin.post('/api/config/staff', { username: 'probe.user',
 rec('P10c weak passwords accepted', strong.status === 201, `admin-created account with password "aaaaaaaaaa" accepted (only a 10-character minimum; no complexity/breach check; no forced change at first login)`);
 const sess = await U['pt.one'].get('/api/account');
 rec('P10d no session list/revoke UI or API', !Array.isArray(sess.body?.sessions), `GET /api/account → ${sess.status}; sessions listed: ${Array.isArray(sess.body?.sessions)}`);
-const mfa = await U.admin.get('/api/account/mfa');
-rec('P10e no MFA', mfa.status === 404, `GET /api/account/mfa → ${mfa.status}; administrators sign in with a password only`);
+const mfaCfg = (await U.admin.get('/api/config')).body.settings.mfa_required_roles || '';
+rec('P10e MFA not required for privileged roles', !mfaCfg.includes('admin'), `mfa_required_roles = "${mfaCfg}"; TOTP is available (Settings → Security & Access) but administrators can still sign in with a password only until it is required (seed with SEED_REQUIRE_MFA=1)`);
 const dp = await raw('POST', '/api/login', { body: { username: 'admin', password: DEMO_PASSWORD } });
 rec('P9a default credentials', true, `all ${(staff.body).length} seeded accounts share the published demo password "${DEMO_PASSWORD}" (README, source code and every seeded database). server/index.js seeds them on ANY empty database unless FMC_SEED=0`);
 const ck = (await raw('POST', '/api/login', { body: { username: 'dr.ort', password: DEMO_PASSWORD } })).headers.get('set-cookie');

@@ -97,7 +97,8 @@ export function makeAccounts({ db, ops, tx, HttpError, hashPassword, verifyPassw
     const admin = () => guard('config.manage');
     app.get('/api/security/accounts', admin(), (_req, res) => {
       res.json(q(`SELECT u.id,u.username,u.name,u.name_ar,u.role,u.department_id,u.active,u.last_login_at,u.password_changed_at,u.must_change_password,
-        (SELECT COUNT(*) FROM auth_sessions s WHERE s.user_id=u.id) sessions FROM users u ORDER BY u.name`));
+        (SELECT COUNT(*) FROM auth_sessions s WHERE s.user_id=u.id) sessions,
+        COALESCE((SELECT enabled FROM user_mfa m WHERE m.user_id=u.id),0) mfa_enabled FROM users u ORDER BY u.name`));
     });
     app.get('/api/security/login-activity', admin(), (req, res) => {
       const uid = req.query.user_id ? Number(req.query.user_id) : null; const ev = req.query.event ? String(req.query.event) : null;

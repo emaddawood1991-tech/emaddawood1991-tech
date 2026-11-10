@@ -100,6 +100,7 @@ const DAY = '2030-03-05';
   await closeModal(rec);
   await adm.click('.modal-dummy').catch(() => {}); await (await cell(adm, 'Physiotherapy', 'PT Two', '12:00')).click(); await adm.fill('#ds-patient-q', 'Sample Patient G'); await adm.click('.patient-row:has-text("Sample Patient G")'); await adm.click('.modal button:has-text("Save appointment")');
   await adm.waitForSelector('.modal .banner.bad'); await adm.check('.modal .banner.bad input[type=checkbox]'); await adm.fill('.modal input[aria-label^="Reason for the override"]', 'urgent referral'); await adm.click('.modal button:has-text("Save appointment")'); await adm.waitForSelector('.modal', { state: 'detached' });
+  await adm.locator('.sch-appt:has-text("Sample Patient G")').first().waitFor({ timeout: 8000 }).catch(() => {});
   ok(await adm.locator('.sch-appt:has-text("Sample Patient G")').count() === 1, 'an administrator can override the break with a reason (audited)');
   // 18. waiting list
   await rec.click('.tabs button:has-text("Waiting list")'); await rec.click('button:has-text("Add to waiting list")'); await rec.fill('#ds-patient-q', 'Sample Patient H'); await rec.click('.patient-row:has-text("Sample Patient H")');

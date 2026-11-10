@@ -129,6 +129,12 @@ CREATE TABLE IF NOT EXISTS login_events (
 CREATE INDEX IF NOT EXISTS login_events_user ON login_events(user_id, id);
 CREATE TRIGGER IF NOT EXISTS login_events_no_update BEFORE UPDATE ON login_events BEGIN SELECT RAISE(ABORT,'login_events is append-only'); END;
 CREATE TRIGGER IF NOT EXISTS login_events_no_delete BEFORE DELETE ON login_events BEGIN SELECT RAISE(ABORT,'login_events is append-only'); END;
+CREATE TABLE IF NOT EXISTS user_mfa (
+  user_id INTEGER PRIMARY KEY REFERENCES users(id), secret_enc TEXT NOT NULL, enabled INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL, confirmed_at TEXT, last_used_step INTEGER
+);
+CREATE TABLE IF NOT EXISTS mfa_recovery_codes (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id), code_hash TEXT NOT NULL, used_at TEXT);
+CREATE INDEX IF NOT EXISTS mfa_recovery_user ON mfa_recovery_codes(user_id);
 CREATE TABLE IF NOT EXISTS password_history (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id), pass_hash TEXT NOT NULL, changed_at TEXT NOT NULL);
 -- ---- Daily Schedule (additive) ----
 CREATE TABLE IF NOT EXISTS appointment_categories (
@@ -245,6 +251,7 @@ export const DEFAULT_SETTINGS = {
   password_min_length: '10',
   session_absolute_hours: '14',
   max_concurrent_sessions: '3',
+  mfa_required_roles: '',
   gender_options: JSON.stringify([{ code: 'M', en: 'Male', ar: 'ذكر' }, { code: 'F', en: 'Female', ar: 'أنثى' }]),
 };
 

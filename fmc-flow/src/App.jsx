@@ -11,6 +11,7 @@ import Sessions from './pages/Sessions.jsx';
 import TreatmentBoard from './pages/TreatmentBoard.jsx';
 import DailySchedule from './pages/DailySchedule.jsx';
 import Account, { ForcedPasswordChange } from './pages/Account.jsx';
+import { ForcedMfaSetup, MfaChallenge } from './pages/Mfa.jsx';
 import Corrections from './pages/Corrections.jsx';
 import Search from './pages/Search.jsx';
 import Reports from './pages/Reports.jsx';
@@ -26,21 +27,23 @@ const PAGES = [
 function Login({ onDone }) {
   const { t, lang, setLang } = useI18n();
   const [f, setF] = useState({ username: '', password: '' });
-  const [err, setErr] = useState('');
+  const [err, setErr] = useState(''); const [challenge, setChallenge] = useState(null);
   const submit = async (e) => {
     e.preventDefault(); setErr('');
-    try { const r = await api.post('/login', f); onDone(r.user); } catch (x) { setErr(x.code === 'NETWORK' ? t('offline') : x.message); }
+    try { const r = await api.post('/login', f); if (r.mfa_required) setChallenge(r.mfa_token); else onDone(r.user); } catch (x) { setErr(x.code === 'NETWORK' ? t('offline') : x.message); }
   };
   return (
     <div className="login">
       <div className="glass box" role="form" onKeyDown={(e) => e.key === 'Enter' && f.username && f.password && submit(e)}>
         <img src={logo} alt="FMC Ideal Care" />
         <h1>{t('appName')}</h1>
+        {challenge ? <MfaChallenge token={challenge} onDone={onDone} onBack={() => { setChallenge(null); setF({ ...f, password: '' }); }} /> : <>
         <label>{t('username')}<input autoFocus autoComplete="username" value={f.username} onChange={(e) => setF({ ...f, username: e.target.value })} /></label>
         <label>{t('password')}<input type="password" autoComplete="current-password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} /></label>
         {err && <div className="err" role="alert">{err}</div>}
         <button type="button" className="btn" disabled={!f.username || !f.password} onClick={submit}>{t('signIn')}</button>
         <button type="button" className="btn ghost sm" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t('lang')}</button>
+        </>}
         <small className="muted">{t('demoNote')}</small>
         {window.__FMC_DEMO__ && <button type="button" className="btn ghost sm" onClick={() => window.__resetDemo()}>Reset demo data</button>}
       </div>
@@ -62,9 +65,10 @@ export default function App() {
   const { run } = useAction();
   useEffect(() => { api.get('/me').then((r) => { window.__tz = r.timezone; setUser(r.user); }).catch((e) => setUser(e.status === 401 ? null : undefined)); }, []);
   useEffect(() => { const on = () => setPage(location.hash.slice(2) || 'dashboard'); window.addEventListener('hashchange', on); return () => window.removeEventListener('hashchange', on); }, []);
-  const staff = usePoll('/staff', 8000, !!user && !user.must_change_password);
+  const staff = usePoll('/staff', 8000, !!user && !user.must_change_password && !user.mfa_setup_required);
   if (user === undefined) return <div className="login"><p className="muted">{net.offline ? t('offline') : t('loading')}</p></div>;
   if (!user) return <Login onDone={(u) => setUser(u)} />;
+  if (!user.must_change_password && user.mfa_setup_required) return <ForcedMfaSetup user={user} onSignOut={async () => { await run(() => api.post('/logout')); setUser(null); }} onDone={() => api.get('/me').then((r) => setUser(r.user))} />;
   if (user.must_change_password) return <ForcedPasswordChange user={user} onSignOut={async () => { await run(() => api.post('/logout')); setUser(null); }} onDone={() => api.get('/me').then((r) => setUser(r.user))} />;
   const mine = staff.data?.find((s) => s.id === user.id);
   const allowed = PAGES.filter(([, , roles]) => roles.includes(user.role));

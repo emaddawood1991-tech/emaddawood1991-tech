@@ -3,6 +3,7 @@ import { api, usePoll } from '../api.js';
 import { useI18n } from '../i18n.jsx';
 import { useToast } from '../ui.jsx';
 import logo from '../assets/logo.webp';
+import { MfaCard } from './Mfa.jsx';
 
 const fill = (txt, n) => txt.replace('{n}', n);
 const devName = (ua) => { const s = String(ua || ''); const b = /Edg\//.test(s) ? 'Edge' : /Chrome\//.test(s) ? 'Chrome' : /Firefox\//.test(s) ? 'Firefox' : /Safari\//.test(s) ? 'Safari' : ''; const o = /Windows/.test(s) ? 'Windows' : /Android/.test(s) ? 'Android' : /iPhone|iPad/.test(s) ? 'iOS' : /Mac OS/.test(s) ? 'macOS' : /Linux/.test(s) ? 'Linux' : ''; return [b, o].filter(Boolean).join(' · ') || s.slice(0, 40) || '—'; };
@@ -71,6 +72,7 @@ export default function Account({ user }) {
           <div><dt>{t('department')}</dt><dd>{p.department ? loc(p.department) : '—'}</dd></div>
           <div><dt>{t('saLastLogin')}</dt><dd>{p.last_login_at ? fmtDT(p.last_login_at) : t('saNever')}</dd></div><div><dt>{t('saPwChanged')}</dt><dd>{p.password_changed_at ? fmtDT(p.password_changed_at) : t('saNever')}</dd></div>
         </dl></div>
+      <MfaCard />
       <div className="card" style={{ maxWidth: 560 }}><h2>{t('saChangePw')}</h2><PasswordForm minLength={d.policy.min_length} onDone={acct.reload} /></div>
       <div className="card"><h2>{t('saSessions')}<button className="btn ghost sm" onClick={revokeOthers} disabled={d.sessions.length < 2}>{t('saSignOutOthers')}</button></h2>
         <div className="tbl"><table><thead><tr><th>{t('saDevice')}</th><th>{t('saAddress')}</th><th>{t('saSignedIn')}</th><th>{t('saLastActive')}</th><th /></tr></thead>

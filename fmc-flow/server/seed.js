@@ -109,6 +109,7 @@ export function seed(db) {
       setupDefaults(db); // synthetic demo timetable from the demo staff; administrators change it in Daily Schedule
     } else migrateCatalog(db);
     db.prepare("INSERT OR IGNORE INTO settings(key,value) VALUES ('catalog_v2','1')").run();
+    if (process.env.SEED_REQUIRE_MFA === '1') db.prepare("UPDATE settings SET value='admin,supervisor' WHERE key='mfa_required_roles'").run(); // privileged roles must enrol an authenticator app
   });
   return true;
 }
