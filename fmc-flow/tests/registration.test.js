@@ -63,11 +63,11 @@ test('manual MRN is saved exactly (normalised), and a duplicate MRN is rejected 
 });
 
 test('automatic MRN is generated, unique, and skips MRNs already taken manually', async () => {
-  await reg({ mrn_mode: 'manual', mrn: `MRN-${String(count() + 1).padStart(6, '0')}`, name: 'Takes The Next Number' });
+  await reg({ mrn_mode: 'manual', mrn: `EMR-${String(count() + 1).padStart(6, '0')}`, name: 'Takes The Next Number' });
   const a = await reg({ mrn_mode: 'auto', name: 'Synthetic Auto One' });
   const b = await reg({ mrn_mode: 'auto', name: 'Synthetic Auto Two' });
   assert.equal(a.status, 201); assert.equal(b.status, 201);
-  assert.match(a.body.mrn, /^MRN-\d{6}$/); assert.notEqual(a.body.mrn, b.body.mrn);
+  assert.match(a.body.mrn, /^EMR-\d{6}$/); assert.notEqual(a.body.mrn, b.body.mrn);
 });
 
 test('English and Arabic names are saved; Arabic field must contain Arabic letters; required-ness is configurable', async () => {

@@ -258,8 +258,8 @@ test('department scope: clinicians cannot see or act on other departments', asyn
 test('search filters work and respect permissions', async () => {
   const r = await admin.get(`/api/search?room_id=${room('PT-01').id}`);
   assert.ok(r.body.length >= 1);
-  const m = await admin.get('/api/search?mrn=MRN-000001');
-  assert.ok(m.body.every((x) => x.mrn === 'MRN-000001'));
+  const m = await admin.get('/api/search?mrn=EMR-000001');
+  assert.ok(m.body.every((x) => x.mrn === 'EMR-000001'));
   assert.equal((await admin.get('/api/search?session_status=COMPLETED')).status, 200);
 });
 

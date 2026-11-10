@@ -49,11 +49,11 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
 
   // 3) auto MRN, save only, then check in as a selected patient
   await page.fill('#pf-name', 'Synthetic Reg Two'); await page.fill('#pf-phone', '+44 7700 900555'); await page.fill('#pf-name_ar', 'مريض تسجيل ثاني');
-  await page.click('button:has-text("Save patient")'); await page.waitForSelector('.toast:has-text("MRN-")');
+  await page.click('button:has-text("Save patient")'); await page.waitForSelector('.toast:has-text("EMR-")');
   await page.waitForSelector('text=Selected patient');
   await page.selectOption('#ci-dept', { label: 'Sports Injury Treatment' }); await page.click('button.btn:has-text("Check in")');
   await page.waitForSelector('tr:has-text("Synthetic Reg Two")'); ok((await page.locator('.toast').last().textContent()).includes('S001'), 'saved patient then checked in to chosen department queue');
-  found = await api(page, '/patients?q=900555'); ok(found.length === 1 && found[0].phone === '+447700900555' && /^MRN-\d{6}$/.test(found[0].mrn), 'international number preserved; automatic MRN generated');
+  found = await api(page, '/patients?q=900555'); ok(found.length === 1 && found[0].phone === '+447700900555' && /^EMR-\d{6}$/.test(found[0].mrn), 'international number preserved; automatic MRN generated');
 
   // 4) find existing by Arabic name, phone, MRN; check in without duplicating
   const total = (await api(page, '/patients?q=Synthetic')).length;

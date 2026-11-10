@@ -74,7 +74,7 @@ export function makeRegistration(db, ops) {
       return mrn;
     }
     let n = one('SELECT COUNT(*) c FROM patients').c + 1;
-    for (;;) { const mrn = `MRN-${String(n).padStart(6, '0')}`; if (!one('SELECT 1 x FROM patients WHERE upper(mrn)=?', mrn)) return mrn; n++; }
+    for (;;) { const mrn = `EMR-${String(n).padStart(6, '0')}`; if (!one('SELECT 1 x FROM patients WHERE upper(mrn)=?', mrn)) return mrn; n++; }
   }
 
   function candidates(v) {

@@ -99,7 +99,7 @@ export function seed(db) {
       const usr = (n) => db.prepare('SELECT id FROM users WHERE username=?').get(n).id;
       const names = [['Sample Patient A', 'مريض تجريبي أ'], ['Sample Patient B', 'مريض تجريبي ب'], ['Sample Patient C', 'مريض تجريبي ج'], ['Sample Patient D', 'مريض تجريبي د'], ['Sample Patient E', 'مريض تجريبي هـ'], ['Sample Patient F', 'مريض تجريبي و'], ['Sample Patient G', 'مريض تجريبي ز'], ['Sample Patient H', 'مريض تجريبي ح']];
       const pats = names.map(([n, ar], i) => Number(db.prepare('INSERT INTO patients(mrn,name,name_ar,dob,sex,phone,created_at) VALUES (?,?,?,?,?,?,?)')
-        .run(`MRN-${String(i + 1).padStart(6, '0')}`, n, ar, `19${70 + i}-0${1 + i}-1${i}`, i % 2 ? 'F' : 'M', `+97150000000${i + 1}`, now()).lastInsertRowid));
+        .run(`EMR-${String(i + 1).padStart(6, '0')}`, n, ar, `19${70 + i}-0${1 + i}-1${i}`, i % 2 ? 'F' : 'M', `+97150000000${i + 1}`, now()).lastInsertRowid));
       const base = new Date(); base.setMinutes(0, 0, 0);
       pats.forEach((pid, i) => {
         const pt = i % 2;

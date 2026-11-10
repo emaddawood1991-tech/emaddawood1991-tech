@@ -32,7 +32,7 @@ const secs = (s) => s.trim().split(':').reduce((a, b) => a * 60 + Number(b), 0);
   // ---- Start Treatment: summary + numeric duration ----
   await pt.click('.nav a:has-text("Visits")'); await pt.click('tr:has-text("Sample Patient B") button:has-text("Start treatment")'); await pt.waitForSelector('#st-service');
   await pt.selectOption('#st-service', { label: 'PT Treatment' }); await pt.waitForSelector('#st-minutes');
-  const sum = await pt.locator('.modal dl.tgrid').textContent(); ok(['Sample Patient B', 'MRN-', 'Physiotherapy', 'PT Treatment', 'PT One', 'PT-01'].every((x) => sum.includes(x)), `summary shows patient, MRN, department, service, clinician, room`);
+  const sum = await pt.locator('.modal dl.tgrid').textContent(); ok(['Sample Patient B', 'EMR-', 'Physiotherapy', 'PT Treatment', 'PT One', 'PT-01'].every((x) => sum.includes(x)), `summary shows patient, MRN, department, service, clinician, room`);
   ok(await pt.inputValue('#st-minutes') === '45', 'duration defaults to the service default (45)');
   await pt.fill('#st-minutes', '3'); ok(await pt.locator('.modal button:has-text("Confirm")').isDisabled() && await pt.locator('#st-minutes-hint[role=alert]').count() === 1, 'invalid duration (3) is rejected with a message and Confirm stays disabled');
   await pt.fill('#st-minutes', '181'); ok(await pt.locator('.modal button:has-text("Confirm")').isDisabled(), '181 minutes rejected (above maximum)');
@@ -61,7 +61,7 @@ const secs = (s) => s.trim().split(':').reduce((a, b) => a * 60 + Number(b), 0);
   ok(await pt.locator('tr:has-text("Sample Patient B") button:has-text("Confirm completion")').count() === 1 && await pt.locator('tr:has-text("Sample Patient B") button:has-text("Exit room")').count() === 0, 'clinician confirmation required; room NOT released automatically');
   await pt.screenshot({ path: `${out}/tm4-elapsed.png` });
   await pt.click('tr:has-text("Sample Patient B") button:has-text("Confirm completion")'); await pt.waitForSelector('tr:has-text("Sample Patient B") button:has-text("Exit room")');
-  const s = (await api(pt, '/visits/open')).find((x) => x.mrn === 'MRN-000002').timing; ok(!!s.last_treatment_end_at, 'verified completion recorded separately from the scheduled end');
+  const s = (await api(pt, '/visits/open')).find((x) => x.mrn === 'EMR-000002').timing; ok(!!s.last_treatment_end_at, 'verified completion recorded separately from the scheduled end');
   await pt.click('tr:has-text("Sample Patient B") button:has-text("Exit room")'); await rec.reload(); await rec.waitForSelector('.shell'); await rec.click('.nav a:has-text("Visits")'); await rec.click('tr:has-text("Sample Patient B") button:has-text("Check out")'); await rec.waitForSelector('tr:has-text("Sample Patient B")', { state: 'detached' });
   ok((await api(rec, '/search?patient=Sample Patient B'))[0].status === 'CHECKED_OUT', 'room exit then reception check-out completed');
 
