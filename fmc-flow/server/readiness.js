@@ -34,6 +34,8 @@ export function readiness({ db, env = process.env, reqSecure = false, backupDir 
     if (f) { const m = statSync(f).mode & 0o777; add('db_permissions', (m & 0o077) === 0 ? 'ok' : 'warn', 'Database file is readable only by the service account', `mode ${m.toString(8)}`); } } catch { /* in-memory */ }
   const roles = String(one("SELECT value FROM settings WHERE key='mfa_required_roles'")?.value || '').split(',');
   add('admin_mfa', roles.includes('admin') ? 'ok' : 'warn', 'Two-step verification is required for administrators', roles.includes('admin') ? `Required for: ${roles.filter(Boolean).join(', ')}` : 'Turn it on in Security Settings.');
+  try { const late = one("SELECT COUNT(*) c FROM break_glass_grants WHERE reviewed_at IS NULL AND granted_at<?", new Date(Date.now() - 24 * 36e5).toISOString()).c;
+    add('break_glass_review', late ? 'warn' : 'ok', 'Emergency (break-glass) accesses are reviewed within 24 hours', late ? `${late} access(es) are waiting for review.` : 'Nothing overdue.'); } catch { /* table absent in an old database */ }
   const sum = { ok: 0, warn: 0, fail: 0 }; for (const c of checks) sum[c.status]++;
   return { generated_at: new Date().toISOString(), summary: sum, checks, note: 'Not a compliance certificate. Items classed “Requires Legal-Compliance Confirmation” need confirmation against current DoH/ADHICS requirements before real patient data is used.' };
 }

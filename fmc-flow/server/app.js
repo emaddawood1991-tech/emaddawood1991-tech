@@ -11,6 +11,7 @@ import { makePrivacy } from './privacy.js';
 import { can, deptScope } from './perms.js';
 import { applyTemplate, effectiveTemplate } from './roles.js';
 import { readiness } from './readiness.js';
+import { makeRecovery } from './recovery.js';
 
 export function hashPassword(pw) {
   const salt = randomBytes(16);
@@ -285,8 +286,8 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     });
   }
   app.patch('/api/config/settings', guard('config.manage'), (req, res) => {
-    const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60], password_min_length: [10, 64], rate_search_per_min: [0, 1000], rate_export_per_hour: [0, 1000], rate_api_per_min: [0, 100000], export_max_rows: [100, 100000], alert_failed_logins: [2, 100], alert_export_rows: [10, 100000], alert_search_patients: [5, 10000], session_absolute_hours: [1, 72], session_idle_hours: [1, 72], max_concurrent_sessions: [0, 20] };
-    const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin', 'timer_auto_close'];
+    const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60], password_min_length: [10, 64], rate_search_per_min: [0, 1000], rate_export_per_hour: [0, 1000], rate_api_per_min: [0, 100000], rate_recovery_per_hour: [0, 100], break_glass_minutes: [15, 240], export_max_rows: [100, 100000], alert_failed_logins: [2, 100], alert_export_rows: [10, 100000], alert_search_patients: [5, 10000], session_absolute_hours: [1, 72], session_idle_hours: [1, 72], max_concurrent_sessions: [0, 20] };
+    const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin', 'timer_auto_close', 'break_glass_enabled'];
     const allowed = ['timezone', 'gender_options', 'diagnosis_pattern', 'mfa_required_roles', 'alert_office_hours', ...Object.keys(numeric), ...flags];
     const body = req.body || {};
     for (const [k, v] of Object.entries(body)) {
@@ -409,6 +410,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.post('/api/visits/checkin', guard(), (req, res) => res.status(201).json(ops.checkIn(req.user, req.body)));
   app.post('/api/visits/:id/checkout', guard(), (req, res) => res.json(ops.checkOut(req.user, Number(req.params.id))));
   accounts.register(app, { guard, cookieOf, setSessionCookie, clearSessionCookie });
+  const recovery = makeRecovery({ db, ops, privacy, mfa, accounts, HttpError }); ops.setGrantFinder(recovery.grantFor); recovery.register(app, { guard });
   privacy.register(app, { guard });
   const searchLimit = privacy.limiter('search', 'rate_search_per_min', 60e3, 60); const exportLimit = privacy.limiter('export', 'rate_export_per_hour', 3600e3, 10);
 

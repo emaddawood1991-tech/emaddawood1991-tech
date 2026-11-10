@@ -4,9 +4,9 @@ import { useI18n } from '../i18n.jsx';
 import { Modal, Empty, useToast } from '../ui.jsx';
 import { ActivityTable } from './Account.jsx';
 
-const EVENTS = ['MFA_ENABLED', 'MFA_DISABLED', 'MFA_RESET', 'MFA_RECOVERY_USED', 'MFA_CODES_REGENERATED', 'LOGIN_OK', 'LOGIN_FAILED', 'LOGIN_BLOCKED', 'LOGOUT', 'PASSWORD_CHANGED', 'PASSWORD_CHANGE_FAILED', 'PASSWORD_RESET', 'SESSIONS_REVOKED', 'USERNAME_CHANGED'];
-const SUBS = [['accounts', 'saAccounts'], ['roles', 'saRoles'], ['activity', 'saLoginActivity'], ['access', 'saPatientAccess'], ['alerts', 'saAlerts'], ['audit', 'saAuditHistory'], ['settings', 'saSettings'], ['readiness', 'saReadiness']];
-const KINDS = ['SEARCH', 'SCHEDULE', 'VISITS', 'QUEUE', 'SESSIONS', 'TIMELINE', 'CLINICAL_NOTE', 'APPOINTMENT', 'CORRECTIONS', 'REPORT', 'EXPORT'];
+const EVENTS = ['RECOVERY_REQUESTED', 'MFA_ENABLED', 'MFA_DISABLED', 'MFA_RESET', 'MFA_RECOVERY_USED', 'MFA_CODES_REGENERATED', 'LOGIN_OK', 'LOGIN_FAILED', 'LOGIN_BLOCKED', 'LOGOUT', 'PASSWORD_CHANGED', 'PASSWORD_CHANGE_FAILED', 'PASSWORD_RESET', 'SESSIONS_REVOKED', 'USERNAME_CHANGED'];
+const SUBS = [['accounts', 'saAccounts'], ['roles', 'saRoles'], ['activity', 'saLoginActivity'], ['access', 'saPatientAccess'], ['alerts', 'saAlerts'], ['audit', 'saAuditHistory'], ['settings', 'saSettings'], ['readiness', 'saReadiness'], ['recovery', 'saRecovery']];
+const KINDS = ['BREAK_GLASS', 'SEARCH', 'SCHEDULE', 'VISITS', 'QUEUE', 'SESSIONS', 'TIMELINE', 'CLINICAL_NOTE', 'APPOINTMENT', 'CORRECTIONS', 'REPORT', 'EXPORT'];
 
 function Accounts() {
   const { t, loc, fmtDT } = useI18n(); const toast = useToast();
@@ -61,6 +61,41 @@ function Readiness() {
       <div className="tbl"><table><thead><tr><th /><th>{t('saRdItem')}</th><th>{t('saRdDetail')}</th></tr></thead>
         <tbody>{r.checks.map((c) => <tr key={c.id} data-testid={`rd-${c.id}`}><td style={{ textAlign: 'center', fontWeight: 700, color: c.status === 'ok' ? '#1e8e4e' : c.status === 'fail' ? '#c0392b' : '#b7791f' }}>{mark[c.status]}</td><td>{c.label}<div className="small muted">{c.class}</div></td><td className="small">{c.detail}</td></tr>)}</tbody></table></div>
       <p className="small muted">{r.note}</p></div>);
+}
+
+function Recovery({ config, reload }) {
+  const { t, loc, fmtDT } = useI18n(); const toast = useToast();
+  const rq = usePoll('/security/recovery-requests', 15000); const bg = usePoll('/security/break-glass', 15000);
+  const [modal, setModal] = useState(null); const [pw, setPw] = useState(''); const [mfaToo, setMfaToo] = useState(false); const [note, setNote] = useState(''); const [outcome, setOutcome] = useState('JUSTIFIED'); const [err, setErr] = useState('');
+  const close = () => { setModal(null); setPw(''); setNote(''); setErr(''); setMfaToo(false); setOutcome('JUSTIFIED'); };
+  const act = async (fn, ok) => { try { await fn(); toast(ok); rq.reload(); bg.reload(); close(); } catch (e) { setErr(e.details?.fields?.temporary_password || e.details?.fields?.note || e.message); } };
+  const setBg = async (patch) => { try { await api.patch('/config/settings', patch); toast(t('saSaved')); bg.reload(); reload?.(); } catch (e) { toast(e.message, true); } };
+  const reqs = rq.data?.requests || []; const grants = bg.data?.grants || [];
+  return (<div className="stack">
+    <div className="card"><h2>{t('saRecoveryReqs')}{rq.data?.pending ? <span className="chip warn" style={{ marginInlineStart: 8 }}>{rq.data.pending}</span> : null}</h2><p className="small muted">{t('saRecoveryNote')}</p>
+      {reqs.length === 0 ? <Empty /> : <div className="tbl"><table data-testid="recovery-table"><thead><tr><th>{t('saTime')}</th><th>{t('saUsername')}</th><th>{t('saStatus')}</th><th /></tr></thead>
+        <tbody>{reqs.map((r) => <tr key={r.id}><td className="small">{fmtDT(r.ts)}</td><td>{r.username}{r.name ? <div className="small muted">{loc(r)}</div> : <div className="small muted">{t('saNoAccount')}</div>}</td><td>{r.status}</td>
+          <td>{r.status === 'PENDING' && <div className="row">{r.user_id && <button className="btn ghost sm" onClick={() => setModal({ k: 'reset', r })}>{t('saResetPw')}</button>}<button className="btn ghost sm" onClick={() => act(() => api.post(`/security/recovery-requests/${r.id}/resolve`, { action: 'dismiss' }), t('saDone'))}>{t('saDismiss')}</button></div>}</td></tr>)}</tbody></table></div>}</div>
+    <div className="card"><h2>{t('saBreakGlass')}</h2><p className="small muted">{t('saBreakGlassNote')}</p>
+      <div className="row"><label className="chk"><input data-testid="bg-enabled" type="checkbox" checked={!!bg.data?.enabled} onChange={(e) => setBg({ break_glass_enabled: e.target.checked ? '1' : '0' })} />{t('saBgEnable')}</label>
+        <label className="small">{t('saBgMinutes')} <input type="number" min={15} max={240} defaultValue={bg.data?.minutes ?? 60} key={bg.data?.minutes} style={{ width: 80 }} onBlur={(e) => Number(e.target.value) !== bg.data?.minutes && setBg({ break_glass_minutes: e.target.value })} /></label></div>
+      {grants.length === 0 ? <p className="muted small">{t('saBgNone')}</p> : <div className="tbl"><table data-testid="bg-table"><thead><tr><th>{t('saTime')}</th><th>{t('name')}</th><th>{t('saPatient')}</th><th>{t('saBgReason')}</th><th>{t('saStatus')}</th><th /></tr></thead>
+        <tbody>{grants.map((g) => <tr key={g.id}><td className="small">{fmtDT(g.granted_at)}</td><td>{g.user_name}<div className="small muted">{g.username}</div></td><td><code>{g.mrn}</code></td><td className="small">{g.reason}</td>
+          <td className="small">{g.reviewed_at ? `${g.outcome === 'JUSTIFIED' ? '✓' : '✕'} ${g.reviewer || ''} — ${g.review_note}` : t('saBgUnreviewed')}</td>
+          <td>{!g.reviewed_at && <button className="btn ghost sm" onClick={() => setModal({ k: 'review', g })}>{t('saBgReview')}</button>}</td></tr>)}</tbody></table></div>}</div>
+    {modal?.k === 'reset' && <Modal title={`${t('saResetPw')} — ${modal.r.username}`} onClose={close}><div className="stack">
+      <p className="small">{t('saRecoveryVerify')}</p>
+      <div className="field"><label htmlFor="rc-temp">{t('saTempPw')}</label><input id="rc-temp" type="password" autoComplete="new-password" autoFocus value={pw} onChange={(e) => setPw(e.target.value)} /></div>
+      <label className="chk"><input type="checkbox" checked={mfaToo} onChange={(e) => setMfaToo(e.target.checked)} />{t('saAlsoMfa')}</label>
+      {err && <div className="field-err" role="alert">{err}</div>}
+      <div className="row"><button className="btn" disabled={!pw} onClick={() => act(() => api.post(`/security/recovery-requests/${modal.r.id}/resolve`, { action: 'reset', temporary_password: pw, reset_mfa: mfaToo }), t('saDone'))}>{t('saResetPw')}</button><button className="btn ghost" onClick={close}>{t('cancel')}</button></div></div></Modal>}
+    {modal?.k === 'review' && <Modal title={`${t('saBgReview')} — ${modal.g.user_name}`} onClose={close}><div className="stack">
+      <p className="small">{modal.g.reason}</p>
+      <label className="chk"><input type="radio" checked={outcome === 'JUSTIFIED'} onChange={() => setOutcome('JUSTIFIED')} />{t('saBgJustified')}</label><label className="chk"><input type="radio" checked={outcome === 'NOT_JUSTIFIED'} onChange={() => setOutcome('NOT_JUSTIFIED')} />{t('saBgNotJustified')}</label>
+      <div className="field"><label htmlFor="bg-note">{t('saBgNote')}</label><input id="bg-note" value={note} onChange={(e) => setNote(e.target.value)} /></div>
+      {err && <div className="field-err" role="alert">{err}</div>}
+      <div className="row"><button className="btn" disabled={note.trim().length < 3} onClick={() => act(() => api.post(`/security/break-glass/${modal.g.id}/review`, { outcome, note }), t('saDone'))}>{t('save')}</button><button className="btn ghost" onClick={close}>{t('cancel')}</button></div></div></Modal>}
+  </div>);
 }
 
 function Activity() {
@@ -145,6 +180,6 @@ export default function SecurityAccess({ config, reload }) {
   return (
     <>
       <div className="tabs" role="tablist" aria-label={t('saSecurityAccess')}>{SUBS.map(([k, l]) => <button key={k} role="tab" aria-selected={sub === k} className={sub === k ? 'on' : ''} onClick={() => setSub(k)}>{t(l)}</button>)}</div>
-      {sub === 'accounts' && <Accounts />}{sub === 'roles' && <Roles />}{sub === 'activity' && <Activity />}{sub === 'access' && <Access />}{sub === 'alerts' && <Alerts />}{sub === 'audit' && <Audit />}{sub === 'readiness' && <Readiness />}{sub === 'settings' && <SecuritySettings config={config} reload={reload} />}
+      {sub === 'accounts' && <Accounts />}{sub === 'roles' && <Roles />}{sub === 'activity' && <Activity />}{sub === 'access' && <Access />}{sub === 'alerts' && <Alerts />}{sub === 'audit' && <Audit />}{sub === 'readiness' && <Readiness />}{sub === 'recovery' && <Recovery config={config} reload={reload} />}{sub === 'settings' && <SecuritySettings config={config} reload={reload} />}
     </>);
 }

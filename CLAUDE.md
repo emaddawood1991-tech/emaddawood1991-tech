@@ -13,11 +13,11 @@ If a change breaks something that worked, stop and restore the last verified che
 
 ## Commands (run in `fmc-flow/`)
 - `npm install`, `npm run build`, `npm start` (http://localhost:3000), `npm run dev:api` + `npm run dev:web`
-- Backend tests: `npm test` (157 tests)
+- Backend tests: `npm test` (165 tests)
 - Browser suites (server on a FRESH synthetic database, e.g. `FMC_DB=/tmp/t.db PORT=3100 node server/index.js`): `NODE_PATH=$(npm root -g) node tests/e2e-smoke.cjs|e2e-registration.cjs|e2e-treatment.cjs|e2e-settings-reports.cjs http://localhost:3100`
 - Demo build: `npm run build:demo` then `node tests/e2e-demo.cjs demo/fmc-demo.html`
 - Security probes: `node --disable-warning=ExperimentalWarning tests/audit-probe.mjs`
-Baseline (10 Nov 2026, with timers, documentation, Daily Schedule and security stages S1–S6): 157 backend (incl. `security.test.js`, `accounts.test.js`, `mfa.test.js`, `privacy.test.js`, `permissions.test.js`, `operations.test.js`) + 12 + 27 + 21 + 9 + 32 (`e2e-timers.cjs`) + 17 (`e2e-documentation.cjs`) + 37 (`e2e-schedule.cjs`) + 23 (`e2e-account.cjs`) + 18 (`e2e-mfa.cjs`) + 10 (`e2e-privacy.cjs`) + 13 (`e2e-roles.cjs`) browser + 5 demo checks, all passing. `e2e-timers`, `e2e-documentation` and `e2e-mfa` need the server started with `FMC_TEST_CLOCK=1`. See `docs/phase-a/BASELINE_TESTS.md`.
+Baseline (10 Nov 2026, with timers, documentation, Daily Schedule and security stages S1–S7): 165 backend (incl. `security.test.js`, `accounts.test.js`, `mfa.test.js`, `privacy.test.js`, `permissions.test.js`, `operations.test.js`, `recovery.test.js`) + 12 + 27 + 21 + 9 + 32 (`e2e-timers.cjs`) + 17 (`e2e-documentation.cjs`) + 37 (`e2e-schedule.cjs`) + 23 (`e2e-account.cjs`) + 18 (`e2e-mfa.cjs`) + 10 (`e2e-privacy.cjs`) + 13 (`e2e-roles.cjs`) + 15 (`e2e-recovery.cjs`) browser + 5 demo checks, all passing. `e2e-timers`, `e2e-documentation` and `e2e-mfa` need the server started with `FMC_TEST_CLOCK=1`. See `docs/phase-a/BASELINE_TESTS.md`.
 
 ## Hard rules
 - Synthetic data only in development and tests. Never real patient data until the approved security plan and DoH/ADHICS assessment are complete.

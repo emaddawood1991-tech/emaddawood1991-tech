@@ -6,7 +6,7 @@ import { boot } from './helpers.js';
 import { PERMS } from '../server/perms.js';
 import { ROLE_TEMPLATES, listRoutes, applyTemplate, effectiveTemplate } from '../server/roles.js';
 
-const PUBLIC = new Set(['POST /api/login', 'POST /api/login/mfa', 'GET /api/time']);
+const PUBLIC = new Set(['POST /api/login', 'POST /api/login/mfa', 'GET /api/time', 'POST /api/recovery-request']);
 const ROLES = ['admin', 'supervisor', 'reception', 'clinician'];
 let t, admin, sup, rec, pt1, pt2, ort, gm, cfg, routes;
 const dept = (n) => cfg.departments.find((d) => d.name === n).id;

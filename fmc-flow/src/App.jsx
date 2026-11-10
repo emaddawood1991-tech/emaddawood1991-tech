@@ -27,7 +27,8 @@ const PAGES = [
 function Login({ onDone }) {
   const { t, lang, setLang } = useI18n();
   const [f, setF] = useState({ username: '', password: '' });
-  const [err, setErr] = useState(''); const [challenge, setChallenge] = useState(null);
+  const [err, setErr] = useState(''); const [challenge, setChallenge] = useState(null); const [forgot, setForgot] = useState(null);
+  const sendForgot = async () => { try { const r = await api.post('/recovery-request', { username: forgot.username }); setForgot({ ...forgot, sent: r.message || true }); } catch (x) { setErr(x.code === 'NETWORK' ? t('offline') : x.message); } };
   const submit = async (e) => {
     e.preventDefault(); setErr('');
     try { const r = await api.post('/login', f); if (r.mfa_required) setChallenge(r.mfa_token); else onDone(r.user); } catch (x) { setErr(x.code === 'NETWORK' ? t('offline') : x.message); }
@@ -42,6 +43,8 @@ function Login({ onDone }) {
         <label>{t('password')}<input type="password" autoComplete="current-password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} /></label>
         {err && <div className="err" role="alert">{err}</div>}
         <button type="button" className="btn" disabled={!f.username || !f.password} onClick={submit}>{t('signIn')}</button>
+        <button type="button" className="btn ghost sm" data-testid="forgot-link" onClick={() => setForgot({ username: f.username, sent: false })}>{t('saForgot')}</button>
+        {forgot && <div className="stack" data-testid="forgot-box">{forgot.sent ? <div className="banner" role="status">{t('saForgotSent')}</div> : <><small>{t('saForgotNote')}</small><input aria-label={t('username')} placeholder={t('username')} value={forgot.username} onChange={(e) => setForgot({ ...forgot, username: e.target.value })} /><button type="button" className="btn sm" disabled={!forgot.username.trim()} onClick={sendForgot}>{t('saForgotSend')}</button></>}</div>}
         <button type="button" className="btn ghost sm" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t('lang')}</button>
         </>}
         <small className="muted">{t('demoNote')}</small>

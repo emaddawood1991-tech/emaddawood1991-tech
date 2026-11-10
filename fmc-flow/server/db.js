@@ -236,6 +236,17 @@ CREATE TABLE IF NOT EXISTS backup_log (
   id INTEGER PRIMARY KEY, ts TEXT NOT NULL, file TEXT, bytes INTEGER, ok INTEGER NOT NULL, note TEXT
 );
 
+CREATE TABLE IF NOT EXISTS recovery_requests (
+  id INTEGER PRIMARY KEY, ts TEXT NOT NULL, username TEXT NOT NULL, user_id INTEGER, ip TEXT,
+  status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING','DONE','DISMISSED')), handled_by INTEGER, handled_at TEXT, note TEXT
+);
+CREATE TRIGGER IF NOT EXISTS recovery_no_delete BEFORE DELETE ON recovery_requests BEGIN SELECT RAISE(ABORT,'recovery_requests is append-only'); END;
+CREATE TABLE IF NOT EXISTS break_glass_grants (
+  id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, patient_id INTEGER NOT NULL, reason TEXT NOT NULL, granted_at TEXT NOT NULL, expires_at TEXT NOT NULL,
+  ended_at TEXT, reviewed_by INTEGER, reviewed_at TEXT, review_note TEXT, outcome TEXT CHECK (outcome IN ('JUSTIFIED','NOT_JUSTIFIED'))
+);
+CREATE TRIGGER IF NOT EXISTS breakglass_no_delete BEFORE DELETE ON break_glass_grants BEGIN SELECT RAISE(ABORT,'break_glass_grants is append-only'); END;
+
 -- Append-only guarantees (enforced in the database, not just the API)
 CREATE TRIGGER IF NOT EXISTS events_no_update BEFORE UPDATE ON events
   BEGIN SELECT RAISE(ABORT, 'events are append-only'); END;
@@ -271,6 +282,9 @@ export const DEFAULT_SETTINGS = {
   rate_search_per_min: '60',
   rate_export_per_hour: '10',
   rate_api_per_min: '1200',
+  rate_recovery_per_hour: '5',
+  break_glass_enabled: '0',
+  break_glass_minutes: '60',
   export_max_rows: '5000',
   alert_failed_logins: '5',
   alert_export_rows: '500',

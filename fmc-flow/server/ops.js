@@ -58,6 +58,9 @@ export function makeOps(db) {
       UNION SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.visit_id=? AND sv.department_id=?`,
       visitId, s, visitId, s, visitId, s);
   }
+  /** Read-only check: in scope, or covered by an active break-glass grant (injected by the recovery module). */
+  let grantFor = () => null; const setGrantFinder = (f) => { grantFor = f; };
+  const needReadable = (user, visitId) => { if (visitVisible(user, visitId)) return null; const g = grantFor(user, visitId); if (!g) fail(403, 'OUT_OF_SCOPE', 'Visit is outside your department'); return g; };
   const needVisible = (user, visitId) => { if (!visitVisible(user, visitId)) fail(403, 'OUT_OF_SCOPE', 'Visit is outside your department'); };
 
   // ---------- durations ----------
@@ -139,7 +142,7 @@ export function makeOps(db) {
   function getDocumentation(user, sessionId) {
     need(user, 'patients.read'); sweepTimers();
     const s = one('SELECT * FROM treatment_sessions WHERE id=?', sessionId) || fail(404, 'SESSION_NOT_FOUND');
-    needVisible(user, s.visit_id);
+    const bg = needReadable(user, s.visit_id); if (bg) { audit(user, 'breakglass.read', 'session', s.id, { grant: bg.id, what: 'documentation' }); logAccess(user, [s.patient_id], 'BREAK_GLASS', { detail: { grant: bg.id } }); }
     const status = docEval(s);
     const out = { session_id: s.id, status, schedule_status: status.complete ? 'ORANGE' : 'YELLOW', content: null, cpt_options: [] };
     if (user.role === 'clinician' || user.role === 'supervisor') { // reception and administrators see completeness only, not clinical text
@@ -661,7 +664,8 @@ export function makeOps(db) {
   // ---------- timeline ----------
   function timeline(user, visitId) {
     need(user, 'patients.read');
-    const v = getVisit(visitId); needVisible(user, v.id);
+    const v = getVisit(visitId); const bg = needReadable(user, v.id);
+    if (bg) { audit(user, 'breakglass.read', 'visit', v.id, { grant: bg.id, what: 'timeline' }); logAccess(user, [v.patient_id], 'BREAK_GLASS', { detail: { grant: bg.id } }); }
     audit(user, 'timeline.view', 'visit', v.id); logAccess(user, [v.patient_id], 'TIMELINE');
     const events = q(`SELECT e.*, u.name actor FROM events e LEFT JOIN users u ON u.id=e.actor_id WHERE e.visit_id=? ORDER BY e.id`, v.id)
       .map((e) => ({ ...e, data: JSON.parse(e.data) }));
@@ -752,7 +756,7 @@ export function makeOps(db) {
     q, one, run, setting, audit, event, need, now, fail,
     sessionIntervals, unionMs, sumMs, visitDurations, sessionView, roomState, visitVisible, needVisible,
     assignRoom, enterRoom, exitRoom, transferRoom, setRoomStatus,
-    checkIn, checkOut, callNext, setPriority, queueList,
+    setGrantFinder, checkIn, checkOut, callNext, setPriority, queueList,
     logAccess, sweepTimers, visitTiming, timerOf, treatmentOptions, visitDepartments, startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
     getDocumentation, saveDocumentation, scheduleList, visitScheduleStatus,
     timeline, requestCorrection, decideCorrection, locLabel,

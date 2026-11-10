@@ -24,6 +24,8 @@ export const PERMS = {
   'schedule.view': ALL,
   'schedule.manage': ['admin', 'supervisor', 'reception'],
   'schedule.block': ['admin', 'supervisor'],
+  'breakglass.use': ['supervisor', 'clinician'], // read-only emergency access outside the person's department; off until an administrator enables it
+  'breakglass.review': ['admin'],
 };
 
 export const can = (user, perm) => !!user && (PERMS[perm] || []).includes(user.role);
