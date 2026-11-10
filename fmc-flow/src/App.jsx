@@ -10,6 +10,7 @@ import Rooms from './pages/Rooms.jsx';
 import Sessions from './pages/Sessions.jsx';
 import TreatmentBoard from './pages/TreatmentBoard.jsx';
 import DailySchedule from './pages/DailySchedule.jsx';
+import Account, { ForcedPasswordChange } from './pages/Account.jsx';
 import Corrections from './pages/Corrections.jsx';
 import Search from './pages/Search.jsx';
 import Reports from './pages/Reports.jsx';
@@ -19,7 +20,7 @@ import System from './pages/System.jsx';
 const ALL = ['admin', 'supervisor', 'reception', 'clinician'];
 const PAGES = [
   ['dashboard', Dashboard, ALL], ['visits', Visits, ALL], ['queue', Queue, ALL], ['dailyschedule', DailySchedule, ALL], ['rooms', Rooms, ALL], ['sessions', Sessions, ['admin', 'supervisor', 'clinician']], ['treatmentboard', TreatmentBoard, ALL],
-  ['corrections', Corrections, ALL], ['search', Search, ALL], ['reports', Reports, ['admin', 'supervisor']], ['settings', Settings, ['admin']], ['system', System, ['admin', 'supervisor']],
+  ['corrections', Corrections, ALL], ['account', Account, ALL], ['search', Search, ALL], ['reports', Reports, ['admin', 'supervisor']], ['settings', Settings, ['admin']], ['system', System, ['admin', 'supervisor']],
 ];
 
 function Login({ onDone }) {
@@ -61,9 +62,10 @@ export default function App() {
   const { run } = useAction();
   useEffect(() => { api.get('/me').then((r) => { window.__tz = r.timezone; setUser(r.user); }).catch((e) => setUser(e.status === 401 ? null : undefined)); }, []);
   useEffect(() => { const on = () => setPage(location.hash.slice(2) || 'dashboard'); window.addEventListener('hashchange', on); return () => window.removeEventListener('hashchange', on); }, []);
-  const staff = usePoll('/staff', 8000, !!user);
+  const staff = usePoll('/staff', 8000, !!user && !user.must_change_password);
   if (user === undefined) return <div className="login"><p className="muted">{net.offline ? t('offline') : t('loading')}</p></div>;
   if (!user) return <Login onDone={(u) => setUser(u)} />;
+  if (user.must_change_password) return <ForcedPasswordChange user={user} onSignOut={async () => { await run(() => api.post('/logout')); setUser(null); }} onDone={() => api.get('/me').then((r) => setUser(r.user))} />;
   const mine = staff.data?.find((s) => s.id === user.id);
   const allowed = PAGES.filter(([, , roles]) => roles.includes(user.role));
   const [, Page] = allowed.find(([k]) => k === page) || allowed[0];

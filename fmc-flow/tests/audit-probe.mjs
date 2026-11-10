@@ -42,15 +42,14 @@ rec('P6 synchronous password hashing blocks the server', lat > 60, `12 concurren
 
 // ---------- account management gaps ----------
 const me = (await U['pt.one'].get('/api/me')).body.user;
-const cp = await U['pt.one'].post('/api/account/password', { current: DEMO_PASSWORD, next: 'Another-Passw0rd!2' });
-rec('P10 no way to change own password', cp.status === 404, `POST /api/account/password → ${cp.status}; the UI has no account page either (users can never rotate the shared demo password)`);
-const rn = await U.admin.patch(`/api/config/staff/${me.id}`, { username: 'renamed.user' });
-const after = (await U.admin.get('/api/staff')).body.find((s) => s.id === me.id);
-rec('P10b usernames cannot be changed', after.username === 'pt.one', `PATCH with username → ${rn.status}, username still "${after.username}" (field silently ignored)`);
+const cp = await U['pt.one'].post('/api/account/password', { current_password: 'wrong-current-password', new_password: 'Another-Passw0rd!2' });
+rec('P10 no way to change own password', cp.status === 404, `POST /api/account/password → ${cp.status} (404 would mean no change-password endpoint; 400 = exists and refuses a wrong current password)`);
+const rn = await U.admin.post(`/api/security/users/${me.id}/username`, { username: 'x y' });
+rec('P10b usernames cannot be changed', rn.status === 404, `POST /api/security/users/:id/username → ${rn.status} (404 would mean no username management; 400 = exists and validates)`);
 const strong = await U.admin.post('/api/config/staff', { username: 'probe.user', name: 'Probe', role: 'clinician', password: 'aaaaaaaaaa' });
 rec('P10c weak passwords accepted', strong.status === 201, `admin-created account with password "aaaaaaaaaa" accepted (only a 10-character minimum; no complexity/breach check; no forced change at first login)`);
-const sess = await U.admin.get('/api/sessions/list');
-rec('P10d no session list/revoke UI or API', sess.status === 404, `GET /api/sessions/list → ${sess.status}; there is no way to see or terminate another session except resetting the password`);
+const sess = await U['pt.one'].get('/api/account');
+rec('P10d no session list/revoke UI or API', !Array.isArray(sess.body?.sessions), `GET /api/account → ${sess.status}; sessions listed: ${Array.isArray(sess.body?.sessions)}`);
 const mfa = await U.admin.get('/api/account/mfa');
 rec('P10e no MFA', mfa.status === 404, `GET /api/account/mfa → ${mfa.status}; administrators sign in with a password only`);
 const dp = await raw('POST', '/api/login', { body: { username: 'admin', password: DEMO_PASSWORD } });
@@ -106,7 +105,7 @@ const q0 = await U.reception.post('/api/queue/1/cancel');
 rec('P29 cannot cancel a queue entry / no-show', q0.status === 404, `POST /api/queue/:id/cancel → ${q0.status}; the schema has a CANCELLED state but there is no endpoint or button, so walk-aways stay "waiting"`);
 const pe = await U.reception.patch(`/api/patients/${pid}`, { phone: '+971500000099' });
 rec('P30 cannot edit patient demographics', pe.status === 404, `PATCH /api/patients/:id → ${pe.status}; typos in name/DOB/phone cannot be corrected and duplicate records cannot be merged`);
-rec('P31 one department per staff account', true, `users.department_id is a single column; "pt.one" → department ${(await U['pt.one'].get('/api/staff')).body.find((x) => x.username === 'pt.one').department_id} only. Shared staff and multi-department access cannot be modelled`);
+rec('P31 one department per staff account', true, `users.department_id is a single column; "pt.one" → department ${me.department_id} only. Shared staff and multi-department access cannot be modelled`);
 // positive controls
 const ck2 = (await raw('POST', '/api/login', { body: { username: 'gm.one', password: DEMO_PASSWORD } })).headers.get('set-cookie').split(';')[0];
 t.db.exec(`UPDATE auth_sessions SET last_seen='2020-01-01T00:00:00Z' WHERE user_id=${U['gm.one'].user.id}`);

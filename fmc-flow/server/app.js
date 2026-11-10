@@ -5,6 +5,7 @@ import { openDb, tx } from './db.js';
 import { makeOps, HttpError, now, nowMs, clock } from './ops.js';
 import { makeRegistration } from './registration.js';
 import { makeSchedule } from './schedule.js';
+import { makeAccounts, passwordProblem } from './accounts.js';
 import { can, deptScope } from './perms.js';
 
 export function hashPassword(pw) {
@@ -26,6 +27,7 @@ async function verifyPasswordAsync(pw, stored) {
   return timingSafeEqual(h, Buffer.from(hashHex, 'hex'));
 }
 const DUMMY_HASH = hashPassword(randomBytes(12).toString('hex')); // verified against when the username does not exist, so timing does not reveal valid usernames
+const MUST_CHANGE_OK = new Set(['/api/me', '/api/logout', '/api/account', '/api/account/password', '/api/time']); // all a person who must change their password may call
 const ROLES = ['admin', 'supervisor', 'reception', 'clinician'];
 const sha = (s) => createHash('sha256').update(s).digest('hex');
 
@@ -77,6 +79,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   const { q, one, run, audit, fail } = ops;
   const reg = makeRegistration(db, ops);
   const sched = makeSchedule(db, ops);
+  const accounts = makeAccounts({ db, ops, tx, HttpError, hashPassword, verifyPasswordAsync, sha, randomBytes });
   const app = express();
   app.disable('x-powered-by');
   if (process.env.FMC_TRUST_PROXY) app.set('trust proxy', /^\d+$/.test(process.env.FMC_TRUST_PROXY) ? Number(process.env.FMC_TRUST_PROXY) : process.env.FMC_TRUST_PROXY); // set when running behind a TLS reverse proxy so rate limits see the real client address
@@ -94,14 +97,17 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   // ---- auth ----
   const cookieOf = (req) => /(?:^|;\s*)fmc_sid=([a-f0-9]+)/.exec(req.headers.cookie || '')?.[1];
   const attempts = new Map();
+  const cookieFlags = process.env.FMC_INSECURE_COOKIES === '1' ? '' : '; Secure';
+  const setSessionCookie = (res, token) => res.set('Set-Cookie', `fmc_sid=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${Math.round((Number(ops.setting('session_absolute_hours')) || 14) * 3600)}${cookieFlags}`);
+  const clearSessionCookie = (res) => res.set('Set-Cookie', `fmc_sid=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${cookieFlags}`);
   function authenticate(req, _res, next) {
     const tok = cookieOf(req);
     req.user = null;
     if (tok) {
       const s = one('SELECT * FROM auth_sessions WHERE token_hash=?', sha(tok));
-      const maxIdle = Number(ops.setting('session_idle_hours') || 12) * 3600e3;
-      if (s && nowMs() - Date.parse(s.last_seen) < maxIdle) {
-        const u = one('SELECT id,username,name,name_ar,role,department_id,active,schedule_override FROM users WHERE id=?', s.user_id);
+      const maxIdle = Number(ops.setting('session_idle_hours') || 12) * 3600e3; const maxAge = Number(ops.setting('session_absolute_hours') || 14) * 3600e3;
+      if (s && nowMs() - Date.parse(s.last_seen) < maxIdle && nowMs() - Date.parse(s.created_at) < maxAge) { // idle AND absolute lifetime
+        const u = one('SELECT id,username,name,name_ar,role,department_id,active,schedule_override,must_change_password FROM users WHERE id=?', s.user_id);
         if (u?.active) { req.user = u; run('UPDATE auth_sessions SET last_seen=? WHERE token_hash=?', now(), s.token_hash); }
       }
     }
@@ -109,6 +115,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   }
   const guard = (perm) => (req, _res, next) => {
     if (!req.user) return next(new HttpError(401, 'UNAUTHENTICATED', 'Please sign in'));
+    if (req.user.must_change_password && !MUST_CHANGE_OK.has(req.originalUrl.split('?')[0])) return next(new HttpError(403, 'PASSWORD_CHANGE_REQUIRED', 'You must choose a new password before continuing.'));
     if (perm && !can(req.user, perm)) return next(new HttpError(403, 'FORBIDDEN', `Missing permission: ${perm}`));
     // CSRF: state-changing requests must carry the custom header (cross-site forms cannot set it)
     if (req.method !== 'GET' && req.headers['x-requested-with'] !== 'fmc') return next(new HttpError(403, 'CSRF', 'Missing request header'));
@@ -123,7 +130,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     // Count the attempt BEFORE hashing: parallel guesses are all counted, not read from the same stale value after the await.
     let a = attempts.get(key); const tNow = Date.now();
     if (!a || tNow - a.t >= 60e3) a = { n: 0, t: tNow };
-    if (a.n >= 5) throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Try again in a minute');
+    if (a.n >= 5) { if (!a.blocked) { a.blocked = true; accounts.loginEvent(one('SELECT id FROM users WHERE username=?', String(username || ''))?.id ?? null, 'LOGIN_BLOCKED', req); } throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Try again in a minute'); }
     a.n += 1; a.t = tNow; attempts.set(key, a);
     const u = one('SELECT * FROM users WHERE username=? AND active=1', String(username || ''));
     const passwordOk = await verifyPasswordAsync(String(password || ''), u ? u.pass_hash : DUMMY_HASH); // always hashes, so unknown usernames take as long as known ones
@@ -131,19 +138,31 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       // never store what was typed: a mistyped password in the username box would otherwise be logged
       const known = one('SELECT id FROM users WHERE username=?', String(username || ''));
       audit(null, 'login.failed', 'user', known?.id ?? null, known ? {} : { unknown_username: true, length: String(username || '').length });
+      accounts.loginEvent(known?.id ?? null, 'LOGIN_FAILED', req, known ? {} : { unknown_username: true });
       throw new HttpError(401, 'BAD_CREDENTIALS', 'Invalid username or password');
     }
     attempts.delete(key);
-    const token = randomBytes(32).toString('hex');
-    run('INSERT INTO auth_sessions(token_hash,user_id,created_at,last_seen) VALUES (?,?,?,?)', sha(token), u.id, now(), now());
-    res.set('Set-Cookie', `fmc_sid=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200${process.env.FMC_INSECURE_COOKIES === '1' ? '' : '; Secure'}`);
+    // tidy: sessions past either lifetime are removed, then the new one is created
+    run('DELETE FROM auth_sessions WHERE created_at < ? OR last_seen < ?', new Date(nowMs() - (Number(ops.setting('session_absolute_hours')) || 14) * 3600e3).toISOString(), new Date(nowMs() - (Number(ops.setting('session_idle_hours')) || 12) * 3600e3).toISOString());
+    const token = randomBytes(32).toString('hex'); // always a fresh token, never one supplied by the client
+    run('INSERT INTO auth_sessions(token_hash,user_id,created_at,last_seen,sid,ip,user_agent) VALUES (?,?,?,?,?,?,?)', sha(token), u.id, now(), now(), randomBytes(8).toString('hex'), req.ip ?? null, String(req.headers['user-agent'] || '').replace(/[\u0000-\u001f]/g, '').slice(0, 160));
+    const cap = Number(ops.setting('max_concurrent_sessions')) || 0;
+    if (cap > 0) { // keep the newest `cap` sessions; the oldest are signed out
+      const extra = q('SELECT token_hash FROM auth_sessions WHERE user_id=? ORDER BY created_at DESC, rowid DESC LIMIT -1 OFFSET ?', u.id, cap);
+      for (const x of extra) run('DELETE FROM auth_sessions WHERE token_hash=?', x.token_hash);
+      if (extra.length) accounts.loginEvent(u.id, 'SESSIONS_REVOKED', req, { count: extra.length, scope: 'concurrent_limit' });
+    }
+    run('UPDATE users SET last_login_at=? WHERE id=?', now(), u.id);
+    setSessionCookie(res, token);
+    accounts.loginEvent(u.id, 'LOGIN_OK', req);
     audit(u, 'login', 'user', u.id);
-    res.json({ user: { id: u.id, username: u.username, name: u.name, name_ar: u.name_ar, role: u.role, department_id: u.department_id }, server_time: now() });
+    res.json({ user: { id: u.id, username: u.username, name: u.name, name_ar: u.name_ar, role: u.role, department_id: u.department_id, must_change_password: u.must_change_password }, server_time: now() });
   });
   app.post('/api/logout', guard(), (req, res) => {
     const tok = cookieOf(req);
     if (tok) run('DELETE FROM auth_sessions WHERE token_hash=?', sha(tok));
-    res.set('Set-Cookie', 'fmc_sid=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');
+    clearSessionCookie(res);
+    accounts.loginEvent(req.user.id, 'LOGOUT', req);
     audit(req.user, 'logout', 'user', req.user.id);
     res.json({ ok: true });
   });
@@ -197,9 +216,9 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     });
   }
   app.patch('/api/config/settings', guard('config.manage'), (req, res) => {
-    const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60] };
+    const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60], password_min_length: [10, 64], session_absolute_hours: [1, 72], session_idle_hours: [1, 72], max_concurrent_sessions: [0, 20] };
     const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin', 'timer_auto_close'];
-    const allowed = ['timezone', 'session_idle_hours', 'gender_options', 'diagnosis_pattern', ...Object.keys(numeric), ...flags];
+    const allowed = ['timezone', 'gender_options', 'diagnosis_pattern', ...Object.keys(numeric), ...flags];
     const body = req.body || {};
     for (const [k, v] of Object.entries(body)) {
       if (!allowed.includes(k)) continue;
@@ -219,10 +238,10 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.post('/api/config/staff', guard('config.manage'), (req, res) => {
     const { username, name, name_ar = '', role, department_id = null, password, service_ids = [] } = req.body;
     checkStaff({ username, name, name_ar, role, department_id }, true, one);
-    if (!password || String(password).length < 10) throw new HttpError(400, 'WEAK_PASSWORD', 'Password must be at least 10 characters');
+    { const prob = passwordProblem(password, { username, name }, accounts.minLen()); if (prob) throw new HttpError(400, 'WEAK_PASSWORD', prob, { fields: { password: prob } }); }
     const id = tx(db, () => {
       let r;
-      try { r = run('INSERT INTO users(username,name,name_ar,role,department_id,pass_hash) VALUES (?,?,?,?,?,?)', username, name, name_ar, role, department_id, hashPassword(password)); }
+      try { r = run('INSERT INTO users(username,name,name_ar,role,department_id,pass_hash,must_change_password,password_changed_at) VALUES (?,?,?,?,?,?,1,?)', username, name, name_ar, role, department_id, hashPassword(password), now()); }
       catch (e) { throw new HttpError(400, 'INVALID', String(e.message).replace(/^.*constraint failed: /, '')); }
       const uid = Number(r.lastInsertRowid);
       for (const s of service_ids) run('INSERT INTO staff_services VALUES (?,?)', uid, s);
@@ -251,7 +270,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     }
     tx(db, () => {
       for (const c of ['name', 'name_ar', 'role', 'department_id', 'active', 'schedule_override']) if (req.body[c] !== undefined) run(`UPDATE users SET ${c}=? WHERE id=?`, req.body[c], id);
-      if (req.body.password) { if (String(req.body.password).length < 10) throw new HttpError(400, 'WEAK_PASSWORD'); run('UPDATE users SET pass_hash=? WHERE id=?', hashPassword(req.body.password), id); run('DELETE FROM auth_sessions WHERE user_id=?', id); }
+      if (req.body.password) { const prob = accounts.problemFor(id, req.body.password); if (prob) throw new HttpError(400, 'WEAK_PASSWORD', prob, { fields: { password: prob } }); accounts.writePassword(id, String(req.body.password), { mustChange: true, actor: req.user, event: 'PASSWORD_RESET' }); accounts.loginEvent(id, 'PASSWORD_RESET', req, { by: req.user.id }); } // temporary: the person chooses their own at next sign-in
       if (diff) { run('DELETE FROM staff_services WHERE user_id=?', id); for (const s of req.body.service_ids) run('INSERT INTO staff_services VALUES (?,?)', id, s); }
     });
     audit(req.user, 'config.staff.update', 'user', id, { ...req.body, service_ids: undefined, password: req.body.password ? '***' : undefined });
@@ -309,6 +328,8 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   // ---- visits / queue ----
   app.post('/api/visits/checkin', guard(), (req, res) => res.status(201).json(ops.checkIn(req.user, req.body)));
   app.post('/api/visits/:id/checkout', guard(), (req, res) => res.json(ops.checkOut(req.user, Number(req.params.id))));
+  accounts.register(app, { guard, cookieOf, setSessionCookie, clearSessionCookie });
+
   // ---- Daily Schedule ----
   const nid = (v) => Number(v);
   app.get('/api/schedule/board', guard('schedule.view'), (req, res) => res.json(sched.board(req.user, req.query)));

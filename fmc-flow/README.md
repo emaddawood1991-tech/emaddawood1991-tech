@@ -18,7 +18,7 @@ Browser smoke test (server running): `NODE_PATH=$(npm root -g) node tests/e2e-sm
 Synthetic logins (password from `SEED_PASSWORD`, default `Demo-Passw0rd!` — **dev only**): `admin`, `super`, `reception`, `dr.ort`, `pt.one`, `pt.two`, `gm.one`, `nr.one`, `si.one`, `rh.one`.
 Use `FMC_INSECURE_COOKIES=1` only when serving over plain http on a non-localhost host (cookies are `Secure` by default).
 
-Behind a TLS reverse proxy set `FMC_TRUST_PROXY=1` (number of proxy hops) so login rate limits see the real client address; leave it unset when the app is reached directly. The server starts with `umask 077`, so the database, WAL and backups are readable only by the service account.
+Behind a TLS reverse proxy set `FMC_TRUST_PROXY=1` (number of proxy hops) so login rate limits see the real client address; leave it unset when the app is reached directly. Seed with `SEED_FORCE_CHANGE=1` so every seeded account must choose its own password at first sign-in. The server starts with `umask 077`, so the database, WAL and backups are readable only by the service account.
 
 ## Architecture
 - **Server**: Node 22 + Express + `node:sqlite` (WAL). One authoritative clock: every event timestamp is generated server-side; client-supplied times are ignored.

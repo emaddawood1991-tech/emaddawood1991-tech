@@ -57,7 +57,7 @@ function ensureUsers(db) {
   for (const [username, name, ar, role, dept, services] of STAFF) {
     if (one('SELECT 1 x FROM users WHERE username=?', username)) continue;
     const depId = dept ? one('SELECT id FROM departments WHERE name=?', dept)?.id ?? null : null;
-    const id = ins('INSERT INTO users(username,name,name_ar,role,department_id,pass_hash) VALUES (?,?,?,?,?,?)', username, name, ar, role, depId, pw);
+    const id = ins('INSERT INTO users(username,name,name_ar,role,department_id,pass_hash,must_change_password) VALUES (?,?,?,?,?,?,?)', username, name, ar, role, depId, pw, process.env.SEED_FORCE_CHANGE === '1' ? 1 : 0); // SEED_FORCE_CHANGE=1: every seeded account must choose its own password at first sign-in
     for (const sv of services) { const sid = one('SELECT id FROM services WHERE department_id=? AND name=?', depId, sv)?.id; if (sid) ins('INSERT INTO staff_services VALUES (?,?)', id, sid); }
     ins('INSERT INTO staff_availability(user_id,status,updated_at) VALUES (?,?,?)', id, role === 'clinician' ? 'AVAILABLE' : 'OFF_DUTY', now());
   }

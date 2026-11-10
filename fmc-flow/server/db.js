@@ -122,6 +122,14 @@ CREATE TABLE IF NOT EXISTS session_documentation (
   chief_complaint TEXT NOT NULL DEFAULT '', diagnosis TEXT NOT NULL DEFAULT '', cpt_code_id INTEGER REFERENCES cpt_codes(id), progress_note TEXT NOT NULL DEFAULT '',
   saved_by INTEGER REFERENCES users(id), saved_at TEXT NOT NULL, complete_since TEXT
 );
+-- ---- Accounts and sessions (additive) ----
+CREATE TABLE IF NOT EXISTS login_events (
+  id INTEGER PRIMARY KEY, ts TEXT NOT NULL, user_id INTEGER, event TEXT NOT NULL, ip TEXT, user_agent TEXT, detail TEXT NOT NULL DEFAULT '{}'
+);
+CREATE INDEX IF NOT EXISTS login_events_user ON login_events(user_id, id);
+CREATE TRIGGER IF NOT EXISTS login_events_no_update BEFORE UPDATE ON login_events BEGIN SELECT RAISE(ABORT,'login_events is append-only'); END;
+CREATE TRIGGER IF NOT EXISTS login_events_no_delete BEFORE DELETE ON login_events BEGIN SELECT RAISE(ABORT,'login_events is append-only'); END;
+CREATE TABLE IF NOT EXISTS password_history (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id), pass_hash TEXT NOT NULL, changed_at TEXT NOT NULL);
 -- ---- Daily Schedule (additive) ----
 CREATE TABLE IF NOT EXISTS appointment_categories (
   id INTEGER PRIMARY KEY, name TEXT NOT NULL, name_ar TEXT NOT NULL DEFAULT '', color TEXT NOT NULL DEFAULT '#c7d7f2',
@@ -234,6 +242,9 @@ export const DEFAULT_SETTINGS = {
   diagnosis_pattern: '',
   resource_gap_minutes: '1',
   schedule_default_minutes: '30',
+  password_min_length: '10',
+  session_absolute_hours: '14',
+  max_concurrent_sessions: '3',
   gender_options: JSON.stringify([{ code: 'M', en: 'Male', ar: 'ذكر' }, { code: 'F', en: 'Female', ar: 'أنثى' }]),
 };
 
@@ -241,7 +252,8 @@ export const DEFAULT_SETTINGS = {
 const ADDED_COLUMNS = {
   services: { min_minutes: 'INTEGER NOT NULL DEFAULT 5', max_minutes: 'INTEGER NOT NULL DEFAULT 180', allow_override: 'INTEGER NOT NULL DEFAULT 1' },
   appointments: { duration_minutes: 'INTEGER', ends_at: 'TEXT', category_id: 'INTEGER', notes: "TEXT NOT NULL DEFAULT ''", row_id: 'INTEGER', recurrence_id: 'TEXT', cancel_reason: 'TEXT', cancelled_at: 'TEXT', cancelled_by: 'INTEGER', rebooks_id: 'INTEGER', created_by: 'INTEGER', updated_at: 'TEXT' },
-  users: { schedule_override: 'INTEGER NOT NULL DEFAULT 0' },
+  users: { schedule_override: 'INTEGER NOT NULL DEFAULT 0', must_change_password: 'INTEGER NOT NULL DEFAULT 0', password_changed_at: 'TEXT', last_login_at: 'TEXT' },
+  auth_sessions: { sid: 'TEXT', ip: 'TEXT', user_agent: 'TEXT' },
   treatment_sessions: { planned_minutes: 'INTEGER', scheduled_end_at: 'TEXT', timer_elapsed_at: 'TEXT', confirmed_at: 'TEXT', completion_kind: 'TEXT', planned_cpt_id: 'INTEGER', operational_checkout_at: 'TEXT', operational_checkout_kind: 'TEXT' },
 };
 function ensureColumns(db) {

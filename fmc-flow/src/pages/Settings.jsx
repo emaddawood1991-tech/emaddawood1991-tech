@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { api, usePoll } from '../api.js';
 import { useI18n } from '../i18n.jsx';
 import { Chip, Modal, useAction } from '../ui.jsx';
+import SecurityAccess from './SecurityAccess.jsx';
 
 function Table({ title, endpoint, rows, fields, reload, extra, extraCols = [] }) {
   const { t } = useI18n(); const { run } = useAction(); const [edit, setEdit] = useState(null);
@@ -112,7 +113,7 @@ export default function Settings({ staff, reloadStaff }) {
   const setPol = async (k, v) => { await run(() => api.patch('/config/settings', { [k]: v ? '1' : '0' }), t('save')); cfg.reload(); };
   return (
     <>
-      <div className="tabs">{['departments', 'rooms', 'services', 'cptCodes', 'dsCategories', 'staff', 'policy'].map((k) => <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{t(k === 'rooms' ? 'rooms' : k)}</button>)}</div>
+      <div className="tabs">{['departments', 'rooms', 'services', 'cptCodes', 'dsCategories', 'staff', 'saSecurityAccess', 'policy'].map((k) => <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{t(k === 'rooms' ? 'rooms' : k)}</button>)}</div>
       {tab === 'departments' && <Table title={t('departments')} endpoint="departments" rows={config.departments} reload={reload} fields={[{ k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'queue_prefix', label: t('prefix') }, { k: 'queue_start', label: t('startNo'), type: 'num', def: 1 }, { k: 'queue_reset_daily', label: t('resetDaily'), type: 'bool', def: 1 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />}
       {tab === 'rooms' && <>
         <Table title={t('rooms')} endpoint="rooms" rows={config.rooms} reload={reload} fields={[{ k: 'department_id', label: t('department'), type: 'ref', opts: depOpts }, { k: 'code', label: 'Code' }, { k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'capacity', label: t('capacity'), type: 'num', def: 1 }, { k: 'cleaning_after_use', label: t('cleaningAfter'), type: 'bool' }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />
@@ -121,6 +122,7 @@ export default function Settings({ staff, reloadStaff }) {
       {tab === 'services' && <><p className="small muted">{t('authHelp')}</p><Table title={t('services')} endpoint="services" rows={config.services} reload={reload} extraCols={[{ label: t('authorizedClinicians'), render: (r) => { const who = staff.filter((u) => u.active && u.service_ids.includes(r.id)); return who.length ? <span className="small">{who.map((u) => loc(u)).join(', ')}</span> : r.active ? <Chip s="REJECTED" label={t('noAuthorizedChip')} /> : '—'; } }]} fields={[{ k: 'department_id', label: t('department'), type: 'ref', opts: depOpts }, { k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'default_minutes', label: t('defaultMin'), type: 'num', def: 30 }, { k: 'min_minutes', label: t('minMin'), type: 'num', def: 5 }, { k: 'max_minutes', label: t('maxMin'), type: 'num', def: 180 }, { k: 'allow_override', label: t('allowOverride'), type: 'bool', def: 1 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} /></>}
       {tab === 'cptCodes' && <><p className="small muted">{t('cptHelp')}</p><Table title={t('cptCodes')} endpoint="cpt_codes" rows={config.cpt_codes || []} reload={reload} fields={[{ k: 'code', label: t('cptCode') }, { k: 'description', label: t('cptDesc') }, { k: 'department_id', label: t('department'), type: 'ref', opts: [['', '—'], ...depOpts] }, { k: 'default_minutes', label: t('cptMinutes'), type: 'num', def: 30 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} /></>}
       {tab === 'dsCategories' && <Table title={t('dsCategories')} endpoint="appointment_categories" rows={config.appointment_categories || []} reload={reload} fields={[{ k: 'name', label: t('name') }, { k: 'name_ar', label: t('nameAr') }, { k: 'color', label: t('dsColor'), type: 'color', def: '#c7d7f2' }, { k: 'default_minutes', label: t('dsDefaultMin'), type: 'num' }, { k: 'sort_order', label: '#', type: 'num', def: 0 }, { k: 'active', label: t('active'), type: 'bool', def: 1 }]} />}
+      {tab === 'saSecurityAccess' && <SecurityAccess config={config} reload={cfg.reload} />}
       {tab === 'staff' && <StaffAdmin staff={staff} config={config} reload={reload} />}
       {tab === 'policy' && <div className="card stack"><h2>{t('policy')}</h2>
         {[['correction_requires_approval', 'policyApproval'], ['transfer_reason_required', 'policyTransfer'], ['registration_require_name_ar', 'policyNameAr'], ['registration_require_phone', 'policyPhone'], ['require_service_at_checkin', 'policyService'], ['timer_auto_close', 'timerAutoClose']].map(([k, label]) => (
