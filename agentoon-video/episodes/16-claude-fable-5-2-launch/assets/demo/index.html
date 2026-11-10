@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales Dashboard</title>
+<style>
+  :root { --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --line:#e4e3df; --bar:#2a78d6; }
+  @media (prefers-color-scheme: dark) { :root { --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --line:#383835; --bar:#3987e5; } }
+  body { margin:0; padding:24px 16px; background:var(--page); color:var(--ink); font:15px/1.4 system-ui, sans-serif; }
+  main { max-width:860px; margin:0 auto; }
+  header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  h1 { font-size:22px; margin:0; }
+  label { color:var(--ink2); }
+  select { font:inherit; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:6px 10px; margin-left:6px; }
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; margin-bottom:12px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .card small { color:var(--ink2); display:block; } .card b { font-size:26px; font-variant-numeric:tabular-nums; }
+  .chart { position:relative; }
+  h2 { font-size:15px; margin:0 0 8px; }
+  svg { display:block; width:100%; height:auto; } svg text { fill:var(--ink2); font-size:12px; }
+  .grid { stroke:var(--line); } .bar { fill:var(--bar); } .hit { fill:transparent; }
+  .hit:hover + .bar { opacity:.8; }
+  #tip { position:absolute; pointer-events:none; background:var(--ink); color:var(--surface); padding:4px 8px; border-radius:6px; font-size:13px; transform:translate(-50%, -130%); white-space:nowrap; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Sales Dashboard</h1>
+    <label>Region <select id="region"></select></label>
+  </header>
+  <section class="kpis" id="kpis"></section>
+  <section class="card chart">
+    <h2 id="chart-title"></h2>
+    <svg id="chart" viewBox="0 0 640 300" role="img"></svg>
+    <div id="tip" hidden></div>
+  </section>
+</main>
+<script src="logic.js"></script>
+<script>
+  const { REGIONS, salesData, filterByRegion, byMonth, totals } = Sales;
+  const $ = (id) => document.getElementById(id);
+  const money = (v) => '$' + Math.round(v).toLocaleString('en-US');
+  const short = (v) => '$' + v / 1000 + 'k';
+  const W = 640, H = 300, M = { top: 12, right: 8, bottom: 28, left: 52 };
+
+  $('region').innerHTML = ['All', ...REGIONS].map((r) => `<option>${r}</option>`).join('');
+  $('region').addEventListener('change', render);
+
+  function render() {
+    const region = $('region').value;
+    const rows = filterByRegion(salesData, region);
+    const t = totals(rows);
+    const kpis = [['Revenue', money(t.revenue)], ['Orders', t.orders.toLocaleString('en-US')],
+      ['Avg order value', money(t.avgOrder)], ['Best month', t.bestMonth]];
+    $('kpis').innerHTML = kpis.map(([k, v]) => `<div class="card"><small>${k}</small><b>${v}</b></div>`).join('');
+
+    const series = byMonth(rows);
+    const max = Math.max(...series.map((d) => d.revenue));
+    let step = 10 ** Math.floor(Math.log10(max));
+    if (max / step < 3) step /= 2;
+    const top = Math.ceil(max / step) * step;
+    const y = (v) => H - M.bottom - (v / top) * (H - M.top - M.bottom);
+    const slot = (W - M.left - M.right) / series.length, bw = slot * 0.6, base = y(0);
+
+    let svg = '';
+    for (let v = 0; v <= top; v += step) {
+      svg += `<line class="grid" x1="${M.left}" x2="${W - M.right}" y1="${y(v)}" y2="${y(v)}"/>` +
+        `<text x="${M.left - 8}" y="${y(v) + 4}" text-anchor="end">${short(v)}</text>`;
+    }
+    series.forEach((d, i) => {
+      const x = M.left + slot * i + (slot - bw) / 2, yy = y(d.revenue);
+      svg += `<rect class="hit" x="${M.left + slot * i}" y="${M.top}" width="${slot}" height="${base - M.top}" data-i="${i}"/>` +
+        `<path class="bar" d="M${x},${base}V${yy + 4}q0,-4 4,-4H${x + bw - 4}q4,0 4,4V${base}Z"/>` +
+        `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle">${d.month}</text>`;
+    });
+    $('chart').innerHTML = svg;
+    const title = `Monthly revenue — ${region === 'All' ? 'all regions' : region}`;
+    $('chart-title').textContent = title;
+    $('chart').setAttribute('aria-label', title + ': ' + series.map((d) => `${d.month} ${money(d.revenue)}`).join(', '));
+
+    $('chart').querySelectorAll('.hit').forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        const d = series[el.dataset.i], box = $('chart').getBoundingClientRect(), k = box.width / W;
+        $('tip').textContent = `${d.month}: ${money(d.revenue)}`;
+        $('tip').style.left = (M.left + slot * (+el.dataset.i + 0.5)) * k + 'px';
+        $('tip').style.top = $('chart').offsetTop + y(d.revenue) * k + 'px';
+        $('tip').hidden = false;
+      });
+      el.addEventListener('mouseleave', () => { $('tip').hidden = true; });
+    });
+  }
+  render();
+</script>
+</body>
+</html>

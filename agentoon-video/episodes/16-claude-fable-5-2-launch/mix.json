@@ -1,0 +1,147 @@
+{
+ "total": 88.2,
+ "music": [
+  {
+   "t0": 0.0,
+   "t1": 19.19,
+   "mood": "hook"
+  },
+  {
+   "t0": 19.19,
+   "t1": 54.43,
+   "mood": "demo"
+  },
+  {
+   "t0": 54.43,
+   "t1": 88.2,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "sparkle",
+   "t": 0.3,
+   "gain": 0.4
+  },
+  {
+   "name": "whoosh",
+   "t": 5.8,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 6.55,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 15.93,
+   "gain": 0.35
+  },
+  {
+   "name": "whoosh",
+   "t": 19.14,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 22.12,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "t": 23.52,
+   "gain": 0.35
+  },
+  {
+   "name": "pop",
+   "t": 25.41,
+   "gain": 0.35
+  },
+  {
+   "name": "whoosh",
+   "t": 32.66,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "t": 37.91,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 39.38,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 40.31,
+   "gain": 0.35
+  },
+  {
+   "name": "whoosh",
+   "t": 41.55,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "t": 51.54,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "t": 53.81,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 53.81,
+   "gain": 0.3
+  },
+  {
+   "name": "whoosh",
+   "t": 54.38,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 55.98,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 63.32,
+   "gain": 0.35
+  },
+  {
+   "name": "whoosh",
+   "t": 68.93,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "t": 69.78,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 71.42,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 73.31,
+   "gain": 0.35
+  },
+  {
+   "name": "whoosh",
+   "t": 76.37,
+   "gain": 0.4
+  },
+  {
+   "name": "sparkle",
+   "t": 82.87,
+   "gain": 0.4
+  }
+ ]
+}

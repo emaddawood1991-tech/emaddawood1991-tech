@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 16 Claude Fable 5.2 launch</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Ember Horizon". Near-black warm background, Claude-orange glow on a curved horizon, glass cards, glowing data lines, drifting embers.
+     Real material: captures of anthropic.com + platform docs pages, a real Claude Code run on claude-fable-5-2. Illustrations are labelled ORIGINAL. */
+  :root { --bg: #0B0908; --or: #D97757; --glow: #FF8A4C; --soft: #F4EFE9; --mute: #A89C94; --amber: #FFB23E; --green: #7CF2C0; }
+  .chip { position: absolute; white-space: nowrap; z-index: 8; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .ser { position: absolute; font-family: var(--display); font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .glass { position: absolute; box-sizing: border-box; overflow: hidden; border-radius: 26px; background: rgba(30,22,19,.86); border: 3px solid rgba(217,119,87,.75); color: var(--soft); box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 60px rgba(217,119,87,.18); }
+  img { display: block; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+<script src="data/lipsync.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="88.2">
+  <section id="s1" class="clip scene" data-start="0.0" data-duration="6.45"><div id="s1i" class="inner"></div></section>
+  <section id="s2" class="clip scene" data-start="5.85" data-duration="13.94"><div id="s2i" class="inner"></div></section>
+  <section id="s3" class="clip scene" data-start="19.19" data-duration="14.12"><div id="s3i" class="inner"></div></section>
+  <section id="s4" class="clip scene" data-start="32.71" data-duration="9.49"><div id="s4i" class="inner"></div></section>
+  <section id="s5" class="clip scene" data-start="41.6" data-duration="13.43"><div id="s5i" class="inner"></div></section>
+  <section id="s6" class="clip scene" data-start="54.43" data-duration="15.15"><div id="s6i" class="inner"></div></section>
+  <section id="s7" class="clip scene" data-start="68.98" data-duration="8.04"><div id="s7i" class="inner"></div></section>
+  <section id="s8" class="clip scene" data-start="76.42" data-duration="11.78"><div id="s8i" class="inner"></div></section>
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="88.2" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, LIP = window.LIPSYNC, $ = id => document.getElementById(id), S = {"s1": {"b": 0.0, "start": 0.0, "end": 6.45, "len": 6.45}, "s2": {"b": 5.85, "start": 5.85, "end": 19.79, "len": 13.94}, "s3": {"b": 19.19, "start": 19.19, "end": 33.31, "len": 14.12}, "s4": {"b": 32.71, "start": 32.71, "end": 42.2, "len": 9.49}, "s5": {"b": 41.6, "start": 41.6, "end": 55.03, "len": 13.43}, "s6": {"b": 54.43, "start": 54.43, "end": 69.58, "len": 15.15}, "s7": {"b": 68.98, "start": 68.98, "end": 77.02, "len": 8.04}, "s8": {"b": 76.42, "start": 76.42, "end": 88.2, "len": 11.78}};
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”']/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word " + pid + ":" + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const svgEl = (host, tag, attrs) => { const e = document.createElementNS(NSs, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); host.appendChild(e); return e; };
+  const OR = "#D97757", GL = "#FF8A4C", SO = "#F4EFE9", MU = "#A89C94", AM = "#FFB23E", GR = "#7CF2C0", BG = "#0B0908";
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + Math.max(28, o.size || 28) + "px/1 var(--mono);letter-spacing:.04em;color:" + (o.fg || SO) + ";background:" + (o.bg || "rgba(30,22,19,.92)") + ";border:3px solid " + (o.bd || OR), text); };
+  /* deterministic embers */
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const scene = (k, flip) => {
+    const inn = $(k + "i"); el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(120% 60% at 50% 105%,#3A1D12 0%,#1A0F0B 40%,#0B0908 75%)");
+    const hz = el(inn, "hz" + k, "", "position:absolute;left:-300px;top:1500px;width:1680px;height:1500px;border-radius:50%;background:radial-gradient(closest-side,#130B08 82%,#2A140C 94%,#7A3516 99%,#FF8A4C 100%);box-shadow:0 -10px 60px rgba(255,138,76,.55),0 -2px 12px rgba(255,200,160,.9);transform-origin:50% 0"); tl.fromTo(hz, { scale: 1, x: flip ? -50 : 50 }, { scale: 1.04, x: flip ? 50 : -50, duration: S[k].len, ease: "none" }, S[k].start);
+    for (let i = 0; i < 22; i++) { const x = Math.round(rnd() * 1040), y = Math.round(300 + rnd() * 1500), r = 3 + Math.round(rnd() * 5); const e = el(inn, "em" + k + i, "", "left:" + x + "px;top:" + y + "px;width:" + r + "px;height:" + r + "px;border-radius:50%;background:" + (i % 3 ? GL : "#FFD9BF") + ";opacity:" + (0.25 + rnd() * 0.5) + ";z-index:1"); tl.to(e, { y: -(120 + rnd() * 260), x: (rnd() - 0.5) * 80, duration: S[k].len, ease: "none" }, S[k].start); }
+    return inn;
+  };
+  const presenter = (bot, k) => { bot.face(tl, 0, -1, 0.01); bot.rise(tl, S[k].start + 0.3, 420, 0.4); bot.blinks(tl, S[k].start, S[k].end, 1.1); bot.P.wrap.style.zIndex = 12; return bot; };
+  const speak = (bot, pid) => { const p = P(pid); bot.speak(tl, LIP, p.start, p.end); };
+  const tag = (host, id, text, t0, col) => { const c = chip(host, id, 50, 330, text, { bd: col || OR }); c.style.zIndex = 9; tl.from(c, { opacity: 0, x: -30, duration: 0.3 }, t0); return c; };
+  const trans = (k, prev, kind) => { const b = S[k].b, o = "#" + prev + "i", n = "#" + k + "i"; if (kind === "push") Cam.push(tl, b, 0.5, { out: o, inn: n, ox: 540, oy: 800, scale: 3.2 }); else Cam.whip(tl, b, 0.5, { out: o, inn: n, dir: kind === "whipL" ? -1 : 1, blur: 24 }); };
+  const imgIn = (host, id, file, w, css) => { const im = document.createElement("img"); im.id = id; im.src = file; im.style.cssText = "position:absolute;width:" + w + "px;" + (css || ""); host.appendChild(im); return im; };
+  const source = (host, id, text, t0, y, col) => { const c = chip(host, id, 50, y, text, { size: 28, bd: col || "#6B5D55", fg: "#E6DCD4", pad: "8px 16px 10px" }); c.style.zIndex = 9; tl.from(c, { opacity: 0, duration: 0.3 }, t0); return c; };
+  const ringBox = (host, id, x, y, w, h, t0, t1) => { const r = el(host, id, "", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px;border:5px solid " + GL + ";border-radius:14px;box-shadow:0 0 24px rgba(255,138,76,.8);z-index:5;transform-origin:50% 50%"); tl.from(r, { opacity: 0, scale: 1.25, duration: 0.3, ease: "power3.out" }, t0); if (t1) tl.to(r, { opacity: 0, duration: 0.2 }, t1); return r; };
+
+  /* ===== S1 HOOK: real captured launch page + title (no authorized official clip was available) ===== */
+  const s1 = scene("s1", false);
+  const t1a = el(s1, "t1a", "ser", "left:0;right:0;top:350px;text-align:center;font-size:122px;line-height:1;color:" + SO + ";z-index:6", "CLAUDE"), t1b = el(s1, "t1b", "ser", "left:0;right:0;top:470px;text-align:center;font-size:122px;line-height:1;color:" + GL + ";z-index:6", "FABLE 5.2");
+  tl.from(t1a, { opacity: 0, y: -60, duration: 0.45, ease: "back.out(1.6)" }, 0.1); tl.from(t1b, { opacity: 0, y: 60, duration: 0.45, ease: "back.out(1.6)" }, 0.3);
+  const jl = chip(s1, "jl", 50, 640, "JUST LAUNCHED · NOV 9, 2026", { bd: GL, size: 34 }); jl.style.zIndex = 9; tl.from(jl, { opacity: 0, scale: 0.8, duration: 0.35, ease: "back.out(1.8)", transformOrigin: "0 50%" }, 0.6);
+  const pc = el(s1, "pc", "glass", "left:50px;top:740px;width:500px;height:800px;z-index:5;transform:rotate(-3deg)"); imgIn(pc, "pci", "assets/page/ann-top.png", 500, "left:0;top:0");
+  tl.from(pc, { opacity: 0, x: -140, rotation: -10, duration: 0.7, ease: "power3.out" }, 0.8); tl.to(pc, { y: -26, duration: 5, ease: "sine.inOut" }, 1.2);
+  tl.fromTo("#pci", { scale: 1 }, { scale: 1.16, duration: 5.4, ease: "none", transformOrigin: "50% 30%" }, 0.8);
+  const bot1 = botAt(s1, "bot1", 640, 1030, 340); presenter(bot1, "s1"); speak(bot1, "p1"); bot1.react(tl, PW("p1", "Fable"), "wow"); bot1.aimPoint(tl, PW("p1", "beyond") - 0.2, { x: 640, y: 1030, target: [300, 1100], hold: 1.2 });
+  source(s1, "so1", "ANTHROPIC.COM · PAGE CAPTURE", 1.2, 1580);
+
+  /* ===== S2 ANNOUNCEMENT: scroll through the real page, highlight name + date ===== */
+  const s2 = scene("s2", true); tag(s2, "t2", "THE ANNOUNCEMENT", S.s2.start + 0.2);
+  const w2 = el(s2, "w2", "glass", "left:50px;top:400px;width:980px;height:900px;z-index:5"); const c2 = el(w2, "c2", "", "left:0;top:0;width:980px;height:1742px"); const i2a = imgIn(c2, "i2a", "assets/page/ann-top.png", 980, "left:0;top:0"), i2b = imgIn(c2, "i2b", "assets/page/ann-intro.png", 980, "left:0;top:0"); gsap.set(i2b, { opacity: 0 });
+  tl.from(w2, { opacity: 0, y: 90, duration: 0.5, ease: "power3.out" }, S.s2.start + 0.3);
+  const tNov = PW("p2", "November"), tCode = PW("p2", "coding");
+  tl.fromTo(c2, { y: -260, scale: 1 }, { y: -330, scale: 1.12, duration: tCode - S.s2.start, ease: "power1.inOut", transformOrigin: "50% 0" }, S.s2.start + 0.4);
+  ringBox(c2, "rg2a", 360, 330, 270, 50, tNov - 0.15, tNov + 1.4); ringBox(c2, "rg2b", 40, 420, 900, 300, tNov + 1.2, tCode - 0.3);
+  tl.to(i2b, { opacity: 1, duration: 0.4 }, tCode - 0.3); tl.to(c2, { y: -470, duration: 5.5, ease: "power1.inOut", scale: 1.06 }, tCode - 0.1);
+  const cs = [["NOV 9, 2026", "p2", "November"], ["CODING · REASONING · VISION", "p2", "coding"], ["UP TO 30% FASTER VS 5.1", "p2b", "30%"]];
+  cs.forEach((c, i) => { const ch = chip(s2, "c2" + i, 50, 1340 + i * 72, c[0], { size: 32 }); ch.style.zIndex = 9; tl.from(ch, { opacity: 0, scale: 0.7, x: -40, duration: 0.32, ease: "back.out(1.8)", transformOrigin: "0 50%" }, PW(c[1], c[2]) - 0.1); });
+  const bot2 = botAt(s2, "bot2", 790, 1450, 230); presenter(bot2, "s2"); speak(bot2, "p2"); speak(bot2, "p2b"); bot2.aimPoint(tl, tNov - 0.1, { x: 790, y: 1450, target: [500, 780], hold: 1.2 }); bot2.react(tl, PW("p2b", "30%") + 0.1, "nod");
+  source(s2, "so2", "ANTHROPIC.COM · PAGE CAPTURE", S.s2.start + 1.0, 1560);
+
+  /* ===== S3 OPERATING SYSTEM: original illustration of the verified facts (official clip not reused) ===== */
+  const s3 = scene("s3", false); tag(s3, "t3", "THE OPERATING SYSTEM EXPERIMENT", S.s3.start + 0.2);
+  const sv = svgEl(s3, "svg", { id: "sv3", width: 1080, height: 1920, viewBox: "0 0 1080 1920" }); sv.style.cssText = "position:absolute;left:0;top:0;z-index:3;pointer-events:none"; const CX = 540, CY = 780;
+  const tTh = PW("p3", "thousand"), N = 54, nodes = [];
+  for (let i = 0; i < N; i++) { const ang = i * 2.39996, rad = 70 + 230 * Math.sqrt((i + 1) / N), x = CX + Math.cos(ang) * rad * 1.45, y = CY + Math.sin(ang) * rad; nodes.push([x, y]); }
+  nodes.forEach(([x, y], i) => { const ln = svgEl(sv, "line", { id: "ln" + i, x1: CX, y1: CY, x2: x, y2: y, stroke: GL, "stroke-width": 2, opacity: 0.35 }); const cd = svgEl(sv, "circle", { id: "nd" + i, cx: x, cy: y, r: 8, fill: i % 5 === 0 ? "#FFD9BF" : GL }); const at = tTh - 0.9 + i * 0.045; tl.from(ln, { opacity: 0, duration: 0.2 }, at); tl.from(cd, { opacity: 0, scale: 0, transformOrigin: x + "px " + y + "px", duration: 0.25, ease: "back.out(2)" }, at); tl.fromTo(cd, { attr: { r: 8 } }, { attr: { r: 12 }, duration: 0.6, yoyo: true, repeat: 5, ease: "sine.inOut" }, at + 0.3 + (i % 7) * 0.1); });
+  const core = el(s3, "core3", "", "left:" + (CX - 100) + "px;top:" + (CY - 100) + "px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,#FFB58A 0%,#D97757 55%,#7A3516 100%);box-shadow:0 0 70px rgba(255,138,76,.85);z-index:5;display:flex;align-items:center;justify-content:center;font:800 32px/1.1 var(--mono);color:#1A0F0B;text-align:center;white-space:pre", "FABLE\n5.2"); tl.from(core, { scale: 0.3, opacity: 0, duration: 0.6, ease: "back.out(1.6)" }, S.s3.start + 0.4); tl.to(core, { scale: 1.08, duration: 0.9, yoyo: true, repeat: 8, ease: "sine.inOut" }, S.s3.start + 1.2);
+  const cnt = ["0", "120", "340", "610", "850", "1,000+"]; const cb = el(s3, "cnt3", "", "left:0;right:0;top:1100px;height:150px;z-index:6;text-align:center");
+  cnt.forEach((n, i) => { const d = el(cb, "cn" + i, "ser", "left:0;right:0;top:0;text-align:center;font-size:130px;line-height:1;color:" + (i === 5 ? GL : SO), n); gsap.set(d, { opacity: 0 }); const t0 = tTh - 1.6 + i * 0.42; tl.set(d, { opacity: 1 }, t0); if (i < 5) tl.set(d, { opacity: 0 }, t0 + 0.42); });
+  el(s3, "cl3", "mono", "left:0;right:0;top:1240px;text-align:center;font:800 34px/1 var(--mono);color:" + MU + ";z-index:6", "SUBAGENTS · ONE ENGINEER'S EXPERIMENT");
+  const tE = PW("p3", "eight"); const bar = el(s3, "bar3", "", "left:80px;top:1320px;width:920px;height:16px;border-radius:8px;background:#2A1C16;z-index:6"); const fill = el(bar, "fill3", "", "left:0;top:0;width:920px;height:16px;border-radius:8px;background:linear-gradient(90deg,#D97757,#FF8A4C);transform-origin:0 50%"); gsap.set(fill, { scaleX: 0 }); tl.to(fill, { scaleX: 1, duration: PW("p3", "operating") - tE + 0.6, ease: "none" }, tE - 0.1);
+  const dl = el(s3, "dl3", "mono", "left:80px;top:1350px;width:920px;font:800 30px/1 var(--mono);color:" + MU + ";z-index:6;display:flex;justify-content:space-between", ""); dl.innerHTML = "<span>EMPTY FOLDER</span><span>8 DAYS</span><span>BOOTS ON A LAPTOP</span>"; tl.from(dl, { opacity: 0, duration: 0.4 }, tE);
+  const lst = ["KERNEL · DISK · KEYBOARD · NETWORK", "FILE STORAGE · WINDOWS", "LOGIN SCREEN · INSTALLER"]; lst.forEach((t, i) => { const c = chip(s3, "ls3" + i, 50, 1410 + i * 66, t, { size: 28, bd: i === 2 ? GL : OR }); c.style.zIndex = 9; tl.from(c, { opacity: 0, x: -50, duration: 0.3 }, PW("p3b", "empty") + 0.6 + i * 0.7); });
+  const bot3 = botAt(s3, "bot3", 800, 1560, 220); presenter(bot3, "s3"); speak(bot3, "p3"); speak(bot3, "p3b"); bot3.aimPoint(tl, tTh - 0.2, { x: 800, y: 1560, target: [CX, CY + 100], hold: 1.4 }); bot3.react(tl, PW("p3", "laptop") + 0.1, "wow");
+  source(s3, "so3", "ORIGINAL ILLUSTRATION", S.s3.start + 0.9, 1650, AM); source(s3, "so3b", "FACTS: ANTHROPIC.COM", S.s3.start + 1.0, 1710, AM);
+
+  /* ===== S4 ROBOTICS: original task cards (official footage not reused) ===== */
+  const s4 = scene("s4", true); tag(s4, "t4", "ROBOTICS · CONTROLLED BY FABLE 5.2", S.s4.start + 0.2);
+  const tk = [["SOLVE A PUZZLE CUBE", "puzzle"], ["UNSCREW A BOTTLE CAP", "bottle"], ["DRAW A PICTURE", "drawing"]];
+  tk.forEach(([t, w], i) => {
+    const y = 420 + i * 330, c = el(s4, "tk" + i, "glass", "left:50px;top:" + y + "px;width:980px;height:290px;z-index:5"); const tt = PW("p4", w);
+    const ic = svgEl(el(c, "tki" + i, "", "left:20px;top:20px;width:250px;height:250px"), "svg", { width: 250, height: 250, viewBox: "0 0 250 250" });
+    if (i === 0) { const cols = ["#D97757", "#F4EFE9", "#FFB23E", "#7CF2C0", "#8AB4FF", "#FF6B6B"]; for (let r = 0; r < 3; r++) for (let q = 0; q < 3; q++) { const sq = svgEl(ic, "rect", { x: 40 + q * 56, y: 40 + r * 56, width: 50, height: 50, rx: 8, fill: cols[(r * 3 + q * 2) % 6] }); tl.from(sq, { opacity: 0, scale: 0, transformOrigin: (65 + q * 56) + "px " + (65 + r * 56) + "px", duration: 0.25, ease: "back.out(2)" }, tt - 0.1 + (r * 3 + q) * 0.05); } const g = ic; tl.fromTo(ic, { rotation: 0 }, { rotation: 90, duration: 1.2, ease: "power2.inOut", transformOrigin: "125px 125px" }, tt + 0.5); }
+    if (i === 1) { const cap = svgEl(ic, "g", {}); svgEl(cap, "circle", { cx: 125, cy: 125, r: 78, fill: "#2B1B14", stroke: OR, "stroke-width": 6 }); for (let k = 0; k < 16; k++) { const a = k * Math.PI / 8; svgEl(cap, "line", { x1: 125 + Math.cos(a) * 78, y1: 125 + Math.sin(a) * 78, x2: 125 + Math.cos(a) * 66, y2: 125 + Math.sin(a) * 66, stroke: GL, "stroke-width": 5 }); } svgEl(cap, "circle", { cx: 125, cy: 125, r: 30, fill: GL }); tl.from(cap, { opacity: 0, scale: 0.4, transformOrigin: "125px 125px", duration: 0.4, ease: "back.out(1.8)" }, tt - 0.1); tl.fromTo(cap, { rotation: 0 }, { rotation: -300, duration: 1.4, ease: "power2.inOut", transformOrigin: "125px 125px" }, tt + 0.3); }
+    if (i === 2) { const pth = svgEl(ic, "path", { d: "M70 80 H180 V160 H70 Z M100 110 H110 M140 110 H150 M105 140 H145 M125 80 V55 M125 55 m-6 0 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0", fill: "none", stroke: GR, "stroke-width": 7, "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-dasharray": 700, "stroke-dashoffset": 700 }); tl.to(pth, { attr: { "stroke-dashoffset": 0 }, duration: 1.8, ease: "power1.inOut" }, tt - 0.1); }
+    el(c, "tkt" + i, "ser", "left:300px;top:70px;font-size:56px;line-height:1.1;color:" + SO + ";white-space:pre", t.replace(" A ", "\nA ").replace("UNSCREW\nA", "UNSCREW\nA")); el(c, "tkn" + i, "mono", "left:300px;top:216px;font:800 28px/1 var(--mono);color:" + OR, "ROBOT TASK " + (i + 1) + " / 3");
+    tl.from(c, { opacity: 0, x: 120, duration: 0.45, ease: "power3.out" }, S.s4.start + 0.5 + i * 0.4);
+  });
+  const bot4 = botAt(s4, "bot4", 800, 1480, 230); presenter(bot4, "s4"); speak(bot4, "p4"); bot4.aimPoint(tl, PW("p4", "puzzle") - 0.1, { x: 800, y: 1480, target: [300, 560], hold: 1.0 }); bot4.react(tl, PW("p4", "drawing") + 0.2, "celebrate");
+  source(s4, "so4", "ORIGINAL ILLUSTRATION", S.s4.start + 1.0, 1650, AM); source(s4, "so4b", "TASKS: ANTHROPIC.COM", S.s4.start + 1.1, 1710, AM);
+
+  /* ===== S5 CLAUDE CODE: REAL RUN on claude-fable-5-2 (condensed) ===== */
+  const s5 = scene("s5", false); tag(s5, "t5", "REAL CLAUDE CODE RUN · CONDENSED", S.s5.start + 0.2, GR);
+  const tm5 = el(s5, "tm5", "glass", "left:50px;top:400px;width:980px;height:560px;z-index:5;background:rgba(14,10,8,.94)"); el(tm5, "tmh", "mono", "left:24px;top:16px;font:800 28px/1 var(--mono);color:" + AM, "claude -p --model claude-fable-5-2 …");
+  const L5 = [["● Write", " logic.js", SO], ["● Write", " test.js", SO], ["● Write", " index.html", SO], ["● Bash", " node --test", SO], ["ok 1 - overall totals", "", GR], ["ok 2 - filterByRegion keeps only…", "", GR], ["ok 3 - \"All\" returns every row…", "", GR], ["# tests 3   # pass 3   # fail 0", "", GL]];
+  const tR = PW("p5b", "writes"), tT = PW("p5b", "tests");
+  L5.forEach((l, i) => { const d = el(tm5, "tl5" + i, "mono", "left:24px;top:" + (70 + i * 56) + "px;font:700 32px/1 var(--mono);color:" + l[2]); d.innerHTML = '<span style="color:' + OR + '">' + l[0] + "</span>" + l[1]; d.style.clipPath = "inset(0 100% 0 0)"; const t0 = i < 4 ? PW("p5", "developers") + i * 1.1 : tT - 0.3 + (i - 4) * 0.45; tl.to(d, { clipPath: "inset(0 0% 0 0)", duration: 0.35, ease: "steps(18)" }, t0); });
+  tl.from(tm5, { opacity: 0, y: 70, duration: 0.45, ease: "power3.out" }, S.s5.start + 0.3);
+  const mdl = chip(s5, "mdl", 50, 990, "MODEL: claude-fable-5-2 · 1M CONTEXT · 128K OUT", { size: 28, bd: GR }); mdl.style.zIndex = 9; tl.from(mdl, { opacity: 0, x: -50, duration: 0.3 }, PW("p5b", "real") - 0.1);
+  const bw = el(s5, "bw5", "glass", "left:50px;top:1050px;width:980px;height:500px;z-index:5;background:#FAF9F7;border-color:" + OR); const bc = el(bw, "bc5", "", "left:0;top:0;width:980px;height:1270px"); const d1 = imgIn(bc, "d1", "assets/demo/dash-all.png", 980, "left:0;top:0"), d2 = imgIn(bc, "d2", "assets/demo/dash-filtered.png", 980, "left:0;top:0"); gsap.set(d2, { opacity: 0 });
+  tl.from(bw, { opacity: 0, y: 90, duration: 0.5, ease: "power3.out" }, tT - 0.2); tl.to(d2, { opacity: 1, duration: 0.3 }, tT + 2.6); tl.fromTo(bc, { y: 0, scale: 1 }, { y: -20, scale: 1.08, duration: 6, ease: "none", transformOrigin: "50% 0" }, tT);
+  const sd = chip(s5, "sd5", 50, 1570, "DASHBOARD BUILT BY THE RUN · SAMPLE DATA", { size: 28, bd: OR }); sd.style.zIndex = 9; tl.from(sd, { opacity: 0, x: -50, duration: 0.3 }, tR);
+  const bot5 = botAt(s5, "bot5", 800, 1640, 190); presenter(bot5, "s5"); speak(bot5, "p5"); speak(bot5, "p5b"); bot5.aimPoint(tl, tR - 0.1, { x: 800, y: 1640, target: [500, 640], hold: 1.2 }); bot5.react(tl, tT + 0.2, "celebrate");
+  source(s5, "so5", "REAL RUN · CONDENSED · 3/3 PASSED", S.s5.start + 1.2, 1740, GR);
+
+  /* ===== S6 SPECS ===== */
+  const s6 = scene("s6", true); tag(s6, "t6", "VERIFIED SPECS", S.s6.start + 0.2);
+  const tM = PW("p6", "1M-token"), tC = PW("p6", "complex"), tA = PW("p6", "agents");
+  const b1 = el(s6, "b1", "ser", "left:50px;top:440px;font-size:200px;line-height:1;color:" + GL + ";z-index:6", "1M"), b1l = el(s6, "b1l", "mono", "left:56px;top:680px;font:800 34px/1 var(--mono);color:" + SO + ";z-index:6", "TOKEN CONTEXT");
+  const b2 = el(s6, "b2", "ser", "left:540px;top:440px;font-size:200px;line-height:1;color:" + SO + ";z-index:6", "128K"), b2l = el(s6, "b2l", "mono", "left:546px;top:680px;font:800 34px/1 var(--mono);color:" + SO + ";z-index:6", "MAX OUTPUT");
+  tl.from(b1, { opacity: 0, scale: 0.6, y: 60, duration: 0.55, ease: "back.out(1.7)", transformOrigin: "0 100%" }, tM - 0.2); tl.from(b1l, { opacity: 0, y: 20, duration: 0.3 }, tM + 0.3); tl.from(b2, { opacity: 0, scale: 0.6, y: 60, duration: 0.55, ease: "back.out(1.7)", transformOrigin: "0 100%" }, tM + 0.5); tl.from(b2l, { opacity: 0, y: 20, duration: 0.3 }, tM + 1.0);
+  const dw = el(s6, "dw6", "glass", "left:50px;top:770px;width:980px;height:360px;z-index:5;background:#FAF9F7"); const dc = imgIn(dw, "dc6", "assets/page/doc-top.png", 980, "left:0;top:-560px"); tl.from(dw, { opacity: 0, y: 70, duration: 0.45, ease: "power3.out" }, tC - 0.9); tl.fromTo(dc, { scale: 1 }, { scale: 1.1, duration: 4.2, ease: "none", transformOrigin: "30% 50%" }, tC - 0.9);
+  const sp = [["AGENTIC ENGINEERING", GL, "complex"], ["claude-fable-5-2 · $8 / $40 PER MTOK", OR, "agents"]]; sp.forEach((c, i) => { const ch = chip(s6, "sp6" + i, 50, 1160 + i * 70, c[0], { size: 32, bd: c[1] }); ch.style.zIndex = 9; tl.from(ch, { opacity: 0, scale: 0.7, x: -40, duration: 0.32, ease: "back.out(1.8)", transformOrigin: "0 50%" }, PW("p6", c[2]) - 0.1); });
+  const mf = el(s6, "mf", "glass", "left:50px;top:1320px;width:470px;height:190px;z-index:5;padding:18px 22px;font:700 28px/1.3 var(--body)"); mf.innerHTML = '<b style="color:' + GL + ';font:800 30px var(--mono)">FABLE 5.2</b><br>Available to all users. Strong cyber and biology safeguards.';
+  const mm = el(s6, "mm", "glass", "left:560px;top:1320px;width:470px;height:190px;z-index:5;padding:18px 22px;font:700 28px/1.3 var(--body)"); mm.innerHTML = '<b style="color:' + AM + ';font:800 30px var(--mono)">MYTHOS 5.2</b><br>Same underlying model. Verification programs only.';
+  tl.from(mf, { opacity: 0, y: 60, duration: 0.4 }, PW("p6b", "Mythos") - 0.4); tl.from(mm, { opacity: 0, y: 60, duration: 0.4 }, PW("p6b", "same") - 0.1);
+  const bot6 = botAt(s6, "bot6", 800, 1560, 220); presenter(bot6, "s6"); speak(bot6, "p6"); speak(bot6, "p6b"); bot6.aimPoint(tl, tM, { x: 800, y: 1560, target: [300, 560], hold: 1.2 }); bot6.react(tl, PW("p6b", "safeguards") + 0.1, "think");
+  source(s6, "so6", "DOCS + ANTHROPIC.COM · CAPTURES", S.s6.start + 1.2, 1650);
+
+  /* ===== S7 HOW TO TRY IT ===== */
+  const s7 = scene("s7", false); tag(s7, "t7", "HOW TO TRY IT", S.s7.start + 0.2);
+  const stp = [["1", "Open Claude or Claude Code", "open"], ["2", "Check your available models", "check"], ["3", "Select Fable 5.2 if your account includes access", "select"]];
+  stp.forEach(([n, t, w], i) => { const y = 420 + i * 190, c = el(s7, "st7" + i, "glass", "left:50px;top:" + y + "px;width:980px;height:160px;z-index:5"); el(c, "sn" + i, "ser", "left:30px;top:18px;font-size:110px;line-height:1;color:" + GL, n); el(c, "stt" + i, "", "left:150px;top:0;width:800px;height:160px;display:flex;align-items:center;font:800 40px/1.15 var(--body);color:" + SO + ";white-space:normal", t); tl.from(c, { opacity: 0, x: 120, duration: 0.4, ease: "power3.out" }, PW("p7", w) - 0.3); });
+  const rg7 = el(s7, "rg7", "", "left:44px;top:414px;width:992px;height:172px;border:5px solid " + GL + ";border-radius:30px;box-shadow:0 0 26px rgba(255,138,76,.8);z-index:6"); tl.from(rg7, { opacity: 0, duration: 0.2 }, PW("p7", "open") - 0.3); [1, 2].forEach(i => tl.to(rg7, { y: i * 190, duration: 0.3, ease: "power3.out" }, PW("p7", stp[i][2]) - 0.35));
+  const cm = el(s7, "cm7", "glass", "left:50px;top:1010px;width:980px;height:130px;z-index:5;background:rgba(14,10,8,.94)"); el(cm, "cmt", "mono", "left:24px;top:40px;font:700 38px/1 var(--mono);color:" + GR, "$ claude --model claude-fable-5-2"); tl.from(cm, { opacity: 0, y: 40, duration: 0.4 }, PW("p7", "select") - 0.2);
+  const aw = el(s7, "aw7", "glass", "left:50px;top:1170px;width:980px;height:260px;z-index:5;background:#F4EFE9"); const ac = imgIn(aw, "ac7", "assets/page/ann-avail.png", 980, "left:0;top:-690px"); tl.from(aw, { opacity: 0, y: 70, duration: 0.45 }, PW("p7", "models") - 0.2); tl.fromTo(ac, { scale: 1 }, { scale: 1.08, duration: 4.5, ease: "none", transformOrigin: "50% 50%" }, PW("p7", "models") - 0.2);
+  const ac2 = chip(s7, "ac7c", 50, 1460, "ACCESS DEPENDS ON YOUR PLAN", { size: 32, bd: AM }); ac2.style.zIndex = 9; tl.from(ac2, { opacity: 0, scale: 0.8, duration: 0.3, ease: "back.out(1.8)", transformOrigin: "0 50%" }, PW("p7", "account") - 0.1);
+  const bot7 = botAt(s7, "bot7", 800, 1560, 220); presenter(bot7, "s7"); speak(bot7, "p7"); bot7.aimPoint(tl, PW("p7", "open") - 0.1, { x: 800, y: 1560, target: [500, 500], hold: 1.0 }); bot7.react(tl, PW("p7", "account") + 0.2, "nod");
+  source(s7, "so7", "claude.ai UI: NOT CAPTURED", S.s7.start + 1.0, 1650, AM);
+
+  /* ===== S8 MONTAGE + CTA ===== */
+  const s8 = scene("s8", true);
+  const ttl = el(s8, "ttl8", "ser", "left:0;right:0;top:350px;text-align:center;font-size:96px;line-height:1;color:" + SO + ";z-index:6;white-space:pre", "CLAUDE\nFABLE 5.2"); tl.from(ttl, { opacity: 0, y: 50, duration: 0.4 }, S.s8.start + 0.3);
+  const tiles = [["assets/page/ann-top.png", "0 0"], ["assets/demo/dash-filtered.png", "0 0"], ["assets/page/doc-top.png", "0 -600px"]]; const tFo = PW("p8", "follow") - 0.35;
+  const tx = [[50, 620], [550, 620], [300, 1000]]; tiles.forEach(([f, pos], i) => { const c = el(s8, "mt" + i, "glass", "left:" + tx[i][0] + "px;top:" + tx[i][1] + "px;width:480px;height:340px;z-index:5;background:#FAF9F7"); imgIn(c, "mti" + i, f, 480, "left:0;top:" + (pos.split(" ")[1] === "0" ? "0px" : "-290px")); tl.from(c, { opacity: 0, scale: 0.5, y: 80, rotation: i % 2 ? 6 : -6, duration: 0.45, ease: "back.out(1.6)", transformOrigin: "50% 50%" }, S.s8.start + 0.7 + i * 0.5); tl.set(c, { opacity: 0 }, tFo + 0.05); });
+  const bd = [["8 DAYS · 1,000+ AGENTS", 50, 1360], ["REAL CLAUDE CODE RUN", 50, 1430]]; bd.forEach(([t, x, y], i) => { const c = chip(s8, "mc" + i, x, y, t, { size: 32 }); c.style.zIndex = 9; tl.from(c, { opacity: 0, x: -40, duration: 0.3 }, S.s8.start + 1.4 + i * 0.5); tl.set(c, { opacity: 0 }, tFo + 0.05); });
+  const botO = botAt(s8, "botO", -400, 470, 300); const bot8 = botAt(s8, "bot8", 800, 1520, 220); presenter(bot8, "s8"); speak(bot8, "p8"); tl.set(bot8.P.wrap, { opacity: 0 }, tFo); tl.set(ttl, { opacity: 0 }, tFo + 0.05);
+  Outro.build(tl, s8, tFo, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" }); speak(botO, "p8");
+  const fe = el(s8, "fe8", "ser", "left:0;right:0;top:1420px;text-align:center;font-size:84px;line-height:1.05;color:" + SO + ";z-index:7;white-space:pre", "CLAUDE FABLE 5.2"); gsap.set(fe, { opacity: 0 }); tl.to(fe, { opacity: 1, duration: 0.4 }, tFo + 0.9);
+  source(s8, "so8", "SOURCES: ANTHROPIC.COM · CLAUDE PLATFORM DOCS", S.s8.start + 1.0, 1760);
+
+  trans("s2", "s1", "push"); trans("s3", "s2", "whipL"); trans("s4", "s3", "whipR"); trans("s5", "s4", "push"); trans("s6", "s5", "whipL"); trans("s7", "s6", "whipR"); trans("s8", "s7", "push");
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 1700, active: "#FFFFFF", block: "#B5471F", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

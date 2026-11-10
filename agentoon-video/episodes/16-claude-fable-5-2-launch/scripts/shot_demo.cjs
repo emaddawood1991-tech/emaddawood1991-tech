@@ -1,0 +1,2 @@
+const { chromium } = require("playwright");
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:540,height:700},deviceScaleFactor:2});await p.goto("file:///tmp/f52/demo/index.html");await p.waitForTimeout(800);await p.screenshot({path:process.argv[2]+"/dash-all.png"});const s=await p.$("select");const opts=await s.evaluate(e=>[...e.options].map(o=>o.value));console.log(opts);await s.selectOption(opts[1]);await p.waitForTimeout(600);await p.screenshot({path:process.argv[2]+"/dash-filtered.png"});await b.close();})();
