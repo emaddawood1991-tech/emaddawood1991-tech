@@ -15,5 +15,8 @@ Status: **implemented mechanism, policy values pending verification.** Retention
 4. **Recovery testing**: restore into a clean environment at least quarterly (automated version exists in `tests/backup.test.js`); record date, operator, result.
 5. **Monitoring**: Health page shows last backup time/size and encrypted file count; alert when stale or failed.
 
+## Added in stage S6
+Scheduled run, off-site copy, restore drill, audit fingerprint and readiness report: see `DEPLOYMENT_AND_ENCRYPTION.md`.
+
 ## Open items (need FMC / regulator confirmation)
 Retention periods · required storage location/residency · who may hold the key · RPO/RTO · whether DB-level encryption at rest is additionally required for the live database.

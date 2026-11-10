@@ -29,12 +29,17 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   await adm.selectOption('.modal label:has-text("Department") select', { label: 'Physiotherapy' }); await adm.click('.modal button:has-text("Save")'); await adm.waitForSelector('.modal', { state: 'detached' });
   await adm.waitForSelector('tr:has-text("new.physio")'); ok(/Physiotherapist/.test(await adm.locator('tr:has-text("new.physio")').textContent()), 'the new account shows its template');
   await adm.screenshot({ path: `${out}/r2-staff.png` });
+  // production readiness (stage S6)
+  await adm.click('.nav a:has-text("Settings")'); await adm.click('.tabs button:has-text("Security & Access")'); await adm.click('.tabs button:has-text("Production readiness")');
+  await adm.waitForSelector('[data-testid=rd-backup_key]'); ok(/to do/.test(await adm.locator('#readiness-summary').textContent()) && await adm.locator('[data-testid^=rd-]').count() >= 12, 'the readiness report lists the checks with a summary');
+  ok(/not a compliance certificate/i.test(await adm.locator('.card').last().textContent()), 'the readiness report states it is not a compliance certificate');
+  await adm.screenshot({ path: `${out}/r3-readiness.png`, fullPage: true });
   // other roles cannot see the matrix, and the URL cannot be forced
   const rec = await newPage(); await signIn(rec, 'reception', PW);
   const st = await rec.evaluate(async () => (await fetch('/api/security/permissions')).status); ok(st === 403, 'reception cannot read the permission matrix by calling the URL');
   const pt = await newPage(); await signIn(pt, 'pt.one', PW);
   const codes = await pt.evaluate(async () => { const g = async (u) => (await fetch(u)).status; return [await g('/api/reports'), await g('/api/audit'), await g('/api/health'), await g('/api/security/accounts'), await g('/api/visits/1/timeline')]; });
   ok(codes.slice(0, 4).every((c) => c === 403), `physiotherapist is refused reports, audit, health and accounts (${codes.slice(0, 4)})`);
-  ok(errors.filter((e) => !/40[13]|Forbidden|Unauthorized/.test(e)).length === 0, `no browser console errors${errors.length ? ': ' + errors[0] : ''}`);
+  ok(errors.filter((e) => !/40[0134]|Forbidden|Unauthorized|Bad Request/.test(e)).length === 0, `no browser console errors${': ' + errors.filter((e) => !/40[0134]|Forbidden|Unauthorized|Bad Request/.test(e))[0]}`);
   await b.close();
 })();

@@ -52,6 +52,16 @@ New tables: `login_events`, `password_history`. New columns: `users.must_change_
 - **Finding (recorded, no code change):** room status (cleaning/available) and room assignment are not department-restricted, because rooms are shared facilities — a visit may use any free room, and the flow tests rely on it. Patient data is protected through the visit check, which does restrict. If rooms become department-exclusive, restrict `setRoomStatus` and `checkAssignable` by department.
 - Column `users.role_template` (additive). Browser test `e2e-roles.cjs` (10). Rollback: tag `checkpoint/pre-security-s5-093bd1f`.
 
+## Stage S6 (implemented): operations security
+- **Restore drill** (`backup.js drill`, automatic every 30 days when scheduled): decrypts a backup into a temporary file, `integrity_check`, verifies the audit hash chain inside it, reads row counts, deletes the file, records the result in `backup_log`. A backup holding a tampered audit log fails the drill.
+- **Scheduled backups** (`FMC_BACKUP_EVERY_HOURS`): encrypted backup, copy to `FMC_BACKUP_OFFSITE_DIR`, audit fingerprint, drill when due. No retention default.
+- **Off-host audit fingerprint** (`fingerprint.js`, `FMC_FINGERPRINT_FILE`): closes the remaining gap of probe P17 — a rewritten history with a recomputed chain is detected against a line stored elsewhere (test S6-3). Optional HMAC makes forged lines detectable.
+- **HTTPS requirement** `FMC_REQUIRE_HTTPS=1` (308 redirect to `FMC_PUBLIC_HOST`/host); HSTS and `Secure` cookies were already on.
+- **Production readiness report** (14 checks; Security & Access tab, `GET /api/security/readiness`, `npm run readiness`). Items the app cannot see (TLS in front, disk encryption) are shown as *declared*; the report states it is not a compliance certificate.
+- **Encryption at rest:** the live SQLite file is *not* encrypted by the application (no engine change was made). Use an encrypted volume and declare it; backups and authenticator secrets are encrypted by the app. Encrypted engine / field encryption need written approval.
+- No schema change. Tests `operations.test.js` (7), browser checks added to `e2e-roles.cjs` (13). Documentation: `fmc-flow/docs/DEPLOYMENT_AND_ENCRYPTION.md`. Rollback: tag `checkpoint/pre-security-s6-3135383`.
+- **Also fixed:** the in-browser demo build was broken after S3/S4 (missing `originalUrl` on its request object and a `chmodSync` stub); it is repaired and verified (5 demo checks + sandboxed iframe).
+
 ## Still open (later stages)
-MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · off-host copy of the audit fingerprint · no encryption at rest.
+MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · break-glass emergency access and self-service recovery (S7).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.

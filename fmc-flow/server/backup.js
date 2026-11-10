@@ -1,11 +1,13 @@
 // Encrypted backup + restore. Key: FMC_BACKUP_KEY (64 hex chars = 32 bytes). Never stored in the repo or DB.
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
-import { mkdirSync, readFileSync, rmSync, writeFileSync, statSync, readdirSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, writeFileSync, statSync, readdirSync, copyFileSync, appendFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { pathToFileURL } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 import { DB_PATH, openDb } from './db.js';
+import { verifyChain } from './auditchain.js';
+import { fingerprint, toLine, checkAgainst } from './fingerprint.js';
 
 const keyOf = (hex = process.env.FMC_BACKUP_KEY) => {
   if (!/^[0-9a-f]{64}$/i.test(hex || '')) throw new Error('FMC_BACKUP_KEY must be 64 hex characters');
@@ -47,7 +49,63 @@ export function restore(file, outPath, key) {
   return outPath;
 }
 
+/** Restore drill: decrypts the newest (or a given) backup into a temporary file, checks it, compares it with the live audit fingerprint rules, deletes it and records the result. Never touches the live database. */
+export function drill({ dbPath = DB_PATH, dir = new URL('../data/backups/', import.meta.url).pathname, key, file } = {}) {
+  const log = openDb(dbPath);
+  const tmp = join(tmpdir(), `fmc-drill-${randomBytes(6).toString('hex')}.db`);
+  const note = (ok, text) => log.prepare('INSERT INTO backup_log(ts,file,bytes,ok,note) VALUES (?,?,?,?,?)').run(new Date().toISOString(), file ? file.split('/').pop() : null, 0, ok ? 1 : 0, `DRILL ${text}`.slice(0, 200));
+  try {
+    const newest = existsSync(dir) ? readdirSync(dir).filter((x) => x.endsWith('.enc')).sort().pop() : null;
+    const f = file || (newest ? join(dir, newest) : null);
+    if (!f) throw new Error('no backup file found');
+    file = f; restore(f, tmp, key);
+    const t = new DatabaseSync(tmp);
+    try {
+      const chain = verifyChain(t);
+      const count = (n) => t.prepare(`SELECT COUNT(*) c FROM ${n}`).get().c;
+      const r = { file: f.split('/').pop(), integrity: 'ok', audit_chain_ok: chain.ok, audit_entries: chain.rows, patients: count('patients'), visits: count('visits'), users: count('users') };
+      if (!chain.ok) throw new Error(`restored audit chain does not verify (${chain.problem_count} problem(s))`);
+      note(true, `ok: ${r.patients} patients, ${r.visits} visits, ${r.audit_entries} audit entries, chain verified`);
+      return r;
+    } finally { t.close(); }
+  } catch (e) { note(false, `FAILED: ${e.message}`); throw e; } finally { try { rmSync(tmp, { force: true }); rmSync(`${tmp}-wal`, { force: true }); rmSync(`${tmp}-shm`, { force: true }); } catch { /* best effort */ } log.close(); }
+}
+
+/** Records and (optionally) appends the audit fingerprint to a file kept OFF this server. */
+export function recordFingerprint({ dbPath = DB_PATH, key = process.env.FMC_BACKUP_KEY, file = process.env.FMC_FINGERPRINT_FILE } = {}) {
+  const db = openDb(dbPath);
+  try {
+    const f = fingerprint(db, key && /^[0-9a-f]{64}$/i.test(key) ? Buffer.from(key, 'hex') : null);
+    if (file) { mkdirSync(join(file, '..'), { recursive: true, mode: 0o700 }); appendFileSync(file, `${toLine(f)}\n`, { mode: 0o600 }); }
+    db.prepare('INSERT INTO backup_log(ts,file,bytes,ok,note) VALUES (?,?,?,?,?)').run(f.ts, null, 0, f.chain_ok ? 1 : 0, `FINGERPRINT ${f.entries} entries${file ? ' -> file' : ' (not stored: FMC_FINGERPRINT_FILE unset)'}`);
+    return f;
+  } finally { db.close(); }
+}
+
+/** Checks the live database against the LAST line of a fingerprint file (and optionally every line). */
+export function verifyFingerprints(file, { dbPath = DB_PATH, key = process.env.FMC_BACKUP_KEY, all = false } = {}) {
+  const lines = readFileSync(file, 'utf8').split('\n').filter(Boolean); if (!lines.length) throw new Error('fingerprint file is empty');
+  const db = openDb(dbPath); const k = key && /^[0-9a-f]{64}$/i.test(key) ? Buffer.from(key, 'hex') : null;
+  try { return (all ? lines : [lines[lines.length - 1]]).map((l) => checkAgainst(db, l, k)); } finally { db.close(); }
+}
+
+/** One scheduled run: encrypted backup, copy to the off-site folder, fingerprint, and a restore drill when the last one is older than `drillEveryDays`. */
+export function runScheduled({ dbPath = DB_PATH, dir, key = process.env.FMC_BACKUP_KEY, offsiteDir = process.env.FMC_BACKUP_OFFSITE_DIR, drillEveryDays = Number(process.env.FMC_DRILL_EVERY_DAYS || 30) } = {}) {
+  const out = { backup: backup({ dbPath, dir, key }) };
+  if (offsiteDir) { mkdirSync(offsiteDir, { recursive: true, mode: 0o700 }); copyFileSync(out.backup, join(offsiteDir, out.backup.split('/').pop())); out.offsite = true; }
+  out.fingerprint = recordFingerprint({ dbPath, key });
+  const db = openDb(dbPath);
+  let due; try { const last = db.prepare("SELECT ts FROM backup_log WHERE note LIKE 'DRILL ok%' ORDER BY id DESC LIMIT 1").get(); due = !last || Date.now() - Date.parse(last.ts) > drillEveryDays * 864e5; } finally { db.close(); }
+  if (due) out.drill = drill({ dbPath, dir: join(out.backup, '..'), key, file: out.backup });
+  return out;
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  if (process.argv[2] === 'restore') console.log('Restored + verified:', restore(process.argv[3], process.argv[4]));
+  const [cmd, a, b] = process.argv.slice(2);
+  if (cmd === 'restore') console.log('Restored + verified:', restore(a, b));
+  else if (cmd === 'drill') console.log('Restore drill passed:', JSON.stringify(drill({ file: a })));
+  else if (cmd === 'fingerprint') console.log(toLine(recordFingerprint()));
+  else if (cmd === 'verify-fingerprint') { const r = verifyFingerprints(a, { all: b === '--all' }); console.log(JSON.stringify(r)); if (r.some((x) => !x.ok)) process.exit(2); }
+  else if (cmd === 'run') console.log('Scheduled run:', JSON.stringify(runScheduled({ dir: new URL('../data/backups/', import.meta.url).pathname })));
   else console.log('Backup written:', backup());
 }

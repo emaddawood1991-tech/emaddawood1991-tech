@@ -38,3 +38,6 @@ Tests: `npm test` (40) · `node tests/e2e-registration.cjs http://localhost:3000
 ## Start treatment
 The window loads `GET /api/visits/:id/treatment-options`: the visit's department(s), their **active** services only, and for each service the clinicians explicitly authorized for it. Clinicians start as themselves (unauthorized services are labelled and explained). Supervisors and administrators have **no** clinical authorization of their own; they can only start treatment *on behalf of* an explicitly authorized clinician, and the audit log and timeline record who acted. The server enforces everything again (department match, authorization, room entry) with actionable messages. Authorizations are managed under Settings → Staff (grouped by department); Settings → Services shows who is authorized per service and flags services nobody can deliver. Changes are audited as `config.staff.authorization`.
 Tests: `npm test` (48) · `node tests/e2e-treatment.cjs http://localhost:3100` on a fresh database.
+
+### Operations (stage S6)
+`FMC_REQUIRE_HTTPS`, `FMC_PUBLIC_HOST`, `FMC_BACKUP_KEY`, `FMC_BACKUP_EVERY_HOURS`, `FMC_BACKUP_OFFSITE_DIR`, `FMC_FINGERPRINT_FILE`, `FMC_DRILL_EVERY_DAYS`, `FMC_DISK_ENCRYPTED`. Commands: `npm run backup:run | backup:drill | audit:fingerprint | audit:verify <file> | readiness`. See `docs/DEPLOYMENT_AND_ENCRYPTION.md`.

@@ -10,6 +10,7 @@ import { makeMfa } from './mfa.js';
 import { makePrivacy } from './privacy.js';
 import { can, deptScope } from './perms.js';
 import { applyTemplate, effectiveTemplate } from './roles.js';
+import { readiness } from './readiness.js';
 
 export function hashPassword(pw) {
   const salt = randomBytes(16);
@@ -89,6 +90,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   const app = express();
   app.disable('x-powered-by');
   if (process.env.FMC_TRUST_PROXY) app.set('trust proxy', /^\d+$/.test(process.env.FMC_TRUST_PROXY) ? Number(process.env.FMC_TRUST_PROXY) : process.env.FMC_TRUST_PROXY); // set when running behind a TLS reverse proxy so rate limits see the real client address
+  if (process.env.FMC_REQUIRE_HTTPS === '1') app.use((req, res, next) => (req.secure ? next() : res.redirect(308, `https://${process.env.FMC_PUBLIC_HOST || req.headers.host}${req.originalUrl}`))); // production: never serve patient data over plain HTTP (needs FMC_TRUST_PROXY behind a proxy)
   app.use(express.json({ limit: '200kb' }));
   app.use((req, res, next) => {
     res.set({
@@ -596,6 +598,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     run('INSERT INTO system_errors(ts,source,code,message) VALUES (?,?,?,?)', now(), 'client-sync', String(req.body.code || 'UNKNOWN').slice(0, 40), null);
     res.json({ ok: true });
   });
+  app.get('/api/security/readiness', guard('config.manage'), (req, res) => res.json(readiness({ db, reqSecure: !!req.secure, backupDir })));
   app.get('/api/health', guard('health.view'), (_req, res) => {
     let dbOk = true; try { one('SELECT 1'); } catch { dbOk = false; }
     const since = new Date(Date.now() - 24 * 3600e3).toISOString();

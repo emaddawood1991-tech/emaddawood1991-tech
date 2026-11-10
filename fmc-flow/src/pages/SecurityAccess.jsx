@@ -5,7 +5,7 @@ import { Modal, Empty, useToast } from '../ui.jsx';
 import { ActivityTable } from './Account.jsx';
 
 const EVENTS = ['MFA_ENABLED', 'MFA_DISABLED', 'MFA_RESET', 'MFA_RECOVERY_USED', 'MFA_CODES_REGENERATED', 'LOGIN_OK', 'LOGIN_FAILED', 'LOGIN_BLOCKED', 'LOGOUT', 'PASSWORD_CHANGED', 'PASSWORD_CHANGE_FAILED', 'PASSWORD_RESET', 'SESSIONS_REVOKED', 'USERNAME_CHANGED'];
-const SUBS = [['accounts', 'saAccounts'], ['roles', 'saRoles'], ['activity', 'saLoginActivity'], ['access', 'saPatientAccess'], ['alerts', 'saAlerts'], ['audit', 'saAuditHistory'], ['settings', 'saSettings']];
+const SUBS = [['accounts', 'saAccounts'], ['roles', 'saRoles'], ['activity', 'saLoginActivity'], ['access', 'saPatientAccess'], ['alerts', 'saAlerts'], ['audit', 'saAuditHistory'], ['settings', 'saSettings'], ['readiness', 'saReadiness']];
 const KINDS = ['SEARCH', 'SCHEDULE', 'VISITS', 'QUEUE', 'SESSIONS', 'TIMELINE', 'CLINICAL_NOTE', 'APPOINTMENT', 'CORRECTIONS', 'REPORT', 'EXPORT'];
 
 function Accounts() {
@@ -49,6 +49,18 @@ function Roles() {
       <div className="tbl" style={{ maxHeight: 360, overflow: 'auto' }}><table><thead><tr><th>{t('saRoute')}</th><th>{t('saRequires')}</th></tr></thead>
         <tbody>{eps.map((e, i) => <tr key={i}><td className="small"><code>{e.method} {e.path}</code></td><td className="small">{e.permission ? <><code>{e.permission}</code> <span className="muted">({(r.permissions[e.permission] || []).join(', ')})</span></> : <span className="muted">{t('saSignedIn')}</span>}</td></tr>)}</tbody></table></div></div>
   </div>);
+}
+
+function Readiness() {
+  const { t } = useI18n(); const r = usePoll('/security/readiness', 0).data;
+  if (!r) return <p className="muted">{t('loading')}</p>;
+  const mark = { ok: '✓', warn: '!', fail: '✕' };
+  return (
+    <div className="card"><h2>{t('saReadiness')}</h2><p className="small muted">{t('saReadinessNote')}</p>
+      <p id="readiness-summary"><b>{r.summary.ok}</b> {t('saRdOk')} · <b>{r.summary.warn}</b> {t('saRdTodo')} · <b>{r.summary.fail}</b> {t('saRdFail')}</p>
+      <div className="tbl"><table><thead><tr><th /><th>{t('saRdItem')}</th><th>{t('saRdDetail')}</th></tr></thead>
+        <tbody>{r.checks.map((c) => <tr key={c.id} data-testid={`rd-${c.id}`}><td style={{ textAlign: 'center', fontWeight: 700, color: c.status === 'ok' ? '#1e8e4e' : c.status === 'fail' ? '#c0392b' : '#b7791f' }}>{mark[c.status]}</td><td>{c.label}<div className="small muted">{c.class}</div></td><td className="small">{c.detail}</td></tr>)}</tbody></table></div>
+      <p className="small muted">{r.note}</p></div>);
 }
 
 function Activity() {
@@ -133,6 +145,6 @@ export default function SecurityAccess({ config, reload }) {
   return (
     <>
       <div className="tabs" role="tablist" aria-label={t('saSecurityAccess')}>{SUBS.map(([k, l]) => <button key={k} role="tab" aria-selected={sub === k} className={sub === k ? 'on' : ''} onClick={() => setSub(k)}>{t(l)}</button>)}</div>
-      {sub === 'accounts' && <Accounts />}{sub === 'roles' && <Roles />}{sub === 'activity' && <Activity />}{sub === 'access' && <Access />}{sub === 'alerts' && <Alerts />}{sub === 'audit' && <Audit />}{sub === 'settings' && <SecuritySettings config={config} reload={reload} />}
+      {sub === 'accounts' && <Accounts />}{sub === 'roles' && <Roles />}{sub === 'activity' && <Activity />}{sub === 'access' && <Access />}{sub === 'alerts' && <Alerts />}{sub === 'audit' && <Audit />}{sub === 'readiness' && <Readiness />}{sub === 'settings' && <SecuritySettings config={config} reload={reload} />}
     </>);
 }
