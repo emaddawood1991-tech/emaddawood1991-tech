@@ -135,6 +135,22 @@ CREATE TABLE IF NOT EXISTS user_mfa (
 );
 CREATE TABLE IF NOT EXISTS mfa_recovery_codes (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id), code_hash TEXT NOT NULL, used_at TEXT);
 CREATE INDEX IF NOT EXISTS mfa_recovery_user ON mfa_recovery_codes(user_id);
+-- ---- Privacy and monitoring (additive) ----
+CREATE TABLE IF NOT EXISTS patient_access_log (
+  id INTEGER PRIMARY KEY, ts TEXT NOT NULL, actor_id INTEGER, patient_id INTEGER NOT NULL, kind TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '{}'
+);
+CREATE INDEX IF NOT EXISTS access_patient ON patient_access_log(patient_id, id);
+CREATE INDEX IF NOT EXISTS access_actor ON patient_access_log(actor_id, id);
+CREATE TRIGGER IF NOT EXISTS access_no_update BEFORE UPDATE ON patient_access_log BEGIN SELECT RAISE(ABORT,'patient_access_log is append-only'); END;
+CREATE TRIGGER IF NOT EXISTS access_no_delete BEFORE DELETE ON patient_access_log BEGIN SELECT RAISE(ABORT,'patient_access_log is append-only'); END;
+-- Periodic fingerprints of the audit chain, so removal of the newest entries is detectable.
+CREATE TABLE IF NOT EXISTS audit_anchors (id INTEGER PRIMARY KEY, ts TEXT NOT NULL, row_count INTEGER NOT NULL, head TEXT NOT NULL);
+CREATE TRIGGER IF NOT EXISTS anchors_no_update BEFORE UPDATE ON audit_anchors BEGIN SELECT RAISE(ABORT,'audit_anchors is append-only'); END;
+CREATE TRIGGER IF NOT EXISTS anchors_no_delete BEFORE DELETE ON audit_anchors BEGIN SELECT RAISE(ABORT,'audit_anchors is append-only'); END;
+CREATE TABLE IF NOT EXISTS security_alerts (
+  id INTEGER PRIMARY KEY, ts TEXT NOT NULL, kind TEXT NOT NULL, severity TEXT NOT NULL DEFAULT 'WARNING', user_id INTEGER, detail TEXT NOT NULL DEFAULT '{}',
+  status TEXT NOT NULL DEFAULT 'OPEN' CHECK (status IN ('OPEN','ACKNOWLEDGED')), ack_by INTEGER, ack_at TEXT
+);
 CREATE TABLE IF NOT EXISTS password_history (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id), pass_hash TEXT NOT NULL, changed_at TEXT NOT NULL);
 -- ---- Daily Schedule (additive) ----
 CREATE TABLE IF NOT EXISTS appointment_categories (
@@ -252,6 +268,14 @@ export const DEFAULT_SETTINGS = {
   session_absolute_hours: '14',
   max_concurrent_sessions: '3',
   mfa_required_roles: '',
+  rate_search_per_min: '60',
+  rate_export_per_hour: '10',
+  rate_api_per_min: '1200',
+  export_max_rows: '5000',
+  alert_failed_logins: '5',
+  alert_export_rows: '500',
+  alert_search_patients: '60',
+  alert_office_hours: '06:00-23:00',
   gender_options: JSON.stringify([{ code: 'M', en: 'Male', ar: 'ذكر' }, { code: 'F', en: 'Female', ar: 'أنثى' }]),
 };
 
@@ -261,6 +285,7 @@ const ADDED_COLUMNS = {
   appointments: { duration_minutes: 'INTEGER', ends_at: 'TEXT', category_id: 'INTEGER', notes: "TEXT NOT NULL DEFAULT ''", row_id: 'INTEGER', recurrence_id: 'TEXT', cancel_reason: 'TEXT', cancelled_at: 'TEXT', cancelled_by: 'INTEGER', rebooks_id: 'INTEGER', created_by: 'INTEGER', updated_at: 'TEXT' },
   users: { schedule_override: 'INTEGER NOT NULL DEFAULT 0', must_change_password: 'INTEGER NOT NULL DEFAULT 0', password_changed_at: 'TEXT', last_login_at: 'TEXT' },
   auth_sessions: { sid: 'TEXT', ip: 'TEXT', user_agent: 'TEXT' },
+  audit_log: { prev_hash: 'TEXT', row_hash: 'TEXT' },
   treatment_sessions: { planned_minutes: 'INTEGER', scheduled_end_at: 'TEXT', timer_elapsed_at: 'TEXT', confirmed_at: 'TEXT', completion_kind: 'TEXT', planned_cpt_id: 'INTEGER', operational_checkout_at: 'TEXT', operational_checkout_kind: 'TEXT' },
 };
 function ensureColumns(db) {

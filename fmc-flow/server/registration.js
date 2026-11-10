@@ -144,7 +144,7 @@ export function makeRegistration(db, ops) {
     const digits = raw.replace(/[٠-٩]/g, (c) => ARABIC_INDIC[c]).replace(/\D/g, '').replace(/^0+/, ''); // national numbers start with 0; stored numbers are +CC…
     audit(user, 'patients.search', 'patient', null, { q_len: raw.length, scoped: sc != null });
     if (raw.length < 3) return []; // at least 3 characters: no directory dumps
-    return q(`SELECT p.*, (SELECT id FROM visits v WHERE v.patient_id=p.id AND v.status='OPEN') open_visit_id FROM patients p
+    const found = q(`SELECT p.*, (SELECT id FROM visits v WHERE v.patient_id=p.id AND v.status='OPEN') open_visit_id FROM patients p
       WHERE (p.name LIKE ? ESCAPE '\\' OR p.name_ar LIKE ? ESCAPE '\\' OR p.mrn LIKE ? ESCAPE '\\' OR CAST(p.id AS TEXT)=?
         OR (? <> '' AND length(?) >= 4 AND REPLACE(COALESCE(p.phone,''),'+','') LIKE ?))
         AND (? IS NULL OR EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id=p.id AND a.department_id=?)
@@ -152,6 +152,8 @@ export function makeRegistration(db, ops) {
           OR EXISTS (SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.patient_id=p.id AND sv.department_id=?)
           OR EXISTS (SELECT 1 FROM waiting_list w WHERE w.patient_id=p.id AND w.department_id=?))
       ORDER BY p.name LIMIT 30`, like, like, like, raw, digits, digits, `%${digits}%`, sc, sc, sc, sc, sc);
+    ops.logAccess(user, found.map((p) => p.id), 'SEARCH'); // who was shown which patients
+    return found;
   }
 
   return { createPatient, register, search, validate, genders };

@@ -149,6 +149,7 @@ export function makeSchedule(db, ops) {
       r.blocks = blocks.filter((b) => (b.row_id === r.id) || (b.user_id && b.user_id === r.user_id) || (!b.row_id && !b.user_id && b.group_id === g.id));
     }
     const unplaced = appts.filter((a) => !placed.has(a.id) && (!cliF || a.clinician_id === cliF));
+    ops.logAccess(user, [...out.flatMap((g) => g.rows).flatMap((r) => r.appointments), ...unplaced].map((a) => a.patient_id), 'SCHEDULE');
     return { server_time: now(), timezone: z, date, categories: q('SELECT * FROM appointment_categories ORDER BY sort_order,name'), groups: out, unplaced,
       me: { can_manage: can(user, 'schedule.manage'), can_block: can(user, 'schedule.block'), can_override: canOverride(user), can_configure: can(user, 'config.manage'), role: user.role },
       default_minutes: Number(setting('schedule_default_minutes')) || 30 };
@@ -290,7 +291,7 @@ export function makeSchedule(db, ops) {
     return { appointment: decorate(one(`${apptSelect} WHERE a.id=?`, id)), visit: res.visit, queue: res.queue };
   }
   function appointmentHistory(user, id) {
-    need(user, 'schedule.view'); getAppt(user, id);
+    need(user, 'schedule.view'); const ap = getAppt(user, id); ops.logAccess(user, [ap.patient_id], 'APPOINTMENT');
     return q('SELECT h.*, u.name actor FROM appointment_history h LEFT JOIN users u ON u.id=h.actor_id WHERE h.appointment_id=? ORDER BY h.id', id).map((h) => ({ ...h, detail: JSON.parse(h.detail) }));
   }
 
@@ -330,7 +331,8 @@ export function makeSchedule(db, ops) {
   const CONTACT = ['NOT_CONTACTED', 'CONTACTED', 'NO_ANSWER', 'WILL_CALL_BACK', 'CONFIRMED'];
   function listWaiting(user, f = {}) {
     need(user, 'schedule.view'); const sc = scope(user); const st = f.status || 'WAITING';
-    return q(`${waitSelect} WHERE w.status=? AND (? IS NULL OR w.department_id=?) ORDER BY COALESCE(w.preferred_date,'9999'), w.id`, st, sc, sc);
+    const rows = q(`${waitSelect} WHERE w.status=? AND (? IS NULL OR w.department_id=?) ORDER BY COALESCE(w.preferred_date,'9999'), w.id`, st, sc, sc);
+    ops.logAccess(user, rows.map((r) => r.patient_id), 'SCHEDULE'); return rows;
   }
   function addWaiting(user, b = {}) {
     need(user, 'schedule.manage');
@@ -360,11 +362,12 @@ export function makeSchedule(db, ops) {
   function listCancellations(user, f = {}) {
     need(user, 'schedule.view'); const sc = scope(user); const z = tz();
     const from = f.from ? validDate(f.from, 'from') : '0000-00-00'; const to = f.to ? validDate(f.to, 'to') : '9999-12-31'; // newest first; optional date range
-    return q(`${apptSelect} WHERE a.status='CANCELLED' AND (? IS NULL OR a.department_id=?) ORDER BY a.cancelled_at DESC LIMIT 300`, sc, sc).map((a) => {
+    const list = q(`${apptSelect} WHERE a.status='CANCELLED' AND (? IS NULL OR a.department_id=?) ORDER BY a.cancelled_at DESC LIMIT 300`, sc, sc).map((a) => {
       const d = decorate(a); const rb = one('SELECT id,ref,scheduled_at FROM appointments WHERE rebooks_id=? AND status<>\'CANCELLED\' ORDER BY id DESC', a.id);
       const by = a.cancelled_by ? one('SELECT name FROM users WHERE id=?', a.cancelled_by)?.name : null;
       return { ...d, cancelled_by_name: by, reschedule_status: rb ? 'REBOOKED' : 'PENDING', rebooked_ref: rb?.ref ?? null, rebooked_at: rb?.scheduled_at ?? null };
     }).filter((a) => a.date >= from && a.date <= to);
+    ops.logAccess(user, list.map((a) => a.patient_id), 'SCHEDULE'); return list;
   }
 
   // ---------- call / task lists ----------
@@ -372,7 +375,8 @@ export function makeSchedule(db, ops) {
   function listTasks(user, f = {}) {
     need(user, 'schedule.view'); const sc = scope(user);
     const kind = f.kind && TASK_KINDS.includes(f.kind) ? f.kind : null; const open = f.status === 'all' ? 0 : 1;
-    return q(`${taskSelect} WHERE (? IS NULL OR t.kind=?) AND (?=0 OR t.status IN ('OPEN','IN_PROGRESS')) AND (? IS NULL OR t.department_id IS NULL OR t.department_id=?) ORDER BY COALESCE(t.due_date,'9999'), t.id DESC LIMIT 300`, kind, kind, open, sc, sc);
+    const rows = q(`${taskSelect} WHERE (? IS NULL OR t.kind=?) AND (?=0 OR t.status IN ('OPEN','IN_PROGRESS')) AND (? IS NULL OR t.department_id IS NULL OR t.department_id=?) ORDER BY COALESCE(t.due_date,'9999'), t.id DESC LIMIT 300`, kind, kind, open, sc, sc);
+    ops.logAccess(user, rows.map((r) => r.patient_id), 'SCHEDULE'); return rows;
   }
   function addTask(user, b = {}) {
     need(user, 'schedule.manage');

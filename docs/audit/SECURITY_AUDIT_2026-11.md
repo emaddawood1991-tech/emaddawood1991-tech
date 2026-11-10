@@ -35,6 +35,14 @@ New tables: `login_events`, `password_history`. New columns: `users.must_change_
 - Lost device: administrator reset (ends sessions) or server console `npm run mfa:reset -- <username>`; both audited.
 - New tables `user_mfa`, `mfa_recovery_codes`. Tests: `mfa.test.js` (9), `e2e-mfa.cjs` (18). Not available in the in-browser demo. Rollback: tag `checkpoint/pre-security-s3-6b6a418`.
 
+## Stage S4 (implemented): audit and patient privacy
+- **Patient-access log** (`patient_access_log`, append-only): who was shown which patient, from which screen (search, schedule and lists, visits, queue, sessions, timeline, clinical documentation, appointment details, corrections, reports, export file). One entry per person, patient and screen per 15 minutes (5 for clinical notes) so polling screens do not flood the log. Readable by administrators only; reading it is audited.
+- **Tamper-evident audit log:** every entry carries the hash of the previous one. Altered, removed or injected entries break the chain; removal of the newest entries is caught by periodic anchors (`audit_anchors`, append-only). Verification in Settings → Security & Access → Audit History, also for supervisors. Entries from before the chain are reported as legacy, never as problems. An off-host copy of the latest fingerprint is still needed (stage S6) because the anchors live in the same database.
+- **Security alerts** (`security_alerts`; Alerts tab, administrators): repeated failed sign-ins, large or repeated exports, many patients looked up in a short time, privileged sign-ins outside office hours, audit-chain problems. De-duplicated for an hour, acknowledgeable, and an acknowledged alert is not re-raised from the same events. Evaluated every minute on the server and whenever the tab is opened. Delivery is on screen only (no email/SMS channel without your approval).
+- **Rate limits** per person: searches (default 60/min), exports (10/hour), overall ceiling (1200/min); audited once per window; all configurable.
+- **Exports:** size limit (default 5000 rows), watermark line, file named for person and date, every patient in the file recorded in the access log, row count and scope in the audit entry.
+- New tables `patient_access_log`, `audit_anchors`, `security_alerts`; columns `audit_log.prev_hash/row_hash`. Tests: `privacy.test.js` (9), `e2e-privacy.cjs` (10). Rollback: tag `checkpoint/pre-security-s4-6e107fb`.
+
 ## Still open (later stages)
-MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · patient reads not audited · audit not tamper-evident · no encryption at rest · permission matrix as role templates.
+MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · off-host copy of the audit fingerprint · no encryption at rest · permission matrix as role templates.
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.

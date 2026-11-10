@@ -5,7 +5,8 @@ import { Modal, Empty, useToast } from '../ui.jsx';
 import { ActivityTable } from './Account.jsx';
 
 const EVENTS = ['MFA_ENABLED', 'MFA_DISABLED', 'MFA_RESET', 'MFA_RECOVERY_USED', 'MFA_CODES_REGENERATED', 'LOGIN_OK', 'LOGIN_FAILED', 'LOGIN_BLOCKED', 'LOGOUT', 'PASSWORD_CHANGED', 'PASSWORD_CHANGE_FAILED', 'PASSWORD_RESET', 'SESSIONS_REVOKED', 'USERNAME_CHANGED'];
-const SUBS = [['accounts', 'saAccounts'], ['roles', 'saRoles'], ['activity', 'saLoginActivity'], ['audit', 'saAuditHistory'], ['settings', 'saSettings']];
+const SUBS = [['accounts', 'saAccounts'], ['roles', 'saRoles'], ['activity', 'saLoginActivity'], ['access', 'saPatientAccess'], ['alerts', 'saAlerts'], ['audit', 'saAuditHistory'], ['settings', 'saSettings']];
+const KINDS = ['SEARCH', 'SCHEDULE', 'VISITS', 'QUEUE', 'SESSIONS', 'TIMELINE', 'CLINICAL_NOTE', 'APPOINTMENT', 'CORRECTIONS', 'REPORT', 'EXPORT'];
 
 function Accounts() {
   const { t, loc, fmtDT } = useI18n(); const toast = useToast();
@@ -55,12 +56,45 @@ function Activity() {
     </div>);
 }
 
+function Access() {
+  const { t, loc, fmtDT } = useI18n(); const [term, setTerm] = useState(''); const [found, setFound] = useState(null); const [patient, setPatient] = useState(null); const [uid, setUid] = useState(''); const [kind, setKind] = useState('');
+  const users = usePoll('/security/accounts', 0).data || [];
+  const rows = usePoll(`/security/access-log?patient_id=${patient?.id || ''}&user_id=${uid}&kind=${kind}&limit=300`, 15000).data || [];
+  const search = async (v) => { setTerm(v); if (v.trim().length < 3) return setFound(null); try { setFound(await api.get(`/patients?q=${encodeURIComponent(v.trim())}`)); } catch { /* shown by the connection banner */ } };
+  return (
+    <div className="card"><h2>{t('saPatientAccess')}</h2>
+      <div className="row" style={{ marginBottom: 8 }}>
+        {patient ? <span className="chip ok">{loc(patient)} · {patient.mrn} <button className="btn ghost sm" aria-label={t('cancel')} onClick={() => { setPatient(null); setTerm(''); }}>✕</button></span>
+          : <input id="sa-access-q" type="search" aria-label={t('saPickPatient')} placeholder={t('saPickPatient')} value={term} onChange={(e) => search(e.target.value)} style={{ minWidth: 280 }} />}
+        <select aria-label={t('saAccessBy')} value={uid} onChange={(e) => setUid(e.target.value)}><option value="">{t('saFilterUser')}</option>{users.map((u) => <option key={u.id} value={u.id}>{loc(u)}</option>)}</select>
+        <select aria-label={t('saAccessKind')} value={kind} onChange={(e) => setKind(e.target.value)}><option value="">{t('saAccessAny')}</option>{KINDS.map((k) => <option key={k} value={k}>{t(`saKind_${k}`)}</option>)}</select></div>
+      {!patient && found?.slice(0, 8).map((p) => <button key={p.id} type="button" className="btn ghost patient-row" onClick={() => { setPatient(p); setFound(null); }}><b>{loc(p)}</b><span className="muted small">{p.mrn}</span></button>)}
+      {rows.length === 0 ? <p className="muted small">{t('saAccessNone')}</p> : <div className="tbl"><table><thead><tr><th>{t('saTime')}</th><th>{t('saAccessBy')}</th><th>{t('saAccessPatient')}</th><th>{t('saAccessKind')}</th></tr></thead>
+        <tbody>{rows.map((r) => <tr key={r.id}><td className="small">{fmtDT(r.ts)}</td><td>{r.actor || '—'}<div className="small muted">{r.username || ''}</div></td><td>{r.patient_name}<div className="small muted">{r.mrn}</div></td><td>{t(`saKind_${r.kind}`)}</td></tr>)}</tbody></table></div>}
+    </div>);
+}
+
+function Alerts() {
+  const { t, fmtDT } = useI18n(); const toast = useToast(); const [all, setAll] = useState(false);
+  const al = usePoll(`/security/alerts?status=${all ? 'all' : 'open'}`, 15000); const rows = al.data?.alerts || [];
+  const ack = async (id) => { try { await api.post(`/security/alerts/${id}/ack`); al.reload(); } catch (e) { toast(e.message, true); } };
+  const brief = (d) => Object.entries(d || {}).filter(([k]) => k !== 'problems').map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`).join(' · ');
+  return (
+    <div className="card"><h2>{t('saAlerts')}<button className="btn ghost sm" onClick={() => setAll(!all)}>{all ? t('saAlertOpen') : t('saAlertAll')}</button></h2>
+      {rows.length === 0 ? <p className="muted">{t('saAlertNone')}</p> : <div className="tbl"><table><thead><tr><th>{t('saTime')}</th><th>{t('saEvent')}</th><th>{t('name')}</th><th /></tr></thead>
+        <tbody>{rows.map((a) => <tr key={a.id} className={a.status === 'OPEN' ? '' : 'sch-hidden-row'}><td className="small">{fmtDT(a.ts)}</td>
+          <td><span className={`chip ${a.severity === 'CRITICAL' ? 'bad' : 'warn'}`}>{t(`saAlertSev_${a.severity}`)}</span> <b>{t(`saAl_${a.kind}`)}</b><div className="small muted">{brief(a.detail)}</div></td><td>{a.user_name || '—'}<div className="small muted">{a.username || ''}</div></td>
+          <td>{a.status === 'OPEN' && <button className="btn sm" onClick={() => ack(a.id)}>{t('saAck')}</button>}</td></tr>)}</tbody></table></div>}
+    </div>);
+}
+
 function Audit() {
-  const { t, fmtDT } = useI18n(); const [q, setQ] = useState('');
+  const { t, fmtDT } = useI18n(); const [q, setQ] = useState(''); const chain = usePoll('/security/audit-chain', 0); const c = chain.data;
   const rows = usePoll('/audit?limit=300', 20000).data || [];
   const shown = useMemo(() => { const s = q.trim().toLowerCase(); return s ? rows.filter((r) => `${r.action} ${r.actor || ''} ${r.entity || ''} ${r.entity_id || ''}`.toLowerCase().includes(s)) : rows; }, [rows, q]);
   return (
-    <div className="card"><h2>{t('saAuditHistory')}</h2>
+    <div className="card"><h2>{t('saAuditHistory')}<button className="btn ghost sm" onClick={chain.reload}>{t('saVerifyNow')}</button></h2>
+      {c && <div className={`banner ${c.ok ? 'ok' : 'bad'}`} role={c.ok ? 'status' : 'alert'} id="chain-status">{c.ok ? t('saChainOk') : t('saChainBad')} <small>{c.rows} {t('saChainRows')}{c.legacy_rows ? ` · ${c.legacy_rows} ${t('saChainLegacy')}` : ''}{c.head ? <> · {t('saChainHead')}: <code>{c.head.slice(0, 16)}…</code></> : null}</small></div>}
       <input type="search" aria-label={t('saSearchAudit')} placeholder={t('saSearchAudit')} value={q} onChange={(e) => setQ(e.target.value)} style={{ maxWidth: 360, marginBottom: 8 }} />
       {shown.length === 0 ? <Empty /> : <div className="tbl"><table><thead><tr><th>{t('saTime')}</th><th>{t('name')}</th><th>{t('actions')}</th><th>#</th></tr></thead>
         <tbody>{shown.map((r) => <tr key={r.id}><td className="small">{fmtDT(r.ts)}</td><td>{r.actor || '—'}</td><td><code>{r.action}</code></td><td className="small">{r.entity || ''} {r.entity_id || ''}</td></tr>)}</tbody></table></div>}
@@ -69,13 +103,18 @@ function Audit() {
 
 function SecuritySettings({ config, reload }) {
   const { t } = useI18n(); const toast = useToast();
-  const [v, setV] = useState({ password_min_length: config.settings.password_min_length ?? '10', session_idle_hours: config.settings.session_idle_hours ?? '12', session_absolute_hours: config.settings.session_absolute_hours ?? '14', max_concurrent_sessions: config.settings.max_concurrent_sessions ?? '3' });
+  const [v, setV] = useState({ password_min_length: config.settings.password_min_length ?? '10', session_idle_hours: config.settings.session_idle_hours ?? '12', session_absolute_hours: config.settings.session_absolute_hours ?? '14', max_concurrent_sessions: config.settings.max_concurrent_sessions ?? '3',
+    rate_search_per_min: config.settings.rate_search_per_min ?? '60', rate_export_per_hour: config.settings.rate_export_per_hour ?? '10', rate_api_per_min: config.settings.rate_api_per_min ?? '1200', export_max_rows: config.settings.export_max_rows ?? '5000',
+    alert_failed_logins: config.settings.alert_failed_logins ?? '5', alert_export_rows: config.settings.alert_export_rows ?? '500', alert_search_patients: config.settings.alert_search_patients ?? '60', alert_office_hours: config.settings.alert_office_hours ?? '06:00-23:00' });
   const [err, setErr] = useState(''); const [roles, setRoles] = useState(() => String(config.settings.mfa_required_roles || '').split(',').filter(Boolean));
   const save = async () => { setErr(''); try { await api.patch('/config/settings', { ...v, mfa_required_roles: roles.join(',') }); toast(t('saSaved')); reload(); } catch (e) { setErr(e.message); } };
   const N = ({ k, label, min, max }) => <div className="field"><label htmlFor={`ss-${k}`}>{label}</label><input id={`ss-${k}`} type="number" min={min} max={max} value={v[k]} onChange={(e) => setV({ ...v, [k]: e.target.value })} /></div>;
   return (
     <div className="card" style={{ maxWidth: 520 }}><h2>{t('saSettings')}</h2>
       <div className="stack"><N k="password_min_length" label={t('saMinLen')} min={10} max={64} /><N k="session_idle_hours" label={t('saIdleHours')} min={1} max={72} /><N k="session_absolute_hours" label={t('saAbsHours')} min={1} max={72} /><N k="max_concurrent_sessions" label={t('saMaxSessions')} min={0} max={20} />
+        <N k="rate_search_per_min" label={t('saRateSearch')} min={0} max={1000} /><N k="rate_export_per_hour" label={t('saRateExport')} min={0} max={1000} /><N k="rate_api_per_min" label={t('saRateApi')} min={0} max={100000} /><N k="export_max_rows" label={t('saExportMax')} min={100} max={100000} />
+        <N k="alert_failed_logins" label={t('saAlertFails')} min={2} max={100} /><N k="alert_export_rows" label={t('saAlertRows')} min={10} max={100000} /><N k="alert_search_patients" label={t('saAlertSearch')} min={5} max={10000} />
+        <div className="field"><label htmlFor="ss-alert_office_hours">{t('saOffice')}</label><input id="ss-alert_office_hours" value={v.alert_office_hours} onChange={(e) => setV({ ...v, alert_office_hours: e.target.value })} /></div>
         <fieldset className="mrn-box"><legend>{t('saMfaRequiredRoles')}</legend>{['admin', 'supervisor', 'reception', 'clinician'].map((r) => <label key={r} className="chk"><input type="checkbox" checked={roles.includes(r)} onChange={(e) => setRoles(e.target.checked ? [...roles, r] : roles.filter((x) => x !== r))} />{r}</label>)}</fieldset>
         {err && <div className="field-err" role="alert">{err}</div>}<button className="btn" onClick={save}>{t('save')}</button></div></div>);
 }
@@ -85,6 +124,6 @@ export default function SecurityAccess({ config, reload }) {
   return (
     <>
       <div className="tabs" role="tablist" aria-label={t('saSecurityAccess')}>{SUBS.map(([k, l]) => <button key={k} role="tab" aria-selected={sub === k} className={sub === k ? 'on' : ''} onClick={() => setSub(k)}>{t(l)}</button>)}</div>
-      {sub === 'accounts' && <Accounts />}{sub === 'roles' && <Roles />}{sub === 'activity' && <Activity />}{sub === 'audit' && <Audit />}{sub === 'settings' && <SecuritySettings config={config} reload={reload} />}
+      {sub === 'accounts' && <Accounts />}{sub === 'roles' && <Roles />}{sub === 'activity' && <Activity />}{sub === 'access' && <Access />}{sub === 'alerts' && <Alerts />}{sub === 'audit' && <Audit />}{sub === 'settings' && <SecuritySettings config={config} reload={reload} />}
     </>);
 }

@@ -16,9 +16,11 @@ function resolveMfaKey() {
   console.warn('MFA: created data/mfa.key. For production set FMC_MFA_KEY instead and keep the key outside the database folder and its backups.');
   return Buffer.from(hex, 'hex');
 }
-const { app, db, ops } = createApp({ staticDir, mfaKey: resolveMfaKey() });
+const { app, db, ops, privacy } = createApp({ staticDir, mfaKey: resolveMfaKey() });
+const monitor = () => privacy.monitor();
 if (!String(ops.setting('mfa_required_roles') || '').includes('admin')) console.warn('SECURITY: multi-factor authentication is not required for administrators. Turn it on in Settings → Security & Access (or seed with SEED_REQUIRE_MFA=1).');
 if (process.env.FMC_SEED !== '0' && seed(db)) console.log('Seeded synthetic development data (see npm run seed).');
 const port = Number(process.env.PORT || 3000);
 app.listen(port, '0.0.0.0', () => console.log(`FMC Patient Flow API on http://localhost:${port}`));
+setInterval(() => { try { monitor(); } catch (e) { console.error('security monitor failed:', e.message); } }, 60000).unref(); // security alerts and audit-chain anchors
 setInterval(() => { try { ops.sweepTimers(); } catch (e) { console.error('timer sweep failed:', e.message); } }, 10000).unref();

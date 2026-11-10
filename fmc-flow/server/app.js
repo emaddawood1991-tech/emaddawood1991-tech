@@ -7,6 +7,7 @@ import { makeRegistration } from './registration.js';
 import { makeSchedule } from './schedule.js';
 import { makeAccounts, passwordProblem } from './accounts.js';
 import { makeMfa } from './mfa.js';
+import { makePrivacy } from './privacy.js';
 import { can, deptScope } from './perms.js';
 
 export function hashPassword(pw) {
@@ -81,6 +82,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   const { q, one, run, audit, fail } = ops;
   const reg = makeRegistration(db, ops);
   const sched = makeSchedule(db, ops);
+  const privacy = makePrivacy({ db, ops, HttpError });
   const mfa = makeMfa({ db, ops, key: mfaKey, HttpError, sha });
   const accounts = makeAccounts({ db, ops, tx, HttpError, hashPassword, verifyPasswordAsync, sha, randomBytes });
   const app = express();
@@ -128,6 +130,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   };
   app.use('/api', (_req, res, next) => { res.set('X-Server-Time', now()); next(); }); // every response carries the server clock so clients stay in step
   app.use('/api', authenticate);
+  app.use('/api', privacy.limiter('api', 'rate_api_per_min', 60e3, 1200)); // overall ceiling per person: scripted scraping stops here
 
   app.post('/api/login', async (req, res) => {
     const { username, password } = req.body || {};
@@ -279,14 +282,15 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     });
   }
   app.patch('/api/config/settings', guard('config.manage'), (req, res) => {
-    const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60], password_min_length: [10, 64], session_absolute_hours: [1, 72], session_idle_hours: [1, 72], max_concurrent_sessions: [0, 20] };
+    const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60], password_min_length: [10, 64], rate_search_per_min: [0, 1000], rate_export_per_hour: [0, 1000], rate_api_per_min: [0, 100000], export_max_rows: [100, 100000], alert_failed_logins: [2, 100], alert_export_rows: [10, 100000], alert_search_patients: [5, 10000], session_absolute_hours: [1, 72], session_idle_hours: [1, 72], max_concurrent_sessions: [0, 20] };
     const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin', 'timer_auto_close'];
-    const allowed = ['timezone', 'gender_options', 'diagnosis_pattern', 'mfa_required_roles', ...Object.keys(numeric), ...flags];
+    const allowed = ['timezone', 'gender_options', 'diagnosis_pattern', 'mfa_required_roles', 'alert_office_hours', ...Object.keys(numeric), ...flags];
     const body = req.body || {};
     for (const [k, v] of Object.entries(body)) {
       if (!allowed.includes(k)) continue;
       if (flags.includes(k) && !['0', '1'].includes(String(v))) throw new HttpError(400, 'INVALID', `${k} must be 0 or 1`);
       if (numeric[k]) { const n = Number(v); if (!Number.isInteger(n) || n < numeric[k][0] || n > numeric[k][1]) throw new HttpError(400, 'INVALID', `${k} must be a whole number from ${numeric[k][0]} to ${numeric[k][1]}`); }
+      if (k === 'alert_office_hours' && !/^([01]\d|2[0-3]):[0-5]\d-([01]\d|2[0-3]):[0-5]\d$/.test(String(v))) throw new HttpError(400, 'INVALID', 'Office hours must look like 06:00-23:00.');
       if (k === 'mfa_required_roles') { const list = String(v ?? '').split(',').map((x) => x.trim()).filter(Boolean); if (list.some((x) => !ROLES.includes(x))) throw new HttpError(400, 'INVALID', `mfa_required_roles must list roles from: ${ROLES.join(', ')}`); run('INSERT INTO settings(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', k, [...new Set(list)].join(',')); audit(req.user, 'config.settings', 'settings', k, { v: [...new Set(list)].join(',') }); continue; }
       if (k === 'diagnosis_pattern') { const pat = String(v ?? ''); if (pat.length > 200) throw new HttpError(400, 'INVALID', 'Diagnosis pattern is limited to 200 characters.'); try { new RegExp(pat); } catch { throw new HttpError(400, 'INVALID', 'Diagnosis pattern is not a valid regular expression.'); } }
       if (k === 'gender_options') {
@@ -360,7 +364,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   });
 
   // ---- patients / appointments ----
-  app.get('/api/patients', guard('patients.read'), (req, res) => res.json(reg.search(req.user, req.query.q)));
+  app.get('/api/patients', guard('patients.read'), (req, res, next) => searchLimit(req, res, next), (req, res) => res.json(reg.search(req.user, req.query.q)));
   app.post('/api/patients', guard('patients.write'), (req, res) => {
     const r = reg.createPatient(req.user, req.body || {});
     res.status(r.replayed ? 200 : 201).json({ ...r.patient, replayed: !!r.replayed });
@@ -372,10 +376,11 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   });
   app.get('/api/appointments', guard('patients.read'), (req, res) => {
     const s = deptScope(req.user);
-    res.json(q(`SELECT a.*, p.name patient_name, p.name_ar patient_name_ar, p.mrn, d.name department, sv.name service, u.name clinician
+    const apps = q(`SELECT a.*, p.name patient_name, p.name_ar patient_name_ar, p.mrn, d.name department, sv.name service, u.name clinician
       FROM appointments a JOIN patients p ON p.id=a.patient_id JOIN departments d ON d.id=a.department_id
       LEFT JOIN services sv ON sv.id=a.service_id LEFT JOIN users u ON u.id=a.clinician_id
-      WHERE (? IS NULL OR a.department_id=?) AND a.status='SCHEDULED' ORDER BY a.scheduled_at LIMIT 100`, s, s));
+      WHERE (? IS NULL OR a.department_id=?) AND a.status='SCHEDULED' ORDER BY a.scheduled_at LIMIT 100`, s, s);
+    ops.logAccess(req.user, apps.map((a) => a.patient_id), 'SCHEDULE'); res.json(apps);
   });
   app.post('/api/appointments', guard('patients.write'), (req, res) => {
     const { patient_id, department_id, service_id = null, clinician_id = null, scheduled_at } = req.body;
@@ -393,6 +398,8 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.post('/api/visits/checkin', guard(), (req, res) => res.status(201).json(ops.checkIn(req.user, req.body)));
   app.post('/api/visits/:id/checkout', guard(), (req, res) => res.json(ops.checkOut(req.user, Number(req.params.id))));
   accounts.register(app, { guard, cookieOf, setSessionCookie, clearSessionCookie });
+  privacy.register(app, { guard });
+  const searchLimit = privacy.limiter('search', 'rate_search_per_min', 60e3, 60); const exportLimit = privacy.limiter('export', 'rate_export_per_hour', 3600e3, 10);
 
   // ---- Daily Schedule ----
   const nid = (v) => Number(v);
@@ -423,6 +430,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     const s = deptScope(req.user);
     const rows = q(`SELECT v.*, p.name patient_name, p.name_ar patient_name_ar, p.mrn FROM visits v JOIN patients p ON p.id=v.patient_id WHERE v.status='OPEN' ORDER BY v.arrived_at`)
       .filter((v) => s == null || ops.visitVisible(req.user, v.id));
+    ops.logAccess(req.user, rows.map((v) => v.patient_id), 'VISITS');
     res.json(rows.map((v) => ({
       ...v,
       queue: one("SELECT display,status,department_id FROM queue_entries WHERE visit_id=? AND status IN ('WAITING','CALLED','IN_ROOM') ORDER BY id DESC LIMIT 1", v.id) || null,
@@ -459,14 +467,15 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
 
   // ---- corrections ----
   app.get('/api/corrections', guard('corrections.request'), (req, res) => {
-    res.json(q(`SELECT c.*, ur.name requester, ud.name decider, p.mrn, p.name patient_name FROM corrections c JOIN users ur ON ur.id=c.requested_by LEFT JOIN users ud ON ud.id=c.decided_by
-      JOIN visits v ON v.id=c.visit_id JOIN patients p ON p.id=v.patient_id ORDER BY c.id DESC LIMIT 100`).filter((c) => ops.visitVisible(req.user, c.visit_id)));
+    const rowsC = (q(`SELECT c.*, ur.name requester, ud.name decider, p.id patient_id, p.mrn, p.name patient_name FROM corrections c JOIN users ur ON ur.id=c.requested_by LEFT JOIN users ud ON ud.id=c.decided_by
+      JOIN visits v ON v.id=c.visit_id JOIN patients p ON p.id=v.patient_id ORDER BY c.id DESC LIMIT 100`)).filter((c) => ops.visitVisible(req.user, c.visit_id));
+    ops.logAccess(req.user, rowsC.map((c) => c.patient_id), 'CORRECTIONS'); res.json(rowsC);
   });
   app.post('/api/corrections', guard(), (req, res) => res.status(201).json(ops.requestCorrection(req.user, { kind: req.body.kind, entityId: Number(req.body.entity_id), correctedTs: req.body.corrected_ts, reason: req.body.reason })));
   app.post('/api/corrections/:id/decision', guard(), (req, res) => res.json(ops.decideCorrection(req.user, Number(req.params.id), !!req.body.approve, req.body.note)));
 
   // ---- search (always department-scoped) ----
-  app.get('/api/search', guard('patients.read'), (req, res) => {
+  app.get('/api/search', guard('patients.read'), (req, res, next) => searchLimit(req, res, next), (req, res) => {
     const f = Object.fromEntries(Object.entries(req.query).map(([k, v]) => [k, String(v)])), s = deptScope(req.user), w = [], a = [];
     if (f.patient) { w.push('(p.name LIKE ? OR p.name_ar LIKE ? OR CAST(p.id AS TEXT)=?)'); a.push(`%${f.patient}%`, `%${f.patient}%`, f.patient); }
     if (f.mrn) { w.push('p.mrn LIKE ?'); a.push(`%${f.mrn}%`); }
@@ -483,7 +492,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     if (f.date) rows = rows.filter((r) => new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date(r.arrived_at)) === f.date);
     rows = rows.filter((r) => s == null || ops.visitVisible(req.user, r.visit_id));
     audit(req.user, 'search', 'visit', null, { filters: Object.keys(f), results: rows.length });
-    res.json(rows);
+    ops.logAccess(req.user, rows.map((r) => r.patient_id), 'SEARCH'); res.json(rows);
   });
 
   // ---- reports ----
@@ -544,7 +553,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       sessions: sessions.length,
       by_service: Object.values(bySvc).map((b) => ({ ...b, minutes: r1(b.minutes), avg_minutes: r1(b.minutes / b.sessions), planned_avg_minutes: b.planned_minutes ? r1(b.planned_minutes / b.sessions) : null })),
       by_room: Object.values(byRoom).map((b) => ({ ...b, occupied_minutes: r1(b.occupied_minutes) })),
-      visit_rows: timings.slice(0, 200).map(({ v, t }) => ({ visit_id: v.id, mrn: v.mrn, patient: v.patient_name, status: v.status, arrival_at: t.arrival_at, room_entry_at: t.room_entry_at, treatment_start_at: t.treatment_start_at, last_treatment_end_at: t.last_treatment_end_at, room_exit_at: t.room_exit_at, departed_at: t.departed_at,
+      visit_rows: timings.slice(0, 200).map(({ v, t }) => ({ visit_id: v.id, patient_id: v.patient_id, mrn: v.mrn, patient: v.patient_name, status: v.status, arrival_at: t.arrival_at, room_entry_at: t.room_entry_at, treatment_start_at: t.treatment_start_at, last_treatment_end_at: t.last_treatment_end_at, room_exit_at: t.room_exit_at, departed_at: t.departed_at,
         waiting_before_room_min: t.room_entry_at ? r1(min(Date.parse(t.room_entry_at) - Date.parse(t.arrival_at))) : null, waiting_in_room_min: t.room_entry_at && t.treatment_start_at ? r1(min(Date.parse(t.treatment_start_at) - Date.parse(t.room_entry_at))) : null,
         total_waiting_min: t.treatment_start_at ? r1(min(Date.parse(t.treatment_start_at) - Date.parse(t.arrival_at))) : null, total_visit_min: t.total_visit_ms != null ? r1(min(t.total_visit_ms)) : null })),
       transfers: ev.length,
@@ -552,18 +561,23 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       maintenance_events: maint.length,
     };
   }
-  app.get('/api/reports', guard('reports.view'), (req, res) => { audit(req.user, 'reports.view', 'report', null, req.query); res.json(reportData(req.user, req.query)); });
-  app.get('/api/reports/sessions.csv', guard('reports.view'), (req, res) => {
+  app.get('/api/reports', guard('reports.view'), (req, res) => { audit(req.user, 'reports.view', 'report', null, req.query); const data = reportData(req.user, req.query); ops.logAccess(req.user, data.visit_rows.map((r) => r.patient_id), 'REPORT'); res.json(data); });
+  app.get('/api/reports/sessions.csv', guard('reports.view'), (req, res, next) => exportLimit(req, res, next), (req, res) => {
     ops.sweepTimers();
     const { sessions, visits } = reportScope(req.user, req.query);
     const tv = new Map(visits.map((v) => [v.id, { v, t: ops.visitTiming(v) }]));
     const min = (a, b) => (a && b ? Math.round(((Date.parse(b) - Date.parse(a)) / 60000) * 10) / 10 : '');
     const esc = (v) => { let s = v == null ? '' : String(v); if (/^[=+\-@]/.test(s)) s = `'${s}`; return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
-    audit(req.user, 'reports.export', 'report', null, { rows: sessions.length, filters: Object.keys(req.query) });
+    const maxRows = Number(ops.setting('export_max_rows')) || 5000;
+    if (sessions.length > maxRows) throw new HttpError(413, 'EXPORT_TOO_LARGE', `This export has ${sessions.length} rows; the limit is ${maxRows}. Narrow the dates or filters.`);
+    audit(req.user, 'reports.export', 'report', null, { rows: sessions.length, filters: Object.keys(req.query), department_scope: deptScope(req.user) });
+    ops.logAccess(req.user, sessions.map((x) => x.patient_id), 'EXPORT', { dedupe: false, detail: { rows: sessions.length } }); // every patient in the file is recorded
     const head = 'session_id,mrn,service,clinician,room,status,planned_minutes,started_at,scheduled_end_at,timer_elapsed_at,clinical_end_at,confirmed_at,completion_kind,active_minutes,arrival_at,room_entry_at,waiting_before_room_min,waiting_in_room_min,total_waiting_min';
     const lines = sessions.map((x) => { const { v, t } = tv.get(x.visit_id); const end = x.ended_at_corrected || x.ended_at;
       return [x.id, v.mrn, x.service, x.clinician, x.room, x.status, x.planned_minutes, x.started_at, x.scheduled_end_at, x.timer_elapsed_at, end, x.confirmed_at, x.completion_kind, Math.round((ops.sumMs(ops.sessionIntervals(x)) / 60000) * 10) / 10, t.arrival_at, t.room_entry_at, min(t.arrival_at, t.room_entry_at), min(t.room_entry_at, x.started_at), min(t.arrival_at, x.started_at)].map(esc).join(','); });
-    res.type('text/csv').send([head, ...lines].join('\n'));
+    const stamp = new Date(nowMs()).toISOString();
+    res.set('Content-Disposition', `attachment; filename="fmc-sessions-${stamp.slice(0, 10)}-${req.user.username}.csv"`);
+    res.type('text/csv').send([head, ...lines, `# CONFIDENTIAL FMC patient data - exported by ${req.user.username} on ${stamp} - ${sessions.length} rows`].join('\n'));
   });
   app.get('/api/audit', guard('audit.view'), (req, res) =>
     res.json(q(`SELECT a.id,a.ts,a.action,a.entity,a.entity_id,a.detail,u.name actor FROM audit_log a LEFT JOIN users u ON u.id=a.actor_id ORDER BY a.id DESC LIMIT ?`, Math.min(Number(req.query.limit) || 100, 500))));
@@ -584,6 +598,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       failed_operations_24h: one("SELECT COUNT(*) c FROM system_errors WHERE ts>? AND source='server'", since).c,
       sync_problems_24h: one("SELECT COUNT(*) c FROM system_errors WHERE ts>? AND source='client-sync'", since).c,
       recent_errors: q('SELECT ts,source,code,message FROM system_errors ORDER BY id DESC LIMIT 20'),
+      security_alerts_open: privacy.openAlerts(),
       backup: { supported: true, encrypted_files: files, last: lastBackup || null, stale: !lastBackup || Date.now() - Date.parse(lastBackup.ts) > 26 * 3600e3 },
     });
   });
@@ -610,5 +625,5 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     if (/UNIQUE constraint/.test(msg)) return res.status(409).json({ error: { code: 'CONFLICT', message: 'Conflicting record (already exists or in use)' } });
     res.status(500).json({ error: { code: 'INTERNAL', message: 'Unexpected server error' } });
   });
-  return { app, db, ops };
+  return { app, db, ops, privacy };
 }

@@ -17,7 +17,7 @@ const all = await U['gm.one'].get('/api/patients?q=%25');
 rec('P1b wildcard dumps the directory', all.body.length >= 8, `General Medicine clinician queried "%" and received ${all.body.length} patients (name, DOB, phone, MRN)`);
 const phone = await U['pt.one'].get('/api/patients?q=0500000003');
 rec('P1c phone lookup works for any role', phone.body.length > 0, `clinician looked a patient up by phone number → ${phone.body.length} result(s)`);
-rec('P1d search not recorded per patient', true, 'audit entry for patients.search stores only the query length, not which patient records were returned');
+{ await U.reception.get('/api/patients?q=Sample'); const al = await U.admin.get('/api/security/access-log?kind=SEARCH'); rec('P1d search not recorded per patient', !Array.isArray(al.body) || al.body.length === 0, `patient access log: ${Array.isArray(al.body) ? al.body.length : 'unavailable'} SEARCH entries (who was shown which patient)`); }
 
 // ---------- user enumeration ----------
 const staff = await U['pt.one'].get('/api/staff');
@@ -99,7 +99,8 @@ const kinds = new Set((await U.super.get('/api/audit?limit=500')).body.map((a) =
 const need = ['login', 'login.failed', 'visit.checkin', 'visit.checkout', 'room.assign', 'room.exit', 'session.start', 'session.complete', 'config.staff.create', 'config.staff.update', 'timeline.view', 'patient.create'];
 rec('P17b audit coverage of core actions', need.some((k) => !kinds.has(k)), `recorded: ${need.filter((k) => kinds.has(k)).join(', ')}${need.some((k) => !kinds.has(k)) ? ' | MISSING: ' + need.filter((k) => !kinds.has(k)).join(', ') : ' (all present)'}. Gaps by design: which patients a search returned, queue/dashboard/sessions views (names shown), password reset and role change are not distinct events, session revocation does not exist`);
 let dropped = false; try { t.db.exec('DROP TRIGGER audit_no_delete'); t.db.exec('DELETE FROM audit_log WHERE id=1'); dropped = true; } catch { /* blocked */ }
-rec('P17 audit protection is a database trigger only', dropped, 'with write access to the database file the trigger can be DROPped and audit rows edited or deleted; no hash chain, no off-host copy, no alert when entries disappear (API users cannot do this: UPDATE/DELETE are blocked and no endpoint exists)');
+const chain = (await U.admin.get('/api/security/audit-chain')).body;
+rec('P17 audit tamper-evidence', dropped && chain.ok === true, `with file access the trigger can be dropped and rows removed (${dropped}); the hash chain ${chain.ok === false ? 'DETECTED it: ' + JSON.stringify(chain.problems?.[0]) : chain.ok === true ? 'did NOT detect it' : 'is unavailable'}. Remaining need: an off-host copy of the chain fingerprint (stage S6)`);
 const sv = await U['pt.one'].get('/api/sessions/active'); void sv;
 const q0 = await U.reception.post('/api/queue/1/cancel');
 rec('P29 cannot cancel a queue entry / no-show', q0.status === 404, `POST /api/queue/:id/cancel → ${q0.status}; the schema has a CANCELLED state but there is no endpoint or button, so walk-aways stay "waiting"`);

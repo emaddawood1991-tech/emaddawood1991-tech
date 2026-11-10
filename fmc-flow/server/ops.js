@@ -1,5 +1,6 @@
 import { tx } from './db.js';
 import { can, deptScope } from './perms.js';
+import { appendAudit } from './auditchain.js';
 
 export class HttpError extends Error {
   constructor(status, code, message, extra) { super(message || code); this.status = status; this.code = code; this.extra = extra; }
@@ -19,8 +20,20 @@ export function makeOps(db) {
   const setting = (k) => one('SELECT value FROM settings WHERE key=?', k)?.value;
 
   function audit(actor, action, entity, entityId, detail = {}) {
-    run('INSERT INTO audit_log(ts,actor_id,action,entity,entity_id,detail) VALUES (?,?,?,?,?,?)',
-      now(), actor?.id ?? null, action, entity ?? null, entityId == null ? null : String(entityId), JSON.stringify(detail));
+    appendAudit(db, { ts: now(), actorId: actor?.id ?? null, action, entity, entityId, detail }); // hash-chained
+  }
+  /** Records who was shown which patients. One entry per person, patient and kind per window, so polling screens do not flood the log. */
+  const accessSeen = new Map();
+  function logAccess(user, patientIds, kind, { dedupe = true, detail = {} } = {}) {
+    if (!user) return;
+    const windowMs = (kind === 'CLINICAL_NOTE' ? 5 : 15) * 60e3; const t = nowMs();
+    if (accessSeen.size > 50000) accessSeen.clear();
+    for (const pid of new Set((patientIds || []).map(Number).filter(Boolean))) {
+      const k = `${user.id}|${kind}|${pid}`;
+      if (dedupe && t - (accessSeen.get(k) ?? 0) < windowMs) continue;
+      accessSeen.set(k, t);
+      run('INSERT INTO patient_access_log(ts,actor_id,patient_id,kind,detail) VALUES (?,?,?,?,?)', now(), user.id, pid, kind, JSON.stringify(detail));
+    }
   }
   function event(visit, type, actor, extra = {}) {
     const { sessionId = null, occupancyId = null, data = {}, ts = now() } = extra;
@@ -134,7 +147,7 @@ export function makeOps(db) {
       out.content = { chief_complaint: d?.chief_complaint ?? '', diagnosis: d?.diagnosis ?? '', cpt_code: d?.cpt_code ?? '', progress_note: d?.progress_note ?? '' };
       const dep = one('SELECT department_id FROM services WHERE id=?', s.service_id).department_id;
       out.cpt_options = q('SELECT id,code,description,default_minutes FROM cpt_codes WHERE active=1 AND (department_id IS NULL OR department_id=?) ORDER BY code', dep);
-      audit(user, 'documentation.view', 'session', s.id);
+      audit(user, 'documentation.view', 'session', s.id); logAccess(user, [s.patient_id], 'CLINICAL_NOTE');
     }
     return out;
   }
@@ -458,11 +471,12 @@ export function makeOps(db) {
   function queueList(user, departmentId) {
     const s = deptScope(user);
     const dep = s ?? (departmentId ? Number(departmentId) : null);
-    return q(`SELECT qe.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, d.name department, u.name clinician, sv.name service
+    const rows = q(`SELECT qe.*, p.id patient_id, p.mrn, p.name patient_name, p.name_ar patient_name_ar, d.name department, u.name clinician, sv.name service
       FROM queue_entries qe JOIN visits v ON v.id=qe.visit_id JOIN patients p ON p.id=v.patient_id
       JOIN departments d ON d.id=qe.department_id LEFT JOIN users u ON u.id=qe.clinician_id LEFT JOIN services sv ON sv.id=qe.service_id
       WHERE qe.status IN ('WAITING','CALLED') AND (? IS NULL OR qe.department_id=?)
       ORDER BY qe.priority DESC, qe.created_at, qe.id`, dep, dep);
+    logAccess(user, rows.map((r) => r.patient_id), 'QUEUE'); return rows;
   }
 
   // ---------- sessions ----------
@@ -623,10 +637,11 @@ export function makeOps(db) {
   function activeSessions(user) {
     sweepTimers();
     const s = deptScope(user);
-    return q(`SELECT ts.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, sv.name service, sv.name_ar service_ar, u.name clinician
+    const rows = q(`SELECT ts.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, sv.name service, sv.name_ar service_ar, u.name clinician
       FROM treatment_sessions ts JOIN patients p ON p.id=ts.patient_id JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id
       WHERE ts.status IN ('ACTIVE','PAUSED') AND (? IS NULL OR sv.department_id=?) ORDER BY ts.started_at`, s, s)
       .map((r) => ({ ...sessionView(r), room: locLabel(r.room_id, r.station_id) }));
+    logAccess(user, rows.map((r) => r.patient_id), 'SESSIONS'); return rows;
   }
 
   /** Day schedule: every treatment session started in the date range, with its documentation colour. */
@@ -647,7 +662,7 @@ export function makeOps(db) {
   function timeline(user, visitId) {
     need(user, 'patients.read');
     const v = getVisit(visitId); needVisible(user, v.id);
-    audit(user, 'timeline.view', 'visit', v.id);
+    audit(user, 'timeline.view', 'visit', v.id); logAccess(user, [v.patient_id], 'TIMELINE');
     const events = q(`SELECT e.*, u.name actor FROM events e LEFT JOIN users u ON u.id=e.actor_id WHERE e.visit_id=? ORDER BY e.id`, v.id)
       .map((e) => ({ ...e, data: JSON.parse(e.data) }));
     const corrections = q(`SELECT c.*, ur.name requester, ud.name decider FROM corrections c JOIN users ur ON ur.id=c.requested_by LEFT JOIN users ud ON ud.id=c.decided_by WHERE c.visit_id=? ORDER BY c.id`, v.id);
@@ -738,7 +753,7 @@ export function makeOps(db) {
     sessionIntervals, unionMs, sumMs, visitDurations, sessionView, roomState, visitVisible, needVisible,
     assignRoom, enterRoom, exitRoom, transferRoom, setRoomStatus,
     checkIn, checkOut, callNext, setPriority, queueList,
-    sweepTimers, visitTiming, timerOf, treatmentOptions, visitDepartments, startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
+    logAccess, sweepTimers, visitTiming, timerOf, treatmentOptions, visitDepartments, startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
     getDocumentation, saveDocumentation, scheduleList, visitScheduleStatus,
     timeline, requestCorrection, decideCorrection, locLabel,
   };
