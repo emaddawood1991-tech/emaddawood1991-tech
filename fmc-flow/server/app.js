@@ -8,7 +8,7 @@ import { makeSchedule } from './schedule.js';
 import { makeAccounts, passwordProblem } from './accounts.js';
 import { makeMfa } from './mfa.js';
 import { makePrivacy } from './privacy.js';
-import { can, deptScope } from './perms.js';
+import { can, deptScope, deptJson } from './perms.js';
 import { applyTemplate, effectiveTemplate } from './roles.js';
 import { readiness } from './readiness.js';
 import { makeRecovery } from './recovery.js';
@@ -65,6 +65,17 @@ function checkDurationRange(b) {
 }
 
 const USERNAME_RE = /^[A-Za-z0-9._-]{3,40}$/;
+/** Extra departments a clinician or manager may also work in (their own department stays the main one). Returns the cleaned list. */
+function checkExtraDepts(ids, role, primary, one) {
+  if (!Array.isArray(ids)) throw new HttpError(400, 'VALIDATION', 'Please correct the highlighted fields.', { fields: { extra_department_ids: 'Must be a list of departments.' } });
+  const list = [...new Set(ids.map(Number))].filter((x) => x !== Number(primary));
+  if (!list.length) return [];
+  const f = (m) => { throw new HttpError(400, 'VALIDATION', 'Please correct the highlighted fields.', { fields: { extra_department_ids: m } }); };
+  if (!['clinician', 'supervisor'].includes(role)) f('Only clinicians and clinic managers can work in more than one department.');
+  if (!primary) f('Choose the main department first.');
+  if (list.some((x) => !Number.isInteger(x) || !one('SELECT 1 x FROM departments WHERE id=?', x))) f('One of the departments does not exist.');
+  return list;
+}
 /** Server-side validation for staff accounts (role, department, flags). Throws 400 with per-field messages. */
 function checkStaff(b, creating, one) {
   const f = {};
@@ -117,7 +128,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       const maxIdle = Number(ops.setting('session_idle_hours') || 12) * 3600e3; const maxAge = Number(ops.setting('session_absolute_hours') || 14) * 3600e3;
       if (s && nowMs() - Date.parse(s.last_seen) < maxIdle && nowMs() - Date.parse(s.created_at) < maxAge) { // idle AND absolute lifetime
         const u = one('SELECT id,username,name,name_ar,role,department_id,active,schedule_override,must_change_password FROM users WHERE id=?', s.user_id);
-        if (u?.active) { u.mfa_setup_required = mfa.required(u) && !mfa.enabled(u.id) ? 1 : 0; req.user = u; run('UPDATE auth_sessions SET last_seen=? WHERE token_hash=?', now(), s.token_hash); }
+        if (u?.active) { u.department_ids = q('SELECT department_id FROM user_departments WHERE user_id=?', u.id).map((x) => x.department_id); u.mfa_setup_required = mfa.required(u) && !mfa.enabled(u.id) ? 1 : 0; req.user = u; run('UPDATE auth_sessions SET last_seen=? WHERE token_hash=?', now(), s.token_hash); }
       }
     }
     next();
@@ -177,7 +188,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     setSessionCookie(res, token);
     accounts.loginEvent(u.id, 'LOGIN_OK', req, method === 'password' ? {} : { second_factor: method });
     audit(u, 'login', 'user', u.id, method === 'password' ? {} : { second_factor: method });
-    res.json({ user: { id: u.id, username: u.username, name: u.name, name_ar: u.name_ar, role: u.role, department_id: u.department_id, must_change_password: u.must_change_password, mfa_setup_required: mfa.required(u) && !mfa.enabled(u.id) ? 1 : 0 }, server_time: now() });
+    res.json({ user: { id: u.id, username: u.username, name: u.name, name_ar: u.name_ar, role: u.role, department_id: u.department_id, department_ids: u.department_ids || [], must_change_password: u.must_change_password, mfa_setup_required: mfa.required(u) && !mfa.enabled(u.id) ? 1 : 0 }, server_time: now() });
   }
   const challenges = new Map(); // one-time second-factor challenges: token hash → { userId, exp, tries }
   const mfaFailures = new Map(); // per-account lock after repeated wrong codes (15 minutes)
@@ -254,8 +265,8 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   });
   app.get('/api/staff', guard(), (req, res) => {
     res.json(q(`SELECT u.id,u.username,u.name,u.name_ar,u.role,u.role_template,u.department_id,u.active,u.schedule_override, COALESCE(a.status,'OFF_DUTY') availability, a.updated_at availability_updated,
-      (SELECT group_concat(service_id) FROM staff_services WHERE user_id=u.id) service_ids FROM users u LEFT JOIN staff_availability a ON a.user_id=u.id ORDER BY u.name`)
-        .map(({ username, schedule_override, ...r }) => ({ ...r, role_template: effectiveTemplate(r), ...(req.user.role === 'admin' ? { username, schedule_override } : {}), service_ids: r.service_ids ? r.service_ids.split(',').map(Number) : [] })));
+      (SELECT group_concat(service_id) FROM staff_services WHERE user_id=u.id) service_ids, (SELECT group_concat(department_id) FROM user_departments WHERE user_id=u.id) extra_departments FROM users u LEFT JOIN staff_availability a ON a.user_id=u.id ORDER BY u.name`)
+        .map(({ username, schedule_override, ...r }) => ({ ...r, role_template: effectiveTemplate(r), extra_department_ids: r.extra_departments ? r.extra_departments.split(',').map(Number) : [], extra_departments: undefined, ...(req.user.role === 'admin' ? { username, schedule_override } : {}), service_ids: r.service_ids ? r.service_ids.split(',').map(Number) : [] })));
   });
 
   // ---- config CRUD (admin) ----
@@ -276,6 +287,10 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       const vals = cols.filter((c) => req.body[c] !== undefined);
       if (!vals.length) throw new HttpError(400, 'EMPTY');
       if (table === 'cpt_codes') checkCpt(req.body, false);
+      if (table === 'departments' && (req.body.active === 0 || req.body.active === '0' || req.body.active === false)) {
+        const open = one("SELECT COUNT(*) c FROM queue_entries WHERE department_id=? AND status IN ('WAITING','CALLED','IN_ROOM')", req.params.id).c;
+        if (open > 0 && !req.body.confirm_open_queue) throw new HttpError(409, 'DEPARTMENT_HAS_QUEUE', `${open} patient(s) are still queued or in a room in this department. Finish or cancel them first, or confirm to deactivate anyway.`, { open_queue: open });
+      }
       if (SCHEDULE_TABLES.includes(table)) sched.checkConfig(table, req.body, false, one(`SELECT * FROM ${table} WHERE id=?`, req.params.id) || {});
       if (table === 'services') { const cur = one('SELECT default_minutes,min_minutes,max_minutes FROM services WHERE id=?', req.params.id) || {}; checkDurationRange({ ...cur, ...req.body }); }
       if (table === 'rooms' && req.body.active === 0 && ops.one('SELECT 1 x FROM occupancy WHERE room_id=? AND exited_at IS NULL', req.params.id)) throw new HttpError(409, 'ROOM_OCCUPIED');
@@ -314,6 +329,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       if (a.fields) throw new HttpError(400, 'VALIDATION', 'Please correct the highlighted fields.', { fields: a.fields }); role = a.role;
     }
     checkStaff({ username, name, name_ar, role, department_id }, true, one);
+    const extraDepts = checkExtraDepts(req.body.extra_department_ids ?? [], role, department_id, one);
     { const prob = passwordProblem(password, { username, name }, accounts.minLen()); if (prob) throw new HttpError(400, 'WEAK_PASSWORD', prob, { fields: { password: prob } }); }
     const id = tx(db, () => {
       let r;
@@ -321,6 +337,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       catch (e) { throw new HttpError(400, 'INVALID', String(e.message).replace(/^.*constraint failed: /, '')); }
       const uid = Number(r.lastInsertRowid);
       for (const s of service_ids) run('INSERT INTO staff_services VALUES (?,?)', uid, s);
+      for (const d of extraDepts) run('INSERT INTO user_departments(user_id,department_id) VALUES (?,?)', uid, d);
       run("INSERT INTO staff_availability(user_id,status,updated_at,updated_by) VALUES (?, 'OFF_DUTY', ?, ?)", uid, now(), req.user.id);
       return uid;
     });
@@ -336,6 +353,10 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       if (a.fields) throw new HttpError(400, 'VALIDATION', 'Please correct the highlighted fields.', { fields: a.fields }); req.body.role = a.role;
     } else if (req.body.role !== undefined && req.body.role !== cur.role) req.body.role_template = null; // role changed by hand: the old template no longer describes this account
     checkStaff(req.body, false, one);
+    const roleAfter = req.body.role ?? cur.role; const primaryAfter = req.body.department_id !== undefined ? (req.body.department_id === '' ? null : Number(req.body.department_id)) : cur.department_id;
+    let extraDepts = null;
+    if (req.body.extra_department_ids !== undefined) extraDepts = checkExtraDepts(req.body.extra_department_ids, roleAfter, primaryAfter, one);
+    else if (!primaryAfter || !['clinician', 'supervisor'].includes(roleAfter)) extraDepts = []; // no main department or a role that cannot have extras: they lapse
     const staysAdmin = (req.body.role ?? cur.role) === 'admin' && Number(req.body.active ?? cur.active) === 1;
     if (cur.role === 'admin' && cur.active === 1 && !staysAdmin && one("SELECT COUNT(*) c FROM users WHERE role='admin' AND active=1").c <= 1)
       throw new HttpError(409, 'LAST_ADMIN', 'This is the only active administrator. Create or keep another administrator before changing or disabling this account.');
@@ -351,9 +372,10 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     tx(db, () => {
       for (const c of ['name', 'name_ar', 'role', 'department_id', 'active', 'schedule_override', 'role_template']) if (req.body[c] !== undefined) run(`UPDATE users SET ${c}=? WHERE id=?`, req.body[c], id);
       if (req.body.password) { const prob = accounts.problemFor(id, req.body.password); if (prob) throw new HttpError(400, 'WEAK_PASSWORD', prob, { fields: { password: prob } }); accounts.writePassword(id, String(req.body.password), { mustChange: true, actor: req.user, event: 'PASSWORD_RESET' }); accounts.loginEvent(id, 'PASSWORD_RESET', req, { by: req.user.id }); } // temporary: the person chooses their own at next sign-in
+      if (extraDepts) { run('DELETE FROM user_departments WHERE user_id=?', id); for (const d of extraDepts) run('INSERT INTO user_departments(user_id,department_id) VALUES (?,?)', id, d); }
       if (diff) { run('DELETE FROM staff_services WHERE user_id=?', id); for (const s of req.body.service_ids) run('INSERT INTO staff_services VALUES (?,?)', id, s); }
     });
-    audit(req.user, 'config.staff.update', 'user', id, { ...req.body, service_ids: undefined, password: req.body.password ? '***' : undefined });
+    audit(req.user, 'config.staff.update', 'user', id, { ...req.body, service_ids: undefined, extra_department_ids: extraDepts ?? undefined, password: req.body.password ? '***' : undefined });
     if (diff && (diff.added.length || diff.removed.length)) audit(req.user, 'config.staff.authorization', 'user', id, diff);
     res.json({ ok: true });
   });
@@ -382,16 +404,18 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     res.status(r.replayed ? 200 : 201).json({ ...r.patient, replayed: !!r.replayed });
   });
   // Register (or select) a patient and check them into a department queue in one atomic step.
+  app.patch('/api/patients/:id', guard('patients.write'), (req, res) => res.json(reg.updatePatient(req.user, Number(req.params.id), req.body || {})));
+  app.get('/api/patients/:id/changes', guard('patients.write'), (req, res) => res.json(reg.changesOf(req.user, Number(req.params.id))));
   app.post('/api/registrations', guard('patients.write'), (req, res) => {
     const r = reg.register(req.user, req.body || {});
     res.status(r.replayed ? 200 : 201).json(r);
   });
   app.get('/api/appointments', guard('patients.read'), (req, res) => {
-    const s = deptScope(req.user);
+    const s = deptJson(req.user);
     const apps = q(`SELECT a.*, p.name patient_name, p.name_ar patient_name_ar, p.mrn, d.name department, sv.name service, u.name clinician
       FROM appointments a JOIN patients p ON p.id=a.patient_id JOIN departments d ON d.id=a.department_id
       LEFT JOIN services sv ON sv.id=a.service_id LEFT JOIN users u ON u.id=a.clinician_id
-      WHERE (? IS NULL OR a.department_id=?) AND a.status='SCHEDULED' ORDER BY a.scheduled_at LIMIT 100`, s, s);
+      WHERE (? IS NULL OR a.department_id IN (SELECT value FROM json_each(?))) AND a.status='SCHEDULED' ORDER BY a.scheduled_at LIMIT 100`, s, s);
     ops.logAccess(req.user, apps.map((a) => a.patient_id), 'SCHEDULE'); res.json(apps);
   });
   app.post('/api/appointments', guard('patients.write'), (req, res) => {
@@ -456,6 +480,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.get('/api/visits/:id/timeline', guard('patients.read'), (req, res) => res.json(ops.timeline(req.user, Number(req.params.id))));
   app.get('/api/queue', guard('queue.view'), (req, res) => res.json({ server_time: now(), entries: ops.queueList(req.user, req.query.department_id) }));
   app.post('/api/queue/call-next', guard(), (req, res) => res.json(ops.callNext(req.user, Number(req.body.department_id), req.body.clinician_id ? Number(req.body.clinician_id) : null)));
+  app.post('/api/queue/:id/cancel', guard('queue.cancel'), (req, res) => res.json(ops.cancelQueueEntry(req.user, Number(req.params.id), { kind: req.body.kind, reason: req.body.reason })));
   app.patch('/api/queue/:id/priority', guard(), (req, res) => res.json(ops.setPriority(req.user, Number(req.params.id), req.body.priority, req.body.reason)));
 
   // ---- rooms ----

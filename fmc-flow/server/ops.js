@@ -1,5 +1,5 @@
 import { tx } from './db.js';
-import { can, deptScope } from './perms.js';
+import { can, deptScope, deptJson, inScope } from './perms.js';
 import { appendAudit } from './auditchain.js';
 
 export class HttpError extends Error {
@@ -51,11 +51,11 @@ export function makeOps(db) {
 
   /** Visit is visible if the user has no department scope or the visit touches their department. */
   function visitVisible(user, visitId) {
-    const s = deptScope(user);
+    const s = deptJson(user);
     if (s == null) return true;
-    return !!one(`SELECT 1 FROM queue_entries WHERE visit_id=? AND department_id=?
-      UNION SELECT 1 FROM appointments a JOIN visits v ON v.appointment_id=a.id WHERE v.id=? AND a.department_id=?
-      UNION SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.visit_id=? AND sv.department_id=?`,
+    return !!one(`SELECT 1 FROM queue_entries WHERE visit_id=? AND department_id IN (SELECT value FROM json_each(?))
+      UNION SELECT 1 FROM appointments a JOIN visits v ON v.appointment_id=a.id WHERE v.id=? AND a.department_id IN (SELECT value FROM json_each(?))
+      UNION SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.visit_id=? AND sv.department_id IN (SELECT value FROM json_each(?))`,
       visitId, s, visitId, s, visitId, s);
   }
   /** Read-only check: in scope, or covered by an active break-glass grant (injected by the recovery module). */
@@ -260,7 +260,7 @@ export function makeOps(db) {
       .map((s) => ({ ...s, occupied_by: one('SELECT o.id occupancy_id, o.visit_id, o.patient_id FROM occupancy o WHERE o.station_id=? AND o.exited_at IS NULL', s.id) || null }));
     const occupants = roomOpenCount(r.id);
     const cap = stations.length || r.capacity;
-    const display = r.status !== 'AVAILABLE' ? r.status : occupants > 0 ? 'OCCUPIED' : 'AVAILABLE';
+    const display = r.status !== 'AVAILABLE' ? r.status : occupants <= 0 ? 'AVAILABLE' : occupants < cap ? 'IN_USE' : 'OCCUPIED'; // IN_USE: a shared room (hall) with beds still free
     const timers = q(`SELECT ts.* FROM treatment_sessions ts
       WHERE ts.room_id=? AND ts.status IN ('ACTIVE','PAUSED') AND EXISTS (SELECT 1 FROM occupancy o WHERE o.visit_id=ts.visit_id AND o.exited_at IS NULL AND o.room_id=ts.room_id)`, r.id)
       .map((x) => ({ session_id: x.id, station_id: x.station_id, ...timerOf(x), scheduled_end_at: x.scheduled_end_at }));
@@ -447,8 +447,7 @@ export function makeOps(db) {
   }
   function callNext(user, departmentId, clinicianId) {
     need(user, 'queue.call');
-    const s = deptScope(user);
-    if (s != null && Number(departmentId) !== s) fail(403, 'OUT_OF_SCOPE');
+    if (!inScope(user, departmentId)) fail(403, 'OUT_OF_SCOPE');
     return tx(db, () => {
       // Priority is manually set; within the same priority, order is by arrival. Arrival time alone never sets priority.
       const row = one(`SELECT * FROM queue_entries WHERE department_id=? AND status='WAITING'
@@ -471,13 +470,34 @@ export function makeOps(db) {
     audit(user, 'queue.priority', 'queue_entry', queueId, { from: e.priority, to: Number(priority), reason: reason || null });
     return one('SELECT * FROM queue_entries WHERE id=?', queueId);
   }
+  /** Cancels a queue entry that has not reached a room (patient left, was booked by mistake, or did not come). The visit closes only if nothing else is happening in it. */
+  function cancelQueueEntry(user, queueId, { kind = 'CANCELLED', reason } = {}) {
+    need(user, 'queue.cancel');
+    if (!['CANCELLED', 'NO_SHOW'].includes(kind)) fail(400, 'VALIDATION', 'Choose cancelled or no-show.');
+    const why = String(reason || '').trim();
+    if (kind === 'CANCELLED' && why.length < 3) fail(400, 'VALIDATION', 'Write a short reason for the cancellation.', { fields: { reason: 'Required.' } });
+    return tx(db, () => {
+      const e = one('SELECT * FROM queue_entries WHERE id=?', queueId) || fail(404, 'QUEUE_NOT_FOUND');
+      if (e.status === 'CANCELLED') return one('SELECT * FROM queue_entries WHERE id=?', queueId); // idempotent
+      if (!['WAITING', 'CALLED'].includes(e.status)) fail(409, 'NOT_CANCELLABLE', e.status === 'IN_ROOM' ? 'The patient is already in a room. Exit the room first.' : 'This queue entry is already finished.');
+      const v = getVisit(e.visit_id); const ts = now();
+      run("UPDATE queue_entries SET status='CANCELLED', closed_at=? WHERE id=?", ts, e.id);
+      event(v, kind === 'NO_SHOW' ? 'QUEUE_NO_SHOW' : 'QUEUE_CANCELLED', user, { ts, data: { queue: e.display, reason: why || null } });
+      const stillActive = one("SELECT 1 x FROM queue_entries WHERE visit_id=? AND status IN ('WAITING','CALLED','IN_ROOM')", v.id)
+        || one('SELECT 1 x FROM treatment_sessions WHERE visit_id=?', v.id) || one('SELECT 1 x FROM occupancy WHERE visit_id=?', v.id);
+      let closed = false;
+      if (!stillActive && v.status === 'OPEN') { run("UPDATE visits SET status='CHECKED_OUT', departed_at=? WHERE id=?", ts, v.id); event(v, 'CLINIC_DEPARTED', user, { ts, data: { reason: kind } }); closed = true; }
+      audit(user, kind === 'NO_SHOW' ? 'queue.no_show' : 'queue.cancel', 'queue_entry', e.id, { visit: v.id, reason: why || null, visit_closed: closed });
+      return { ...one('SELECT * FROM queue_entries WHERE id=?', e.id), visit_closed: closed };
+    });
+  }
   function queueList(user, departmentId) {
-    const s = deptScope(user);
-    const dep = s ?? (departmentId ? Number(departmentId) : null);
+    const s = deptScope(user); // own departments; an explicit department narrows it, one outside the scope shows nothing
+    const dep = departmentId ? JSON.stringify(s == null || s.includes(Number(departmentId)) ? [Number(departmentId)] : []) : s == null ? null : JSON.stringify(s);
     const rows = q(`SELECT qe.*, p.id patient_id, p.mrn, p.name patient_name, p.name_ar patient_name_ar, d.name department, u.name clinician, sv.name service
       FROM queue_entries qe JOIN visits v ON v.id=qe.visit_id JOIN patients p ON p.id=v.patient_id
       JOIN departments d ON d.id=qe.department_id LEFT JOIN users u ON u.id=qe.clinician_id LEFT JOIN services sv ON sv.id=qe.service_id
-      WHERE qe.status IN ('WAITING','CALLED') AND (? IS NULL OR qe.department_id=?)
+      WHERE qe.status IN ('WAITING','CALLED') AND (? IS NULL OR qe.department_id IN (SELECT value FROM json_each(?)))
       ORDER BY qe.priority DESC, qe.created_at, qe.id`, dep, dep);
     logAccess(user, rows.map((r) => r.patient_id), 'QUEUE'); return rows;
   }
@@ -639,10 +659,10 @@ export function makeOps(db) {
   }
   function activeSessions(user) {
     sweepTimers();
-    const s = deptScope(user);
+    const s = deptJson(user);
     const rows = q(`SELECT ts.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, sv.name service, sv.name_ar service_ar, u.name clinician
       FROM treatment_sessions ts JOIN patients p ON p.id=ts.patient_id JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id
-      WHERE ts.status IN ('ACTIVE','PAUSED') AND (? IS NULL OR sv.department_id=?) ORDER BY ts.started_at`, s, s)
+      WHERE ts.status IN ('ACTIVE','PAUSED') AND (? IS NULL OR sv.department_id IN (SELECT value FROM json_each(?))) ORDER BY ts.started_at`, s, s)
       .map((r) => ({ ...sessionView(r), room: locLabel(r.room_id, r.station_id) }));
     logAccess(user, rows.map((r) => r.patient_id), 'SESSIONS'); return rows;
   }
@@ -653,10 +673,10 @@ export function makeOps(db) {
     const tz = setting('timezone'); const day = (iso) => new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date(iso));
     const from = /^\d{4}-\d{2}-\d{2}$/.test(f.from || '') ? f.from : day(now()); const to = /^\d{4}-\d{2}-\d{2}$/.test(f.to || '') ? f.to : from;
     const lo = new Date(Date.parse(`${from}T00:00:00Z`) - 2 * 864e5).toISOString(); const hi = new Date(Date.parse(`${to}T00:00:00Z`) + 3 * 864e5).toISOString();
-    const sc = deptScope(user);
+    const sc = deptJson(user);
     return q(`SELECT ts.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, sv.name service, sv.name_ar service_ar, sv.department_id, u.name clinician
       FROM treatment_sessions ts JOIN patients p ON p.id=ts.patient_id JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id
-      WHERE ts.started_at >= ? AND ts.started_at <= ? AND (? IS NULL OR sv.department_id=?) ORDER BY ts.started_at`, lo, hi, sc, sc)
+      WHERE ts.started_at >= ? AND ts.started_at <= ? AND (? IS NULL OR sv.department_id IN (SELECT value FROM json_each(?))) ORDER BY ts.started_at`, lo, hi, sc, sc)
       .filter((r) => day(r.started_at) >= from && day(r.started_at) <= to)
       .map((r) => ({ ...sessionView(r), room: locLabel(r.room_id, r.station_id) }));
   }
@@ -756,7 +776,7 @@ export function makeOps(db) {
     q, one, run, setting, audit, event, need, now, fail,
     sessionIntervals, unionMs, sumMs, visitDurations, sessionView, roomState, visitVisible, needVisible,
     assignRoom, enterRoom, exitRoom, transferRoom, setRoomStatus,
-    setGrantFinder, checkIn, checkOut, callNext, setPriority, queueList,
+    setGrantFinder, cancelQueueEntry, checkIn, checkOut, callNext, setPriority, queueList,
     logAccess, sweepTimers, visitTiming, timerOf, treatmentOptions, visitDepartments, startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
     getDocumentation, saveDocumentation, scheduleList, visitScheduleStatus,
     timeline, requestCorrection, decideCorrection, locLabel,

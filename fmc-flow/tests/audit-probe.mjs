@@ -91,7 +91,7 @@ const pid = (await U.reception.post('/api/patients', { name: 'Synthetic Hall One
 const vid = (await U.reception.post('/api/registrations', { patient_id: pid, department_id: PT.id })).body.visit.id;
 await U.reception.post(`/api/visits/${vid}/room`, { room_id: hall.id, station_id: hall.stations[0].id });
 const hallNow = (await U.reception.get('/api/config')).body.rooms.find((r) => r.code === 'PT-HALL-01');
-rec('P27 shared hall shows OCCUPIED with 5 free beds', hallNow.display_status === 'OCCUPIED' && hallNow.occupants < hallNow.effective_capacity, `PT-HALL-01 display_status="${hallNow.display_status}" with ${hallNow.occupants}/${hallNow.effective_capacity} beds used; the dashboard "Rooms free" KPI therefore excludes it`);
+rec('P27 shared hall status with free beds (S8: shown as IN_USE)', hallNow.display_status === 'OCCUPIED' && hallNow.occupants < hallNow.effective_capacity, `PT-HALL-01 display_status="${hallNow.display_status}" with ${hallNow.occupants}/${hallNow.effective_capacity} beds used; the dashboard "Rooms free" KPI therefore excludes it`);
 await U.reception.post(`/api/visits/${vid}/room/enter`);
 const ses = await U['pt.one'].post(`/api/visits/${vid}/sessions`, { service_id: cfg.services.find((x) => x.name === 'PT Treatment').id });
 await U['pt.one'].post(`/api/sessions/${ses.body.id}/complete`); await U.reception.post(`/api/visits/${vid}/room/exit`); await U.reception.post(`/api/visits/${vid}/checkout`); await U.reception.get(`/api/visits/${vid}/timeline`);
@@ -103,10 +103,10 @@ const chain = (await U.admin.get('/api/security/audit-chain')).body;
 rec('P17 audit tamper-evidence', dropped && chain.ok === true, `with file access the trigger can be dropped and rows removed (${dropped}); the hash chain ${chain.ok === false ? 'DETECTED it: ' + JSON.stringify(chain.problems?.[0]) : chain.ok === true ? 'did NOT detect it' : 'is unavailable'}. Remaining need: an off-host copy of the chain fingerprint (stage S6)`);
 const sv = await U['pt.one'].get('/api/sessions/active'); void sv;
 const q0 = await U.reception.post('/api/queue/1/cancel');
-rec('P29 cannot cancel a queue entry / no-show', q0.status === 404, `POST /api/queue/:id/cancel → ${q0.status}; the schema has a CANCELLED state but there is no endpoint or button, so walk-aways stay "waiting"`);
+rec('P29 queue cancel / no-show (S8)', q0.status === 404, `POST /api/queue/:id/cancel → ${q0.status} (endpoint exists; needs a reason and the queue.cancel permission)`);
 const pe = await U.reception.patch(`/api/patients/${pid}`, { phone: '+971500000099' });
-rec('P30 cannot edit patient demographics', pe.status === 404, `PATCH /api/patients/:id → ${pe.status}; typos in name/DOB/phone cannot be corrected and duplicate records cannot be merged`);
-rec('P31 one department per staff account', true, `users.department_id is a single column; "pt.one" → department ${me.department_id} only. Shared staff and multi-department access cannot be modelled`);
+rec('P30 patient demographics can be corrected (S8)', pe.status === 404, `PATCH /api/patients/:id → ${pe.status}; previous values are kept in the change history. Merging duplicate records is not offered.`);
+rec('P31 staff in several departments (S8)', !Array.isArray(me.department_ids), `"pt.one" → main department ${me.department_id}, extra departments ${JSON.stringify(me.department_ids)}; administrators can grant more in Settings → Staff`);
 // positive controls
 const ck2 = (await raw('POST', '/api/login', { body: { username: 'gm.one', password: DEMO_PASSWORD } })).headers.get('set-cookie').split(';')[0];
 t.db.exec(`UPDATE auth_sessions SET last_seen='2020-01-01T00:00:00Z' WHERE user_id=${U['gm.one'].user.id}`);
@@ -122,7 +122,7 @@ rec('C3 disabled accounts are locked out immediately', !(dis.status === 401 && d
 // ---------- integrity ----------
 await U.reception.post('/api/registrations', { patient_id: pid, department_id: PT.id });
 const dd = await U.admin.patch(`/api/config/departments/${PT.id}`, { active: 0 });
-rec('P18 department deactivated while patients are queued', dd.status === 200, `PATCH departments {active:0} with an open queue entry → ${dd.status}; no warning, patient stays queued in an inactive department`);
+rec('P18 department deactivated while patients are queued (S8: asks first)', dd.status === 200, `PATCH departments {active:0} with an open queue entry → ${dd.status} (409 DEPARTMENT_HAS_QUEUE unless confirmed)`);
 const br = await U.admin.patch(`/api/config/staff/${U['pt.one'].user.id}`, { role: 'wizard' });
 rec('P8 invalid role → server error', br.status === 500, `PATCH role="wizard" → ${br.status} (should be a 400 validation error)`);
 // ---------- last-admin lockout, invalid input ----------

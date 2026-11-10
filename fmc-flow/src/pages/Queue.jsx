@@ -9,12 +9,13 @@ export default function Queue({ user }) {
   const cfg = usePoll('/config', 15000); const [dep, setDep] = useState('');
   const q = usePoll(`/queue${dep ? `?department_id=${dep}` : ''}`, 3000);
   const now = useTicker(1000); const [pri, setPri] = useState(null); const [tl, setTl] = useState(null);
-  const canPri = ['admin', 'supervisor', 'reception'].includes(user.role);
+  const canPri = ['admin', 'supervisor', 'reception'].includes(user.role); const [cx, setCx] = useState(null);
   const config = cfg.data; if (!config) return <p className="muted">{t('loading')}</p>;
   const entries = q.data?.entries || [];
   const depts = config.departments.filter((d) => d.active && (config.scope_department == null || d.id === config.scope_department));
   const callNext = async () => { const d = dep || config.scope_department || depts[0]?.id; await run(() => api.post('/queue/call-next', { department_id: Number(d) })); q.reload(); };
   const savePri = async () => { const r = await run(() => api.patch(`/queue/${pri.id}/priority`, { priority: Number(pri.priority), reason: pri.reason }), t('priority')); if (r) { setPri(null); q.reload(); } };
+  const doCancel = async () => { const r = await run(() => api.post(`/queue/${cx.id}/cancel`, { kind: cx.kind, reason: cx.reason }), t(cx.kind === 'NO_SHOW' ? 'noShow' : 'cancelEntry')); if (r) { setCx(null); q.reload(); } };
   return (
     <div className="card">
       <h2><span className="row">{config.scope_department == null && <select value={dep} onChange={(e) => setDep(e.target.value)} style={{ width: 220 }}><option value="">{t('allDepartments')}</option>{depts.map((d) => <option key={d.id} value={d.id}>{loc(d)}</option>)}</select>}</span>
@@ -25,12 +26,16 @@ export default function Queue({ user }) {
           <tr key={e.id}><td><span className="q-no">{e.display}</span></td><td><b>{e.patient_name}</b><div className="small muted">{e.mrn}</div></td><td>{e.department}</td><td>{e.clinician || '—'}</td>
             <td>{fmt(e.created_at, { hour: '2-digit', minute: '2-digit' })}</td><td className="timer" style={{ fontSize: 15 }}>{fmtMs(now - Date.parse(e.created_at))}</td>
             <td>{e.priority ? <span title={e.priority_reason}><Chip s="WAITING" label={t(e.priority === 2 ? 'urgent' : 'high')} /></span> : <span className="muted">{t('normal')}</span>}{canPri && <button className="btn ghost sm" onClick={() => setPri({ id: e.id, priority: e.priority, reason: e.priority_reason || '' })}> ✎</button>}</td>
-            <td><Chip s={e.status} /></td><td><button className="btn ghost sm" onClick={() => setTl(e.visit_id)}>{t('timeline')}</button></td></tr>))}</tbody></table></div>}
+            <td><Chip s={e.status} /></td><td><div className="row"><button className="btn ghost sm" onClick={() => setTl(e.visit_id)}>{t('timeline')}</button>{canPri && <><button className="btn ghost sm" data-testid={`noshow-${e.id}`} onClick={() => setCx({ id: e.id, kind: 'NO_SHOW', reason: '', who: e.patient_name })}>{t('noShow')}</button><button className="btn ghost sm" data-testid={`cancel-${e.id}`} onClick={() => setCx({ id: e.id, kind: 'CANCELLED', reason: '', who: e.patient_name })}>{t('cancelEntry')}</button></>}</div></td></tr>))}</tbody></table></div>}
       <p className="small muted" style={{ marginTop: 10 }}>{t('priority')}: manual only · FIFO within equal priority.</p>
       {pri && <Modal title={t('priority')} onClose={() => setPri(null)}><div className="stack">
         <label>{t('priority')}<select value={pri.priority} onChange={(e) => setPri({ ...pri, priority: e.target.value })}><option value={0}>{t('normal')}</option><option value={1}>{t('high')}</option><option value={2}>{t('urgent')}</option></select></label>
         {Number(pri.priority) > 0 && <label>{t('reason')}<input value={pri.reason} onChange={(e) => setPri({ ...pri, reason: e.target.value })} /></label>}
         <button className="btn" onClick={savePri} disabled={Number(pri.priority) > 0 && !pri.reason.trim()}>{t('save')}</button></div></Modal>}
+      {cx && <Modal title={`${t(cx.kind === 'NO_SHOW' ? 'noShow' : 'cancelEntry')} — ${cx.who}`} onClose={() => setCx(null)}><div className="stack">
+        <p className="small">{t('cancelNote')}</p>
+        <label>{t('reason')}{cx.kind === 'NO_SHOW' ? ` (${t('optionalWord')})` : ''}<input data-testid="cancel-reason" value={cx.reason} onChange={(e) => setCx({ ...cx, reason: e.target.value })} /></label>
+        <button className="btn" disabled={cx.kind === 'CANCELLED' && cx.reason.trim().length < 3} onClick={doCancel}>{t('confirm')}</button></div></Modal>}
       {tl && <TimelineModal visitId={tl} onClose={() => setTl(null)} />}
     </div>
   );

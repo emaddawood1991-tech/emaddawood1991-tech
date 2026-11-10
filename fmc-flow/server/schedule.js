@@ -2,7 +2,7 @@
 // Reuses the existing patients, appointments, users and audit log. It never starts treatment timers and never changes check-in logic.
 import { tx } from './db.js';
 import { HttpError } from './ops.js';
-import { can, deptScope } from './perms.js';
+import { can, deptScope, deptJson } from './perms.js';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -58,8 +58,8 @@ export function makeSchedule(db, ops) {
   const { q, one, run, setting, audit, need, now } = ops;
   const tz = () => setting('timezone') || 'Asia/Dubai';
   const today = () => localOf(now(), tz()).date;
-  const scope = (user) => deptScope(user);
-  const deptOk = (user, depId) => { const s = scope(user); return s == null || depId == null || depId === s; };
+  const scope = (user) => deptScope(user); const scopeJ = (user) => deptJson(user);
+  const deptOk = (user, depId) => { const s = scope(user); return s == null || depId == null || s.includes(Number(depId)); };
   const canOverride = (user) => user.role === 'admin' || (user.role === 'supervisor' && Number(user.schedule_override) === 1);
   const needDept = (user, depId) => { if (!deptOk(user, depId)) throw new HttpError(403, 'OUT_OF_SCOPE', 'That department is outside your access.'); };
   const history = (apptId, user, action, detail = {}) => run('INSERT INTO appointment_history(appointment_id,ts,actor_id,action,detail) VALUES (?,?,?,?,?)', apptId, now(), user?.id ?? null, action, JSON.stringify(detail));
@@ -128,8 +128,8 @@ export function makeSchedule(db, ops) {
     const inc = f.include_hidden === '1' && can(user, 'config.manage');
     const depF = f.department_id ? Number(f.department_id) : null; const cliF = f.clinician_id ? Number(f.clinician_id) : null; const catF = f.category_id ? Number(f.category_id) : null;
     const groups = q('SELECT * FROM schedule_groups WHERE (?=1 OR active=1) ORDER BY sort_order,id', inc ? 1 : 0).filter((g) => deptOk(user, g.department_id) && (!depF || g.department_id == null || g.department_id === depF));
-    const sc = scope(user);
-    let appts = q(`${apptSelect} WHERE a.scheduled_at>=? AND a.scheduled_at<? AND a.status<>'CANCELLED' AND (? IS NULL OR a.department_id=?) AND (? IS NULL OR a.category_id=?) ORDER BY a.scheduled_at`, lo, hi, sc, sc, catF, catF).map(decorate);
+    const sc = scopeJ(user);
+    let appts = q(`${apptSelect} WHERE a.scheduled_at>=? AND a.scheduled_at<? AND a.status<>'CANCELLED' AND (? IS NULL OR a.department_id IN (SELECT value FROM json_each(?))) AND (? IS NULL OR a.category_id=?) ORDER BY a.scheduled_at`, lo, hi, sc, sc, catF, catF).map(decorate);
     const blocks = q('SELECT * FROM schedule_blocks WHERE active=1 AND start_at<? AND end_at>?', hi, lo).map((b) => ({ ...b, start_local: localOf(b.start_at, z).time, end_local: localOf(b.end_at, z).time }));
     const placed = new Set(); const rowByUser = new Map();
     const out = groups.map((g) => {
@@ -330,8 +330,8 @@ export function makeSchedule(db, ops) {
   const waitSelect = `SELECT w.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, p.phone, d.name department, u.name clinician FROM waiting_list w JOIN patients p ON p.id=w.patient_id JOIN departments d ON d.id=w.department_id LEFT JOIN users u ON u.id=w.clinician_id`;
   const CONTACT = ['NOT_CONTACTED', 'CONTACTED', 'NO_ANSWER', 'WILL_CALL_BACK', 'CONFIRMED'];
   function listWaiting(user, f = {}) {
-    need(user, 'schedule.view'); const sc = scope(user); const st = f.status || 'WAITING';
-    const rows = q(`${waitSelect} WHERE w.status=? AND (? IS NULL OR w.department_id=?) ORDER BY COALESCE(w.preferred_date,'9999'), w.id`, st, sc, sc);
+    need(user, 'schedule.view'); const sc = scopeJ(user); const st = f.status || 'WAITING';
+    const rows = q(`${waitSelect} WHERE w.status=? AND (? IS NULL OR w.department_id IN (SELECT value FROM json_each(?))) ORDER BY COALESCE(w.preferred_date,'9999'), w.id`, st, sc, sc);
     ops.logAccess(user, rows.map((r) => r.patient_id), 'SCHEDULE'); return rows;
   }
   function addWaiting(user, b = {}) {
@@ -360,9 +360,9 @@ export function makeSchedule(db, ops) {
 
   // ---------- cancellations ----------
   function listCancellations(user, f = {}) {
-    need(user, 'schedule.view'); const sc = scope(user); const z = tz();
+    need(user, 'schedule.view'); const sc = scopeJ(user); const z = tz();
     const from = f.from ? validDate(f.from, 'from') : '0000-00-00'; const to = f.to ? validDate(f.to, 'to') : '9999-12-31'; // newest first; optional date range
-    const list = q(`${apptSelect} WHERE a.status='CANCELLED' AND (? IS NULL OR a.department_id=?) ORDER BY a.cancelled_at DESC LIMIT 300`, sc, sc).map((a) => {
+    const list = q(`${apptSelect} WHERE a.status='CANCELLED' AND (? IS NULL OR a.department_id IN (SELECT value FROM json_each(?))) ORDER BY a.cancelled_at DESC LIMIT 300`, sc, sc).map((a) => {
       const d = decorate(a); const rb = one('SELECT id,ref,scheduled_at FROM appointments WHERE rebooks_id=? AND status<>\'CANCELLED\' ORDER BY id DESC', a.id);
       const by = a.cancelled_by ? one('SELECT name FROM users WHERE id=?', a.cancelled_by)?.name : null;
       return { ...d, cancelled_by_name: by, reschedule_status: rb ? 'REBOOKED' : 'PENDING', rebooked_ref: rb?.ref ?? null, rebooked_at: rb?.scheduled_at ?? null };
@@ -373,9 +373,9 @@ export function makeSchedule(db, ops) {
   // ---------- call / task lists ----------
   const taskSelect = `SELECT t.*, p.mrn, p.name patient_name, p.name_ar patient_name_ar, u.name assignee, cb.name created_by_name FROM schedule_tasks t LEFT JOIN patients p ON p.id=t.patient_id LEFT JOIN users u ON u.id=t.assigned_to LEFT JOIN users cb ON cb.id=t.created_by`;
   function listTasks(user, f = {}) {
-    need(user, 'schedule.view'); const sc = scope(user);
+    need(user, 'schedule.view'); const sc = scopeJ(user);
     const kind = f.kind && TASK_KINDS.includes(f.kind) ? f.kind : null; const open = f.status === 'all' ? 0 : 1;
-    const rows = q(`${taskSelect} WHERE (? IS NULL OR t.kind=?) AND (?=0 OR t.status IN ('OPEN','IN_PROGRESS')) AND (? IS NULL OR t.department_id IS NULL OR t.department_id=?) ORDER BY COALESCE(t.due_date,'9999'), t.id DESC LIMIT 300`, kind, kind, open, sc, sc);
+    const rows = q(`${taskSelect} WHERE (? IS NULL OR t.kind=?) AND (?=0 OR t.status IN ('OPEN','IN_PROGRESS')) AND (? IS NULL OR t.department_id IS NULL OR t.department_id IN (SELECT value FROM json_each(?))) ORDER BY COALESCE(t.due_date,'9999'), t.id DESC LIMIT 300`, kind, kind, open, sc, sc);
     ops.logAccess(user, rows.map((r) => r.patient_id), 'SCHEDULE'); return rows;
   }
   function addTask(user, b = {}) {
@@ -387,7 +387,7 @@ export function makeSchedule(db, ops) {
     if (b.department_id) needDept(user, Number(b.department_id));
     if (b.assigned_to && !one('SELECT 1 x FROM users WHERE id=? AND active=1', b.assigned_to)) bad({ assigned_to: 'Choose an active staff member.' });
     const id = Number(run('INSERT INTO schedule_tasks(kind,patient_id,department_id,appointment_id,title,notes,assigned_to,due_date,created_by,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)',
-      b.kind, b.patient_id || null, b.department_id || scope(user), b.appointment_id || null, String(b.title || '').slice(0, 120), String(b.notes || '').slice(0, 500), b.assigned_to || null, b.due_date || null, user.id, now()).lastInsertRowid);
+      b.kind, b.patient_id || null, b.department_id || (scope(user) || [])[0] || null, b.appointment_id || null, String(b.title || '').slice(0, 120), String(b.notes || '').slice(0, 500), b.assigned_to || null, b.due_date || null, user.id, now()).lastInsertRowid);
     audit(user, 'schedule.task.create', 'task', id, { kind: b.kind });
     return one(`${taskSelect} WHERE t.id=?`, id);
   }

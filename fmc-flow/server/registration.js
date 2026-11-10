@@ -1,7 +1,7 @@
 // Patient registration: validation, MRN handling, duplicate protection, register + check-in.
 import { tx } from './db.js';
 import { HttpError, now } from './ops.js';
-import { deptScope } from './perms.js';
+import { deptScope, deptJson } from './perms.js';
 
 const ARABIC_LETTER = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
 const MRN_RE = /^[A-Z0-9][A-Z0-9\-/]{2,29}$/;
@@ -109,6 +109,30 @@ export function makeRegistration(db, ops) {
     return one('SELECT * FROM patients WHERE id=?', id);
   }
 
+  /** Corrects demographics. The EMR number never changes. Every change keeps the previous value in an append-only history. */
+  function updatePatient(user, id, input = {}) {
+    need(user, 'patients.write');
+    return tx(db, () => {
+      const cur = one('SELECT * FROM patients WHERE id=?', id) || fail404();
+      if (input.mrn !== undefined && String(input.mrn).trim().toUpperCase() !== cur.mrn) bad({ mrn: 'The EMR number cannot be changed.' });
+      const FIELDS = ['name', 'name_ar', 'dob', 'sex', 'phone'];
+      const merged = Object.fromEntries(FIELDS.map((k) => [k, input[k] !== undefined ? input[k] : (k === 'phone' ? cur.phone : cur[k])]));
+      const v = validate(merged);
+      const identityChanged = ['name', 'name_ar', 'dob', 'phone'].some((k) => (v[k] ?? (k === 'name_ar' ? '' : null)) !== (cur[k] ?? (k === 'name_ar' ? '' : null)));
+      const dups = identityChanged ? candidates(v).filter((d) => d.id !== cur.id) : []; // fixing sex on an existing duplicate pair must not be blocked
+      if (dups.length && !input.confirm_duplicate) throw new HttpError(409, 'POSSIBLE_DUPLICATE', 'These details match another patient. Check that you are not creating a duplicate, or confirm that they are different people.', { existing: dups });
+      const changes = {};
+      for (const k of FIELDS) { const to = v[k] ?? (k === 'name_ar' ? '' : null); const from = cur[k] ?? (k === 'name_ar' ? '' : null); if (to !== from) changes[k] = { from, to }; }
+      if (!Object.keys(changes).length) return cur;
+      run('UPDATE patients SET name=?, name_ar=?, dob=?, sex=?, phone=? WHERE id=?', v.name, v.name_ar, v.dob, v.sex, v.phone, cur.id);
+      run('INSERT INTO patient_changes(patient_id,ts,actor_id,changes) VALUES (?,?,?,?)', cur.id, now(), user.id, JSON.stringify(changes));
+      audit(user, 'patient.update', 'patient', cur.id, { fields: Object.keys(changes), duplicate_override: !!(dups.length && input.confirm_duplicate) });
+      return one('SELECT * FROM patients WHERE id=?', cur.id);
+    });
+  }
+  const fail404 = () => { throw new HttpError(404, 'NOT_FOUND', 'Patient not found.'); };
+  const changesOf = (user, id) => { need(user, 'patients.write'); if (!one('SELECT 1 x FROM patients WHERE id=?', id)) fail404(); ops.logAccess(user, [id], 'PATIENT_EDIT'); return q('SELECT c.id,c.ts,c.changes,u.name actor FROM patient_changes c LEFT JOIN users u ON u.id=c.actor_id WHERE c.patient_id=? ORDER BY c.id DESC', id).map((c) => ({ ...c, changes: JSON.parse(c.changes) })); };
+
   function createPatient(user, input = {}) {
     need(user, 'patients.write');
     return tx(db, () => {
@@ -139,7 +163,7 @@ export function makeRegistration(db, ops) {
   function search(user, term) {
     need(user, 'patients.read');
     const raw = String(term ?? '').trim();
-    const sc = deptScope(user); // a department-scoped user only finds patients who have an appointment, queue entry, session or waiting-list entry in their department
+    const sc = deptJson(user); // a department-scoped user only finds patients who have an appointment, queue entry, session or waiting-list entry in their department
     const like = `%${raw.replace(/[\\%_]/g, '\\$&')}%`; // wildcards typed by the user are literal characters
     const digits = raw.replace(/[٠-٩]/g, (c) => ARABIC_INDIC[c]).replace(/\D/g, '').replace(/^0+/, ''); // national numbers start with 0; stored numbers are +CC…
     audit(user, 'patients.search', 'patient', null, { q_len: raw.length, scoped: sc != null });
@@ -147,14 +171,14 @@ export function makeRegistration(db, ops) {
     const found = q(`SELECT p.*, (SELECT id FROM visits v WHERE v.patient_id=p.id AND v.status='OPEN') open_visit_id FROM patients p
       WHERE (p.name LIKE ? ESCAPE '\\' OR p.name_ar LIKE ? ESCAPE '\\' OR p.mrn LIKE ? ESCAPE '\\' OR CAST(p.id AS TEXT)=?
         OR (? <> '' AND length(?) >= 4 AND REPLACE(COALESCE(p.phone,''),'+','') LIKE ?))
-        AND (? IS NULL OR EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id=p.id AND a.department_id=?)
-          OR EXISTS (SELECT 1 FROM queue_entries qe JOIN visits vv ON vv.id=qe.visit_id WHERE vv.patient_id=p.id AND qe.department_id=?)
-          OR EXISTS (SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.patient_id=p.id AND sv.department_id=?)
-          OR EXISTS (SELECT 1 FROM waiting_list w WHERE w.patient_id=p.id AND w.department_id=?))
+        AND (? IS NULL OR EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id=p.id AND a.department_id IN (SELECT value FROM json_each(?)))
+          OR EXISTS (SELECT 1 FROM queue_entries qe JOIN visits vv ON vv.id=qe.visit_id WHERE vv.patient_id=p.id AND qe.department_id IN (SELECT value FROM json_each(?)))
+          OR EXISTS (SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.patient_id=p.id AND sv.department_id IN (SELECT value FROM json_each(?)))
+          OR EXISTS (SELECT 1 FROM waiting_list w WHERE w.patient_id=p.id AND w.department_id IN (SELECT value FROM json_each(?))))
       ORDER BY p.name LIMIT 30`, like, like, like, raw, digits, digits, `%${digits}%`, sc, sc, sc, sc, sc);
     ops.logAccess(user, found.map((p) => p.id), 'SEARCH'); // who was shown which patients
     return found;
   }
 
-  return { createPatient, register, search, validate, genders };
+  return { createPatient, updatePatient, changesOf, register, search, validate, genders };
 }

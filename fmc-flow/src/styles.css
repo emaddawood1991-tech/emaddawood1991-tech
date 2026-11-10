@@ -58,7 +58,7 @@ td { padding: 9px 10px; border-top: 1px solid rgba(46, 85, 178, .1); vertical-al
 
 .rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
 .room { padding: 14px; border-radius: 16px; background: var(--glass-strong); border: 1px solid var(--glass-border); border-inline-start: 5px solid var(--ok); display: grid; gap: 6px; }
-.room.OCCUPIED { border-inline-start-color: var(--blue); } .room.CLEANING { border-inline-start-color: var(--warn); } .room.MAINTENANCE, .room.OUT_OF_SERVICE { border-inline-start-color: var(--bad); }
+.room.OCCUPIED, .room.IN_USE { border-inline-start-color: var(--blue); } .room.CLEANING { border-inline-start-color: var(--warn); } .room.MAINTENANCE, .room.OUT_OF_SERVICE { border-inline-start-color: var(--bad); }
 .beds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; } .bed { text-align: center; padding: 4px; border-radius: 8px; font-size: 11px; font-weight: 700; background: rgba(31, 157, 107, .18); color: #0f6d49; } .bed.busy { background: rgba(46, 85, 178, .2); color: var(--navy); }
 
 .banner { padding: 11px 16px; border-radius: 14px; font-weight: 600; } .banner.bad { background: rgba(209, 47, 54, .15); color: #8f1519; border: 1px solid rgba(209, 47, 54, .35); }

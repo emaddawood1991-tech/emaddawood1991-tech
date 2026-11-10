@@ -6,7 +6,7 @@ import { ActivityTable } from './Account.jsx';
 
 const EVENTS = ['RECOVERY_REQUESTED', 'MFA_ENABLED', 'MFA_DISABLED', 'MFA_RESET', 'MFA_RECOVERY_USED', 'MFA_CODES_REGENERATED', 'LOGIN_OK', 'LOGIN_FAILED', 'LOGIN_BLOCKED', 'LOGOUT', 'PASSWORD_CHANGED', 'PASSWORD_CHANGE_FAILED', 'PASSWORD_RESET', 'SESSIONS_REVOKED', 'USERNAME_CHANGED'];
 const SUBS = [['accounts', 'saAccounts'], ['roles', 'saRoles'], ['activity', 'saLoginActivity'], ['access', 'saPatientAccess'], ['alerts', 'saAlerts'], ['audit', 'saAuditHistory'], ['settings', 'saSettings'], ['readiness', 'saReadiness'], ['recovery', 'saRecovery']];
-const KINDS = ['BREAK_GLASS', 'SEARCH', 'SCHEDULE', 'VISITS', 'QUEUE', 'SESSIONS', 'TIMELINE', 'CLINICAL_NOTE', 'APPOINTMENT', 'CORRECTIONS', 'REPORT', 'EXPORT'];
+const KINDS = ['PATIENT_EDIT', 'BREAK_GLASS', 'SEARCH', 'SCHEDULE', 'VISITS', 'QUEUE', 'SESSIONS', 'TIMELINE', 'CLINICAL_NOTE', 'APPOINTMENT', 'CORRECTIONS', 'REPORT', 'EXPORT'];
 
 function Accounts() {
   const { t, loc, fmtDT } = useI18n(); const toast = useToast();

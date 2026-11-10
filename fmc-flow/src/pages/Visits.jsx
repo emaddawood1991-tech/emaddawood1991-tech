@@ -2,14 +2,14 @@ import { Fragment, useState } from 'react';
 import { api, usePoll, useTicker } from '../api.js';
 import { useI18n, fmtWait, waitingView } from '../i18n.jsx';
 import { Chip, Empty, useAction, useToast } from '../ui.jsx';
-import PatientFormModal from './PatientForm.jsx';
+import PatientFormModal, { PatientEditModal } from './PatientForm.jsx';
 import { CorrectionModal, RoomPickerModal, ScheduleBadge, SessionControls, StartSessionModal, TimelineModal, TimingGrid } from './shared.jsx';
 
 function CheckIn({ config, staff, onDone, canWrite }) {
   const { t, loc, fmt } = useI18n(); const { run, busy } = useAction(); const toast = useToast();
   const [q, setQ] = useState(''); const [found, setFound] = useState(null); const [p, setP] = useState(null);
   const [f, setF] = useState({ appointmentId: '', departmentId: '', serviceId: '', clinicianId: '' });
-  const [errs, setErrs] = useState({}); const [open, setOpen] = useState(false);
+  const [errs, setErrs] = useState({}); const [open, setOpen] = useState(false); const [editing, setEditing] = useState(false);
   const appts = usePoll('/appointments', 0);
   const needService = config.settings.require_service_at_checkin === '1';
   const search = async (v) => { setQ(v); if (v.trim().length < 3) return setFound(null); try { setFound(await api.get(`/patients?q=${encodeURIComponent(v.trim())}`)); } catch { /* connection banner explains */ } };
@@ -37,7 +37,7 @@ function CheckIn({ config, staff, onDone, canWrite }) {
             </button>
           ))}
         </> : <>
-          <div className="row" style={{ justifyContent: 'space-between' }}><span><span className="muted small">{t('patientSelected')}: </span><b>{loc(p)} · {p.mrn}</b></span><button className="btn ghost sm" onClick={reset}>{t('changePatient')}</button></div>
+          <div className="row" style={{ justifyContent: 'space-between' }}><span><span className="muted small">{t('patientSelected')}: </span><b>{loc(p)} · {p.mrn}</b></span><span className="row">{canWrite && <button className="btn ghost sm" data-testid="edit-patient" onClick={() => setEditing(true)}>{t('editPatient')}</button>}<button className="btn ghost sm" onClick={reset}>{t('changePatient')}</button></span></div>
           <div className="field"><label htmlFor="ci-appt">{t('appointment')} <span className="opt">· {t('optionalWord')}</span></label>
             <select id="ci-appt" value={f.appointmentId} onChange={(e) => pick(myAppts.find((a) => String(a.id) === e.target.value))}>
               <option value="">{t('walkIn')}</option>{myAppts.map((a) => <option key={a.id} value={a.id}>{a.ref} · {fmt(a.scheduled_at, { hour: '2-digit', minute: '2-digit' })} · {a.department}</option>)}</select></div>
@@ -53,6 +53,7 @@ function CheckIn({ config, staff, onDone, canWrite }) {
           <button className="btn" disabled={busy || !f.departmentId} onClick={() => run(submit)}>{t('checkIn')}</button>
         </>}
       </div>
+      {editing && p && <PatientEditModal patient={p} config={config} onClose={() => setEditing(false)} onSaved={(r) => setP({ ...p, ...r })} />}
       {open && <PatientFormModal config={config} staff={staff} onClose={() => setOpen(false)} onUse={(x) => { setP(x); setFound(null); }}
         onSaved={(r, checkedIn) => { if (checkedIn) { reset(); onDone(); } else { setP(r); setQ(''); setFound(null); } }} />}
     </div>

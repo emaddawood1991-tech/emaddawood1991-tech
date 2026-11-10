@@ -10,6 +10,7 @@ export const PERMS = {
   'queue.view': ALL,
   'queue.call': ['admin', 'supervisor', 'reception', 'clinician'],
   'queue.priority': ['admin', 'supervisor', 'reception'],
+  'queue.cancel': ['admin', 'supervisor', 'reception'],
   'room.assign': ['admin', 'supervisor', 'reception', 'clinician'],
   'room.cleaning': ['admin', 'supervisor', 'reception', 'clinician'],
   'room.maintenance': ['admin', 'supervisor'],
@@ -30,6 +31,11 @@ export const PERMS = {
 
 export const can = (user, perm) => !!user && (PERMS[perm] || []).includes(user.role);
 
-/** Department scope: null = all departments; otherwise a single department id. */
-export const deptScope = (user) =>
-  user.role === 'admin' || !user.department_id ? null : user.department_id;
+/** Department scope: null = all departments; otherwise the list of department ids the person works in (their own plus any extra ones an administrator granted). */
+export const deptScope = (user) => {
+  if (user.role === 'admin' || !user.department_id) return null;
+  return [...new Set([user.department_id, ...(user.department_ids || [])].map(Number))];
+};
+/** The same scope as JSON for SQL (`col IN (SELECT value FROM json_each(?))`), or null for everyone. */
+export const deptJson = (user) => { const s = deptScope(user); return s == null ? null : JSON.stringify(s); };
+export const inScope = (user, depId) => { const s = deptScope(user); return s == null || s.includes(Number(depId)); };

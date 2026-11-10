@@ -16,7 +16,7 @@ export default function Dashboard({ user, staff }) {
   return (
     <>
       <div className="kpis">
-        {[[t('waiting'), entries.filter((e) => e.status === 'WAITING').length], [t('inTreatment'), sessions.length], [t('roomsFree'), rooms.filter((r) => r.display_status === 'AVAILABLE').length], [t('staffAvail'), staff.filter((s) => s.availability === 'AVAILABLE').length]]
+        {[[t('waiting'), entries.filter((e) => e.status === 'WAITING').length], [t('inTreatment'), sessions.length], [t('roomsFree'), rooms.filter((r) => ['AVAILABLE', 'IN_USE'].includes(r.display_status)).length], [t('staffAvail'), staff.filter((s) => s.availability === 'AVAILABLE').length]]
           .map(([l, v]) => <div key={l} className="card kpi"><b>{v}</b><span>{l}</span></div>)}
       </div>
       <div className="grid g2">

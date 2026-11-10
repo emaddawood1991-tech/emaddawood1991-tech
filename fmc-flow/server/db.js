@@ -247,6 +247,16 @@ CREATE TABLE IF NOT EXISTS break_glass_grants (
 );
 CREATE TRIGGER IF NOT EXISTS breakglass_no_delete BEFORE DELETE ON break_glass_grants BEGIN SELECT RAISE(ABORT,'break_glass_grants is append-only'); END;
 
+CREATE TABLE IF NOT EXISTS user_departments (
+  user_id INTEGER NOT NULL REFERENCES users(id), department_id INTEGER NOT NULL REFERENCES departments(id), PRIMARY KEY (user_id, department_id)
+);
+CREATE TABLE IF NOT EXISTS patient_changes (
+  id INTEGER PRIMARY KEY, patient_id INTEGER NOT NULL REFERENCES patients(id), ts TEXT NOT NULL, actor_id INTEGER, changes TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS patient_changes_patient ON patient_changes(patient_id, id);
+CREATE TRIGGER IF NOT EXISTS patient_changes_no_update BEFORE UPDATE ON patient_changes BEGIN SELECT RAISE(ABORT,'patient_changes is append-only'); END;
+CREATE TRIGGER IF NOT EXISTS patient_changes_no_delete BEFORE DELETE ON patient_changes BEGIN SELECT RAISE(ABORT,'patient_changes is append-only'); END;
+
 -- Append-only guarantees (enforced in the database, not just the API)
 CREATE TRIGGER IF NOT EXISTS events_no_update BEFORE UPDATE ON events
   BEGIN SELECT RAISE(ABORT, 'events are append-only'); END;

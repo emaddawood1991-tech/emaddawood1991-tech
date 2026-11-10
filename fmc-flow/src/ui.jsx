@@ -48,7 +48,7 @@ export function Modal({ title, onClose, children, wide }) {
   );
 }
 
-const TONE = { AVAILABLE: 'ok', OCCUPIED: '', CLEANING: 'warn', MAINTENANCE: 'bad', OUT_OF_SERVICE: 'bad', BUSY: 'warn', ON_BREAK: 'mute', OFF_DUTY: 'mute', UNAVAILABLE: 'bad',
+const TONE = { AVAILABLE: 'ok', IN_USE: 'ok', OCCUPIED: '', CLEANING: 'warn', MAINTENANCE: 'bad', OUT_OF_SERVICE: 'bad', BUSY: 'warn', ON_BREAK: 'mute', OFF_DUTY: 'mute', UNAVAILABLE: 'bad',
   WAITING: 'warn', CALLED: '', IN_ROOM: '', DONE: 'mute', ACTIVE: 'ok', PAUSED: 'warn', COMPLETED: 'mute', OPEN: 'ok', CHECKED_OUT: 'mute', PENDING: 'warn', APPROVED: 'ok', REJECTED: 'bad' };
 export function Chip({ s, label }) {
   const { t } = useI18n();

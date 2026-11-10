@@ -128,3 +128,32 @@ export default function PatientFormModal({ config, staff, onClose, onSaved, onUs
     </Modal>
   );
 }
+
+/** Corrects an existing patient's details. The EMR number is shown but never editable; previous values stay in the change history. */
+export function PatientEditModal({ patient, config, onClose, onSaved }) {
+  const { t, fmtDT } = useI18n(); const toast = useToast();
+  const genders = useMemo(() => { try { return JSON.parse(config.settings.gender_options) || []; } catch { return []; } }, [config.settings.gender_options]);
+  const [f, setF] = useState({ name: patient.name || '', name_ar: patient.name_ar || '', dob: patient.dob || '', sex: patient.sex || '', phone: patient.phone || '' });
+  const [errs, setErrs] = useState({}); const [dups, setDups] = useState(null); const [busy, setBusy] = useState(false); const [hist, setHist] = useState(null);
+  const save = async (confirm) => {
+    setBusy(true); setErrs({});
+    try { const r = await api.patch(`/patients/${patient.id}`, { ...f, ...(confirm ? { confirm_duplicate: true } : {}) }); toast(t('saSaved')); onSaved(r); onClose(); }
+    catch (e) { if (e.code === 'POSSIBLE_DUPLICATE') setDups(e.details?.existing || []); else { setErrs(e.details?.fields || {}); toast(e.message, true); } }
+    finally { setBusy(false); }
+  };
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  return (
+    <Modal title={t('editPatient')} onClose={onClose}><div className="stack" data-testid="patient-edit">
+      <p className="small muted">{t('emrFixed')}: <b>{patient.mrn}</b></p>
+      <Field id="pe-name" label={t('name')} required error={errs.name}><input {...aria('pe-name', errs.name, null, true)} value={f.name} onChange={set('name')} /></Field>
+      <Field id="pe-name-ar" label={t('nameAr')} error={errs.name_ar}><input {...aria('pe-name-ar', errs.name_ar)} dir="rtl" value={f.name_ar} onChange={set('name_ar')} /></Field>
+      <div className="form-grid">
+        <Field id="pe-dob" label={t('dob')} error={errs.dob}><input {...aria('pe-dob', errs.dob)} type="date" value={f.dob} onChange={set('dob')} /></Field>
+        <Field id="pe-sex" label={t('sex')} error={errs.sex}><select {...aria('pe-sex', errs.sex)} value={f.sex} onChange={set('sex')}><option value="">—</option>{genders.map((g) => <option key={g.code} value={g.code}>{g.en}</option>)}</select></Field></div>
+      <Field id="pe-phone" label={t('phone')} error={errs.phone}><input {...aria('pe-phone', errs.phone)} value={f.phone} onChange={set('phone')} /></Field>
+      {dups && <div className="banner warn" role="alert">{t('dupWarn')} {dups.map((d) => `${d.name} (${d.mrn})`).join(', ')}<div className="row"><button className="btn sm" onClick={() => save(true)}>{t('dupConfirm')}</button></div></div>}
+      <div className="row"><button className="btn" disabled={busy || !f.name.trim()} onClick={() => save(false)}>{t('save')}</button>
+        <button className="btn ghost sm" onClick={async () => { try { setHist(await api.get(`/patients/${patient.id}/changes`)); } catch (e) { toast(e.message, true); } }}>{t('changeHistory')}</button></div>
+      {hist && (hist.length === 0 ? <p className="muted small">{t('noChanges')}</p> : <div className="tbl"><table data-testid="patient-history"><tbody>{hist.map((h) => <tr key={h.id}><td className="small">{fmtDT(h.ts)} · {h.actor}</td><td className="small">{Object.entries(h.changes).map(([k, v]) => `${k}: ${v.from ?? '—'} → ${v.to ?? '—'}`).join('; ')}</td></tr>)}</tbody></table></div>)}
+    </div></Modal>);
+}
