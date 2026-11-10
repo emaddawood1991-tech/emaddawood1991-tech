@@ -1,6 +1,7 @@
 // Account security (stage S2): password policy, change password, sessions, login activity, administrator account tools.
 // Passwords are never stored or returned in plaintext; hashing functions are passed in from app.js.
 import { PERMS } from './perms.js';
+import { ROLE_TEMPLATES, listRoutes } from './roles.js';
 
 const COMMON = new Set(['password', 'password1', 'password123', 'passw0rd', 'p@ssw0rd', 'p@ssword1', 'qwerty123', 'qwertyuiop', '1234567890', '123456789012', 'letmein123', 'welcome123', 'welcome1234',
   'admin123456', 'administrator', 'changeme123', 'iloveyou123', 'abc123456789', 'monkey12345', 'dragon12345', 'football123', 'baseball123', 'sunshine123', 'princess123', 'master12345',
@@ -105,7 +106,7 @@ export function makeAccounts({ db, ops, tx, HttpError, hashPassword, verifyPassw
       res.json(q(`SELECT e.id,e.ts,e.event,e.ip,e.user_agent,e.detail,u.username,u.name FROM login_events e LEFT JOIN users u ON u.id=e.user_id
         WHERE (? IS NULL OR e.user_id=?) AND (? IS NULL OR e.event=?) ORDER BY e.id DESC LIMIT ?`, uid, uid, ev, ev, Math.min(Number(req.query.limit) || 100, 500)).map((e) => ({ ...e, detail: JSON.parse(e.detail) })));
     });
-    app.get('/api/security/permissions', admin(), (_req, res) => res.json({ roles: ['admin', 'supervisor', 'reception', 'clinician'], permissions: PERMS,
+    app.get('/api/security/permissions', admin(), (_req, res) => res.json({ roles: ['admin', 'supervisor', 'reception', 'clinician'], permissions: PERMS, templates: ROLE_TEMPLATES, endpoints: listRoutes(app),
       note: 'Clinical service authorization is separate: it is granted per clinician and service (Settings → Staff) and administrator status never grants it.' }));
     app.post('/api/security/users/:id/revoke-sessions', admin(), (req, res) => {
       const id = Number(req.params.id); if (!one('SELECT 1 x FROM users WHERE id=?', id)) throw new HttpError(404, 'NOT_FOUND', 'Account not found.');

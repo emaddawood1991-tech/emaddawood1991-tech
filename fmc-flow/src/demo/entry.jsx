@@ -36,7 +36,7 @@ async function boot() {
     const headers = Object.fromEntries(Object.entries(opts.headers || {}).map(([k, v]) => [k.toLowerCase(), v]));
     if (cookie) headers.cookie = cookie;
     let body; try { body = opts.body ? JSON.parse(opts.body) : {}; } catch { body = {}; }
-    const req = { method, path: url.pathname, url: url.pathname, query: Object.fromEntries(url.searchParams), headers, body, ip: '127.0.0.1', params: {} };
+    const req = { method, path: url.pathname, url: url.pathname, originalUrl: url.pathname + url.search, query: Object.fromEntries(url.searchParams), headers, body, ip: '127.0.0.1', params: {} };
     const res = makeRes();
     await app.handle(req, res);
     const sc = res.headers['set-cookie'];

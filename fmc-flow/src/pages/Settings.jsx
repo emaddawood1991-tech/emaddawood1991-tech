@@ -28,9 +28,10 @@ function Table({ title, endpoint, rows, fields, reload, extra, extraCols = [] })
 }
 
 function StaffAdmin({ staff, config, reload }) {
-  const { t, loc } = useI18n(); const { run } = useAction(); const [e, setE] = useState(null); const [sch, setSch] = useState(null);
+  const { t, loc, lang } = useI18n(); const { run } = useAction(); const [e, setE] = useState(null); const [sch, setSch] = useState(null); const tpls = usePoll('/security/permissions', 0).data?.templates || [];
+  const pickTemplate = (key) => { const x = tpls.find((q) => q.key === key); setE((c) => ({ ...c, _tpl: true, role_template: key, ...(x ? { role: x.base_role, ...(x.needs_department ? {} : { department_id: '' }) } : {}) })); };
   const save = async () => {
-    const body = { name: e.name, name_ar: e.name_ar, role: e.role, department_id: e.department_id ? Number(e.department_id) : null, service_ids: e.service_ids || [], ...(e.id && e.role === 'supervisor' ? { schedule_override: e.schedule_override ? 1 : 0 } : {}) };
+    const body = { name: e.name, name_ar: e.name_ar, role: e.role, ...(e._tpl && e.role_template ? { role_template: e.role_template } : {}), department_id: e.department_id ? Number(e.department_id) : null, service_ids: e.service_ids || [], ...(e.id && e.role === 'supervisor' ? { schedule_override: e.schedule_override ? 1 : 0 } : {}) };
     const r = await run(() => (e.id ? api.patch(`/config/staff/${e.id}`, { ...body, ...(e.password ? { password: e.password } : {}), active: e.active ? 1 : 0 }) : api.post('/config/staff', { ...body, username: e.username, password: e.password })), t('save'));
     if (r) { setE(null); reload(); }
   };
@@ -40,14 +41,15 @@ function StaffAdmin({ staff, config, reload }) {
   return (
     <div className="card"><h2>{t('staff')}<button className="btn sm" onClick={() => setE({ username: '', name: '', name_ar: '', role: 'clinician', department_id: '', password: '', service_ids: [], active: 1 })}>＋ {t('add')}</button></h2>
       <div className="tbl"><table><thead><tr><th>{t('name')}</th><th>{t('role')}</th><th>{t('department')}</th><th>{t('status')}</th><th>{t('authorizedServices')}</th><th /></tr></thead>
-        <tbody>{staff.map((s) => <tr key={s.id}><td>{loc(s)}<div className="small muted">{s.username}</div></td><td>{s.role}</td><td>{loc(config.departments.find((d) => d.id === s.department_id) || {}) || '—'}</td><td>{s.active ? <Chip s={s.availability} /> : <Chip s="REJECTED" label="inactive" />}</td>
+        <tbody>{staff.map((s) => <tr key={s.id}><td>{loc(s)}<div className="small muted">{s.username}</div></td><td>{s.role}<div className="small muted">{(() => { const x = tpls.find((q) => q.key === s.role_template); return x ? (lang === 'ar' ? x.name_ar : x.name) : ''; })()}</div></td><td>{loc(config.departments.find((d) => d.id === s.department_id) || {}) || '—'}</td><td>{s.active ? <Chip s={s.availability} /> : <Chip s="REJECTED" label="inactive" />}</td>
           <td className="small">{s.service_ids.map((id) => config.services.find((x) => x.id === id)?.name).filter(Boolean).join(', ') || '—'}</td>
           <td><div className="row"><button className="btn ghost sm" onClick={() => setE({ ...s })}>{t('edit')}</button><button className="btn ghost sm" onClick={() => openSch(s)}>{t('schedule')}</button></div></td></tr>)}</tbody></table></div>
       {e && <Modal title={t('staff')} onClose={() => setE(null)}><div className="stack">
         {!e.id && <label>{t('username')}<input value={e.username} onChange={(x) => setE({ ...e, username: x.target.value })} /></label>}
         <label>{t('name')}<input value={e.name} onChange={(x) => setE({ ...e, name: x.target.value })} /></label>
         <label>{t('nameAr')}<input dir="rtl" value={e.name_ar} onChange={(x) => setE({ ...e, name_ar: x.target.value })} /></label>
-        <div className="form-grid"><label>{t('role')}<select value={e.role} onChange={(x) => setE({ ...e, role: x.target.value })}>{['admin', 'supervisor', 'reception', 'clinician'].map((r) => <option key={r}>{r}</option>)}</select></label>
+        <label>{t('saTemplate')}<select data-testid="staff-template" value={e.role_template || ''} onChange={(x) => pickTemplate(x.target.value)}><option value="">{t('saTemplateNone')}</option>{tpls.map((q) => <option key={q.key} value={q.key}>{lang === 'ar' ? q.name_ar : q.name}</option>)}</select></label>
+        <div className="form-grid"><label>{t('role')}<select value={e.role} onChange={(x) => setE({ ...e, role: x.target.value, role_template: '' })}>{['admin', 'supervisor', 'reception', 'clinician'].map((r) => <option key={r}>{r}</option>)}</select></label>
           <label>{t('department')}<select value={e.department_id ?? ''} onChange={(x) => setE({ ...e, department_id: x.target.value })}><option value="">—</option>{config.departments.map((d) => <option key={d.id} value={d.id}>{loc(d)}</option>)}</select></label></div>
         <label>{t('password')} {e.id && '(leave blank to keep)'}<input type="password" autoComplete="new-password" value={e.password || ''} onChange={(x) => setE({ ...e, password: x.target.value })} /></label>
         <fieldset style={{ border: '1px solid rgba(46,85,178,.2)', borderRadius: 12 }}><legend className="small">{t('authorizedServices')}</legend>

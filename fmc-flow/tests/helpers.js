@@ -23,6 +23,6 @@ export async function boot({ gap = 0, autoClose = 0 } = {}) {
     };
     return { user: body.user, get: (p) => call('GET', p), post: (p, d) => call('POST', p, d || {}), put: (p, d) => call('PUT', p, d || {}), patch: (p, d) => call('PATCH', p, d || {}) };
   }
-  return { db, ops, base, login, close: () => server.close() };
+  return { db, ops, app, base, login, close: () => server.close() };
 }
 export const byName = (list, key, val) => list.find((x) => x[key] === val);

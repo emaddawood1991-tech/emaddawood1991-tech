@@ -12,7 +12,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   // administrator creates an account (Settings → Staff form)
   await adm.click('.nav a:has-text("Settings")'); await adm.click('.tabs button:has-text("Staff")'); await adm.click('.card button:has-text("Add")');
   await adm.locator('.modal input').nth(0).fill('e2e.user'); await adm.locator('.modal input').nth(1).fill('E2E Account User');
-  await adm.selectOption('.modal select >> nth=0', 'reception'); await adm.fill('.modal input[type=password]', 'aaaaaaaaaa'); await adm.click('.modal button:has-text("Save")');
+  await adm.selectOption('.modal select >> nth=1', 'reception'); await adm.fill('.modal input[type=password]', 'aaaaaaaaaa'); await adm.click('.modal button:has-text("Save")');
   await adm.waitForSelector('.toast', { timeout: 5000 }).catch(() => {});
   ok(await adm.locator('.modal').count() === 1, 'a weak password is refused when an account is created');
   await adm.fill('.modal input[type=password]', TEMP); await adm.click('.modal button:has-text("Save")'); await adm.waitForSelector('.modal', { state: 'detached' });

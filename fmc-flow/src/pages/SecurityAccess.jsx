@@ -34,12 +34,21 @@ function Accounts() {
 }
 
 function Roles() {
-  const { t } = useI18n(); const r = usePoll('/security/permissions', 0).data;
+  const { t, loc, lang } = useI18n(); const r = usePoll('/security/permissions', 0).data; const [q, setQ] = useState('');
   if (!r) return <p className="muted">{t('loading')}</p>;
-  return (
+  const eps = (r.endpoints || []).filter((e) => !q || `${e.method} ${e.path} ${e.permission || ''}`.toLowerCase().includes(q.toLowerCase()));
+  return (<div className="stack">
+    <div className="card"><h2>{t('saTemplates')}</h2><p className="small muted">{t('saTemplateNote')}</p>
+      <div className="tbl"><table><thead><tr><th>{t('saTemplate')}</th><th>{t('saBaseRole')}</th><th>{t('department')}</th><th /></tr></thead>
+        <tbody>{(r.templates || []).map((x) => <tr key={x.key} data-testid={`tpl-${x.key}`}><td><b>{lang === 'ar' ? x.name_ar : x.name}</b></td><td><code>{x.base_role}</code></td><td className="small">{x.department_names.length ? x.department_names.join(' / ') : x.needs_department ? '＊' : '—'}</td><td className="small muted">{x.summary}</td></tr>)}</tbody></table></div></div>
     <div className="card"><h2>{t('saRoles')}</h2><p className="small muted">{t('saRolesNote')}</p>
       <div className="tbl"><table><thead><tr><th>{t('saPermission')}</th>{r.roles.map((x) => <th key={x}>{x}</th>)}</tr></thead>
-        <tbody>{Object.entries(r.permissions).map(([perm, roles]) => <tr key={perm}><td><code>{perm}</code></td>{r.roles.map((x) => <td key={x} style={{ textAlign: 'center' }}>{roles.includes(x) ? '✓' : '—'}</td>)}</tr>)}</tbody></table></div></div>);
+        <tbody>{Object.entries(r.permissions).map(([perm, roles]) => <tr key={perm}><td><code>{perm}</code></td>{r.roles.map((x) => <td key={x} style={{ textAlign: 'center' }}>{roles.includes(x) ? '✓' : '—'}</td>)}</tr>)}</tbody></table></div></div>
+    <div className="card"><h2>{t('saEndpoints')}</h2><p className="small muted">{t('saEndpointsNote')}</p>
+      <input placeholder={t('search')} value={q} onChange={(e) => setQ(e.target.value)} style={{ maxWidth: 320 }} />
+      <div className="tbl" style={{ maxHeight: 360, overflow: 'auto' }}><table><thead><tr><th>{t('saRoute')}</th><th>{t('saRequires')}</th></tr></thead>
+        <tbody>{eps.map((e, i) => <tr key={i}><td className="small"><code>{e.method} {e.path}</code></td><td className="small">{e.permission ? <><code>{e.permission}</code> <span className="muted">({(r.permissions[e.permission] || []).join(', ')})</span></> : <span className="muted">{t('saSignedIn')}</span>}</td></tr>)}</tbody></table></div></div>
+  </div>);
 }
 
 function Activity() {

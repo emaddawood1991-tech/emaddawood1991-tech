@@ -9,6 +9,7 @@ import { makeAccounts, passwordProblem } from './accounts.js';
 import { makeMfa } from './mfa.js';
 import { makePrivacy } from './privacy.js';
 import { can, deptScope } from './perms.js';
+import { applyTemplate, effectiveTemplate } from './roles.js';
 
 export function hashPassword(pw) {
   const salt = randomBytes(16);
@@ -118,7 +119,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     }
     next();
   }
-  const guard = (perm) => (req, _res, next) => {
+  const guard = (perm) => { const fn = (req, _res, next) => {
     if (!req.user) return next(new HttpError(401, 'UNAUTHENTICATED', 'Please sign in'));
     { const path = req.originalUrl.split('?')[0]; const okPath = MUST_CHANGE_OK.has(path) || path.startsWith(MFA_OK_PREFIX);
       if (req.user.must_change_password && !MUST_CHANGE_OK.has(path)) return next(new HttpError(403, 'PASSWORD_CHANGE_REQUIRED', 'You must choose a new password before continuing.'));
@@ -127,7 +128,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     // CSRF: state-changing requests must carry the custom header (cross-site forms cannot set it)
     if (req.method !== 'GET' && req.headers['x-requested-with'] !== 'fmc') return next(new HttpError(403, 'CSRF', 'Missing request header'));
     next();
-  };
+  }; fn.isGuard = true; fn.perm = perm ?? null; return fn; }; // tagged so the permission matrix can be read from the real router
   app.use('/api', (_req, res, next) => { res.set('X-Server-Time', now()); next(); }); // every response carries the server clock so clients stay in step
   app.use('/api', authenticate);
   app.use('/api', privacy.limiter('api', 'rate_api_per_min', 60e3, 1200)); // overall ceiling per person: scripted scraping stops here
@@ -249,9 +250,9 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     });
   });
   app.get('/api/staff', guard(), (req, res) => {
-    res.json(q(`SELECT u.id,u.username,u.name,u.name_ar,u.role,u.department_id,u.active,u.schedule_override, COALESCE(a.status,'OFF_DUTY') availability, a.updated_at availability_updated,
+    res.json(q(`SELECT u.id,u.username,u.name,u.name_ar,u.role,u.role_template,u.department_id,u.active,u.schedule_override, COALESCE(a.status,'OFF_DUTY') availability, a.updated_at availability_updated,
       (SELECT group_concat(service_id) FROM staff_services WHERE user_id=u.id) service_ids FROM users u LEFT JOIN staff_availability a ON a.user_id=u.id ORDER BY u.name`)
-      .map(({ username, schedule_override, ...r }) => ({ ...r, ...(req.user.role === 'admin' ? { username, schedule_override } : {}), service_ids: r.service_ids ? r.service_ids.split(',').map(Number) : [] })));
+        .map(({ username, schedule_override, ...r }) => ({ ...r, role_template: effectiveTemplate(r), ...(req.user.role === 'admin' ? { username, schedule_override } : {}), service_ids: r.service_ids ? r.service_ids.split(',').map(Number) : [] })));
   });
 
   // ---- config CRUD (admin) ----
@@ -304,26 +305,34 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     res.json({ ok: true });
   });
   app.post('/api/config/staff', guard('config.manage'), (req, res) => {
-    const { username, name, name_ar = '', role, department_id = null, password, service_ids = [] } = req.body;
+    const { username, name, name_ar = '', department_id = null, password, service_ids = [], role_template = null } = req.body; let { role } = req.body;
+    if (role_template) { // a template fixes the role and is checked against the department; the explicit role, if also sent, must agree
+      const a = applyTemplate(role_template, { role, department_id }, (id) => one('SELECT name FROM departments WHERE id=?', id)?.name);
+      if (a.fields) throw new HttpError(400, 'VALIDATION', 'Please correct the highlighted fields.', { fields: a.fields }); role = a.role;
+    }
     checkStaff({ username, name, name_ar, role, department_id }, true, one);
     { const prob = passwordProblem(password, { username, name }, accounts.minLen()); if (prob) throw new HttpError(400, 'WEAK_PASSWORD', prob, { fields: { password: prob } }); }
     const id = tx(db, () => {
       let r;
-      try { r = run('INSERT INTO users(username,name,name_ar,role,department_id,pass_hash,must_change_password,password_changed_at) VALUES (?,?,?,?,?,?,1,?)', username, name, name_ar, role, department_id, hashPassword(password), now()); }
+      try { r = run('INSERT INTO users(username,name,name_ar,role,department_id,pass_hash,must_change_password,password_changed_at,role_template) VALUES (?,?,?,?,?,?,1,?,?)', username, name, name_ar, role, department_id, hashPassword(password), now(), role_template || null); }
       catch (e) { throw new HttpError(400, 'INVALID', String(e.message).replace(/^.*constraint failed: /, '')); }
       const uid = Number(r.lastInsertRowid);
       for (const s of service_ids) run('INSERT INTO staff_services VALUES (?,?)', uid, s);
       run("INSERT INTO staff_availability(user_id,status,updated_at,updated_by) VALUES (?, 'OFF_DUTY', ?, ?)", uid, now(), req.user.id);
       return uid;
     });
-    audit(req.user, 'config.staff.create', 'user', id, { username, role });
+    audit(req.user, 'config.staff.create', 'user', id, { username, role, role_template: role_template || null });
     res.status(201).json({ id });
   });
   app.patch('/api/config/staff/:id', guard('config.manage'), (req, res) => {
     const id = Number(req.params.id);
     if (!one('SELECT 1 x FROM users WHERE id=?', id)) throw new HttpError(404, 'NOT_FOUND', 'Staff member not found.');
+    const cur = one('SELECT role,active,department_id FROM users WHERE id=?', id);
+    if (req.body.role_template) {
+      const a = applyTemplate(req.body.role_template, { role: req.body.role, department_id: req.body.department_id !== undefined ? req.body.department_id : cur.department_id }, (d) => one('SELECT name FROM departments WHERE id=?', d)?.name);
+      if (a.fields) throw new HttpError(400, 'VALIDATION', 'Please correct the highlighted fields.', { fields: a.fields }); req.body.role = a.role;
+    } else if (req.body.role !== undefined && req.body.role !== cur.role) req.body.role_template = null; // role changed by hand: the old template no longer describes this account
     checkStaff(req.body, false, one);
-    const cur = one('SELECT role,active FROM users WHERE id=?', id);
     const staysAdmin = (req.body.role ?? cur.role) === 'admin' && Number(req.body.active ?? cur.active) === 1;
     if (cur.role === 'admin' && cur.active === 1 && !staysAdmin && one("SELECT COUNT(*) c FROM users WHERE role='admin' AND active=1").c <= 1)
       throw new HttpError(409, 'LAST_ADMIN', 'This is the only active administrator. Create or keep another administrator before changing or disabling this account.');
@@ -337,7 +346,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       req.body.service_ids = ids;
     }
     tx(db, () => {
-      for (const c of ['name', 'name_ar', 'role', 'department_id', 'active', 'schedule_override']) if (req.body[c] !== undefined) run(`UPDATE users SET ${c}=? WHERE id=?`, req.body[c], id);
+      for (const c of ['name', 'name_ar', 'role', 'department_id', 'active', 'schedule_override', 'role_template']) if (req.body[c] !== undefined) run(`UPDATE users SET ${c}=? WHERE id=?`, req.body[c], id);
       if (req.body.password) { const prob = accounts.problemFor(id, req.body.password); if (prob) throw new HttpError(400, 'WEAK_PASSWORD', prob, { fields: { password: prob } }); accounts.writePassword(id, String(req.body.password), { mustChange: true, actor: req.user, event: 'PASSWORD_RESET' }); accounts.loginEvent(id, 'PASSWORD_RESET', req, { by: req.user.id }); } // temporary: the person chooses their own at next sign-in
       if (diff) { run('DELETE FROM staff_services WHERE user_id=?', id); for (const s of req.body.service_ids) run('INSERT INTO staff_services VALUES (?,?)', id, s); }
     });
@@ -620,7 +629,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.use((err, _req, res, _next) => {
     if (err instanceof HttpError) return res.status(err.status).json({ error: { code: err.code, message: err.message, ...(err.extra || {}) } });
     if (err?.type === 'entity.parse.failed') return res.status(400).json({ error: { code: 'BAD_JSON', message: 'Malformed JSON' } });
-    const msg = String(err?.message || err).slice(0, 200);
+    const msg = String(err?.message || err).slice(0, 200); console.error('[server error]', err?.stack || msg);
     try { run('INSERT INTO system_errors(ts,source,code,message) VALUES (?,?,?,?)', now(), 'server', err?.code || 'EXCEPTION', msg); } catch { /* ignore */ }
     if (/UNIQUE constraint/.test(msg)) return res.status(409).json({ error: { code: 'CONFLICT', message: 'Conflicting record (already exists or in use)' } });
     res.status(500).json({ error: { code: 'INTERNAL', message: 'Unexpected server error' } });

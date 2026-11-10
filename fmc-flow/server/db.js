@@ -283,7 +283,7 @@ export const DEFAULT_SETTINGS = {
 const ADDED_COLUMNS = {
   services: { min_minutes: 'INTEGER NOT NULL DEFAULT 5', max_minutes: 'INTEGER NOT NULL DEFAULT 180', allow_override: 'INTEGER NOT NULL DEFAULT 1' },
   appointments: { duration_minutes: 'INTEGER', ends_at: 'TEXT', category_id: 'INTEGER', notes: "TEXT NOT NULL DEFAULT ''", row_id: 'INTEGER', recurrence_id: 'TEXT', cancel_reason: 'TEXT', cancelled_at: 'TEXT', cancelled_by: 'INTEGER', rebooks_id: 'INTEGER', created_by: 'INTEGER', updated_at: 'TEXT' },
-  users: { schedule_override: 'INTEGER NOT NULL DEFAULT 0', must_change_password: 'INTEGER NOT NULL DEFAULT 0', password_changed_at: 'TEXT', last_login_at: 'TEXT' },
+  users: { schedule_override: 'INTEGER NOT NULL DEFAULT 0', must_change_password: 'INTEGER NOT NULL DEFAULT 0', password_changed_at: 'TEXT', last_login_at: 'TEXT', role_template: 'TEXT' },
   auth_sessions: { sid: 'TEXT', ip: 'TEXT', user_agent: 'TEXT' },
   audit_log: { prev_hash: 'TEXT', row_hash: 'TEXT' },
   treatment_sessions: { planned_minutes: 'INTEGER', scheduled_end_at: 'TEXT', timer_elapsed_at: 'TEXT', confirmed_at: 'TEXT', completion_kind: 'TEXT', planned_cpt_id: 'INTEGER', operational_checkout_at: 'TEXT', operational_checkout_kind: 'TEXT' },
