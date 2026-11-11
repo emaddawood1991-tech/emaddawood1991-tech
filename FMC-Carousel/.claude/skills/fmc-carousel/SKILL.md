@@ -52,3 +52,6 @@ Template `templates/lowback` (cover/causes/symptoms/warn/care). Original vector 
 
 ## Project note: fmc-hemiplegia-rehabilitation
 Template `templates/hemi` (cover/explain/assess/methods/close). Original vector rehab scenes in `src/components/neuro.js` (`rehabScene(kind, view)` with flat-vector patient + physiotherapist; `brainPathway` coronal brain/motor-pathway schematic with lesion and crossed pathways). Slide 2 carries the stroke emergency warning (user-supplied wording, keep exact).
+
+## Project note: fmc-spinal-deformities
+Template `templates/spinal` (cover/types/signs/assess/close). Parametric full-spine anatomy in `src/components/spinal.js`: `spine({view:'lat'|'post', kind:'normal'|'kyph'|'lord'|'scol', hi, ref, cobb, xray, vb})` (C1–sacrum, discs, ribs/pelvis in posterior view), `postureBack`, `kyphSide`, `examScene`. Scoliosis is always drawn posterior, kyphosis/lordosis lateral. Any radiograph-style graphic must carry the HTML label «رسم توضيحي».
