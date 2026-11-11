@@ -30,4 +30,4 @@ Baseline (10 Nov 2026, with timers, documentation, Daily Schedule and security s
 - Department access and clinical service authorization are separate. Administrator status never grants clinical authorization.
 
 ## Documentation index
-`docs/FMC_PATIENT_FLOW_IMPLEMENTATION_CHECKLIST.md` · `docs/audit/` (security audit, probes) · `docs/phase-a/` (feature inventory, integration readiness, compliance classification, baseline tests) · `docs/CHECKPOINT_AND_RESTORE.md` · `fmc-flow/docs/BACKUP_AND_RECOVERY.md` · `fmc-flow/docs/DEPLOYMENT_AND_ENCRYPTION.md` · `fmc-flow/README.md`.
+`docs/FMC_PATIENT_FLOW_IMPLEMENTATION_CHECKLIST.md` · `docs/audit/` (security audit, full audit 2026-11-11, probes) · `docs/phase-a/` (feature inventory, integration readiness, compliance classification, baseline tests) · `docs/CHECKPOINT_AND_RESTORE.md` · `fmc-flow/docs/BACKUP_AND_RECOVERY.md` · `fmc-flow/docs/DEPLOYMENT_AND_ENCRYPTION.md` · `fmc-flow/README.md`.
