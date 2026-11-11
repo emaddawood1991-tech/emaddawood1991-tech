@@ -1,0 +1,5 @@
+# Audio QC — FMC_Spine_Early_Detection_Professional_V2.mp4
+- The audio track is copied bit-for-bit (`-c:a copy`) from `FMC_Spine_Early_Detection_Realistic_UserMusic.mp4`; an FFmpeg audio-stream MD5 comparison of the two files was identical. So the approved narration and the user-selected music are unchanged, with the same fades.
+- No sound is produced by any new graphic: the new components (timeline, titles, highlights, transitions, closing) contain no audio elements; the only audio component in the composition is `<NarrationAudio>`; all clips are silent (`-an`) and muted in code.
+- Measured on the final file: −16.0 LUFS, true peak −3.0 dBFS, 0 clipped samples. Automated check flags the same 4 transient candidates as before (4.6, 20.2, 20.7, 39.5 s); stem analysis earlier showed they are in the narration track (word-end consonants), not effects.
+- Video is 1282 frames (42.73 s) vs audio 42.80 s (2-frame tail trim from `-shortest`). Not verified by software: listening comfort and pronunciation; human listening still required.

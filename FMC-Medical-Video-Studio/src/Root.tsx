@@ -6,6 +6,7 @@ import {CollageStudy} from './compositions/CollageStudy';
 import {WristStudy} from './compositions/WristStudy';
 import {PoseLab} from './compositions/PoseLab';
 import {SpineStudy} from './compositions/SpineStudy';
+import {SpineEarlyDetection, durationForSpineV2} from './compositions/SpineEarlyDetection';
 import {SpineRealisticEpisode, durationForSpine} from './templates/SpineRealisticEpisode';
 import {CarpalTunnelEpisode, durationForCarpal} from './templates/CarpalTunnelEpisode';
 import {DoctorPreview} from './compositions/DoctorPreview';
@@ -50,6 +51,7 @@ export const Root: React.FC = () => (
     <Composition id="CarpalReel" component={CarpalTunnelEpisode} width={1080} height={1920} fps={FPS} durationInFrames={durationForCarpal(defaults)} schema={VideoPropsSchema} defaultProps={defaults} calculateMetadata={({props}) => ({durationInFrames: durationForCarpal(props)})} />
     <Composition id="SpineStudy" component={SpineStudy} width={1080} height={1920} fps={FPS} durationInFrames={1} defaultProps={{view: 'lateral'}} />
     <Composition id="SpineReel" component={SpineRealisticEpisode} width={1080} height={1920} fps={FPS} durationInFrames={durationForSpine(defaults)} schema={VideoPropsSchema} defaultProps={defaults} calculateMetadata={({props}) => ({durationInFrames: durationForSpine(props)})} />
+    <Composition id="SpineV2" component={SpineEarlyDetection} width={1080} height={1920} fps={FPS} durationInFrames={durationForSpineV2(defaults)} schema={VideoPropsSchema} defaultProps={defaults} calculateMetadata={({props}) => ({durationInFrames: durationForSpineV2(props)})} />
     <Composition id="PoseLab" component={PoseLab} width={1080} height={1920} fps={FPS} durationInFrames={1} defaultProps={{}} />
     <Composition id="LogoStudy" component={LogoStudy} width={1080} height={1920} fps={FPS} durationInFrames={1} defaultProps={{}} />
     <Composition id="DoctorPreview" component={DoctorPreview} width={1080} height={1920} fps={FPS} durationInFrames={60} defaultProps={{}} />

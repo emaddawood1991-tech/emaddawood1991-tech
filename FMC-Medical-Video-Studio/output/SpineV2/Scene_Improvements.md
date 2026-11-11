@@ -1,0 +1,15 @@
+# V2 — scene-by-scene improvements (same footage, same narration, same music)
+Checkpoint: git tag `spine-v1-checkpoint`; originals `output/SpineRealistic/FMC_Spine_Early_Detection_Realistic*.mp4` untouched.
+New architecture (existing engine reused, not rebuilt): `src/compositions/SpineEarlyDetection.tsx` (composition `SpineV2`), components `FMCMedicalTimeline`, `FMCArabicTitle`, `FMCMedicalHighlight`, `FMCAnatomyOverlay`, `FMCCinematicTransition`, `FMCLogoOverlay`, `FMCClosingScene`, scenes `src/scenes/spine/{ShoulderScreening,ScoliosisExplanation,KyphosisComparison,ClinicalAssessment,EarlyDetection}.tsx`. All timing derives from the real narration timeline (`computeTimeline`).
+| Scene | Improvement |
+|---|---|
+| Timeline | New 5-chapter frame-accurate chapter bar (01 العلامات · 02 الجنف · 03 الحدبة · 04 التشخيص · 05 الكشف المبكر), right-to-left, turquoise fill + head dot, active chapter label; slim, above the platform-UI zone, no banner. |
+| 1 Shoulders | Kept the footage; trimmed to the moment the subject faces the camera; camera push with drift; kinetic title (word-by-word rise, keyword «الكتفين» highlighted); thin turquoise level reference line + two shoulder-tip rings drawn on the footage (inside the camera transform, so they stay aligned); chip «مرجع أفقي للمقارنة». Guides fade when she turns (they would otherwise create a false asymmetry). |
+| 2 Observation | Same hand-on-back footage; observation corner-brackets + one soft scan line + chip «ملاحظة تماثل الظهر»; own title «علامات تستدعي فحص العمود الفقري». |
+| 3 Scoliosis | Real public-domain radiograph with a dashed midline reference (plain chord, no angle claimed) and chip «انحناء جانبي»; then a much larger 3D posterior spine: camera approaches the curve, spine bends from straight, dashed reference axis, leader labels «المحور المرجعي» / «انحناء جانبي». |
+| 4 Kyphosis | Larger lateral models with camera approach; left «الانحناء الطبيعي», right «زيادة التحدب الظهري» whose curve grows progressively with restrained amber tint; plumb references + apex markers (relative only, no numbers). |
+| 5 Assessment | Footage kept; kinetic title; two separately animated supporting items «الفحص السريري» then «التصوير عند الحاجة» (imaging "when needed"); small reference radiograph inset. |
+| 6 Early detection | Three beats instead of one long shot: consultation → close-up of the medical explanation (new Pexels clip 7579341) → reassuring clinical scene (Pexels 7579595); chips «خلال سنوات النمو» (in step with the narration) and «متابعة مناسبة لكل حالة». |
+| 7 Closing | Deep-navy closing over blurred clinic footage, soft halo behind the ORIGINAL transparent-PNG logo (no white plate), logo entrance with subtle depth, kinetic reveal of «مركز الفيصل الطبي» (white, high contrast) and «الرعاية المثالية». |
+| Corner logo | Transparent original PNG with soft halo/shadow instead of the white seal. |
+| Audio | Unchanged: the approved narration and the user-selected music are copied bit-for-bit from the previous export; no sound added by any graphic. |

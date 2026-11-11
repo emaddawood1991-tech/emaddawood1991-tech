@@ -1,0 +1,5 @@
+# Arabic language review — V2 (automated + author read-through; no native-speaker sign-off)
+Narration unchanged. New/changed on-screen text, all real RTL text layers (IBM Plex Sans Arabic / Cairo display), no tanween/shadda marks on screen per the project QC rule:
+هل لاحظت اختلافا في مستوى الكتفين؟ · مرجع أفقي للمقارنة · علامات تستدعي فحص العمود الفقري · ملاحظة تماثل الظهر · الجنف (انحراف العمود الفقري) · انحناء جانبي · المحور المرجعي · زيادة التحدب الظهري (الحدبة) · الانحناء الطبيعي · التشخيص يبدأ بالتقييم الطبي · الفحص السريري · التصوير عند الحاجة · الكشف المبكر يساعد على المتابعة المناسبة · خلال سنوات النمو · متابعة مناسبة لكل حالة · العلامات / الجنف / الحدبة / التشخيص / الكشف المبكر · مركز الفيصل الطبي · الرعاية المثالية.
+Frame inspection (19 sampled times): no clipped or overlapping text found; titles use ≤ 2 lines. Mild point: some titles sit over the top of doctors' hair in stock shots (legible, scrim applied).
+Needs a human: the new chips («مرجع أفقي للمقارنة», «ملاحظة تماثل الظهر», «متابعة مناسبة لكل حالة») and the term «المحور المرجعي»; native review of grammar, terminology and pronunciation.
