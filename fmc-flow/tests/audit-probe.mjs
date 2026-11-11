@@ -95,6 +95,7 @@ rec('P27 shared hall status with free beds (S8: shown as IN_USE)', hallNow.displ
 await U.reception.post(`/api/visits/${vid}/room/enter`);
 const ses = await U['pt.one'].post(`/api/visits/${vid}/sessions`, { service_id: cfg.services.find((x) => x.name === 'PT Treatment').id });
 await U['pt.one'].post(`/api/sessions/${ses.body.id}/complete`); await U.reception.post(`/api/visits/${vid}/room/exit`); await U.reception.post(`/api/visits/${vid}/checkout`); await U.reception.get(`/api/visits/${vid}/timeline`);
+{ const c = await U.admin.post('/api/config/staff', { username: 'probe.audit', name: 'Probe Audit', role: 'reception', password: 'Probe-Audit-Pass-77' }); if (c.body?.id) await U.admin.patch(`/api/config/staff/${c.body.id}`, { name: 'Probe Audit 2' }); }
 const kinds = new Set((await U.super.get('/api/audit?limit=500')).body.map((a) => a.action));
 const need = ['login', 'login.failed', 'visit.checkin', 'visit.checkout', 'room.assign', 'room.exit', 'session.start', 'session.complete', 'config.staff.create', 'config.staff.update', 'timeline.view', 'patient.create'];
 rec('P17b audit coverage of core actions', need.some((k) => !kinds.has(k)), `recorded: ${need.filter((k) => kinds.has(k)).join(', ')}${need.some((k) => !kinds.has(k)) ? ' | MISSING: ' + need.filter((k) => !kinds.has(k)).join(', ') : ' (all present)'}. Gaps by design: which patients a search returned, queue/dashboard/sessions views (names shown), password reset and role change are not distinct events, session revocation does not exist`);

@@ -2,7 +2,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { createApp } from './app.js';
 import { keyFromHex } from './mfa.js';
-import { seed } from './seed.js';
+import { seed, seedCatalogOnly, DEMO_PASSWORD } from './seed.js';
+import { demoPasswordAccounts } from './readiness.js';
 import { runScheduled } from './backup.js';
 
 process.umask(0o077); // new files (database, WAL, backups) are private to the service account
@@ -20,7 +21,14 @@ function resolveMfaKey() {
 const { app, db, ops, privacy } = createApp({ staticDir, mfaKey: resolveMfaKey() });
 const monitor = () => privacy.monitor();
 if (!String(ops.setting('mfa_required_roles') || '').includes('admin')) console.warn('SECURITY: multi-factor authentication is not required for administrators. Turn it on in Settings → Security & Access (or seed with SEED_REQUIRE_MFA=1).');
-if (process.env.FMC_SEED !== '0' && seed(db)) console.log('Seeded synthetic development data (see npm run seed).');
+const production = process.env.NODE_ENV === 'production';
+if (production) {
+  // Production never creates demo accounts or demo patients. The clinic catalog is idempotent; the first administrator is made with `npm run admin:create`.
+  if (process.env.FMC_ALLOW_DEMO_SEED === '1') { console.warn('SECURITY: FMC_ALLOW_DEMO_SEED=1 creates demo accounts with a published password. Never use it with real patient data.'); seed(db); }
+  else seedCatalogOnly(db);
+  if (!db.prepare("SELECT 1 x FROM users WHERE role='admin' AND active=1").get()) console.warn('SETUP: there is no administrator yet. Run `npm run admin:create` on this server.');
+} else if (process.env.FMC_SEED !== '0' && seed(db)) console.log('Seeded synthetic development data (see npm run seed).');
+{ const demo = demoPasswordAccounts(db, DEMO_PASSWORD); if (demo.length) console.warn(`SECURITY: ${demo.length} account(s) still accept the published demo password (${demo.slice(0, 5).join(', ')}${demo.length > 5 ? ', …' : ''}). ${production ? 'Do not use real patient data until they are removed or changed.' : 'Fine for development; never in production.'}`); }
 const port = Number(process.env.PORT || 3000);
 app.listen(port, '0.0.0.0', () => console.log(`FMC Patient Flow API on http://localhost:${port}`));
 setInterval(() => { try { monitor(); } catch (e) { console.error('security monitor failed:', e.message); } }, 60000).unref(); // security alerts and audit-chain anchors

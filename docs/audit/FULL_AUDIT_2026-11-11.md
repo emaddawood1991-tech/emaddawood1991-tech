@@ -19,7 +19,9 @@ Scope: repository state, dependencies, secrets, code patterns, server-side autho
 | Functional regression | all suites, fresh databases | **172 backend** tests pass; browser: 12 + 27 + 21 + 9 + 32 + 17 + 37 + 23 + 18 + 10 + 13 + 15 + 14 = all pass; demo 5/5 and sandboxed iframe pass |
 | Attack probes | `tests/audit-probe.mjs` | 31 probes, **4 findings** (was 9 before S8; all four are listed below) |
 
-## 2. Open findings
+## 2. Findings (status after stage S9)
+H1, M1 (mechanism), M2 (check), L1, L3, L4 and L5 are fixed in S9 — see `SECURITY_AUDIT_2026-11.md`. M3 and L2 are recorded decisions. The table below is the original list.
+
 | # | Severity | Finding | Recommendation |
 |---|---|---|---|
 | H1 | **High before go-live** (none in development) | **Default credentials.** On any empty database the server seeds 10 demo accounts, including an administrator, all with the published demo password, unless `FMC_SEED=0` is set. There is also no command to create the first real administrator, so production would depend on that variable. (Probe P9a) | Do not seed when `NODE_ENV=production`; add `npm run admin:create` (password from a prompt, policy-checked, must change at first sign-in); add a readiness check that fails while any account still accepts the demo password. Needs your approval (changes startup behaviour) |

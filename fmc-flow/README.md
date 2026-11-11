@@ -41,3 +41,6 @@ Tests: `npm test` (48) · `node tests/e2e-treatment.cjs http://localhost:3100` o
 
 ### Operations (stage S6)
 `FMC_REQUIRE_HTTPS`, `FMC_PUBLIC_HOST`, `FMC_BACKUP_KEY`, `FMC_BACKUP_EVERY_HOURS`, `FMC_BACKUP_OFFSITE_DIR`, `FMC_FINGERPRINT_FILE`, `FMC_DRILL_EVERY_DAYS`, `FMC_DISK_ENCRYPTED`. Commands: `npm run backup:run | backup:drill | audit:fingerprint | audit:verify <file> | readiness`. See `docs/DEPLOYMENT_AND_ENCRYPTION.md`.
+
+### First administrator (production)
+`NODE_ENV=production npm run admin:create` — see `docs/DEPLOYMENT_AND_ENCRYPTION.md`. Production never creates demo accounts; set `FMC_ALLOW_DEMO_SEED=1` only for staging.

@@ -27,7 +27,7 @@ export function MfaEnrol({ onDone }) {
       <p className="small">{t('mfaIntro')}</p>
       {!setup ? (err ? <div className="field-err" role="alert">{err}</div> : <p className="muted">{t('loading')}</p>) : <>
         <b>{t('mfaStep1')}</b>
-        <div style={{ background: '#fff', padding: 8, borderRadius: 12, width: 236, margin: '0 auto' }} role="img" aria-label="QR code" dangerouslySetInnerHTML={{ __html: setup.qr_svg }} />
+        <div style={{ background: '#fff', padding: 8, borderRadius: 12, width: 236, margin: '0 auto' }}><img alt="QR code" width={220} height={220} src={`data:image/svg+xml;utf8,${encodeURIComponent(setup.qr_svg)}`} /></div>
         <details><summary className="small">{t('mfaCantScan')}</summary><code id="mfa-secret" dir="ltr" style={{ display: 'block', wordBreak: 'break-all', padding: 6 }}>{groups4(setup.secret)}</code></details>
         <b>{t('mfaStep2')}</b>
         <div className="field"><label htmlFor="mfa-confirm-code">{t('mfaCode')}</label><input id="mfa-confirm-code" inputMode="numeric" autoComplete="one-time-code" maxLength={7} value={code} onChange={(e) => setCode(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && code && confirm()} />{err && <div className="field-err" role="alert">{err}</div>}</div>

@@ -85,6 +85,12 @@ function migrateCatalog(db) {
   ensureCatalog(db); ensureUsers(db);
 }
 
+/** Production start-up: the clinic's departments, services, rooms and appointment categories only. No demo accounts, no demo patients. */
+export function seedCatalogOnly(db) {
+  ensureCategories(db);
+  tx(db, () => { ensureCatalog(db); db.prepare("INSERT OR IGNORE INTO settings(key,value) VALUES ('catalog_v2','1')").run(); });
+}
+
 export function seed(db) {
   // Daily Schedule: editable operational categories for every database (durations left for the administrator).
   ensureCategories(db);

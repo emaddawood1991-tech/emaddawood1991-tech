@@ -26,6 +26,13 @@ FMC_MFA_KEY=<64 hex>  FMC_BACKUP_KEY=<different 64 hex>  FMC_DISK_ENCRYPTED=1
 ```
 Nginx works the same way: forward `X-Forwarded-Proto`, set `FMC_TRUST_PROXY=1`. Do **not** set `FMC_INSECURE_COOKIES` outside local development (the readiness report marks it as failing).
 
+## 2b. First start in production
+```
+NODE_ENV=production FMC_DB=/srv/fmc/fmc.db npm run admin:create   # first administrator; asks for username, name, hidden password
+NODE_ENV=production npm start                                       # no demo accounts or patients are ever created
+```
+Production never seeds demo data (`FMC_ALLOW_DEMO_SEED=1` exists for staging only). Open Security & Access → Production readiness and clear every failing item before real patient data is used.
+
 ## 3. Scheduled backups, off-site copy and drills
 Set `FMC_BACKUP_EVERY_HOURS=24` (and the keys) and the server runs, once a day and 60 seconds after start:
 1. encrypted backup into `data/backups/`;

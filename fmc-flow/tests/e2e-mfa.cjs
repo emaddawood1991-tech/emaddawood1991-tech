@@ -19,7 +19,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
 
   // supervisor: forced set-up on first sign-in
   const s1 = await newPage(); await signIn(s1, 'super', PW); await s1.waitForSelector('#mfa-confirm-code');
-  ok(await s1.locator('.shell').count() === 0 && await s1.locator('svg').count() >= 1 && /requires two-step/.test(await s1.locator('.box').textContent()), 'a required role sees only the set-up screen, with a QR code');
+  ok(await s1.locator('.shell').count() === 0 && await s1.locator('img[alt="QR code"]').count() === 1 && /requires two-step/.test(await s1.locator('.box').textContent()), 'a required role sees only the set-up screen, with a QR code');
   await s1.locator('details summary').click(); const secret = (await s1.locator('#mfa-secret').textContent()).replace(/\s/g, ''); ok(/^[A-Z2-7]{32}$/.test(secret), 'the manual-entry key is shown');
   await s1.screenshot({ path: `${out}/mfa1-setup.png` });
   await s1.fill('#mfa-confirm-code', '000000'); await s1.click('button:has-text("Turn on")'); await s1.waitForSelector('.field-err'); ok(true, 'a wrong code is refused');
