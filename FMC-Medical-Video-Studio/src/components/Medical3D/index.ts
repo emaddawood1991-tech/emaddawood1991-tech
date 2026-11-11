@@ -4,3 +4,4 @@ export * from './GLBModel';
 export * from './project';
 
 export * from './WristHand';
+export * from './SpineModel';

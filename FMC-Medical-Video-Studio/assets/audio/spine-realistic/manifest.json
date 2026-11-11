@@ -1,0 +1,38 @@
+{
+  "provider": "google",
+  "model": "gemini-3.1-flash-tts-preview",
+  "voice": "Charon",
+  "scriptHash": "2385f594f06b36c4993235b26b30ea645b5248c7ebc9ee716188bdea7c381a0d",
+  "scenes": [
+    {
+      "id": "opening",
+      "file": "audio/spine-realistic/opening.wav",
+      "durationSec": 5.125
+    },
+    {
+      "id": "anatomy",
+      "file": "audio/spine-realistic/anatomy.wav",
+      "durationSec": 8.495
+    },
+    {
+      "id": "symptoms",
+      "file": "audio/spine-realistic/symptoms.wav",
+      "durationSec": 7.109
+    },
+    {
+      "id": "treatment",
+      "file": "audio/spine-realistic/treatment.wav",
+      "durationSec": 6.037
+    },
+    {
+      "id": "fmc",
+      "file": "audio/spine-realistic/fmc.wav",
+      "durationSec": 8.514
+    },
+    {
+      "id": "closing",
+      "file": "audio/spine-realistic/closing.wav",
+      "durationSec": 3.89
+    }
+  ]
+}

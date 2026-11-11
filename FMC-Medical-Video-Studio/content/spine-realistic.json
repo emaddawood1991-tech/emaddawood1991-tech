@@ -1,0 +1,166 @@
+{
+  "slug": "spine-realistic",
+  "topic": {
+    "ar": "الكشف المبكر عن تشوّهات العمود الفقري",
+    "en": "Early detection of spinal deformities"
+  },
+  "services": [
+    "طب العظام",
+    "العلاج الطبيعي"
+  ],
+  "scenes": [
+    {
+      "id": "opening",
+      "sceneType": "A",
+      "plannedSec": 3,
+      "narration": "هل لاحظت اختلافا في مستوى الكتفين، أو بروزا في أحد جانبي الظهر؟",
+      "ttsText": "هَلْ لَاحَظْتَ اخْتِلَافًا فِي مُسْتَوَى الْكَتِفَيْنِ، أَوْ بُرُوزًا فِي أَحَدِ جَانِبَيِ الظَّهْرِ؟",
+      "onScreen": {
+        "title": "هل لاحظت اختلافا في مستوى الكتفين؟"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "slow push-in behind a standing person",
+        "description": "Licensed stock: back view, neutral posture."
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "anatomy",
+      "sceneType": "C",
+      "plannedSec": 3,
+      "narration": "قد تكون هذه علامات تستدعي فحص العمود الفقري. ومن الحالات التي قد يكشفها التقييم: الجنف.",
+      "ttsText": "قَدْ تَكُونُ هَذِهِ عَلَامَاتٍ تَسْتَدْعِي فَحْصَ الْعَمُودِ الْفَقَرِيِّ. وَمِنَ الْحَالَاتِ الَّتِي قَدْ يَكْشِفُهَا التَّقْيِيمُ: الْجَنَفُ.",
+      "onScreen": {
+        "title": "الجنف (انحراف العمود الفقري)"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "examining hand, then radiograph and 3D curve",
+        "description": "Licensed stock hand-on-back, public-domain scoliosis radiograph, 3D educational spine."
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "symptoms",
+      "sceneType": "C",
+      "plannedSec": 3,
+      "narration": "وكذلك زيادة التحدب الظهري، التي قد تظهر على شكل تقوس زائد في أعلى الظهر.",
+      "ttsText": "وَكَذَلِكَ زِيَادَةُ التَّحَدُّبِ الظَّهْرِيِّ، الَّتِي قَدْ تَظْهَرُ عَلَى شَكْلِ تَقَوُّسٍ زَائِدٍ فِي أَعْلَى الظَّهْرِ.",
+      "onScreen": {
+        "title": "زيادة التحدب الظهري (الحدبة)"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "lateral spine comparison, normal vs increased thoracic kyphosis",
+        "description": "3D educational lateral spine."
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "treatment",
+      "sceneType": "E",
+      "plannedSec": 3,
+      "narration": "يبدأ التقييم بالفحص السريري، وقد يوصي الطبيب بالتصوير الشعاعي عند الحاجة.",
+      "ttsText": "يَبْدَأُ التَّقْيِيمُ بِالْفَحْصِ السَّرِيرِيِّ، وَقَدْ يُوصِي الطَّبِيبُ بِالتَّصْوِيرِ الشُّعَاعِيِّ عِنْدَ الْحَاجَةِ.",
+      "onScreen": {
+        "title": "التشخيص يبدأ بالتقييم الطبي"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "doctor consultation then imaging review",
+        "description": "Licensed stock: doctor with patient; doctor reviewing a spine radiograph."
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "fmc",
+      "sceneType": "E",
+      "plannedSec": 3,
+      "narration": "ويساعد الكشف المبكر، خصوصا خلال سنوات النمو، على تحديد المتابعة والرعاية المناسبتين.",
+      "ttsText": "وَيُسَاعِدُ الْكَشْفُ الْمُبَكِّرُ، خُصُوصًا خِلَالَ سَنَوَاتِ النُّمُوِّ، عَلَى تَحْدِيدِ الْمُتَابَعَةِ وَالرِّعَايَةِ الْمُنَاسِبَتَيْنِ.",
+      "onScreen": {
+        "title": "الكشف المبكر يساعد على المتابعة المناسبة"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "reassuring consultation",
+        "description": "Licensed stock consultation."
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "closing",
+      "sceneType": "F",
+      "plannedSec": 3,
+      "narration": "مركز الفيصل الطبي، الرعاية المثالية.",
+      "ttsText": "مَرْكَزُ الْفَيْصَلِ الطِّبِّيِّ، الرِّعَايَةُ الْمِثَالِيَّةُ.",
+      "onScreen": {
+        "title": "مركز الفيصل الطبي",
+        "subtitle": "الرعاية المثالية"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "clean brand end card",
+        "description": "Original logo."
+      },
+      "footageQueries": [],
+      "sfx": []
+    }
+  ],
+  "instagramCaption": "الكشف المبكر عن تشوّهات العمود الفقري يبدأ بالتقييم الطبي. محتوى توعوي وليس تشخيصًا.\n\nمركز الفيصل الطبي — الرعاية المثالية",
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العين",
+    "#الإمارات",
+    "#الجنف",
+    "#العمود_الفقري",
+    "#طب_العظام",
+    "#الرعاية_المثالية",
+    "#FMC",
+    "#AlAin",
+    "#UAE",
+    "#Scoliosis",
+    "#IdealCare"
+  ],
+  "sources": [
+    {
+      "title": "Scoliosis Research Society — Diagnosing Scoliosis (target reference; NOT reachable from this environment, unverified)",
+      "url": "https://www.srs.org/Patients/Diagnosis-And-Treatment/Diagnosing-Scoliosis"
+    },
+    {
+      "title": "AAOS OrthoInfo (target reference; NOT reachable, unverified)",
+      "url": "https://orthoinfo.aaos.org/"
+    },
+    {
+      "title": "Wikimedia Commons — Scoliosis X-ray.jpg (public domain)",
+      "url": "https://commons.wikimedia.org/wiki/File:Scoliosis_X-ray.jpg"
+    }
+  ],
+  "approvals": {
+    "grammarReview": null,
+    "medicalTerminologyReview": null,
+    "medicalAccuracyReview": null,
+    "scriptApproved": {
+      "by": "Emad (script supplied in the production brief; no native/clinician review yet)",
+      "date": "2026-11-11T09:59:29.328Z"
+    },
+    "pronunciationApproved": null,
+    "approvedHash": "2385f594f06b36c4993235b26b30ea645b5248c7ebc9ee716188bdea7c381a0d"
+  },
+  "timing": {
+    "lead": 6,
+    "tail": 10
+  }
+}

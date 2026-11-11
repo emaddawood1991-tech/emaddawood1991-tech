@@ -1,0 +1,6 @@
+# Arabic QC — automated + author read-through (no native-speaker sign-off)
+- `npm run arabic:check -- spine-realistic`: 0 errors; warnings: lexicon entries machine-drafted; clinic name in ttsText uses nominative «مَرْكَزُ» (correct for the sentence) rather than the lexicon's genitive. Final-export gate = CLOSED for the human approvals (grammar, terminology, medical accuracy, pronunciation) — not obtained.
+- All Arabic on screen is real RTL text layers (one family). Titles: هل لاحظت اختلافا في مستوى الكتفين؟ · الجنف (انحراف العمود الفقري) · زيادة التحدب الظهري (الحدبة) · التشخيص يبدأ بالتقييم الطبي · الكشف المبكر يساعد على المتابعة المناسبة · مركز الفيصل الطبي · الرعاية المثالية. Tanween/shadda marks are omitted on screen to satisfy the project's no-diacritics rule (display uses plain forms).
+- Frame inspection: text renders right-to-left with correct letter shaping at all sampled times; the scene-1 title wraps to two lines (the second line «الكتفين؟» sits over the model's hair at ~1 s).
+- Meaning changes vs the brief: closing written «مركز الفيصل الطبي، الرعاية المثالية» (comma instead of ellipsis); everything else as supplied.
+- Not done: ASR round trip (quota), human pronunciation review.
