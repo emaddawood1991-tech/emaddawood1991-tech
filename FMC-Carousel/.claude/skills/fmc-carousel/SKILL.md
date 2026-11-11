@@ -49,3 +49,6 @@ Template `templates/metatarsalgia` (slide types cover/explain/causes/care/close)
 
 ## Project note: fmc-low-back-pain
 Template `templates/lowback` (cover/causes/symptoms/warn/care). Original vector spine anatomy in `src/components/spine.js` (`backFigure` overlays: cover|pain|saddle; `lumbarPost`, `spineLateral`, `causeVisual`, `warnVisual`, `careVisual`). Pain-map callout anchors use viewBox coords with `MAP` constants in `index.js`. Red-flag slide wording is clinical (cauda equina signs) — keep user-supplied/NICE-consistent text unchanged.
+
+## Project note: fmc-hemiplegia-rehabilitation
+Template `templates/hemi` (cover/explain/assess/methods/close). Original vector rehab scenes in `src/components/neuro.js` (`rehabScene(kind, view)` with flat-vector patient + physiotherapist; `brainPathway` coronal brain/motor-pathway schematic with lesion and crossed pathways). Slide 2 carries the stroke emergency warning (user-supplied wording, keep exact).
