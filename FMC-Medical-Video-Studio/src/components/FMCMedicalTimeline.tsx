@@ -11,7 +11,7 @@ const ss = (t: number) => t * t * (3 - 2 * t);
  * real progress through that chapter's [from,to) frames. Visible only between `showFrom` and `showTo` (soft fades).
  * No sound, no flashing: only smooth fill + a small head dot.
  */
-export const FMCMedicalTimeline: React.FC<{chapters: Chapter[]; top: number; left: number; right: number; showFrom: number; showTo: number}> = ({chapters, top, left, right, showFrom, showTo}) => {
+export const FMCMedicalTimeline: React.FC<{chapters: Chapter[]; top: number; left: number; right: number; showFrom: number; showTo: number; size?: number; activeSize?: number}> = ({chapters, top, left, right, showFrom, showTo, size = 25, activeSize = 30}) => {
   const f = useCurrentFrame();
   const vis = Math.min(ss(clamp((f - showFrom) / 18)), 1 - ss(clamp((f - (showTo - 18)) / 18)));
   if (vis <= 0.001) return null;
@@ -30,8 +30,8 @@ export const FMCMedicalTimeline: React.FC<{chapters: Chapter[]; top: number; lef
                 {active ? <div style={{position: 'absolute', top: -4, right: `${(1 - p) * 100 === 0 ? 0 : p * 100}%`, width: 14, height: 14, borderRadius: 7, marginRight: -7, background: '#fff', boxShadow: '0 0 0 4px rgba(47,212,200,0.28)'}} /> : null}
               </div>
               <div style={{marginTop: 12, display: 'flex', gap: 8, alignItems: 'baseline', justifyContent: 'flex-start', opacity: active ? 1 : done ? 0.7 : 0.5, transition: 'none'}}>
-                <span style={{fontFamily: FONT_AR, fontSize: active ? 30 : 25, fontWeight: 700, color: active ? '#7DF3EA' : '#E8EEF3', fontVariantNumeric: 'tabular-nums'}}>{c.num}</span>
-                <span style={{fontFamily: FONT_AR, fontSize: active ? 30 : 25, fontWeight: active ? 700 : 600, color: '#fff', whiteSpace: 'nowrap'}}>{c.label}</span>
+                <span style={{fontFamily: FONT_AR, fontSize: active ? activeSize : size, fontWeight: 700, color: active ? '#7DF3EA' : '#E8EEF3', fontVariantNumeric: 'tabular-nums'}}>{c.num}</span>
+                <span style={{fontFamily: FONT_AR, fontSize: active ? activeSize : size, fontWeight: active ? 700 : 600, color: '#fff', whiteSpace: 'nowrap'}}>{c.label}</span>
               </div>
             </div>
           );

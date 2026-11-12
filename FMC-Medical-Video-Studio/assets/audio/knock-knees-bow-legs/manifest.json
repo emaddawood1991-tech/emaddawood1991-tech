@@ -1,0 +1,38 @@
+{
+  "provider": "google",
+  "model": "gemini-3.1-flash-tts-preview",
+  "voice": "Charon",
+  "scriptHash": "a0e3fd09e600ba48f14ae956c51c126f3ca011d67f5902be69212d191450e1b6",
+  "scenes": [
+    {
+      "id": "opening",
+      "file": "audio/knock-knees-bow-legs/opening.wav",
+      "durationSec": 6.269
+    },
+    {
+      "id": "anatomy",
+      "file": "audio/knock-knees-bow-legs/anatomy.wav",
+      "durationSec": 6.922
+    },
+    {
+      "id": "symptoms",
+      "file": "audio/knock-knees-bow-legs/symptoms.wav",
+      "durationSec": 7.086
+    },
+    {
+      "id": "treatment",
+      "file": "audio/knock-knees-bow-legs/treatment.wav",
+      "durationSec": 6.746
+    },
+    {
+      "id": "fmc",
+      "file": "audio/knock-knees-bow-legs/fmc.wav",
+      "durationSec": 9.853
+    },
+    {
+      "id": "closing",
+      "file": "audio/knock-knees-bow-legs/closing.wav",
+      "durationSec": 9.673
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Narration: Google Gemini TTS (gemini-3.1-flash-tts-preview, voice Charon) from the locked ttsText. raw/ = unprocessed. Final = leading/trailing silence trimmed + tempo x1.03 (ffmpeg atempo, pitch preserved) to land inside 45-50 s. ASR round trip NOT run (free-tier quota); pronunciation needs a native listener.

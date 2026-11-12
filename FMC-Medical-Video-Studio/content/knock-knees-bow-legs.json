@@ -1,0 +1,167 @@
+{
+  "slug": "knock-knees-bow-legs",
+  "topic": {
+    "ar": "تقارب الركبتين وتقوس الساقين عند الأطفال",
+    "en": "Knock knees and bow legs in children"
+  },
+  "services": [
+    "طب العظام"
+  ],
+  "scenes": [
+    {
+      "id": "opening",
+      "sceneType": "A",
+      "plannedSec": 3,
+      "narration": "هل لاحظت أن ركبتي طفلك تتقاربان، أو أن ساقيه تبدوان متقوستين؟",
+      "ttsText": "هَلْ لَاحَظْتَ أَنَّ رُكْبَتَيْ طِفْلِكَ تَتَقَارَبَانِ، أَوْ أَنَّ سَاقَيْهِ تَبْدُوَانِ مُتَقَوِّسَتَيْنِ؟",
+      "onScreen": {
+        "title": "هل شكل ساقي طفلك طبيعي؟"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": "Real children's legs (licensed stock), question headline"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "anatomy",
+      "sceneType": "C",
+      "plannedSec": 3,
+      "narration": "عندما تتقارب الركبتان وتتباعد الكاحلان، تسمى هذه الحالة تقارب الركبتين.",
+      "ttsText": "عِنْدَمَا تَتَقَارَبُ الرُّكْبَتَانِ وَتَتَبَاعَدُ الْكَاحِلَانِ، تُسَمَّى هَذِهِ الْحَالَةُ تَقَارُبَ الرُّكْبَتَيْنِ.",
+      "onScreen": {
+        "title": "تقارب الركبتين"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": "3D lower-limb anatomy, frontal; knees close, ankles apart"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "symptoms",
+      "sceneType": "C",
+      "plannedSec": 3,
+      "narration": "أما عندما تتباعد الركبتان مع تقارب الكاحلين، فيعرف ذلك بتقوس الساقين.",
+      "ttsText": "أَمَّا عِنْدَمَا تَتَبَاعَدُ الرُّكْبَتَانِ مَعَ تَقَارُبِ الْكَاحِلَيْنِ، فَيُعْرَفُ ذَلِكَ بِتَقَوُّسِ السَّاقَيْنِ.",
+      "onScreen": {
+        "title": "تقوس الساقين"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": "3D lower-limb anatomy, frontal; knees apart, ankles together"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "treatment",
+      "sceneType": "C",
+      "plannedSec": 3,
+      "narration": "وفي كثير من الأطفال، تتغير استقامة الساقين بشكل طبيعي خلال مراحل النمو.",
+      "ttsText": "وَفِي كَثِيرٍ مِنَ الْأَطْفَالِ، تَتَغَيَّرُ اسْتِقَامَةُ السَّاقَيْنِ بِشَكْلٍ طَبِيعِيٍّ خِلَالَ مَرَاحِلِ النُّمُوِّ.",
+      "onScreen": {
+        "title": "تغيرات طبيعية خلال النمو",
+        "subtitle": "تختلف استقامة الساقين بحسب العمر."
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": "Three simplified alignment states in 3D"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "fmc",
+      "sceneType": "E",
+      "plannedSec": 3,
+      "narration": "لكن إذا كان الاختلاف واضحا بين الساقين، أو ازداد مع الوقت، أو صاحبه ألم أو عرج، فمن المهم تقييم الطفل طبيا.",
+      "ttsText": "لَكِنْ إِذَا كَانَ الِاخْتِلَافُ وَاضِحًا بَيْنَ السَّاقَيْنِ، أَوْ ازْدَادَ مَعَ الْوَقْتِ، أَوْ صَاحَبَهُ أَلَمٌ أَوْ عَرَجٌ، فَمِنَ الْمُهِمِّ تَقْيِيمُ الطِّفْلِ طِبِّيًّا.",
+      "onScreen": {
+        "title": "متى نراجع الطبيب؟",
+        "bullets": [
+          "اختلاف واضح بين الساقين",
+          "ازدياد التقوس",
+          "ألم أو عرج"
+        ]
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": "Pediatric consultation footage + three indicators"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "closing",
+      "sceneType": "F",
+      "plannedSec": 3,
+      "narration": "يساعد الفحص الطبي على تحديد الحاجة إلى المتابعة أو العلاج. في مركز الفيصل الطبي، نهتم بصحة أطفالكم.",
+      "ttsText": "يُسَاعِدُ الْفَحْصُ الطِّبِّيُّ عَلَى تَحْدِيدِ الْحَاجَةِ إِلَى الْمُتَابَعَةِ أَوِ الْعِلَاجِ. فِي مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ، نَهْتَمُّ بِصِحَّةِ أَطْفَالِكُمْ.",
+      "onScreen": {
+        "title": "مركز الفيصل الطبي",
+        "subtitle": "الرعاية المثالية"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": "Parent consultation then branded close"
+      },
+      "footageQueries": [],
+      "sfx": []
+    }
+  ],
+  "instagramCaption": "تقارب الركبتين وتقوس الساقين عند الأطفال: في كثير من الحالات تكون تغيرات طبيعية خلال النمو، والتقييم الطبي يحدد الحاجة إلى المتابعة. محتوى توعوي وليس تشخيصا.\n\nمركز الفيصل الطبي — الرعاية المثالية",
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العين",
+    "#الإمارات",
+    "#صحة_الأطفال",
+    "#تقارب_الركبتين",
+    "#تقوس_الساقين",
+    "#طب_العظام",
+    "#الرعاية_المثالية",
+    "#FMC",
+    "#AlAin",
+    "#UAE",
+    "#IdealCare"
+  ],
+  "sources": [
+    {
+      "title": "AAP HealthyChildren — Bowlegs and Knock-Knees (read directly; last updated 12/23/2025)",
+      "url": "https://www.healthychildren.org/English/health-issues/conditions/orthopedic/Pages/Bowlegs-and-Knock-Knees.aspx"
+    },
+    {
+      "title": "NHS inform — Bow legs and knock knees (target reference; site returned 403 — NOT verified)",
+      "url": "https://www.nhsinform.scot/illnesses-and-conditions/muscle-bone-and-joints/children-and-young-peoples-muscle-bone-and-joints/bow-legs-and-knock-knees-in-children-and-young-people/"
+    }
+  ],
+  "timing": {
+    "lead": 4,
+    "tail": 6
+  },
+  "approvals": {
+    "grammarReview": null,
+    "medicalTerminologyReview": null,
+    "medicalAccuracyReview": null,
+    "scriptApproved": {
+      "by": "Emad (script supplied in the production brief; no native/clinician review yet)",
+      "date": "2026-11-12T06:27:05.005Z"
+    },
+    "pronunciationApproved": null,
+    "approvedHash": "a0e3fd09e600ba48f14ae956c51c126f3ca011d67f5902be69212d191450e1b6"
+  }
+}

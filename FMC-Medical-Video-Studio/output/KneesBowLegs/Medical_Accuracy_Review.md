@@ -1,0 +1,9 @@
+# Medical accuracy review — author review; clinician sign-off REQUIRED
+Verified directly: AAP HealthyChildren "Bowlegs and Knock-Knees" (last updated 12/23/2025): bowing common until ~2 y, then knock-knees until ~6 y, legs may not be straight until 9–10 y; usually normal variations needing no treatment; legs usually straighten by the teens; bracing, corrective shoes and exercise are rarely helpful; warning signs: curvature extreme, one side only, worsening after age 2, knock-knees persisting after age 7, unusually short stature. NHS inform page could not be read (HTTP 403) — NOT verified.
+| Item | Assessment |
+|---|---|
+| Knock knees = knees together/ankles apart; bow legs = knees apart/ankles together | Correct and shown on the same 3D limbs (rigid bones that change direction; no stretching). Angles are illustrative and moderate; no measurements are displayed. |
+| Normal developmental change | Scene 4 shows three simplified states lit in turn ("early childhood → later → toward typical") with the line «تختلف استقامة الساقين بحسب العمر». No age cutoffs are stated on screen; narration says "in many children". |
+| Warning signs | Narration/cards: obvious difference between the legs, increasing curvature, pain or limping — consistent with the AAP signs (one-sided/worsening) plus pain/limp (standard clinical red flag, not in the AAP list). |
+| No treatment claims | None: no braces, shoes, exercises or physiotherapy are mentioned; closing says the exam helps decide whether follow-up or treatment is needed. |
+| Limits | (1) No licensed footage of children with knock knees or bow legs exists, so the conditions are shown ONLY with the 3D model; stock children appear in neutral situations and are not presented as having either condition. (2) 3D model is stylised (no growth plates/cartilage detail beyond a simple joint space). (3) Stock clinicians are not FMC staff; the standing-child clinic clip does not show a leg-alignment test specifically. |

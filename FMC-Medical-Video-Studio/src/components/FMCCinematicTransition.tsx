@@ -23,6 +23,6 @@ export const CameraBox: React.FC<{from: number; dur: number; cam: Cam; children:
 };
 
 /** Muted footage (source audio already removed with ffmpeg -an). */
-export const Footage: React.FC<{file: string; startFrom?: number}> = ({file, startFrom = 0}) => (
-  <OffthreadVideo src={staticFile(file)} muted startFrom={startFrom} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+export const Footage: React.FC<{file: string; startFrom?: number; pos?: string}> = ({file, startFrom = 0, pos = '50% 50%'}) => (
+  <OffthreadVideo src={staticFile(file)} muted startFrom={startFrom} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: pos}} />
 );
