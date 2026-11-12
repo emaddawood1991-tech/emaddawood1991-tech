@@ -19,6 +19,7 @@ export type OverlayState = {
   red: number; // 0..1 red radiating pain drawn along the leg (progressive)
   pulse: number; // time (s) for gentle pulsing
   dim?: number; // 0..1 how strongly the unaffected side is dimmed
+  calm?: number; // 0..1 the red/orange pain marking retreats (relief section)
 };
 
 const BONE = '#efe6d2', DISC = '#a9bdca', YEL = '#F6C945', ORA = '#F28C28', RED = '#E5322D';
@@ -60,7 +61,9 @@ const Nerve: React.FC<{pts: THREE.Vector3[]; r: number; color: string; progress:
 
 export const SciaticaOverlay: React.FC<{st: OverlayState; calib?: Calib; side?: 1 | -1}> = ({st, calib = CALIB_8313064, side = 1}) => {
   const c = calib, S = c.px;
+  const calm = st.calm ?? 0;
   const dimOther = 1 - 0.55 * (st.dim ?? 1);
+  st = {...st, red: st.red * (1 - calm), orange: st.orange * (1 - 0.92 * calm)};
   const bo = st.bones;
   // ---- vertebral levels (L1..L5) ----
   const lev = c.levelsY.map((y, i) => ({y, w: (4.0 + i * 0.16) * S, h: 2.9 * S, name: `L${i + 1}`}));

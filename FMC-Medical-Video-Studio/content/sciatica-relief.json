@@ -1,0 +1,184 @@
+{
+  "slug": "sciatica-relief",
+  "topic": {
+    "ar": "عرق النسا (الألم الوركي)",
+    "en": "Sciatica"
+  },
+  "services": [
+    "طب العظام",
+    "العلاج الطبيعي"
+  ],
+  "scenes": [
+    {
+      "id": "opening",
+      "sceneType": "A",
+      "plannedSec": 12.5,
+      "narration": "هل تشعر بألم يبدأ من أسفل الظهر ويمتد إلى الأرداف أو الساق؟ قد يكون هذا من أعراض عرق النسا.",
+      "ttsText": "هَلْ تَشْعُرُ بِأَلَمٍ يَبْدَأُ مِنْ أَسْفَلِ الظَّهْرِ وَيَمْتَدُّ إِلَى الْأَرْدَافِ أَوِ السَّاقِ؟ قَدْ يَكُونُ هَذَا مِنْ أَعْرَاضِ عِرْقِ النَّسَا.",
+      "onScreen": {
+        "title": "مسار الألم"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "anatomy",
+      "sceneType": "C",
+      "plannedSec": 17,
+      "narration": "تخرج جذور الأعصاب من أسفل العمود الفقري، وتتحد بعض هذه الجذور لتكون العصب الوركي. وعندما يتعرض أحد الجذور للتهيج أو الضغط، قد يظهر ألم يمتد إلى الساق.",
+      "ttsText": "تَخْرُجُ جُذُورُ الْأَعْصَابِ مِنْ أَسْفَلِ الْعَمُودِ الْفَقَرِيِّ، وَتَتَّحِدُ بَعْضُ هَذِهِ الْجُذُورِ لِتُكَوِّنَ الْعَصَبَ الْوَرِكِيَّ. وَعِنْدَمَا يَتَعَرَّضُ أَحَدُ الْجُذُورِ لِلتَّهَيُّجِ أَوِ الضَّغْطِ، قَدْ يَظْهَرُ أَلَمٌ يَمْتَدُّ إِلَى السَّاقِ.",
+      "onScreen": {
+        "title": "من العمود الفقري إلى العصب الوركي"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "symptoms",
+      "sceneType": "C",
+      "plannedSec": 9,
+      "narration": "وقد يصاحب الألم شعور بالوخز أو التنميل، وأحيانا ضعف في العضلات.",
+      "ttsText": "وَقَدْ يُصَاحِبُ الْأَلَمَ شُعُورٌ بِالْوَخْزِ أَوِ التَّنْمِيلِ، وَأَحْيَانًا ضَعْفٌ فِي الْعَضَلَاتِ.",
+      "onScreen": {
+        "title": "أعراض قد ترافق الألم"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "treatment",
+      "sceneType": "E",
+      "plannedSec": 3,
+      "narration": "والخبر الجيد أن كثيرا من الحالات تتحسن مع الوقت والعناية المناسبة. وللتخفيف من الألم، حافظ على نشاطك الخفيف قدر ما تسمح الأعراض، وتجنب البقاء طويلا في السرير أو الجلوس المتواصل، وغير وضعيتك بانتظام. وقد يساعد الدفء أو الكمادات الباردة. أما الأدوية المسكنة فيحددها الطبيب أو الصيدلاني بحسب حالتك.",
+      "ttsText": "وَالْخَبَرُ الْجَيِّدُ أَنَّ كَثِيرًا مِنَ الْحَالَاتِ تَتَحَسَّنُ مَعَ الْوَقْتِ وَالْعِنَايَةِ الْمُنَاسِبَةِ. وَلِلتَّخْفِيفِ مِنَ الْأَلَمِ، حَافِظْ عَلَى نَشَاطِكَ الْخَفِيفِ قَدْرَ مَا تَسْمَحُ الْأَعْرَاضُ، وَتَجَنَّبِ الْبَقَاءَ طَوِيلًا فِي السَّرِيرِ أَوِ الْجُلُوسَ الْمُتَوَاصِلَ، وَغَيِّرْ وَضْعِيَّتَكَ بِانْتِظَامٍ. وَقَدْ يُسَاعِدُ الدِّفْءُ أَوِ الْكَمَّادَاتُ الْبَارِدَةُ. أَمَّا الْأَدْوِيَةُ الْمُسَكِّنَةُ فَيُحَدِّدُهَا الطَّبِيبُ أَوِ الصَّيْدَلَانِيُّ بِحَسَبِ حَالَتِكَ.",
+      "onScreen": {
+        "title": "كيف نخفف الألم؟"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "fmc",
+      "sceneType": "E",
+      "plannedSec": 3,
+      "narration": "وبعد التقييم، قد يوصي أخصائي العلاج الطبيعي بحركات إطالة وتمارين مناسبة لحالتك.",
+      "ttsText": "وَبَعْدَ التَّقْيِيمِ، قَدْ يُوصِي أَخِصَّائِيُّ الْعِلَاجِ الطَّبِيعِيِّ بِحَرَكَاتِ إِطَالَةٍ وَتَمَارِينَ مُنَاسِبَةٍ لِحَالَتِكَ.",
+      "onScreen": {
+        "title": "تمارين مناسبة لحالتك"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "safety",
+      "sceneType": "F",
+      "plannedSec": 3,
+      "narration": "وإذا زاد الألم الممتد إلى الساق، فاطلب التقييم المناسب. أما ظهور ضعف شديد أو مستمر في الساق، أو تنميل في منطقة الحوض، أو تغير في التحكم بالبول أو البراز، فيستدعي تقييما طبيا عاجلا.",
+      "ttsText": "وَإِذَا زَادَ الْأَلَمُ الْمُمْتَدُّ إِلَى السَّاقِ، فَاطْلُبِ التَّقْيِيمَ الْمُنَاسِبَ. أَمَّا ظُهُورُ ضَعْفٍ شَدِيدٍ أَوْ مُسْتَمِرٍّ فِي السَّاقِ، أَوْ تَنْمِيلٍ فِي مِنْطَقَةِ الْحَوْضِ، أَوْ تَغَيُّرٍ فِي التَّحَكُّمِ بِالْبَوْلِ أَوِ الْبُرَازِ، فَيَسْتَدْعِي تَقْيِيمًا طِبِّيًّا عَاجِلًا.",
+      "onScreen": {
+        "title": "متى نراجع الطبيب؟"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "closing",
+      "sceneType": "F",
+      "plannedSec": 8,
+      "narration": "في مركز الفيصل الطبي، نهتم بتقييم حالتك ووضع خطة تأهيل تناسب احتياجاتك.",
+      "ttsText": "فِي مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ، نَهْتَمُّ بِتَقْيِيمِ حَالَتِكَ وَوَضْعِ خُطَّةِ تَأْهِيلٍ تُنَاسِبُ احْتِيَاجَاتِكَ.",
+      "onScreen": {
+        "title": "مركز الفيصل الطبي",
+        "subtitle": "الرعاية المثالية"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    }
+  ],
+  "instagramCaption": "عرق النسا: افهم مسار الألم، ولا تعتمد على حركات عامة دون تقييم. محتوى توعوي وليس تشخيصا ولا خطة علاج.\n\nمركز الفيصل الطبي — الرعاية المثالية",
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العين",
+    "#الإمارات",
+    "#عرق_النسا",
+    "#آلام_أسفل_الظهر",
+    "#العلاج_الطبيعي",
+    "#الرعاية_المثالية",
+    "#FMC",
+    "#AlAin",
+    "#UAE",
+    "#Sciatica",
+    "#IdealCare"
+  ],
+  "sources": [
+    {
+      "title": "NICE NG59 — Low back pain and sciatica in over 16s (target reference; not yet read)",
+      "url": "https://www.nice.org.uk/guidance/ng59/chapter/recommendations"
+    },
+    {
+      "title": "NHS — Exercises for sciatica (target reference; not yet read)",
+      "url": "https://www.nhs.uk/live-well/exercise/exercises-sciatica-problems/"
+    },
+    {
+      "title": "ELHT — Spinal exercises (target reference; not yet read)",
+      "url": "https://elht.nhs.uk/services/integrated-msk-pain-and-rheumatology-service/patient-information/exercises/spinal-exercises"
+    }
+  ],
+  "timing": {
+    "lead": 6,
+    "tail": 14
+  },
+  "approvals": {
+    "grammarReview": null,
+    "medicalTerminologyReview": null,
+    "medicalAccuracyReview": null,
+    "scriptApproved": {
+      "by": "Emad (direction in chat: explain the pain and how to reduce it; stretching to be added from a video he will send; new wording drafted by Claude from general guidance, needs clinician review)",
+      "date": "2026-11-12T17:52:00.954Z"
+    },
+    "pronunciationApproved": null,
+    "approvedHash": "f8af821054c9821bcca662ad2e6a922c879e1b1ce49d8d9d38132cbce4f8e4bd"
+  }
+}

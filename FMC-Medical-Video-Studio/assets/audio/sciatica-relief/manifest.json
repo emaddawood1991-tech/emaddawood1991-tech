@@ -1,0 +1,43 @@
+{
+  "provider": "google",
+  "model": "gemini-3.1-flash-tts-preview",
+  "voice": "Charon",
+  "scriptHash": "f8af821054c9821bcca662ad2e6a922c879e1b1ce49d8d9d38132cbce4f8e4bd",
+  "scenes": [
+    {
+      "id": "opening",
+      "file": "audio/sciatica-relief/opening.wav",
+      "durationSec": 8.687
+    },
+    {
+      "id": "anatomy",
+      "file": "audio/sciatica-relief/anatomy.wav",
+      "durationSec": 15.253
+    },
+    {
+      "id": "symptoms",
+      "file": "audio/sciatica-relief/symptoms.wav",
+      "durationSec": 6.526
+    },
+    {
+      "id": "treatment",
+      "file": "audio/sciatica-relief/treatment.wav",
+      "durationSec": 27.745
+    },
+    {
+      "id": "fmc",
+      "file": "audio/sciatica-relief/fmc.wav",
+      "durationSec": 8.369
+    },
+    {
+      "id": "safety",
+      "file": "audio/sciatica-relief/safety.wav",
+      "durationSec": 17.662
+    },
+    {
+      "id": "closing",
+      "file": "audio/sciatica-relief/closing.wav",
+      "durationSec": 7.59
+    }
+  ]
+}
