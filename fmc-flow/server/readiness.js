@@ -1,7 +1,7 @@
 // Production readiness report (stage S6): what is configured, what is only declared, what is missing.
 // The application can check files, keys and logs it can see. It cannot see the disk or the network, so those items are reported as "declared by the operator".
 import { statSync } from 'node:fs';
-import { scryptSync, timingSafeEqual } from 'node:crypto';
+import { verifyPassword } from './passwords.js';
 
 const HEX64 = /^[0-9a-f]{64}$/i;
 const hoursSince = (ts) => (ts ? (Date.now() - Date.parse(ts)) / 36e5 : Infinity);
@@ -10,8 +10,7 @@ const hoursSince = (ts) => (ts ? (Date.now() - Date.parse(ts)) / 36e5 : Infinity
 export function demoPasswordAccounts(db, demoPassword = process.env.SEED_PASSWORD || 'Demo-Passw0rd!') {
   const out = [];
   for (const u of db.prepare('SELECT username, pass_hash FROM users WHERE active=1').all()) {
-    const [, salt, hash] = String(u.pass_hash).split('$'); if (!salt || !hash) continue;
-    try { if (timingSafeEqual(scryptSync(demoPassword, Buffer.from(salt, 'hex'), 32), Buffer.from(hash, 'hex'))) out.push(u.username); } catch { /* malformed hash */ }
+    try { if (verifyPassword(demoPassword, u.pass_hash)) out.push(u.username); } catch { /* malformed hash */ }
   }
   return out;
 }
@@ -45,8 +44,8 @@ export function readiness({ db, env = process.env, reqSecure = false, backupDir 
     if (f) { const m = statSync(f).mode & 0o777; add('db_permissions', (m & 0o077) === 0 ? 'ok' : 'warn', 'Database file is readable only by the service account', `mode ${m.toString(8)}`); } } catch { /* in-memory */ }
   const demo = demoPasswordAccounts(db, env.SEED_PASSWORD || undefined);
   add('demo_accounts', demo.length ? 'fail' : 'ok', 'No account uses the published demo password', demo.length ? `${demo.length} active account(s) accept it: ${demo.slice(0, 8).join(', ')}. Remove or reset them; create the real administrator with \`npm run admin:create\` and run production with NODE_ENV=production.` : 'None found.');
-  const idleH = Number(one("SELECT value FROM settings WHERE key='session_idle_hours'")?.value || 12); const absH = Number(one("SELECT value FROM settings WHERE key='session_absolute_hours'")?.value || 14);
-  add('session_policy', idleH <= 2 && absH <= 12 ? 'ok' : 'warn', 'Sessions end soon enough for shared computers', `Idle limit ${idleH} h, absolute limit ${absH} h. For clinic computers use 1–2 h idle and 12 h or less in total (Security Settings); wall displays may need longer. The right values need confirmation against current requirements.`, 'Requires Legal-Compliance Confirmation');
+  const idleMin = Number(one("SELECT value FROM settings WHERE key='session_idle_minutes'")?.value || 0); const idleH = idleMin > 0 ? idleMin / 60 : Number(one("SELECT value FROM settings WHERE key='session_idle_hours'")?.value || 12); const absH = Number(one("SELECT value FROM settings WHERE key='session_absolute_hours'")?.value || 14);
+  add('session_policy', idleH <= 2 && absH <= 12 ? 'ok' : 'warn', 'Sessions end soon enough for shared computers', `Idle limit ${idleMin > 0 ? `${idleMin} min` : `${idleH} h`}, absolute limit ${absH} h. For clinic computers use 1–2 h idle and 12 h or less in total (Security Settings); wall displays may need longer. The right values need confirmation against current requirements.`, 'Requires Legal-Compliance Confirmation');
   const roles = String(one("SELECT value FROM settings WHERE key='mfa_required_roles'")?.value || '').split(',');
   add('admin_mfa', roles.includes('admin') ? 'ok' : 'warn', 'Two-step verification is required for administrators', roles.includes('admin') ? `Required for: ${roles.filter(Boolean).join(', ')}` : 'Turn it on in Security Settings.');
   try { const late = one("SELECT COUNT(*) c FROM break_glass_grants WHERE reviewed_at IS NULL AND granted_at<?", new Date(Date.now() - 24 * 36e5).toISOString()).c;

@@ -1,5 +1,7 @@
 import express from 'express';
-import { createHash, randomBytes, scrypt, scryptSync, timingSafeEqual } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
+import { hashPassword, hashPasswordAsync, verifyPasswordAsync, needsRehash } from './passwords.js';
+import { makeLockout } from './lockout.js';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { openDb, tx } from './db.js';
 import { makeOps, HttpError, now, nowMs, clock } from './ops.js';
@@ -13,24 +15,7 @@ import { applyTemplate, effectiveTemplate } from './roles.js';
 import { readiness } from './readiness.js';
 import { makeRecovery } from './recovery.js';
 
-export function hashPassword(pw) {
-  const salt = randomBytes(16);
-  return `s1$${salt.toString('hex')}$${scryptSync(pw, salt, 32).toString('hex')}`;
-}
-function verifyPassword(pw, stored) {
-  const [, saltHex, hashHex] = String(stored).split('$');
-  if (!saltHex) return false;
-  const h = scryptSync(pw, Buffer.from(saltHex, 'hex'), 32);
-  return timingSafeEqual(h, Buffer.from(hashHex, 'hex'));
-}
-const scryptAsync = (pw, salt, len) => new Promise((res, rej) => scrypt(pw, salt, len, (e, k) => (e ? rej(e) : res(k))));
-/** Same check as verifyPassword, but off the main thread so logins cannot stall other requests. */
-async function verifyPasswordAsync(pw, stored) {
-  const [, saltHex, hashHex] = String(stored).split('$');
-  if (!saltHex) return false;
-  const h = await scryptAsync(pw, Buffer.from(saltHex, 'hex'), 32);
-  return timingSafeEqual(h, Buffer.from(hashHex, 'hex'));
-}
+export { hashPassword };
 const DUMMY_HASH = hashPassword(randomBytes(12).toString('hex')); // verified against when the username does not exist, so timing does not reveal valid usernames
 const MFA_OK_PREFIX = '/api/mfa/'; // endpoints a person who must enrol in MFA may call, in addition to the set below
 const MUST_CHANGE_OK = new Set(['/api/me', '/api/logout', '/api/account', '/api/account/password', '/api/time']); // all a person who must change their password may call
@@ -116,7 +101,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
 
   // ---- auth ----
   const cookieOf = (req) => /(?:^|;\s*)fmc_sid=([a-f0-9]+)/.exec(req.headers.cookie || '')?.[1];
-  const attempts = new Map();
+  const lock = makeLockout(db); // sign-in attempt counters live in the database (hashed keys), not in memory
   const cookieFlags = process.env.FMC_INSECURE_COOKIES === '1' ? '' : '; Secure';
   const setSessionCookie = (res, token) => res.set('Set-Cookie', `fmc_sid=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${Math.round((Number(ops.setting('session_absolute_hours')) || 14) * 3600)}${cookieFlags}`);
   const clearSessionCookie = (res) => res.set('Set-Cookie', `fmc_sid=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${cookieFlags}`);
@@ -125,7 +110,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     req.user = null;
     if (tok) {
       const s = one('SELECT * FROM auth_sessions WHERE token_hash=?', sha(tok));
-      const maxIdle = Number(ops.setting('session_idle_hours') || 12) * 3600e3; const maxAge = Number(ops.setting('session_absolute_hours') || 14) * 3600e3;
+      const idleMin = Number(ops.setting('session_idle_minutes')) || 0; const maxIdle = idleMin > 0 ? idleMin * 60e3 : Number(ops.setting('session_idle_hours') || 12) * 3600e3; const maxAge = Number(ops.setting('session_absolute_hours') || 14) * 3600e3;
       if (s && nowMs() - Date.parse(s.last_seen) < maxIdle && nowMs() - Date.parse(s.created_at) < maxAge) { // idle AND absolute lifetime
         const u = one('SELECT id,username,name,name_ar,role,department_id,active,schedule_override,must_change_password FROM users WHERE id=?', s.user_id);
         if (u?.active) { u.department_ids = q('SELECT department_id FROM user_departments WHERE user_id=?', u.id).map((x) => x.department_id); u.mfa_setup_required = mfa.required(u) && !mfa.enabled(u.id) ? 1 : 0; req.user = u; run('UPDATE auth_sessions SET last_seen=? WHERE token_hash=?', now(), s.token_hash); }
@@ -151,10 +136,13 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     const { username, password } = req.body || {};
     const key = `${req.ip}|${String(username).toLowerCase()}`;
     // Count the attempt BEFORE hashing: parallel guesses are all counted, not read from the same stale value after the await.
-    let a = attempts.get(key); const tNow = Date.now();
-    if (!a || tNow - a.t >= 60e3) a = { n: 0, t: tNow };
-    if (a.n >= 5) { if (!a.blocked) { a.blocked = true; accounts.loginEvent(one('SELECT id FROM users WHERE username=?', String(username || ''))?.id ?? null, 'LOGIN_BLOCKED', req); } throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Try again in a minute'); }
-    a.n += 1; a.t = tNow; attempts.set(key, a);
+    let a = lock.read(key); const tNow = Date.now();
+    if (!a || tNow - a.t >= 60e3) a = { n: 0, t: tNow, blocked: 0 };
+    if (a.n >= 5) {
+      if (!a.blocked) { a.blocked = 1; lock.write(key, a); const uid = one('SELECT id FROM users WHERE username=?', String(username || ''))?.id ?? null; accounts.loginEvent(uid, 'LOGIN_BLOCKED', req); privacy.raise('ACCOUNT_LOCKOUT', uid, { attempts: a.n, window_seconds: 60, account: uid ? 'known' : 'unknown username' }); }
+      throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Try again in a minute');
+    }
+    a.n += 1; a.t = tNow; lock.write(key, a);
     const u = one('SELECT * FROM users WHERE username=? AND active=1', String(username || ''));
     const passwordOk = await verifyPasswordAsync(String(password || ''), u ? u.pass_hash : DUMMY_HASH); // always hashes, so unknown usernames take as long as known ones
     if (!u || !passwordOk) {
@@ -164,7 +152,8 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       accounts.loginEvent(known?.id ?? null, 'LOGIN_FAILED', req, known ? {} : { unknown_username: true });
       throw new HttpError(401, 'BAD_CREDENTIALS', 'Invalid username or password');
     }
-    attempts.delete(key);
+    lock.clear(key);
+    if (needsRehash(u.pass_hash)) run('UPDATE users SET pass_hash=? WHERE id=?', await hashPasswordAsync(String(password)), u.id); // upgrade an older, cheaper hash now that the right password is in hand
     if (mfa.enabled(u.id)) { // second factor: no session yet, only a short-lived one-time challenge
       const ch = randomBytes(24).toString('hex'); challenges.set(sha(ch), { userId: u.id, exp: nowMs() + 5 * 60e3, tries: 0 });
       for (const [k, v] of challenges) if (v.exp < nowMs()) challenges.delete(k);
@@ -301,7 +290,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     });
   }
   app.patch('/api/config/settings', guard('config.manage'), (req, res) => {
-    const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60], password_min_length: [10, 64], rate_search_per_min: [0, 1000], rate_export_per_hour: [0, 1000], rate_api_per_min: [0, 100000], rate_recovery_per_hour: [0, 100], break_glass_minutes: [15, 240], export_max_rows: [100, 100000], alert_failed_logins: [2, 100], alert_export_rows: [10, 100000], alert_search_patients: [5, 10000], session_absolute_hours: [1, 72], session_idle_hours: [1, 72], max_concurrent_sessions: [0, 20] };
+    const numeric = { doc_min_chars: [1, 200], resource_gap_minutes: [0, 60], password_min_length: [10, 64], rate_search_per_min: [0, 1000], rate_export_per_hour: [0, 1000], rate_api_per_min: [0, 100000], rate_recovery_per_hour: [0, 100], break_glass_minutes: [15, 240], export_max_rows: [100, 100000], alert_failed_logins: [2, 100], alert_export_rows: [10, 100000], alert_search_patients: [5, 10000], session_idle_minutes: [0, 1440], session_absolute_hours: [1, 72], session_idle_hours: [1, 72], max_concurrent_sessions: [0, 20] };
     const flags = ['correction_requires_approval', 'transfer_reason_required', 'registration_require_name_ar', 'registration_require_phone', 'require_service_at_checkin', 'timer_auto_close', 'break_glass_enabled'];
     const allowed = ['timezone', 'gender_options', 'diagnosis_pattern', 'mfa_required_roles', 'alert_office_hours', ...Object.keys(numeric), ...flags];
     const body = req.body || {};

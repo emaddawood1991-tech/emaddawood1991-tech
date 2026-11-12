@@ -84,6 +84,13 @@ New tables: `login_events`, `password_history`. New columns: `users.must_change_
 - **Not changed (decision recorded):** M3 lock-out abuse — the repeated-failure alert already tells administrators; counters stay in memory for a single instance. L2 password-hash cost — to be tuned on the production server so logins stay fast (hash format change must stay backward compatible).
 - Tests: `hardening.test.js` (6); `e2e-mfa` now checks the QR as an image. Rollback: tag `checkpoint/pre-security-s9-5ab27f9`.
 
+## Stage S10 (implemented): sign-in hardening
+- **Lock-outs survive a restart (M3).** Failed-sign-in counters moved from memory to the database (`login_attempts`); the key (address + typed name) is stored only as a SHA-256 hash, so a password typed into the username box is never kept. Five wrong guesses still lock that name from that address for a minute; the lock now persists across restarts and raises one **Account locked** alert (known or unknown account) in Security & Access → Alerts.
+- **Stronger password hashes (L2).** New format `s2$<log2 cost>$salt$hash`; the old `s1$…` format (cost 2^14) still verifies. Production (`NODE_ENV=production`) uses cost 2^15 by default; `FMC_SCRYPT_LOGN` (14–20) overrides it. A hash is **upgraded automatically the next time the person signs in with the right password**; a wrong password never changes anything. Development and the test suites keep the old cost, so nothing slows down. Tune `FMC_SCRYPT_LOGN` on the real server so a sign-in stays well under a second.
+- **Idle sign-out in minutes.** New setting `session_idle_minutes` (0–1440, Security Settings). `0` keeps using the hours setting, so existing behaviour is unchanged; 15 or 30 suits clinic computers. The readiness report shows the effective idle limit.
+- **Duplicate patient records:** design proposal only — `docs/DUPLICATE_PATIENT_MERGE_DESIGN.md` (link a duplicate to a survivor instead of merging; two-person approval; fully reversible). Nothing is implemented until you approve it.
+- New table `login_attempts`, setting `session_idle_minutes` (default 0). Tests: `signin-hardening.test.js` (5), `e2e-typing.cjs` now 11. Rollback: tag `checkpoint/pre-security-s10-1f8b748`.
+
 ## Still open (later stages)
 MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · e-mail/SMS self-service recovery (needs written approval for an external service) · merging duplicate patient records (needs a separate design and approval).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.

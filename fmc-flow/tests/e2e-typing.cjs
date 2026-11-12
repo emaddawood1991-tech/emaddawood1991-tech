@@ -30,6 +30,8 @@ const NEW = 'Str0ng-Typing-Phrase-91';
   await adm.click('.nav a:has-text("Settings")'); await adm.click('.tabs button:has-text("Security & Access")'); await adm.click('.tabs button:has-text("Security Settings")'); await adm.waitForSelector('#ss-password_min_length');
   ok(await typeLikeAPerson(adm, '#ss-password_min_length', '12'), 'Security Settings number boxes keep focus while typing');
   ok(await typeLikeAPerson(adm, '#ss-rate_search_per_min', '75'), 'a second Security Settings box also keeps focus');
+  ok(await typeLikeAPerson(adm, '#ss-session_idle_minutes', '45'), 'the idle sign-out (minutes) box keeps focus while typing');
+  await adm.click('.card button:has-text("Save")'); await adm.waitForSelector('.toast:has-text("Saved")'); ok(true, 'the idle minutes setting saves');
   await adm.click('.nav a:has-text("Daily Schedule")'); await adm.waitForSelector('.sch-toolbar'); await adm.click('button:has-text("Add appointment")'); await adm.waitForSelector('#ds-notes');
   ok(await typeLikeAPerson(adm, '#ds-notes', 'Bring previous X-ray'), 'the appointment notes box keeps focus while typing');
   await adm.screenshot({ path: `${out}/t2-booking.png` });

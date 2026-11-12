@@ -20,7 +20,7 @@ Scope: repository state, dependencies, secrets, code patterns, server-side autho
 | Attack probes | `tests/audit-probe.mjs` | 31 probes, **4 findings** (was 9 before S8; all four are listed below) |
 
 ## 2. Findings (status after stage S9)
-H1, M1 (mechanism), M2 (check), L1, L3, L4 and L5 are fixed in S9 — see `SECURITY_AUDIT_2026-11.md`. M3 and L2 are recorded decisions. The table below is the original list.
+H1, M1 (mechanism), M2 (check), L1, L3, L4 and L5 are fixed in S9 — see `SECURITY_AUDIT_2026-11.md`. M3 and L2 were fixed in S10 (persistent lock-outs with an alert; stronger hash cost with automatic upgrade). The table below is the original list.
 
 | # | Severity | Finding | Recommendation |
 |---|---|---|---|

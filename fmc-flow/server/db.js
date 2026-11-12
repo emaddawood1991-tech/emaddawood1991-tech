@@ -247,6 +247,7 @@ CREATE TABLE IF NOT EXISTS break_glass_grants (
 );
 CREATE TRIGGER IF NOT EXISTS breakglass_no_delete BEFORE DELETE ON break_glass_grants BEGIN SELECT RAISE(ABORT,'break_glass_grants is append-only'); END;
 
+CREATE TABLE IF NOT EXISTS login_attempts (key TEXT PRIMARY KEY, n INTEGER NOT NULL, t INTEGER NOT NULL, blocked INTEGER NOT NULL DEFAULT 0);
 CREATE TABLE IF NOT EXISTS user_departments (
   user_id INTEGER NOT NULL REFERENCES users(id), department_id INTEGER NOT NULL REFERENCES departments(id), PRIMARY KEY (user_id, department_id)
 );
@@ -277,6 +278,7 @@ export const DEFAULT_SETTINGS = {
   correction_requires_approval: '1',
   transfer_reason_required: '0',
   session_idle_hours: '12',
+  session_idle_minutes: '0',
   registration_require_name_ar: '0',
   registration_require_phone: '0',
   require_service_at_checkin: '0',

@@ -33,6 +33,9 @@ NODE_ENV=production npm start                                       # no demo ac
 ```
 Production never seeds demo data (`FMC_ALLOW_DEMO_SEED=1` exists for staging only). Open Security & Access → Production readiness and clear every failing item before real patient data is used.
 
+## 2c. Sign-in settings
+`FMC_SCRYPT_LOGN` (default 15 in production, 14 elsewhere) sets the password-hash cost; older hashes are upgraded at the person's next sign-in. Choose the idle sign-out in minutes in Security Settings (`session_idle_minutes`; 0 uses the hours setting).
+
 ## 3. Scheduled backups, off-site copy and drills
 Set `FMC_BACKUP_EVERY_HOURS=24` (and the keys) and the server runs, once a day and 60 seconds after start:
 1. encrypted backup into `data/backups/`;
