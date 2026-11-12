@@ -4,6 +4,9 @@ import { useI18n } from '../i18n.jsx';
 import { Modal, useToast } from '../ui.jsx';
 import PatientFormModal from './PatientForm.jsx';
 
+/** Form row at module level so the inputs inside it keep focus while typing. */
+function F({ id, label, err, children }) { return <div className="field"><label htmlFor={id}>{label}</label>{children}{err && <div className="field-err" role="alert">{err}</div>}</div>; }
+
 const QUICK = [20, 30, 40, 45, 50, 55, 60];
 const fill = (txt, vars) => Object.entries(vars).reduce((a, [k, v]) => a.replace(`{${k}}`, v), txt);
 const errOf = (e) => e?.details || {};
@@ -86,7 +89,6 @@ export function AppointmentModal({ mode = 'add', appt, prefill = {}, board, conf
     } finally { setBusy(false); }
   };
   const ok = patient && f.department_id && f.date && f.time && (!useOverride || reason.trim());
-  const F = ({ id, label, err, children }) => <div className="field"><label htmlFor={id}>{label}</label>{children}{err && <div className="field-err" role="alert">{err}</div>}</div>;
   return (
     <Modal title={title} onClose={onClose} wide>
       <div className="stack">

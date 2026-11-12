@@ -8,6 +8,14 @@ import { MfaCard } from './Mfa.jsx';
 const fill = (txt, n) => txt.replace('{n}', n);
 const devName = (ua) => { const s = String(ua || ''); const b = /Edg\//.test(s) ? 'Edge' : /Chrome\//.test(s) ? 'Chrome' : /Firefox\//.test(s) ? 'Firefox' : /Safari\//.test(s) ? 'Safari' : ''; const o = /Windows/.test(s) ? 'Windows' : /Android/.test(s) ? 'Android' : /iPhone|iPad/.test(s) ? 'iOS' : /Mac OS/.test(s) ? 'macOS' : /Linux/.test(s) ? 'Linux' : ''; return [b, o].filter(Boolean).join(' · ') || s.slice(0, 40) || '—'; };
 
+/** One password input. Defined at module level on purpose: a component created inside another component is rebuilt on every keystroke and the field loses focus after each letter. */
+function PwField({ id, label, value, onChange, onEnter, auto, err }) {
+  return (
+    <div className="field"><label htmlFor={id}>{label}</label>
+      <input id={id} type="password" autoComplete={auto} value={value} aria-invalid={err ? 'true' : undefined} onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && onEnter()} />
+      {err && <div className="field-err" role="alert">{err}</div>}</div>);
+}
+
 /** Change-password form (also used for the forced first-sign-in step). Passwords are only ever sent to the server, never stored or shown. */
 export function PasswordForm({ minLength = 10, onDone }) {
   const { t } = useI18n(); const toast = useToast();
@@ -20,16 +28,13 @@ export function PasswordForm({ minLength = 10, onDone }) {
     catch (e) { if (e.code === 'VALIDATION') setErrs({ cur: e.details?.fields?.current_password, next: e.details?.fields?.new_password }); else toast(e.code === 'NETWORK' ? t('offline') : e.message, true); }
     finally { setBusy(false); }
   };
-  const Field = ({ id, label, k, auto, err }) => (
-    <div className="field"><label htmlFor={id}>{label}</label>
-      <input id={id} type="password" autoComplete={auto} value={f[k]} aria-invalid={err ? 'true' : undefined} onChange={(e) => setF({ ...f, [k]: e.target.value })} onKeyDown={(e) => e.key === 'Enter' && f.cur && f.next && f.again && submit()} />
-      {err && <div className="field-err" role="alert">{err}</div>}</div>);
+  const enter = () => { if (f.cur && f.next && f.again) submit(); };
   return (
     <div className="stack">
-      <Field id="pw-current" label={t('saCurrentPw')} k="cur" auto="current-password" err={errs.cur} />
-      <Field id="pw-new" label={t('saNewPw')} k="next" auto="new-password" err={errs.next} />
+      <PwField id="pw-current" label={t('saCurrentPw')} value={f.cur} onChange={(v) => setF((c) => ({ ...c, cur: v }))} onEnter={enter} auto="current-password" err={errs.cur} />
+      <PwField id="pw-new" label={t('saNewPw')} value={f.next} onChange={(v) => setF((c) => ({ ...c, next: v }))} onEnter={enter} auto="new-password" err={errs.next} />
       <small className="hint">{fill(t('saPwHint'), minLength)}</small>
-      <Field id="pw-confirm" label={t('saConfirmPw')} k="again" auto="new-password" err={errs.again || (mismatch ? t('saPwMismatch') : '')} />
+      <PwField id="pw-confirm" label={t('saConfirmPw')} value={f.again} onChange={(v) => setF((c) => ({ ...c, again: v }))} onEnter={enter} auto="new-password" err={errs.again || (mismatch ? t('saPwMismatch') : '')} />
       <button type="button" className="btn" disabled={busy || !f.cur || !f.next || !f.again || mismatch} onClick={submit}>{t('saSavePw')}</button>
     </div>);
 }
@@ -103,7 +108,7 @@ export default function Account({ user }) {
       <div className="card" style={{ maxWidth: 560 }}><h2>{t('saChangePw')}</h2><PasswordForm minLength={d.policy.min_length} onDone={acct.reload} /></div>
       <div className="card"><h2>{t('saSessions')}<button className="btn ghost sm" onClick={revokeOthers} disabled={d.sessions.length < 2}>{t('saSignOutOthers')}</button></h2>
         <div className="tbl"><table><thead><tr><th>{t('saDevice')}</th><th>{t('saAddress')}</th><th>{t('saSignedIn')}</th><th>{t('saLastActive')}</th><th /></tr></thead>
-          <tbody>{d.sessions.map((s) => <tr key={s.sid}><td>{s.user_agent ? s.user_agent.slice(0, 60) : '—'}{s.current && <> <span className="chip ok">{t('saThisDevice')}</span></>}</td><td className="small">{s.ip || '—'}</td><td className="small">{fmtDT(s.created_at)}</td><td className="small">{fmtDT(s.last_seen)}</td>
+          <tbody>{d.sessions.map((s) => <tr key={s.sid}><td>{s.user_agent ? devName(s.user_agent) : '—'}{s.current && <> <span className="chip ok">{t('saThisDevice')}</span></>}</td><td className="small">{s.ip || '—'}</td><td className="small">{fmtDT(s.created_at)}</td><td className="small">{fmtDT(s.last_seen)}</td>
             <td><button className="btn ghost sm" onClick={() => revokeOne(s.sid)}>{t('saSignOutOne')}</button></td></tr>)}</tbody></table></div></div>
       <div className="card"><h2>{t('saActivity')}</h2><ActivityTable rows={d.activity} /></div>
     </>);

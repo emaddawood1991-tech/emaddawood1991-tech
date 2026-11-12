@@ -47,7 +47,7 @@ function Roles() {
     <div className="card"><h2>{t('saEndpoints')}</h2><p className="small muted">{t('saEndpointsNote')}</p>
       <input placeholder={t('search')} value={q} onChange={(e) => setQ(e.target.value)} style={{ maxWidth: 320 }} />
       <div className="tbl" style={{ maxHeight: 360, overflow: 'auto' }}><table><thead><tr><th>{t('saRoute')}</th><th>{t('saRequires')}</th></tr></thead>
-        <tbody>{eps.map((e, i) => <tr key={i}><td className="small"><code>{e.method} {e.path}</code></td><td className="small">{e.permission ? <><code>{e.permission}</code> <span className="muted">({(r.permissions[e.permission] || []).join(', ')})</span></> : <span className="muted">{t('saSignedIn')}</span>}</td></tr>)}</tbody></table></div></div>
+        <tbody>{eps.map((e, i) => <tr key={i}><td className="small"><code>{e.method} {e.path}</code></td><td className="small">{e.permission ? <><code>{e.permission}</code> <span className="muted">({(r.permissions[e.permission] || []).join(', ')})</span></> : <span className="muted">{t('saAnySignedIn')}</span>}</td></tr>)}</tbody></table></div></div>
   </div>);
 }
 
@@ -157,6 +157,11 @@ function Audit() {
     </div>);
 }
 
+/** Number input at module level (see PwField in Account.jsx): defining it inside the page would drop focus after every keystroke. */
+function NumField({ v, setV, k, label, min, max }) {
+  return <div className="field"><label htmlFor={`ss-${k}`}>{label}</label><input id={`ss-${k}`} type="number" min={min} max={max} value={v[k]} onChange={(e) => setV({ ...v, [k]: e.target.value })} /></div>;
+}
+
 function SecuritySettings({ config, reload }) {
   const { t } = useI18n(); const toast = useToast();
   const [v, setV] = useState({ password_min_length: config.settings.password_min_length ?? '10', session_idle_hours: config.settings.session_idle_hours ?? '12', session_absolute_hours: config.settings.session_absolute_hours ?? '14', max_concurrent_sessions: config.settings.max_concurrent_sessions ?? '3',
@@ -164,12 +169,11 @@ function SecuritySettings({ config, reload }) {
     alert_failed_logins: config.settings.alert_failed_logins ?? '5', alert_export_rows: config.settings.alert_export_rows ?? '500', alert_search_patients: config.settings.alert_search_patients ?? '60', alert_office_hours: config.settings.alert_office_hours ?? '06:00-23:00' });
   const [err, setErr] = useState(''); const [roles, setRoles] = useState(() => String(config.settings.mfa_required_roles || '').split(',').filter(Boolean));
   const save = async () => { setErr(''); try { await api.patch('/config/settings', { ...v, mfa_required_roles: roles.join(',') }); toast(t('saSaved')); reload(); } catch (e) { setErr(e.message); } };
-  const N = ({ k, label, min, max }) => <div className="field"><label htmlFor={`ss-${k}`}>{label}</label><input id={`ss-${k}`} type="number" min={min} max={max} value={v[k]} onChange={(e) => setV({ ...v, [k]: e.target.value })} /></div>;
   return (
     <div className="card" style={{ maxWidth: 520 }}><h2>{t('saSettings')}</h2>
-      <div className="stack"><N k="password_min_length" label={t('saMinLen')} min={10} max={64} /><N k="session_idle_hours" label={t('saIdleHours')} min={1} max={72} /><N k="session_absolute_hours" label={t('saAbsHours')} min={1} max={72} /><N k="max_concurrent_sessions" label={t('saMaxSessions')} min={0} max={20} />
-        <N k="rate_search_per_min" label={t('saRateSearch')} min={0} max={1000} /><N k="rate_export_per_hour" label={t('saRateExport')} min={0} max={1000} /><N k="rate_api_per_min" label={t('saRateApi')} min={0} max={100000} /><N k="export_max_rows" label={t('saExportMax')} min={100} max={100000} />
-        <N k="alert_failed_logins" label={t('saAlertFails')} min={2} max={100} /><N k="alert_export_rows" label={t('saAlertRows')} min={10} max={100000} /><N k="alert_search_patients" label={t('saAlertSearch')} min={5} max={10000} />
+      <div className="stack"><NumField v={v} setV={setV} k="password_min_length" label={t('saMinLen')} min={10} max={64} /><NumField v={v} setV={setV} k="session_idle_hours" label={t('saIdleHours')} min={1} max={72} /><NumField v={v} setV={setV} k="session_absolute_hours" label={t('saAbsHours')} min={1} max={72} /><NumField v={v} setV={setV} k="max_concurrent_sessions" label={t('saMaxSessions')} min={0} max={20} />
+        <NumField v={v} setV={setV} k="rate_search_per_min" label={t('saRateSearch')} min={0} max={1000} /><NumField v={v} setV={setV} k="rate_export_per_hour" label={t('saRateExport')} min={0} max={1000} /><NumField v={v} setV={setV} k="rate_api_per_min" label={t('saRateApi')} min={0} max={100000} /><NumField v={v} setV={setV} k="export_max_rows" label={t('saExportMax')} min={100} max={100000} />
+        <NumField v={v} setV={setV} k="alert_failed_logins" label={t('saAlertFails')} min={2} max={100} /><NumField v={v} setV={setV} k="alert_export_rows" label={t('saAlertRows')} min={10} max={100000} /><NumField v={v} setV={setV} k="alert_search_patients" label={t('saAlertSearch')} min={5} max={10000} />
         <div className="field"><label htmlFor="ss-alert_office_hours">{t('saOffice')}</label><input id="ss-alert_office_hours" value={v.alert_office_hours} onChange={(e) => setV({ ...v, alert_office_hours: e.target.value })} /></div>
         <fieldset className="mrn-box"><legend>{t('saMfaRequiredRoles')}</legend>{['admin', 'supervisor', 'reception', 'clinician'].map((r) => <label key={r} className="chk"><input type="checkbox" checked={roles.includes(r)} onChange={(e) => setRoles(e.target.checked ? [...roles, r] : roles.filter((x) => x !== r))} />{r}</label>)}</fieldset>
         {err && <div className="field-err" role="alert">{err}</div>}<button className="btn" onClick={save}>{t('save')}</button></div></div>);
