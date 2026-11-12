@@ -7,6 +7,8 @@ import {WristStudy} from './compositions/WristStudy';
 import {PoseLab} from './compositions/PoseLab';
 import {SpineStudy} from './compositions/SpineStudy';
 import {LimbStudy} from './compositions/LimbStudy';
+import {SciaticaOverlayStudy} from './compositions/SciaticaOverlayStudy';
+import {SciaticaPart1, durationForSciPart1} from './compositions/SciaticaEpisode';
 import {KneeAlignmentEpisode, durationForKnee} from './compositions/KneeAlignmentEpisode';
 import {SpineEarlyDetection, durationForSpineV2} from './compositions/SpineEarlyDetection';
 import {SpineRealisticEpisode, durationForSpine} from './templates/SpineRealisticEpisode';
@@ -56,6 +58,8 @@ export const Root: React.FC = () => (
     <Composition id="SpineV2" component={SpineEarlyDetection} width={1080} height={1920} fps={FPS} durationInFrames={durationForSpineV2(defaults)} schema={VideoPropsSchema} defaultProps={defaults} calculateMetadata={({props}) => ({durationInFrames: durationForSpineV2(props)})} />
     <Composition id="LimbStudy" component={LimbStudy} width={1080} height={1920} fps={FPS} durationInFrames={1} defaultProps={{state: 'knock', dist: 130}} />
     <Composition id="KneeReel" component={KneeAlignmentEpisode} width={1080} height={1920} fps={FPS} durationInFrames={durationForKnee(defaults)} schema={VideoPropsSchema} defaultProps={defaults} calculateMetadata={({props}) => ({durationInFrames: durationForKnee(props)})} />
+    <Composition id="SciaticaOverlayStudy" component={SciaticaOverlayStudy} width={1080} height={1920} fps={FPS} durationInFrames={1} defaultProps={{bones: 1, nerves: 1, orange: 1, red: 1, sec: 1}} />
+    <Composition id="SciaticaPart1" component={SciaticaPart1} width={1080} height={1920} fps={FPS} durationInFrames={durationForSciPart1(defaults)} schema={VideoPropsSchema} defaultProps={defaults} calculateMetadata={({props}) => ({durationInFrames: durationForSciPart1(props)})} />
     <Composition id="PoseLab" component={PoseLab} width={1080} height={1920} fps={FPS} durationInFrames={1} defaultProps={{}} />
     <Composition id="LogoStudy" component={LogoStudy} width={1080} height={1920} fps={FPS} durationInFrames={1} defaultProps={{}} />
     <Composition id="DoctorPreview" component={DoctorPreview} width={1080} height={1920} fps={FPS} durationInFrames={60} defaultProps={{}} />

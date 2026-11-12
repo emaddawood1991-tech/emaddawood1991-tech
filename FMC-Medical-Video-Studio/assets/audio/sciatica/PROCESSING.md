@@ -1,0 +1,2 @@
+Narration: Google Gemini TTS (gemini-3.1-flash-tts-preview, voice Charon) from the locked ttsText; raw/ = unprocessed; final = leading/trailing silence trimmed, normal tempo (the demonstrations decide the timing, so no speed-up). ASR round trip NOT run (free-tier quota); pronunciation needs a native listener.
+Script edits vs the brief (documented): «إحدى الجذور» → «أحد الجذور» (جذر is masculine); added the urgent red-flag sentence to the safety scene as the brief requires.

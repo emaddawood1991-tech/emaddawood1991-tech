@@ -1,0 +1,23 @@
+{
+  "provider": "google",
+  "model": "gemini-3.1-flash-tts-preview",
+  "voice": "Charon",
+  "scriptHash": "a4ab2e85ca12edeceab99ff1a14a0e9294837692e98292528bca6b18c659612f",
+  "scenes": [
+    {
+      "id": "opening",
+      "file": "audio/sciatica-part1/opening.wav",
+      "durationSec": 8.687
+    },
+    {
+      "id": "anatomy",
+      "file": "audio/sciatica-part1/anatomy.wav",
+      "durationSec": 15.253
+    },
+    {
+      "id": "symptoms",
+      "file": "audio/sciatica-part1/symptoms.wav",
+      "durationSec": 6.526
+    }
+  ]
+}

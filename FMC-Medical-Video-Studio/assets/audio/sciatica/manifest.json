@@ -1,0 +1,48 @@
+{
+  "provider": "google",
+  "model": "gemini-3.1-flash-tts-preview",
+  "voice": "Charon",
+  "scriptHash": "a4ab2e85ca12edeceab99ff1a14a0e9294837692e98292528bca6b18c659612f",
+  "scenes": [
+    {
+      "id": "opening",
+      "file": "audio/sciatica/opening.wav",
+      "durationSec": 8.687
+    },
+    {
+      "id": "anatomy",
+      "file": "audio/sciatica/anatomy.wav",
+      "durationSec": 15.253
+    },
+    {
+      "id": "symptoms",
+      "file": "audio/sciatica/symptoms.wav",
+      "durationSec": 6.526
+    },
+    {
+      "id": "move1",
+      "file": "audio/sciatica/move1.wav",
+      "durationSec": 13.219
+    },
+    {
+      "id": "move2",
+      "file": "audio/sciatica/move2.wav",
+      "durationSec": 7.469
+    },
+    {
+      "id": "move3",
+      "file": "audio/sciatica/move3.wav",
+      "durationSec": 7.731
+    },
+    {
+      "id": "safety",
+      "file": "audio/sciatica/safety.wav",
+      "durationSec": 22.685
+    },
+    {
+      "id": "closing",
+      "file": "audio/sciatica/closing.wav",
+      "durationSec": 7.59
+    }
+  ]
+}

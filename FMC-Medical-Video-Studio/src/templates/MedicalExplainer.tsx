@@ -17,7 +17,7 @@ import {ClosingScene} from '../scenes/ClosingScene';
 import type {SceneProps} from '../scenes/common';
 import type {SceneId} from '../lib/schema';
 
-const SCENES: Record<SceneId, React.FC<SceneProps>> = {
+const SCENES: Partial<Record<SceneId, React.FC<SceneProps>>> & Record<'opening' | 'anatomy' | 'symptoms' | 'treatment' | 'fmc' | 'closing', React.FC<SceneProps>> = {
   opening: OpeningScene,
   anatomy: AnatomyScene,
   symptoms: SymptomsScene,
@@ -45,7 +45,7 @@ export const MedicalExplainer: React.FC<VideoProps> = (props) => {
     <AbsoluteFill style={{background: BG_GRADIENT, overflow: 'hidden'}}>
       {tl.map((item, i) => {
         const scene = props.content.scenes[i];
-        const Comp = SCENES[item.id];
+        const Comp = SCENES[item.id] ?? OpeningScene;
         const fp = props.footage?.[item.id] ?? null;
         return (
           <Sequence key={item.id} from={item.from} durationInFrames={item.duration} layout="none">

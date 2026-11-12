@@ -1,0 +1,111 @@
+{
+  "slug": "sciatica-part1",
+  "topic": {
+    "ar": "عرق النسا (الألم الوركي)",
+    "en": "Sciatica"
+  },
+  "services": [
+    "طب العظام",
+    "العلاج الطبيعي"
+  ],
+  "scenes": [
+    {
+      "id": "opening",
+      "sceneType": "A",
+      "plannedSec": 12.5,
+      "narration": "هل تشعر بألم يبدأ من أسفل الظهر ويمتد إلى الأرداف أو الساق؟ قد يكون هذا من أعراض عرق النسا.",
+      "ttsText": "هَلْ تَشْعُرُ بِأَلَمٍ يَبْدَأُ مِنْ أَسْفَلِ الظَّهْرِ وَيَمْتَدُّ إِلَى الْأَرْدَافِ أَوِ السَّاقِ؟ قَدْ يَكُونُ هَذَا مِنْ أَعْرَاضِ عِرْقِ النَّسَا.",
+      "onScreen": {
+        "title": "مسار الألم"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "anatomy",
+      "sceneType": "C",
+      "plannedSec": 17,
+      "narration": "تخرج جذور الأعصاب من أسفل العمود الفقري، وتتحد بعض هذه الجذور لتكون العصب الوركي. وعندما يتعرض أحد الجذور للتهيج أو الضغط، قد يظهر ألم يمتد إلى الساق.",
+      "ttsText": "تَخْرُجُ جُذُورُ الْأَعْصَابِ مِنْ أَسْفَلِ الْعَمُودِ الْفَقَرِيِّ، وَتَتَّحِدُ بَعْضُ هَذِهِ الْجُذُورِ لِتُكَوِّنَ الْعَصَبَ الْوَرِكِيَّ. وَعِنْدَمَا يَتَعَرَّضُ أَحَدُ الْجُذُورِ لِلتَّهَيُّجِ أَوِ الضَّغْطِ، قَدْ يَظْهَرُ أَلَمٌ يَمْتَدُّ إِلَى السَّاقِ.",
+      "onScreen": {
+        "title": "من العمود الفقري إلى العصب الوركي"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "symptoms",
+      "sceneType": "C",
+      "plannedSec": 9,
+      "narration": "وقد يصاحب الألم شعور بالوخز أو التنميل، وأحيانا ضعف في العضلات.",
+      "ttsText": "وَقَدْ يُصَاحِبُ الْأَلَمَ شُعُورٌ بِالْوَخْزِ أَوِ التَّنْمِيلِ، وَأَحْيَانًا ضَعْفٌ فِي الْعَضَلَاتِ.",
+      "onScreen": {
+        "title": "أعراض قد ترافق الألم"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "",
+        "description": ""
+      },
+      "footageQueries": [],
+      "sfx": []
+    }
+  ],
+  "instagramCaption": "عرق النسا: افهم مسار الألم، ولا تعتمد على حركات عامة دون تقييم. محتوى توعوي وليس تشخيصا ولا خطة علاج.\n\nمركز الفيصل الطبي — الرعاية المثالية",
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العين",
+    "#الإمارات",
+    "#عرق_النسا",
+    "#آلام_أسفل_الظهر",
+    "#العلاج_الطبيعي",
+    "#الرعاية_المثالية",
+    "#FMC",
+    "#AlAin",
+    "#UAE",
+    "#Sciatica",
+    "#IdealCare"
+  ],
+  "sources": [
+    {
+      "title": "NICE NG59 — Low back pain and sciatica in over 16s (target reference; not yet read)",
+      "url": "https://www.nice.org.uk/guidance/ng59/chapter/recommendations"
+    },
+    {
+      "title": "NHS — Exercises for sciatica (target reference; not yet read)",
+      "url": "https://www.nhs.uk/live-well/exercise/exercises-sciatica-problems/"
+    },
+    {
+      "title": "ELHT — Spinal exercises (target reference; not yet read)",
+      "url": "https://elht.nhs.uk/services/integrated-msk-pain-and-rheumatology-service/patient-information/exercises/spinal-exercises"
+    }
+  ],
+  "timing": {
+    "lead": 6,
+    "tail": 14
+  },
+  "approvals": {
+    "grammarReview": null,
+    "medicalTerminologyReview": null,
+    "medicalAccuracyReview": null,
+    "scriptApproved": {
+      "by": "Emad (script supplied in the production brief; corrected «إحدى الجذور» to «أحد الجذور» and added the urgent red-flag sentence required by the brief; no native/clinician review yet)",
+      "date": "2026-11-12T17:19:04.419Z"
+    },
+    "pronunciationApproved": null,
+    "approvedHash": "a4ab2e85ca12edeceab99ff1a14a0e9294837692e98292528bca6b18c659612f"
+  }
+}
