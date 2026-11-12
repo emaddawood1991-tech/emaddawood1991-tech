@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 17 Windows Run commands</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Run Box". Deep-blue field with a drifting dot grid; each command is typed into an original Run-style box, then opens an ILLUSTRATED tool window.
+     No window here is a recording: every window carries an ILLUSTRATION label until real captures are supplied. */
+  :root { --bg: #071427; --cy: #6FD3FF; --paper: #EAF4FF; --amber: #FFB23E; --green: #7CF2C0; }
+  .chip { position: absolute; white-space: nowrap; z-index: 8; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .ser { position: absolute; font-family: var(--display); font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .panel { position: absolute; box-sizing: border-box; overflow: hidden; border-radius: 20px; background: #0E2240; border: 3px solid #6FD3FF; color: #EAF4FF; box-shadow: 0 28px 60px rgba(0,0,0,.55), 0 0 50px rgba(111,211,255,.18); }
+  .win { background: #F3F7FC; color: #0A1A33; border-color: #BFD4EC; }
+  .key { position: absolute; display: flex; align-items: center; justify-content: center; border-radius: 22px; background: linear-gradient(#27456F,#16304F); border: 3px solid #6FD3FF; border-bottom-width: 10px; font: 800 80px/1 var(--mono); color: #EAF4FF; box-shadow: 0 20px 40px rgba(0,0,0,.5); }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+<script src="data/lipsync.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="{{TOTAL}}">
+{{SECTIONS}}
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, LIP = window.LIPSYNC, $ = id => document.getElementById(id), S = {{SCENES}};
+  const NSs = "http://www.w3.org/2000/svg";
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”'+]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word " + pid + ":" + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const CY = "#6FD3FF", PA = "#EAF4FF", AM = "#FFB23E", GR = "#7CF2C0", NV = "#0A1A33";
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + Math.max(28, o.size || 28) + "px/1 var(--mono);letter-spacing:.04em;color:" + (o.fg || PA) + ";background:" + (o.bg || "#0E2240") + ";border:3px solid " + (o.bd || CY), text); };
+  const scene = (k, flip) => {
+    const inn = $(k + "i"); el(inn, "bg" + k, "", "position:absolute;inset:0;background:radial-gradient(120% 60% at 50% 100%,#10315C 0%,#0A1D38 45%,#071427 80%)");
+    const g = el(inn, "grid" + k, "", "position:absolute;inset:0;background-image:radial-gradient(circle,rgba(111,211,255,.28) 3px,transparent 4px);background-size:90px 90px"); tl.fromTo(g, { backgroundPosition: "0px 0px" }, { backgroundPosition: flip ? "-270px 180px" : "270px 180px", duration: S[k].len, ease: "none" }, S[k].start);
+    const gl = el(inn, "gl" + k, "", "position:absolute;left:-200px;bottom:-40px;width:1480px;height:10px;background:linear-gradient(90deg,transparent,#6FD3FF,transparent);border-radius:6px;box-shadow:0 0 50px 20px rgba(111,211,255,.55)"); tl.to(gl, { y: -30, duration: S[k].len, ease: "sine.inOut" }, S[k].start);
+    return inn;
+  };
+  const presenter = (bot, k) => { bot.face(tl, 0, -1, 0.01); bot.rise(tl, S[k].start + 0.3, 420, 0.4); bot.blinks(tl, S[k].start, S[k].end, 1.1); bot.P.wrap.style.zIndex = 12; return bot; };
+  const speak = (bot, pid) => { const p = P(pid); bot.speak(tl, LIP, p.start, p.end); };
+  const trans = (k, prev, kind) => { const b = S[k].b, o = "#" + prev + "i", n = "#" + k + "i"; if (kind === "push") Cam.push(tl, b, 0.5, { out: o, inn: n, ox: 540, oy: 800, scale: 3.2 }); else Cam.whip(tl, b, 0.5, { out: o, inn: n, dir: kind === "whipL" ? -1 : 1, blur: 24 }); };
+  const pop = (node, at, dx) => tl.from(node, { opacity: 0, y: 70, x: dx || 0, duration: 0.45, ease: "power3.out" }, at);
+
+  /* ===== S1 HOOK ===== */
+  const s1 = scene("s1", false);
+  const t1a = el(s1, "t1a", "ser", "left:0;right:0;top:350px;text-align:center;font-size:116px;line-height:1;color:" + PA + ";z-index:6", "5 RUN"), t1b = el(s1, "t1b", "ser", "left:0;right:0;top:470px;text-align:center;font-size:116px;line-height:1;color:" + CY + ";z-index:6", "COMMANDS");
+  tl.from(t1a, { opacity: 0, y: -60, duration: 0.45, ease: "back.out(1.6)" }, 0.1); tl.from(t1b, { opacity: 0, y: 60, duration: 0.45, ease: "back.out(1.6)" }, 0.3);
+  const cmds = ["secpol.msc", "tpm.msc", "verifier", "fsmgmt.msc", "sigverif"]; const tRun = PW("p1", "Run");
+  cmds.forEach((c, i) => { const ch = chip(s1, "hc" + i, 90, 650 + i * 120, c, { size: 52, pad: "16px 34px 20px", bd: i === 2 ? AM : CY }); ch.style.zIndex = 6; tl.from(ch, { opacity: 0, x: -200, scale: 0.8, duration: 0.45, ease: "back.out(1.5)", transformOrigin: "0 50%" }, tRun - 0.2 + i * 0.28); tl.to(ch, { x: 14, duration: 1.4, yoyo: true, repeat: 2, ease: "sine.inOut" }, 2.6 + i * 0.1); });
+  const wk = el(s1, "wk", "key", "left:700px;top:700px;width:230px;height:150px;font-size:60px;z-index:6;transform:rotate(-6deg)", "WIN"), rk = el(s1, "rk", "key", "left:710px;top:900px;width:150px;height:150px;z-index:6;transform:rotate(5deg)", "R"); tl.from(wk, { opacity: 0, y: -80, duration: 0.5, ease: "bounce.out" }, 0.9); tl.from(rk, { opacity: 0, y: -80, duration: 0.5, ease: "bounce.out" }, 1.2);
+  const bot1 = botAt(s1, "bot1", 660, 1130, 330); presenter(bot1, "s1"); speak(bot1, "p1"); bot1.react(tl, PW("p1", "Windows"), "think"); bot1.react(tl, PW("p1", "professional"), "wow");
+
+  /* ===== command scenes ===== */
+  const CMD = {
+    s2: { n: 1, pid: "p2", cmd: "secpol.msc", key: "secpolmsc", title: "Local Security Policy", sub: "WHAT IT SHOWS: SECURITY POLICIES · PASSWORD RULES", cav: ["PRO / ENTERPRISE / EDUCATION EDITIONS", AM], rows: [["Enforce password history", "security"], ["Maximum password age", "password"], ["Minimum password length", "password"], ["Password must meet complexity requirements", "rules"]], tree: ["Security Settings", "Account Policies", "Password Policy"] },
+    s3: { n: 2, pid: "p3", cmd: "tpm.msc", key: "tpmmsc", title: "TPM Management on Local Computer", sub: "WHAT IT SHOWS: IS THE SECURITY CHIP READY?", cav: null, rows: [["Status", "chip"], ["The TPM is ready for use.", "ready"], ["Manufacturer Information", "ready"], ["Specification Version", "ready"]], tree: ["TPM Management", "Actions"] },
+    s4: { n: 3, pid: "p4", cmd: "verifier", key: "verifier", title: "Driver Verifier Manager", sub: "WHAT IT DOES: STRESS-TESTS DRIVERS", cav: ["TEST PCs ONLY · CAN CRASH WINDOWS", AM], rows: [["Create standard settings", "Diagnose"], ["Create custom settings", "problematic"], ["Delete existing settings", "drivers"], ["Display existing settings", "Advanced"]], tree: null },
+    s5: { n: 4, pid: "p5", cmd: "fsmgmt.msc", key: "fsmgmtmsc", title: "Shared Folders", sub: "WHAT IT SHOWS: SHARES · SESSIONS · OPEN FILES", cav: null, rows: [["Shares", "shared"], ["Sessions", "sessions"], ["Open Files", "sessions"]], tree: ["Shared Folders (Local)", "Shares", "Sessions", "Open Files"] },
+    s6: { n: 5, pid: "p6", cmd: "sigverif", key: "sigverif", title: "File Signature Verification", sub: "WHAT IT CHECKS: FILES WITHOUT A DIGITAL SIGNATURE", cav: null, rows: [["Checks Windows files for digital signatures", "Check"], ["Start", "digital"], ["Advanced…", "signatures"]], tree: null }
+  };
+  Object.keys(CMD).forEach((k, ki) => {
+    const C = CMD[k], inn = scene(k, ki % 2 === 0), pid = C.pid, tCmd = PW(pid, "Command"), tName = PW(pid, C.key), t0 = S[k].start;
+    const bd = chip(inn, "bd" + k, 50, 330, "COMMAND " + C.n + " / 5", { size: 34 }); bd.style.zIndex = 9; tl.from(bd, { opacity: 0, x: -40, duration: 0.3 }, t0 + 0.25);
+    /* the Run-style box */
+    const rb = el(inn, "rb" + k, "panel", "left:50px;top:410px;width:980px;height:140px;z-index:7;border-radius:70px"); el(rb, "rl" + k, "mono", "left:40px;top:0;font:800 34px/140px var(--mono);color:" + CY, "Run:");
+    const ty = el(rb, "ty" + k, "mono", "left:170px;top:0;font:800 62px/140px var(--mono);color:" + PA, C.cmd); ty.style.clipPath = "inset(0 100% 0 0)"; const car = el(rb, "ca" + k, "", "left:170px;top:36px;width:8px;height:70px;background:" + CY); car.setAttribute("data-layout-ignore", "");
+    tl.from(rb, { opacity: 0, y: -60, scale: 0.9, duration: 0.4, ease: "back.out(1.5)" }, t0 + 0.3);
+    const tt0 = Math.max(t0 + 0.7, tCmd + 0.05), td = Math.max(0.6, tName - tt0 + 0.25); tl.to(ty, { clipPath: "inset(0 0% 0 0)", duration: td, ease: "steps(" + C.cmd.length + ")" }, tt0); tl.to(car, { x: 29 * C.cmd.length, duration: td, ease: "steps(" + C.cmd.length + ")" }, tt0); tl.to(car, { opacity: 0.2, duration: 0.25, yoyo: true, repeat: 7 }, tt0 + td);
+    /* window card (ILLUSTRATION) opens from the box on the command name */
+    const wn = el(inn, "wn" + k, "panel win", "left:50px;top:600px;width:980px;height:" + (C.tree ? 640 : 560) + "px;z-index:6"); el(wn, "wt" + k, "", "left:0;top:0;width:980px;height:64px;background:#DCE8F6;font:800 30px/64px var(--body);padding-left:24px;color:" + NV + ";white-space:nowrap", C.title); [0, 1, 2].forEach(i => el(wn, "wb" + k + i, "", "right:" + (20 + i * 34) + "px;top:22px;width:20px;height:20px;border-radius:50%;background:" + ["#28C840", "#FEBC2E", "#FF5F57"][i]));
+    let rx = 24, rw = 932; if (C.tree) { const tr = el(wn, "tr" + k, "", "left:0;top:64px;width:300px;height:" + (640 - 64) + "px;background:#E8F0FA;border-right:2px solid #BFD4EC"); C.tree.forEach((t, i) => el(tr, "tn" + k + i, "", "left:" + (14 + i * 14) + "px;top:" + (16 + i * 56) + "px;font:700 24px/1.2 var(--body);color:" + NV + ";white-space:nowrap", (i ? "› " : "") + t)); rx = 324; rw = 632; }
+    C.rows.forEach((r, i) => { const rr = el(wn, "rw" + k + i, "", "left:" + rx + "px;top:" + (96 + i * 110) + "px;width:" + rw + "px;height:90px;border-radius:14px;background:#fff;border:3px solid #BFD4EC;font:800 " + (C.tree ? 28 : 34) + "px/84px var(--body);padding-left:24px;color:" + NV + ";white-space:nowrap;overflow:hidden", r[0]); const ta = PW(pid, r[1]); tl.from(rr, { opacity: 0, x: 90, duration: 0.35, ease: "power3.out" }, Math.max(tName + 0.2, ta - 0.4)); tl.fromTo(rr, { borderColor: "#BFD4EC" }, { borderColor: "#FFB23E", duration: 0.2, yoyo: true, repeat: 1 }, Math.max(tName + 0.4, ta)); });
+    tl.from(wn, { opacity: 0, scale: 0.55, y: -200, duration: 0.5, ease: "back.out(1.4)", transformOrigin: "50% 0" }, tName - 0.1);
+    const sb = chip(inn, "sb" + k, 50, 1270, C.sub, { size: 28 }); sb.style.zIndex = 9; tl.from(sb, { opacity: 0, x: -40, duration: 0.3 }, tName + 0.3);
+    const il = chip(inn, "il" + k, 50, 1340, "ILLUSTRATION · NOT A RECORDING", { size: 28, bd: AM }); il.style.zIndex = 9; tl.from(il, { opacity: 0, duration: 0.3 }, tName + 0.3);
+    if (C.cav) { const cv = chip(inn, "cv" + k, 50, 1410, C.cav[0], { size: 30, bd: C.cav[1] }); cv.style.zIndex = 9; tl.from(cv, { opacity: 0, scale: 0.8, duration: 0.3, ease: "back.out(1.8)", transformOrigin: "0 50%" }, PW(pid, C.rows[2][1]) - 0.2); }
+    const bot = botAt(inn, "bot" + k, 800, 1530, 220); presenter(bot, k); speak(bot, pid); bot.aimPoint(tl, tName, { x: 800, y: 1530, target: [540, 800], hold: 1.2 }); bot.react(tl, PW(pid, C.rows[C.rows.length - 1][1]) + 0.1, k === "s4" ? "worried" : "nod");
+  });
+
+  /* ===== S7 OUTRO ===== */
+  const s7 = scene("s7", true); const tFo = PW("p7", "Follow") - 0.35;
+  const kw = el(s7, "kw", "key", "left:200px;top:470px;width:330px;height:190px;font-size:84px;z-index:6", "WIN"), kp = el(s7, "kp", "ser", "left:560px;top:490px;font-size:110px;line-height:1;color:" + CY + ";z-index:6", "+"), kr = el(s7, "kr", "key", "left:660px;top:470px;width:190px;height:190px;font-size:100px;z-index:6", "R");
+  const tPr = PW("p7", "Press"); tl.from(kw, { opacity: 0, y: -120, duration: 0.5, ease: "bounce.out" }, tPr - 0.1); tl.from(kp, { opacity: 0, scale: 0, duration: 0.3 }, tPr + 0.3); tl.from(kr, { opacity: 0, y: -120, duration: 0.5, ease: "bounce.out" }, tPr + 0.5);
+  [kw, kr].forEach((k, i) => tl.to(k, { y: 12, duration: 0.12, yoyo: true, repeat: 1 }, PW("p7", "try") + i * 0.12)); [kw, kp, kr].forEach(k => tl.set(k, { opacity: 0 }, tFo + 0.05));
+  const lst = ["secpol.msc", "tpm.msc", "verifier", "fsmgmt.msc", "sigverif"]; lst.forEach((c, i) => { const ch = chip(s7, "ol" + i, 140, 760 + i * 84, c, { size: 40 }); ch.style.zIndex = 6; tl.from(ch, { opacity: 0, x: -100, duration: 0.3 }, PW("p7", "them") - 0.1 + i * 0.18); tl.set(ch, { opacity: 0 }, tFo + 0.05); });
+  const botO = botAt(s7, "botO", -400, 470, 300); const bot7 = botAt(s7, "bot7", 800, 1530, 200); presenter(bot7, "s7"); speak(bot7, "p7"); tl.set(bot7.P.wrap, { opacity: 0 }, tFo);
+  Outro.build(tl, s7, tFo, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" }); speak(botO, "p7");
+  const fe = el(s7, "fe7", "ser", "left:0;right:0;top:1420px;text-align:center;font-size:70px;line-height:1.05;color:" + PA + ";z-index:7", "5 WINDOWS RUN COMMANDS"); gsap.set(fe, { opacity: 0 }); tl.to(fe, { opacity: 1, duration: 0.4 }, tFo + 0.9);
+
+  /* motion bursts: a short nudge on the whole scene about every 2.4 s, clear of transitions */
+  Object.keys(S).forEach((k, ki) => { const inn = $(k + "i"); let n = 0; for (let tt = S[k].start + 1.1; tt < S[k].end - 1.3; tt += 2.4, n++) { const sg = (n + ki) % 2 ? 1 : -1; tl.to(inn, { x: sg * 24, y: -sg * 14, scale: 1.02, duration: 0.16, ease: "power2.out", transformOrigin: "50% 50%" }, tt); tl.to(inn, { x: 0, y: 0, scale: 1, duration: 0.34, ease: "power2.inOut" }, tt + 0.16); } });
+  trans("s2", "s1", "push"); trans("s3", "s2", "whipL"); trans("s4", "s3", "whipR"); trans("s5", "s4", "whipL"); trans("s6", "s5", "whipR"); trans("s7", "s6", "push");
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 1700, active: "#FFFFFF", block: "#1F6FB8", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>
