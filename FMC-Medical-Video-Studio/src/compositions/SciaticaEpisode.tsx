@@ -9,7 +9,7 @@ import {FMCMedicalTimeline, type Chapter} from '../components/FMCMedicalTimeline
 import {FMCLogoOverlay} from '../components/FMCLogoOverlay';
 import {FMCClosingScene} from '../components/FMCClosingScene';
 import {NerveAnatomyScene, PainPathScene, SymptomsOnBody} from '../scenes/sciatica/BodyAnatomyScenes';
-import {ReliefScene, RedFlagScene, TherapyBridgeScene} from '../scenes/sciatica/ReliefScenes';
+import {ReliefScene, RedFlagScene, TherapyBridgeScene, StretchScene} from '../scenes/sciatica/ReliefScenes';
 
 export type SciCtx = {op: TimelineItem; an: TimelineItem; sy: TimelineItem; sec: (s: number) => number; layout: Layout; width: number; height: number};
 
@@ -91,6 +91,42 @@ export const SciaticaRelief: React.FC<VideoProps> = (props) => {
       <div style={{position: 'absolute', left: 0, right: 0, top: 0, height: 380, background: 'linear-gradient(180deg, rgba(6,16,28,0.55) 0%, rgba(6,16,28,0) 100%)', pointerEvents: 'none', opacity: frame >= closeFrom ? 0 : 1}} />
       <FMCClosingScene from={closeFrom} dur={cl.from + cl.duration - closeFrom} bgFile="footage/sciatica/back_blur_bg.mp4" />
       <FMCMedicalTimeline chapters={chapters} top={1405} left={layout.safe.left} right={layout.safe.right} showFrom={sec(0.8)} showTo={closeFrom + 6} size={23} activeSize={26} />
+      <FMCLogoOverlay size={140} top={58} right={58} opacity={frame < closeFrom ? 1 : Math.max(0, 1 - (frame - closeFrom) / 10)} />
+      {tl.map((item) => (item.audioFile ? <NarrationAudio key={`a-${item.id}`} file={item.audioFile} from={item.from + item.audioFrom} frames={item.audioFrames} /> : null))}
+    </AbsoluteFill>
+  );
+};
+
+/** Full episode: same as SciaticaRelief, but the physiotherapy bridge scene shows the three stretching demonstrations (user-supplied footage). */
+export const SciaticaFull: React.FC<VideoProps> = (props) => {
+  loadFonts();
+  const frame = useCurrentFrame();
+  const {width, height} = useVideoConfig();
+  const layout = makeLayout(width, height);
+  const tl = useMemo(() => computeTimeline(props.content, props.manifest), [props.content, props.manifest]);
+  const t = (id: string) => tl.find((x) => x.id === id)!;
+  const sec = (s: number) => Math.round(s * 30);
+  const op = t('opening'), an = t('anatomy'), sy = t('symptoms'), tr = t('treatment'), fm = t('fmc'), sf = t('safety'), cl = t('closing');
+  const closeFrom = cl.from + 4;
+  const c: ReliefCtx = {op, an, sy, sec, layout, width, height, tr, fm, sf, cl};
+  const chapters: Chapter[] = [
+    {id: 'path', num: '01', label: 'مسار الألم', from: 0, to: an.from},
+    {id: 'anat', num: '02', label: 'التشريح', from: an.from, to: tr.from},
+    {id: 'relief', num: '03', label: 'تخفيف الألم', from: tr.from, to: fm.from},
+    {id: 'move', num: '04', label: 'حركات الإطالة', from: fm.from, to: sf.from},
+    {id: 'doctor', num: '05', label: 'متى نراجع الطبيب؟', from: sf.from, to: closeFrom},
+  ];
+  return (
+    <AbsoluteFill style={{background: '#0e151c', overflow: 'hidden'}}>
+      <PainPathScene c={c} />
+      <NerveAnatomyScene c={c} />
+      <SymptomsOnBody c={c} />
+      <ReliefScene c={c} />
+      <StretchScene c={c} />
+      <RedFlagScene c={c} />
+      <div style={{position: 'absolute', left: 0, right: 0, top: 0, height: 380, background: 'linear-gradient(180deg, rgba(6,16,28,0.55) 0%, rgba(6,16,28,0) 100%)', pointerEvents: 'none', opacity: frame >= closeFrom ? 0 : 1}} />
+      <FMCClosingScene from={closeFrom} dur={cl.from + cl.duration - closeFrom} bgFile="footage/sciatica/back_blur_bg.mp4" />
+      <FMCMedicalTimeline chapters={chapters} top={1405} left={layout.safe.left} right={layout.safe.right} showFrom={sec(0.8)} showTo={closeFrom + 6} size={21} activeSize={24} />
       <FMCLogoOverlay size={140} top={58} right={58} opacity={frame < closeFrom ? 1 : Math.max(0, 1 - (frame - closeFrom) / 10)} />
       {tl.map((item) => (item.audioFile ? <NarrationAudio key={`a-${item.id}`} file={item.audioFile} from={item.from + item.audioFrom} frames={item.audioFrames} /> : null))}
     </AbsoluteFill>

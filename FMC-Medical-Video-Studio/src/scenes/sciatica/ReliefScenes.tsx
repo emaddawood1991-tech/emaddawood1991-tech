@@ -104,3 +104,43 @@ export const RedFlagScene: React.FC<{c: ReliefCtx}> = ({c}) => {
     </>
   );
 };
+
+/** Stretch demonstrations (footage supplied by the user, generated outside this project): three movements shown one after another. */
+const MOVES = [
+  {file: 'footage/sciatica/stretch1.mp4', at: 6, len: 173, num: 'الحركة الأولى', name: 'تمديد الظهر', hint: 'استلقاء على البطن ثم ارتكاز على الساعدين أو اليدين', pos: '50% 62%'},
+  {file: 'footage/sciatica/stretch2.mp4', at: 168, len: 160, num: 'الحركة الثانية', name: 'الدوران الجانبي', hint: 'ركبتان مثنيتان وميل لطيف للساقين إلى الجانب', pos: '50% 60%'},
+  {file: 'footage/sciatica/stretch3.mp4', at: 322, len: 166, num: 'الحركة الثالثة', name: 'تمديد الورك', hint: 'وضعية التسعين والتسعين بحركة بطيئة', pos: '50% 55%'},
+];
+export const StretchScene: React.FC<{c: ReliefCtx}> = ({c}) => {
+  const f = useCurrentFrame();
+  const {fm, layout} = c;
+  const end = fm.from + fm.duration + 6;
+  return (
+    <>
+      {MOVES.map((m, i) => {
+        const a = fm.from + m.at, d = m.len + (i === MOVES.length - 1 ? end - fm.from - m.at - m.len : 12);
+        const o = win(f, a + 6, a + m.len - 2, 14, 14);
+        return (
+          <React.Fragment key={m.file}>
+            <CrossLayer from={a} dur={d} fade={14}>
+              <CameraBox from={a} dur={d} cam={{s0: 1.0, s1: 1.05}}><Footage file={m.file} pos={m.pos} /></CameraBox>
+              <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(6,16,28,0.62) 0%, rgba(6,16,28,0) 26%, rgba(6,16,28,0) 66%, rgba(6,16,28,0.7) 100%)'}} />
+            </CrossLayer>
+            {o > 0.001 ? (
+              <div dir="rtl" style={{position: 'absolute', left: 72, right: 72, top: 330, opacity: o, transform: `translateY(${(1 - ss(clamp((f - a) / 16))) * 18}px)`}}>
+                <div style={{display: 'flex', alignItems: 'center', gap: 22, padding: '20px 30px', borderRadius: 24, background: 'rgba(9,24,42,0.78)', border: '2px solid #4FE6DA', boxShadow: '0 12px 34px rgba(0,0,0,0.35)'}}>
+                  <span style={{fontFamily: FONT_DISPLAY, fontSize: 40, fontWeight: 800, color: '#06121f', background: '#4FE6DA', borderRadius: 16, padding: '6px 20px', flex: '0 0 auto'}}>{i + 1}</span>
+                  <div>
+                    <div style={{fontFamily: FONT_AR, fontSize: 46, fontWeight: 800, color: '#fff', lineHeight: 1.25}}>{m.num}: {m.name}</div>
+                    <div style={{fontFamily: FONT_AR, fontSize: 34, fontWeight: 600, color: '#BFEFF0', lineHeight: 1.3, marginTop: 4}}>{m.hint}</div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </React.Fragment>
+        );
+      })}
+      <FMCArabicTitle text="تمارين مناسبة لحالتك" highlight="مناسبة" from={fm.from + 6} dur={end - fm.from - 6} top={layout.safe.top - 40} left={layout.safe.left} right={layout.safe.right} />
+    </>
+  );
+};
