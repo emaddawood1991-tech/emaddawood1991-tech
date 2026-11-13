@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Img, staticFile, useCurrentFrame} from 'remotion';
 import {CrossLayer, CameraBox, Footage} from '../../components/FMCCinematicTransition';
 import {InfoChip, ss, win} from '../../components/FMCMedicalHighlight';
 import {FMCArabicTitle} from '../../components/FMCArabicTitle';
@@ -105,11 +105,11 @@ export const RedFlagScene: React.FC<{c: ReliefCtx}> = ({c}) => {
   );
 };
 
-/** Stretch demonstrations (footage supplied by the user, generated outside this project): three movements shown one after another. */
+/** Stretch demonstrations shown as step-by-step pose images (blurred reference frames supplied by the user): three movements one after another. */
 const MOVES = [
-  {file: 'footage/sciatica/stretch1.mp4', at: 6, len: 173, num: 'الحركة الأولى', name: 'تمديد الظهر', hint: 'استلقاء على البطن ثم ارتكاز على الساعدين أو اليدين', pos: '50% 62%'},
-  {file: 'footage/sciatica/stretch2.mp4', at: 168, len: 160, num: 'الحركة الثانية', name: 'الدوران الجانبي', hint: 'ركبتان مثنيتان وميل لطيف للساقين إلى الجانب', pos: '50% 60%'},
-  {file: 'footage/sciatica/stretch3.mp4', at: 322, len: 166, num: 'الحركة الثالثة', name: 'تمديد الورك', hint: 'وضعية التسعين والتسعين بحركة بطيئة', pos: '50% 55%'},
+  {file: 'footage/sciatica/poses/Movement1_prone_extension_sheet.jpg', W: 1652, n: 3, at: 6, len: 173, num: 'الحركة الأولى', name: 'تمديد الظهر', hint: 'استلقاء على البطن ثم ارتكاز على الساعدين أو اليدين'},
+  {file: 'footage/sciatica/poses/Movement2_sofa_legs_over_edge_sheet.jpg', W: 2208, n: 4, at: 168, len: 160, num: 'الحركة الثانية', name: 'الدوران الجانبي', hint: 'ركبتان مثنيتان وميل لطيف للساقين إلى الجانب'},
+  {file: 'footage/sciatica/poses/Movement3_90_90_hip_sheet.jpg', W: 2208, n: 4, at: 322, len: 166, num: 'الحركة الثالثة', name: 'تمديد الورك', hint: 'وضعية التسعين والتسعين بحركة بطيئة'},
 ];
 export const StretchScene: React.FC<{c: ReliefCtx}> = ({c}) => {
   const f = useCurrentFrame();
@@ -117,27 +117,36 @@ export const StretchScene: React.FC<{c: ReliefCtx}> = ({c}) => {
   const end = fm.from + fm.duration + 6;
   return (
     <>
+      <CrossLayer from={fm.from} dur={end - fm.from} fade={14}>
+        <Footage file="footage/sciatica/back_blur_bg.mp4" />
+        <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(8,26,46,0.92), rgba(11,38,66,0.92))'}} />
+      </CrossLayer>
       {MOVES.map((m, i) => {
-        const a = fm.from + m.at, d = m.len + (i === MOVES.length - 1 ? end - fm.from - m.at - m.len : 12);
-        const o = win(f, a + 6, a + m.len - 2, 14, 14);
+        const a = fm.from + m.at;
+        const last = i === MOVES.length - 1;
+        const o = win(f, a + 4, last ? end - 8 : a + m.len - 2, 14, 14);
+        if (o <= 0.001) return null;
+        const sc = 1080 / m.W, h = 960 * sc;
+        const step = Math.min(m.n - 1, Math.floor(clamp((f - a - 14) / (m.len - 28)) * m.n));
+        const k = ss(clamp((f - a) / 16));
         return (
-          <React.Fragment key={m.file}>
-            <CrossLayer from={a} dur={d} fade={14}>
-              <CameraBox from={a} dur={d} cam={{s0: 1.0, s1: 1.05}}><Footage file={m.file} pos={m.pos} /></CameraBox>
-              <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(6,16,28,0.62) 0%, rgba(6,16,28,0) 26%, rgba(6,16,28,0) 66%, rgba(6,16,28,0.7) 100%)'}} />
-            </CrossLayer>
-            {o > 0.001 ? (
-              <div dir="rtl" style={{position: 'absolute', left: 72, right: 72, top: 330, opacity: o, transform: `translateY(${(1 - ss(clamp((f - a) / 16))) * 18}px)`}}>
-                <div style={{display: 'flex', alignItems: 'center', gap: 22, padding: '20px 30px', borderRadius: 24, background: 'rgba(9,24,42,0.78)', border: '2px solid #4FE6DA', boxShadow: '0 12px 34px rgba(0,0,0,0.35)'}}>
-                  <span style={{fontFamily: FONT_DISPLAY, fontSize: 40, fontWeight: 800, color: '#06121f', background: '#4FE6DA', borderRadius: 16, padding: '6px 20px', flex: '0 0 auto'}}>{i + 1}</span>
-                  <div>
-                    <div style={{fontFamily: FONT_AR, fontSize: 46, fontWeight: 800, color: '#fff', lineHeight: 1.25}}>{m.num}: {m.name}</div>
-                    <div style={{fontFamily: FONT_AR, fontSize: 34, fontWeight: 600, color: '#BFEFF0', lineHeight: 1.3, marginTop: 4}}>{m.hint}</div>
-                  </div>
+          <div key={m.file} style={{position: 'absolute', inset: 0, opacity: o}}>
+            <div style={{position: 'absolute', left: 0, top: 700 - h / 2 + 330 + (1 - k) * 20, width: 1080, height: h, boxShadow: '0 20px 60px rgba(0,0,0,0.45)'}}>
+              <Img src={staticFile(m.file)} style={{width: 1080, height: h, display: 'block'}} />
+              {Array.from({length: m.n}).map((_, j) => (
+                <div key={j} style={{position: 'absolute', left: j * 556 * sc, top: 0, width: 540 * sc, height: h, boxSizing: 'border-box', border: j === step ? '5px solid #4FE6DA' : '0 solid transparent', background: j === step ? 'rgba(79,230,218,0.0)' : 'rgba(6,16,28,0.38)'}} />
+              ))}
+            </div>
+            <div dir="rtl" style={{position: 'absolute', left: 72, right: 72, top: 330, transform: `translateY(${(1 - k) * 18}px)`}}>
+              <div style={{display: 'flex', alignItems: 'center', gap: 22, padding: '20px 30px', borderRadius: 24, background: 'rgba(9,24,42,0.78)', border: '2px solid #4FE6DA', boxShadow: '0 12px 34px rgba(0,0,0,0.35)'}}>
+                <span style={{fontFamily: FONT_DISPLAY, fontSize: 40, fontWeight: 800, color: '#06121f', background: '#4FE6DA', borderRadius: 16, padding: '6px 20px', flex: '0 0 auto'}}>{i + 1}</span>
+                <div>
+                  <div style={{fontFamily: FONT_AR, fontSize: 46, fontWeight: 800, color: '#fff', lineHeight: 1.25}}>{m.num}: {m.name}</div>
+                  <div style={{fontFamily: FONT_AR, fontSize: 34, fontWeight: 600, color: '#BFEFF0', lineHeight: 1.3, marginTop: 4}}>{m.hint}</div>
                 </div>
               </div>
-            ) : null}
-          </React.Fragment>
+            </div>
+          </div>
         );
       })}
       <FMCArabicTitle text="تمارين مناسبة لحالتك" highlight="مناسبة" from={fm.from + 6} dur={end - fm.from - 6} top={layout.safe.top - 40} left={layout.safe.left} right={layout.safe.right} />
