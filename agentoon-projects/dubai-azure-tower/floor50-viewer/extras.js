@@ -53,7 +53,7 @@ export function buildExtras(ctx) {
   function poseWalk(g, t, moving) { const s = moving ? Math.sin(t * 7) * 0.55 : 0; g.userData.legL.rotation.x = s; g.userData.legR.rotation.x = -s; if (!g.userData.waving) { g.userData.armL.rotation.x = -s * 0.8; g.userData.armR.rotation.x = s * 0.8; } g.position.y = moving ? Math.abs(Math.sin(t * 7)) * 0.03 : 0; }
 
   // ================================================================ street + car drive-in
-  const asphalt = std(0x2a2d33, 0.95), paveM = std(0xcfc8b8, 0.9), lineW = std(0xf3f3ef, 0.6), lineY = std(0xe8c24a, 0.6);
+  const asphalt = std(0x2a2d33, 0.95, 0, { side: THREE.DoubleSide }), paveM = std(0xcfc8b8, 0.9), lineW = std(0xf3f3ef, 0.6), lineY = std(0xe8c24a, 0.6);
   function ribbon(curve, width, mat, n = 220) { const pos = [], idx = []; for (let i = 0; i <= n; i++) { const t = i / n, p = curve.getPointAt(t), tg = curve.getTangentAt(t), nx = -tg.z, nz = tg.x, l = Math.hypot(nx, nz) || 1; for (const s of [-1, 1]) pos.push(p.x + (nx / l) * s * width / 2, p.y, p.z + (nz / l) * s * width / 2); if (i) { const a = (i - 1) * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); } } const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); const m = new THREE.Mesh(g, mat); m.receiveShadow = true; return m; }
   const road = (g, x, z, w, d) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), asphalt); m.rotation.x = -Math.PI / 2; m.position.set(x, 0.06, z); g.add(m); return m; };
   road(STREET, 0, -150, 520, 20);
@@ -63,8 +63,8 @@ export function buildExtras(ctx) {
   const drive = new THREE.CatmullRomCurve3(drivePts, false, "catmullrom", 0.5); STREET.add(ribbon(drive, 10, asphalt));
   { const pos = []; for (let i = 0; i < 160; i += 2) { const a = drive.getPointAt(i / 160), b = drive.getPointAt((i + 1) / 160); pos.push(a.x, a.y + 0.04, a.z, b.x, b.y + 0.04, b.z); } STREET.add(lines(pos, 0xe8c24a)); }
   // pavement + canopy at the drop-off
-  box(STREET, 44, 0.12, 16, std(0xd9cdb5, 0.8), 0, 0.4, -34); const canopyM = std(0x2b2f36, 0.3, 0.5);
-  box(STREET, 38, 0.5, 14, canopyM, 0, 7.2, -37); for (const x of [-17, -6, 6, 17]) cyl(STREET, 0.35, 0.35, 7.2, std(0xc9a25a, 0.3, 1), x, 0.4, -43.5, 16);
+  box(STREET, 44, 0.12, 13, std(0xd9cdb5, 0.8), 0, 0.4, -30.5); const canopyM = std(0x2b2f36, 0.3, 0.5);
+  box(STREET, 38, 0.5, 14, canopyM, 0, 7.2, -37); for (const x of [-17, -6, 6, 17]) cyl(STREET, 0.35, 0.35, 7.2, std(0xc9a25a, 0.3, 1), x, 0.4, -30.8, 16);
   { const strip = new THREE.Mesh(new THREE.BoxGeometry(36, 0.1, 0.3), new THREE.MeshStandardMaterial({ color: 0xffe3b8, emissive: 0xffc27a, emissiveIntensity: 1.2 })); strip.position.set(0, 7.15, -30.2); STREET.add(strip); }
   // approach arrows + sign posts
   { const pos = []; for (const [x, z, dx, dz] of [[-95, -118, 1, 1.2], [-60, -74, 1, 1.1], [60, -74, 1, -1.1]]) { const l = Math.hypot(dx, dz); pos.push(x, 0.2, z, x + (dx / l) * 5, 0.2, z + (dz / l) * 5); } STREET.add(lines(pos, 0x6fd0ff)); }
@@ -75,10 +75,29 @@ export function buildExtras(ctx) {
   const lampBulbs = [];
   for (const [x, z] of [[-100, -140], [-50, -140], [0, -140], [50, -140], [100, -140], [-70, -64], [-34, -40], [34, -40], [70, -64]]) { cyl(STREET, 0.08, 0.1, 7, std(0x3a3f46, 0.5, 0.6), x, 0, z, 8); const b = new THREE.Mesh(new THREE.SphereGeometry(0.32, 12, 8), new THREE.MeshStandardMaterial({ color: 0xffe9bd, emissive: 0xffd38a, emissiveIntensity: 0 })); b.position.set(x, 7.1, z); STREET.add(b); lampBulbs.push(b); }
   // parking ramp mouth east of the plaza
-  const rampPts = [V(92, 0.05, -160), V(92, 0.05, -138), V(92, -0.1, -126), V(92, -3.5, -96), V(92, -3.5, -90), V(92, -7.1, -50), V(92, -7.2, -46), V(92, -10.7, -8)];
-  const rampCurve = new THREE.CatmullRomCurve3(rampPts, false, "catmullrom", 0.2);
-  { const rr = ribbon(rampCurve, 8, asphalt, 260); STREET.add(rr); API.rampRibbon = rr; }
-  { const portal = new THREE.Group(); box(portal, 12, 4.5, 1.2, std(0x6a6d72, 0.9), 92, 0.0, -124); box(portal, 12, 1.0, 14, std(0x6a6d72, 0.9), 92, 4.0, -118); const sg = new THREE.Mesh(new THREE.PlaneGeometry(7, 1.2), signM("P  CAR PARK", "#0f6a3a")); sg.position.set(92, 3.6, -123.3); portal.add(sg); STREET.add(portal); }
+  const rampPts = [V(92, 0.05, -165), V(92, 0.05, -142), V(92, -0.05, -137), V(92, -3.5, -97), V(92, -3.5, -90), V(92, -7.1, -50), V(92, -7.2, -46), V(92, -10.7, -8)];
+  const rampCurve = new THREE.CatmullRomCurve3(rampPts, false, "centripetal");
+  const rampLane = (() => { const p = []; for (let i = 0; i <= 40; i++) { const q = rampCurve.getPointAt(i / 40); p.push(V(q.x - 2.3, q.y, q.z)); } return new THREE.CatmullRomCurve3(p, false, "centripetal"); })();
+  const uAtZ = (curve, z) => { let a = 0, b = 1; for (let i = 0; i < 32; i++) { const m = (a + b) / 2; if (curve.getPointAt(m).z < z) a = m; else b = m; } return (a + b) / 2; };
+  const rampAtZ = (z) => rampCurve.getPointAt(uAtZ(rampCurve, z));
+  { const rr = ribbon(rampCurve, 9.4, asphalt, 260); STREET.add(rr); API.rampRibbon = rr; }
+  // open cut-and-cover ramp: retaining walls, tunnel mouth with height limit, gantry sign, guard booth + boom barrier
+  const wallC = std(0x7c7f84, 0.95); let barrier = null, barLive = { ang: 0, target: 0 };
+  { for (let z = -137; z < -97; z += 1) { const p = rampAtZ(z + 0.5), h = 0.9 - (p.y - 0.35); for (const x of [87.25, 96.75]) box(STREET, 0.5, h, 1.05, wallC, x, p.y - 0.35, z + 0.5); box(STREET, 0.7, 0.08, 1.05, std(0xc9a25a, 0.3, 1), 87.25, 0.9, z + 0.5); box(STREET, 0.7, 0.08, 1.05, std(0xc9a25a, 0.3, 1), 96.75, 0.9, z + 0.5); }
+    box(STREET, 10.8, 2.0, 1.2, wallC, 92, -0.8, -97.5); for (const x of [87.25, 96.75]) box(STREET, 0.5, 3.6, 7, wallC, x, -4.0, -93.5); box(STREET, 9.5, 0.5, 7, wallC, 92, -0.9, -93.5);
+    const hl = new THREE.Mesh(new THREE.PlaneGeometry(8.2, 1.3), signM("CAR PARK   MAX 2.1 m", "#0f6a3a")); hl.position.set(92, 0.45, -98.13); hl.rotation.y = Math.PI; STREET.add(hl);
+    for (const x of [85.4, 98.6]) cyl(STREET, 0.14, 0.14, 5.4, std(0x555a60, 0.5, 0.6), x, 0, -133, 10); box(STREET, 13.6, 0.3, 0.3, std(0x555a60, 0.5, 0.6), 92, 5.2, -133);
+    const gs = new THREE.Mesh(new THREE.PlaneGeometry(7.4, 2.0), signM("P  CAR PARK  ▼", "#0f6a3a")); gs.position.set(92, 4.1, -133.2); gs.rotation.y = Math.PI; STREET.add(gs);
+    // island, booth, ticket machine, camera, boom barrier (arm lifts for each car)
+    const p0 = rampAtZ(-124), p1 = rampAtZ(-128), p2 = rampAtZ(-120), slope = (p2.y - p1.y) / 8;
+    const isl = box(STREET, 1.5, 0.22, 9, std(0x9a9a98, 0.9), 92.1, p0.y - 0.1, -124); isl.rotation.x = -slope;
+    box(STREET, 1.3, 2.5, 2.4, std(0xe9e6df, 0.6), 92.15, p0.y + 0.1, -122.5); box(STREET, 1.32, 0.9, 2.0, glassM, 92.15, p0.y + 1.1, -122.5); box(STREET, 1.5, 0.15, 2.6, std(0x2b2f36, 0.5, 0.5), 92.15, p0.y + 2.55, -122.5);
+    const guard = makePerson(0, 0, true); guard.position.set(92.15, p0.y + 0.15, -122.5); guard.rotation.y = -Math.PI / 2; CROWD.add(guard); API.guard = guard;
+    box(STREET, 0.45, 1.25, 0.35, std(0x2b2f36, 0.5, 0.5), 91.15, p0.y - 0.0, -127.4); box(STREET, 0.3, 0.3, 0.05, new THREE.MeshStandardMaterial({ color: 0x35ff7a, emissive: 0x35ff7a, emissiveIntensity: 1.2 }), 91.15, p0.y + 0.85, -127.62);
+    cyl(STREET, 0.06, 0.06, 3.2, std(0x555a60, 0.5, 0.6), 96.5, 0.9, -118, 8); box(STREET, 0.5, 0.25, 0.7, std(0x2b2f36, 0.4, 0.6), 96.5, 4.0, -118);
+    const stripes = canvasTex(256, 32, (g, w, h) => { for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? "#ffffff" : "#d8232a"; g.fillRect((i * w) / 8, 0, w / 8, h); } });
+    barrier = new THREE.Group(); barrier.position.set(91.4, p0.y + 1.05, -124); const arm = new THREE.Mesh(new THREE.BoxGeometry(3.7, 0.12, 0.12), new THREE.MeshStandardMaterial({ map: stripes, roughness: 0.5 })); arm.position.set(-1.85, 0, 0); barrier.add(arm); STREET.add(barrier); }
+
   // street trees
   { const tm = std(0x8a6a48), lm = std(0x3f7a3d); for (const [x, z] of [[-120, -134], [-80, -134], [-20, -134], [20, -134], [80, -134], [124, -134], [-60, -164], [60, -164]]) { cyl(STREET, 0.16, 0.22, 4, tm, x, 0, z, 8); const l = new THREE.Mesh(new THREE.SphereGeometry(2, 12, 10), lm); l.position.set(x, 5, z); STREET.add(l); } }
   // moving cars on the loop and down the ramp
@@ -270,7 +289,13 @@ export function buildExtras(ctx) {
     else if (carState.phase === 3) { carState.u += (speed * dt) / DRIVE_LEN; follow(A, drive, carState.u); if (carState.u >= 0.995) { carState.phase = 0; carState.t = -4; A.visible = false; } }
     // second car circulates later, third goes down the ramp
     car2.visible = false;
-    carState.rampT += dt; if (carState.rampPhase === 0 && carState.rampT > 4) { carState.rampPhase = 1; carState.rampU = 0; rampCar.visible = true; } if (carState.rampPhase === 1) { carState.rampU += (6.0 * dt) / RAMP_LEN; follow(rampCar, rampCurve, carState.rampU); if (carState.rampU >= 0.995) { carState.rampPhase = 2; carState.rampT = 0; rampCar.visible = false; } } if (carState.rampPhase === 2 && carState.rampT > 14) { carState.rampPhase = 0; carState.rampT = 0; }
+    carState.rampT += dt; const uStop = uAtZ(rampLane, -127.6), uFree = uAtZ(rampLane, -116);
+    if (carState.rampPhase === 0 && carState.rampT > 4) { carState.rampPhase = 1; carState.rampU = 0; rampCar.visible = true; }
+    if (carState.rampPhase === 1) { const remain = (uStop - carState.rampU) * RAMP_LEN, v = Math.min(6.0, 0.8 + remain * 0.9); carState.rampU += (Math.max(0.5, v) * dt) / RAMP_LEN; follow(rampCar, rampLane, carState.rampU); if (remain < 0.15) { carState.rampPhase = 4; carState.rampT = 0; } }
+    if (carState.rampPhase === 4) { barLive.target = carState.rampT > 1.4 ? -1.45 : 0; if (carState.rampT > 2.4) carState.rampPhase = 5; }
+    if (carState.rampPhase === 5) { carState.rampU += (4.5 * dt) / RAMP_LEN; follow(rampCar, rampLane, carState.rampU); if (carState.rampU > uFree) barLive.target = 0; if (carState.rampU >= 0.995) { carState.rampPhase = 2; carState.rampT = 0; rampCar.visible = false; } }
+    if (carState.rampPhase === 2 && carState.rampT > 14) { carState.rampPhase = 0; carState.rampT = 0; }
+    if (barrier) { barLive.ang += (barLive.target - barLive.ang) * Math.min(1, dt * 3.5); barrier.rotation.z = barLive.ang; }
     // lobby: guests + staff + lift doors
     [G1, G2, G3].forEach((p) => updateWalker(p, dt, t));
     API.lobbyClock.next2 -= dt; if (API.lobbyClock.next2 < 0 && G2.state !== "walk") { API.lobbyClock.next2 = 26; startExitCycle(); }
