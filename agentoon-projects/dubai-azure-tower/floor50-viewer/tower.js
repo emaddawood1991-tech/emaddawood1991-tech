@@ -144,7 +144,7 @@ export function createTower(ctx) {
   const concMats = GRADES.map((g) => new THREE.MeshStandardMaterial({ color: g.col, roughness: 0.9, transparent: true, opacity: 0.85, side: THREE.DoubleSide }));
   const coreRing = (z, th) => { const h = hf(z), r = 0.29 * radiusAt(z) * (1 + 0.52 * Math.max(0, Math.cos(3 * th)) + 0.12 * Math.cos(3 * th)), a = th + twistAt(z); return { x: r * Math.cos(a), y: r * Math.sin(a), z }; };
   const zFloor = (f) => (f === 1 ? 0 : floorZ(f)), zTopFloor = (f) => (f === 1 ? TP.lobby : floorZ(f) + TP.floorH);
-  GRADES.forEach((g, gi) => { const zl = []; for (let f = g.from; f <= g.to; f++) { if (f === g.from) zl.push(zFloor(f)); zl.push(zTopFloor(f)); } const m = new THREE.Mesh(loft(zl.map((z) => Array.from({ length: N }, (_, i) => coreRing(z, thetaI(i))))), concMats[gi]); m.userData.grade = gi; G.struct.add(m); });
+  GRADES.forEach((g, gi) => { const zl = []; for (let f = g.from; f <= g.to; f++) { if (f === g.from) { if (gi === 0) zl.push(-15.2); zl.push(zFloor(f)); } zl.push(zTopFloor(f)); } const m = new THREE.Mesh(loft(zl.map((z) => Array.from({ length: N }, (_, i) => coreRing(z, thetaI(i))))), concMats[gi]); m.userData.grade = gi; G.struct.add(m); });
   const slabGeo = []; { const pos = [], idx = []; for (let f = 1; f <= TP.floors; f++) { const zt = zTopFloor(f); const g = plate(zt - 0.3, zt, (z, th) => rp(z, th, -0.4)); const p = g.attributes.position, ix = g.index.array, b0 = pos.length / 3; for (let i = 0; i < p.count; i++) pos.push(p.getX(i), p.getY(i), p.getZ(i)); for (let i = 0; i < ix.length; i++) idx.push(ix[i] + b0); } const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); const slabMesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0xb7b3aa, roughness: 0.9, transparent: true, opacity: 0.32, side: THREE.DoubleSide, depthWrite: false })); G.struct.add(slabMesh); }
   const NCOL = 18, COLZ = [];
   { const inst = new THREE.InstancedMesh(new THREE.CylinderGeometry(1, 1, 1, 12), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85, transparent: true, opacity: 0.9 }), NCOL * TP.floors); let n = 0; const up = new THREE.Vector3(0, 1, 0), q = new THREE.Quaternion(), m4 = new THREE.Matrix4();
@@ -158,22 +158,22 @@ export function createTower(ctx) {
 
   // ---- foundation: lobed piled raft + piles
   const concFound = new THREE.MeshStandardMaterial({ color: 0x777a80, roughness: 0.95, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
-  const raft = new THREE.Mesh(plate(-4, 0, (z, th) => rp(0, th, 7)), concFound); G.found.add(raft);
+  const raft = new THREE.Mesh(plate(-15.2, -11.2, (z, th) => rp(0, th, 7)), concFound); G.found.add(raft);
   { const poly = Array.from({ length: N }, (_, i) => { const p = rp(0, thetaI(i), 5.5); return [p.x, p.y]; }), inside = (x, y) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, yi] = poly[i], [xj, yj] = poly[j]; if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c; } return c; };
     const pts = []; for (let x = -36; x <= 36; x += 5) for (let y = -36; y <= 36; y += 5) if (inside(x, y)) pts.push([x, y]);
-    const inst = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.75, 0.75, 46, 12), new THREE.MeshStandardMaterial({ color: 0x8d9097, roughness: 0.9 }), pts.length); const m4 = new THREE.Matrix4(); pts.forEach(([x, y], i) => { const v = w3({ x, y, z: -4 - 23 }); m4.makeTranslation(v.x, v.y, v.z); inst.setMatrixAt(i, m4); }); G.found.add(inst); G.pileInst = inst; G.pileCount = pts.length; }
+    const inst = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.75, 0.75, 46, 12), new THREE.MeshStandardMaterial({ color: 0x8d9097, roughness: 0.9 }), pts.length); const m4 = new THREE.Matrix4(); pts.forEach(([x, y], i) => { const v = w3({ x, y, z: -15.2 - 23 }); m4.makeTranslation(v.x, v.y, v.z); inst.setMatrixAt(i, m4); }); G.found.add(inst); G.pileInst = inst; G.pileCount = pts.length; }
 
   // ---- rebar (iron): core wall bars + hoops, column cages, slab mats for the selected floor
   const rebarCol = 0xff7a2a;
   const rebarLines = (() => { const pos = [];
     const polyline = (pts) => { for (let i = 1; i < pts.length; i++) pos.push(pts[i - 1].x, pts[i - 1].y, pts[i - 1].z, pts[i].x, pts[i].y, pts[i].z); };
-    for (let i = 0; i < N; i += 2) for (const off of [0, 0.35]) { const pts = [0, ...zs.slice(1)].map((z) => { const p = coreRing(z, thetaI(i)); const c = rp(z, 0, 0); const k = 1 - off / Math.max(1, Math.hypot(p.x, p.y)); return w3({ x: p.x * k, y: p.y * k, z }); }); polyline(pts); }
-    for (let j = 0; j < NCOL; j++) { const th = (2 * Math.PI * (j + 0.5)) / NCOL; for (const [dx, dy] of [[-0.3, -0.3], [0.3, -0.3], [0.3, 0.3], [-0.3, 0.3]]) polyline([0, ...zs.slice(1)].map((z) => { const p = rp(z, th, -2.4), v = w3({ x: p.x, y: p.y, z }); return new THREE.Vector3(v.x + dx, v.y, v.z + dy); })); }
+    for (let i = 0; i < N; i += 2) for (const off of [0, 0.35]) { const pts = [-15, 0, ...zs.slice(1)].map((z) => { const p = coreRing(z, thetaI(i)); const c = rp(z, 0, 0); const k = 1 - off / Math.max(1, Math.hypot(p.x, p.y)); return w3({ x: p.x * k, y: p.y * k, z }); }); polyline(pts); }
+    for (let j = 0; j < NCOL; j++) { const th = (2 * Math.PI * (j + 0.5)) / NCOL; for (const [dx, dy] of [[-0.3, -0.3], [0.3, -0.3], [0.3, 0.3], [-0.3, 0.3]]) polyline([-15, 0, ...zs.slice(1)].map((z) => { const p = rp(z, th, -2.4), v = w3({ x: p.x, y: p.y, z }); return new THREE.Vector3(v.x + dx, v.y, v.z + dy); })); }
     for (let f = 1; f <= TP.floors; f += 1) { const z = zFloor(f) + 1.5; for (let i = 0; i < N; i += 3) { const a = w3(coreRing(z, thetaI(i))), b = w3(coreRing(z, thetaI(i + 3))); pos.push(a.x, a.y, a.z, b.x, b.y, b.z); } for (let j = 0; j < NCOL; j++) { const th = (2 * Math.PI * (j + 0.5)) / NCOL, p = w3(rp(z, th, -2.4)); for (let k = 0; k < 8; k++) { const a0 = (k / 8) * 6.283, a1 = ((k + 1) / 8) * 6.283; pos.push(p.x + Math.cos(a0) * 0.85, p.y, p.z + Math.sin(a0) * 0.85, p.x + Math.cos(a1) * 0.85, p.y, p.z + Math.sin(a1) * 0.85); } } }
     const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: rebarCol })); })();
   G.rebar.add(rebarLines);
   // raft + pile cages
-  { const pos = []; for (let x = -30; x <= 30; x += 1.8) for (const y of [-3.4, -0.6]) { const a = w3({ x, y: -32, z: y }), b = w3({ x, y: 32, z: y }); pos.push(a.x, a.y, a.z, b.x, b.y, b.z); } for (let z = -30; z <= 30; z += 1.8) for (const y of [-3.4, -0.6]) { const a = w3({ x: -32, y: z, z: y }), b = w3({ x: 32, y: z, z: y }); pos.push(a.x, a.y, a.z, b.x, b.y, b.z); } const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); const l = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: rebarCol })); G.found.add(l); G.raftRebar = l; }
+  { const pos = []; for (let x = -30; x <= 30; x += 1.8) for (const y of [-14.6, -11.8]) { const a = w3({ x, y: -32, z: y }), b = w3({ x, y: 32, z: y }); pos.push(a.x, a.y, a.z, b.x, b.y, b.z); } for (let z = -30; z <= 30; z += 1.8) for (const y of [-14.6, -11.8]) { const a = w3({ x: -32, y: z, z: y }), b = w3({ x: 32, y: z, z: y }); pos.push(a.x, a.y, a.z, b.x, b.y, b.z); } const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); const l = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: rebarCol })); G.found.add(l); G.raftRebar = l; }
   let slabRebar = null;
   function showSlabRebar(f) {
     if (slabRebar) { G.rebar.remove(slabRebar); slabRebar.geometry.dispose(); slabRebar = null; } if (!f) return;
@@ -215,9 +215,9 @@ export function createTower(ctx) {
 
   // ---- lightning protection + strike effect
   const NDC = 6, conductorPaths = [];
-  for (let j = 0; j < NDC; j++) { const th = (2 * Math.PI * (j * 3 + 0.5)) / NCOL; const pts = [w3(crownPoint(0.1, th, -2.0))]; for (let k = zs.length - 1; k >= 0; k--) pts.push(w3(rp(zs[k], th, -2.4))); pts.push(w3(rp(0, th, -2.4)).setY(-4)); const ring = w3(rp(0, th, 8)); pts.push(new THREE.Vector3(ring.x, -1.4, ring.z)); conductorPaths.push(pts); }
+  for (let j = 0; j < NDC; j++) { const th = (2 * Math.PI * (j * 3 + 0.5)) / NCOL; const pts = [w3(crownPoint(0.1, th, -2.0))]; for (let k = zs.length - 1; k >= 0; k--) pts.push(w3(rp(zs[k], th, -2.4))); pts.push(w3(rp(0, th, -2.4)).setY(-11)); const ring = w3(rp(0, th, 8)); pts.push(new THREE.Vector3(ring.x, -1.4, ring.z)); conductorPaths.push(pts); }
   const spireTip = new THREE.Vector3(0, TOP + TP.crown + TP.spire, 0), spireBase = new THREE.Vector3(0, TOP + 2, 0);
-  const axisPath = [spireTip, new THREE.Vector3(0, TOP + TP.crown - 4, 0), spireBase, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -4, 0)];
+  const axisPath = [spireTip, new THREE.Vector3(0, TOP + TP.crown - 4, 0), spireBase, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -11, 0)];
   const lightMat = new THREE.LineBasicMaterial({ color: 0x66d0ff }), ringMat = new THREE.LineBasicMaterial({ color: 0xffd84a });
   const conductors = conductorPaths.map((pts) => { const geo = new THREE.BufferGeometry().setFromPoints(pts); const l = new THREE.Line(geo, lightMat); G.light.add(l); return { pts, line: l, len: pts.reduce((s, p, i) => (i ? s + p.distanceTo(pts[i - 1]) : 0), 0) }; });
   const axisLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(axisPath), lightMat); G.light.add(axisLine);
