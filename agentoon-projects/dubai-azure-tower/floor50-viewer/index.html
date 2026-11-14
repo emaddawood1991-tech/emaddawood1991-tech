@@ -3,57 +3,88 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Floor 50 Sky Penthouse</title>
-<meta name="description" content="Interactive floor 50 of the fictional Dubai Azure Tower concept: furnished interior and electricity, water and sewage routes behind the walls.">
+<title>Dubai Azure Tower</title>
+<meta name="description" content="Interactive fictional Dubai Azure Tower concept: whole building, structure, rebar, glass, lightning, lobby and floor 50 with systems.">
 <style>
-  :root{--bg:#0e1116;--panel:rgba(18,22,30,.82);--line:rgba(255,255,255,.12);--text:#eef1f6;--mut:#9aa6b8;--gold:#e3c48a}
+  :root{--bg:#0e1116;--panel:rgba(18,22,30,.84);--line:rgba(255,255,255,.12);--text:#eef1f6;--mut:#9aa6b8;--gold:#e3c48a}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
-  #c{position:fixed;inset:0;width:100%;height:100%;display:block}
-  .panel{position:fixed;background:var(--panel);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:14px}
-  #head{left:16px;top:16px;max-width:340px}
-  #head h1{margin:0 0 2px;font-size:17px;letter-spacing:.04em;color:var(--gold);font-weight:600}
-  #head p{margin:0;color:var(--mut);font-size:12.5px}
-  #ctl{left:16px;top:104px;width:350px;max-height:calc(100% - 190px);overflow:auto}
+  #c{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:grab}
+  .panel{position:fixed;background:var(--panel);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  #head{left:16px;top:16px;max-width:360px;padding:10px 14px}
+  #head h1{margin:0;font-size:16px;letter-spacing:.05em;color:var(--gold);font-weight:600}
+  #head p{margin:2px 0 0;color:var(--mut);font-size:12px}
+  #nav{left:50%;top:16px;transform:translateX(-50%);display:flex;gap:6px;padding:6px;z-index:5}
+  #ctl{left:16px;top:84px;width:352px;max-height:calc(100% - 170px);overflow:auto}
+  summary{cursor:pointer;margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600;list-style:none}
+  summary::before{content:'\25B8  '} details[open]>summary::before{content:'\25BE  '}
+  .grp{margin:0 0 10px} .grp:last-child{margin:0}
+  .btns{display:flex;flex-wrap:wrap;gap:6px}
+  button{font:inherit;color:var(--text);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:7px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;min-height:34px;transition:background .15s,border-color .15s}
+  button:hover{background:rgba(255,255,255,.12)} button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  button[aria-pressed=true]{background:rgba(227,196,138,.16);border-color:var(--gold)}
+  button.big{background:rgba(227,196,138,.14);border-color:var(--gold);font-weight:600}
+  button.zap{background:rgba(120,120,255,.18);border-color:#8f9bff;font-weight:600}
+  button i{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
   .tl{float:right;color:var(--gold);text-transform:none;letter-spacing:0;font-size:12px;font-weight:600}
   input[type=range]{width:100%;accent-color:#e3c48a}
-  #banner{position:fixed;left:50%;top:16px;transform:translateX(-50%);max-width:min(620px,90vw);background:rgba(120,10,14,.9);border:1px solid #ff6a6f;border-radius:12px;padding:10px 16px;font-weight:600;display:none;z-index:6;text-align:center}
-  .grp{margin:0 0 12px}
-  .grp:last-child{margin:0}
-  .grp summary{cursor:pointer;margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600;list-style:none}
-  .grp summary::before{content:'\25B8  '}.grp[open] summary::before{content:'\25BE  '}
-  .grp h2{margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600}
-  .btns{display:flex;flex-wrap:wrap;gap:6px}
-  button{font:inherit;color:var(--text);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:8px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;min-height:36px;transition:background .15s,border-color .15s}
-  button:hover{background:rgba(255,255,255,.12)}
-  button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  button[aria-pressed=true]{background:rgba(227,196,138,.16);border-color:var(--gold)}
-  button i{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
-  #info{right:16px;top:16px;width:320px;max-height:calc(100% - 32px);overflow:auto}
-  #info h2{margin:0 0 6px;font-size:15px;color:var(--gold);font-weight:600}
-  #info p{margin:0 0 8px;color:#c9d2e0;font-size:13px}
-  #info ul{margin:0 0 10px;padding-left:18px;color:#c9d2e0;font-size:12.5px}
-  #info li{margin:2px 0}
+  #info{right:16px;top:16px;width:330px;max-height:calc(100% - 100px);overflow:auto}
+  #info h2{margin:0 0 6px;font-size:15px;color:var(--gold);font-weight:600} #info p{margin:0 0 8px;color:#c9d2e0;font-size:13px}
+  #info ul{margin:0 0 10px;padding-left:18px;color:#c9d2e0;font-size:12.5px} #info li{margin:2px 0}
+  #info table{border-collapse:collapse;width:100%;font-size:12px;margin:0 0 8px} #info td{padding:2px 6px 2px 0;color:#c9d2e0} #info td:first-child{white-space:nowrap}
+  .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px;border:1px solid rgba(255,255,255,.3)}
   .tag{display:inline-block;font-size:11px;border:1px solid var(--line);border-radius:99px;padding:1px 8px;color:var(--mut);margin-right:4px}
-  #foot{left:16px;bottom:16px;max-width:560px;font-size:11.5px;color:var(--mut);padding:9px 12px}
-  .lbl{position:fixed;left:0;top:0;transform:translate(-50%,-130%);pointer-events:none;font-size:11.5px;font-weight:600;white-space:nowrap;padding:2px 8px;border-radius:99px;background:rgba(10,12,16,.82);border:1px solid var(--c,#fff);color:#fff;display:none;z-index:3}
-  @media (max-width:820px){
-    #info{display:none}
-    #head{max-width:none;right:16px}
-    #ctl{width:auto;right:16px;top:auto;bottom:62px;max-height:46vh;overflow:auto}
-    #foot{right:16px;max-width:none;bottom:12px}
-  }
+  #foot{left:16px;bottom:16px;max-width:520px;font-size:11.5px;color:var(--mut);padding:8px 12px}
+  #timebar{left:50%;bottom:16px;transform:translateX(-50%);width:min(520px,calc(100% - 40px));padding:8px 14px;z-index:4}
+  #timebar .row{display:flex;gap:8px;align-items:center} #timebar input{flex:1} #timebar .tl{float:none;min-width:96px;text-align:right}
+  .lbl{position:fixed;left:0;top:0;transform:translate(-50%,-130%);pointer-events:none;font-size:11.5px;font-weight:600;white-space:nowrap;padding:2px 8px;border-radius:99px;background:rgba(10,12,16,.84);border:1px solid var(--c,#fff);color:#fff;display:none;z-index:3}
+  #banner{position:fixed;left:50%;top:70px;transform:translateX(-50%);max-width:min(660px,90vw);background:rgba(120,10,14,.92);border:1px solid #ff6a6f;border-radius:12px;padding:10px 16px;font-weight:600;display:none;z-index:6;text-align:center}
+  #banner.t{background:rgba(24,28,90,.93);border-color:#8f9bff}
+  #hover{position:fixed;pointer-events:none;background:rgba(10,12,16,.9);border:1px solid var(--gold);border-radius:8px;padding:3px 9px;font-size:12px;display:none;z-index:7;white-space:nowrap}
+  #flash{position:fixed;inset:0;background:#dfe6ff;opacity:0;pointer-events:none;z-index:8}
+  #fade{position:fixed;inset:0;background:#0e1116;opacity:0;pointer-events:none;z-index:9;transition:opacity .28s}
+  body[data-mode=tower] .m-floor,body[data-mode=tower] .m-lobby,body[data-mode=floor] .m-tower,body[data-mode=floor] .m-lobby,body[data-mode=lobby] .m-tower,body[data-mode=lobby] .m-floor{display:none!important}
+  @media (max-width:860px){#info{display:none}#head{max-width:none;right:16px}#nav{top:auto;bottom:70px}#ctl{width:auto;right:16px;top:auto;bottom:110px;max-height:40vh}#foot{display:none}}
 </style>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/addons/"}}</script>
 </head>
-<body>
-<canvas id="c" aria-label="3D model of floor 50"></canvas>
-<div class="panel" id="head">
-  <h1>FLOOR 50 · SKY PENTHOUSE</h1>
-  <p>Dubai Azure Tower — fictional architectural concept. Drag to orbit, scroll to zoom, right-drag to pan.</p>
+<body data-mode="tower">
+<canvas id="c" aria-label="3D model of the Dubai Azure Tower"></canvas>
+<div class="panel" id="head"><h1>DUBAI AZURE TOWER</h1><p>Fictional concept · drag to orbit, scroll to zoom, right-drag to pan</p></div>
+<div class="panel" id="nav">
+  <button data-mode="tower" aria-pressed="true">Whole building</button>
+  <button data-mode="lobby" aria-pressed="false">Lobby</button>
+  <button data-mode="floor" aria-pressed="false">Floor 50</button>
 </div>
 <div class="panel" id="ctl">
-  <details class="grp" open><summary>Show behind the walls</summary>
+  <details class="grp m-tower" open><summary>Look inside the structure</summary>
+    <div class="btns">
+      <button data-t="struct" aria-pressed="false"><i style="background:#9a9ea5"></i>Concrete</button>
+      <button data-t="rebar" aria-pressed="false"><i style="background:#ff7a2a"></i>Iron (rebar) + steel</button>
+      <button data-t="found" aria-pressed="false"><i style="background:#777a80"></i>Foundation</button>
+      <button data-t="glass" aria-pressed="false"><i style="background:#6fb8ff"></i>Glass layers</button>
+      <button data-t="rain" aria-pressed="false"><i style="background:#35d4ff"></i>Rain test</button>
+      <button id="strikeBtn" class="zap">&#9889; Thunder strike</button>
+    </div>
+  </details>
+  <details class="grp m-tower" open><summary>Choose a floor <span class="tl" id="flabel">Floor 50</span></summary>
+    <input id="floorSlider" type="range" min="1" max="50" step="1" value="50" aria-label="Floor">
+    <div class="btns" style="margin-top:6px"><button id="floorGo" class="big">Go to this floor</button><button id="goLobby">Lobby</button><button id="goF50">Floor 50</button></div>
+    <p style="margin:6px 0 0;font-size:12px;color:var(--mut)">Or just click the glass: floor 50 opens the penthouse level, the bottom opens the lobby.</p>
+  </details>
+  <details class="grp m-tower"><summary>Display</summary>
+    <div class="btns"><button data-t="xrayT" aria-pressed="false">X-ray glass</button><button data-t="grades" aria-pressed="true">Concrete grade colours</button><button data-t="site" aria-pressed="true">Podium + palms</button></div>
+  </details>
+  <details class="grp m-tower" open><summary>Camera</summary>
+    <div class="btns"><button data-tv="over">Whole tower</button><button data-tv="crown">Crown + spire</button><button data-tv="f50">Floor 50</button><button data-tv="podium">Podium</button><button data-tv="under">Underground</button><button data-tv="facade">Glass section</button></div>
+  </details>
+  <details class="grp m-lobby" open><summary>Lobby lights</summary>
+    <div class="btns"><button id="lobbyLights" aria-pressed="false">Lobby lights</button><button id="lobbyAuto">Auto (night)</button></div>
+  </details>
+  <details class="grp m-lobby" open><summary>Camera</summary>
+    <div class="btns"><button data-lv="entrance">Entrance</button><button data-lv="desk">Reception</button><button data-lv="lounge">Lounge</button><button data-lv="sea">Sea view</button><button data-lv="top">Plan</button></div>
+  </details>
+  <details class="grp m-floor" open><summary>Show behind the walls</summary>
     <div class="btns">
       <button data-layer="elec" aria-pressed="false"><i style="background:#ffc21a"></i>Electricity</button>
       <button data-layer="water" aria-pressed="false"><i style="background:#3d8bff"></i>Water</button>
@@ -64,38 +95,28 @@
       <button id="fireDemo" aria-pressed="false">&#9654; Fire demo</button>
     </div>
   </details>
-  <details class="grp" open><summary>Time of day <span id="tlabel" class="tl"></span></summary>
-    <input id="tslider" type="range" min="0" max="24" step="0.05" value="15.5" aria-label="Time of day">
-    <div class="btns" style="margin-top:6px">
-      <button data-time="6.3">Sunrise</button><button data-time="12">Noon</button><button data-time="17.7">Sunset</button><button data-time="22">Night</button>
-    </div>
-  </details>
-  <details class="grp"><summary>Lights</summary>
+  <details class="grp m-floor"><summary>Lights</summary>
     <div class="btns"><button id="lightsOn">All on</button><button id="lightsOff">All off</button><button id="lightsAuto">Auto (night)</button></div>
     <div class="btns" id="lightbtns" style="margin-top:6px"></div>
   </details>
-  <details class="grp"><summary>Doors <span class="tl">or click one in 3D</span></summary>
+  <details class="grp m-floor"><summary>Doors <span class="tl">or click one in 3D</span></summary>
     <div class="btns"><button id="doorsOpen">Open all</button><button id="doorsClose">Close all</button><button id="slideDoor">Terrace door</button></div>
   </details>
-  <details class="grp"><summary>Display</summary>
-    <div class="btns">
-      <button data-layer="furn" aria-pressed="true">Furniture</button>
-      <button data-layer="xray" aria-pressed="false">X-ray walls</button>
-      <button data-layer="ceil" aria-pressed="false">Ceiling</button>
-      <button data-layer="flow" aria-pressed="true">Flow animation</button>
-    </div>
+  <details class="grp m-floor"><summary>Display</summary>
+    <div class="btns"><button data-layer="furn" aria-pressed="true">Furniture</button><button data-layer="xray" aria-pressed="false">X-ray walls</button><button data-layer="ceil" aria-pressed="false">Ceiling</button><button data-layer="flow" aria-pressed="true">Flow animation</button></div>
   </details>
-  <details class="grp" open><summary>Camera</summary>
-    <div class="btns">
-      <button data-view="over">Overview</button><button data-view="plan">Plan</button><button data-view="living">Living</button><button data-view="kitchen">Kitchen</button>
-      <button data-view="bed">Master suite</button><button data-view="bath">Bathroom</button><button data-view="dubai">Dubai view</button><button data-view="terrace">Terrace</button>
-    </div>
+  <details class="grp m-floor" open><summary>Camera</summary>
+    <div class="btns"><button data-view="over">Overview</button><button data-view="plan">Plan</button><button data-view="living">Living</button><button data-view="kitchen">Kitchen</button><button data-view="bed">Master suite</button><button data-view="bath">Bathroom</button><button data-view="dubai">Dubai view</button><button data-view="terrace">Terrace</button></div>
   </details>
 </div>
 <div class="panel" id="info"></div>
-<div class="panel" id="foot">Conceptual schematic for visualisation only. Utility routes are illustrative, not an engineering design. Not approved, not built, not for sale.</div>
+<div class="panel" id="timebar">
+  <div class="row"><span style="color:var(--mut);font-size:11px;letter-spacing:.1em">TIME</span><input id="tslider" type="range" min="0" max="24" step="0.05" value="15.5" aria-label="Time of day"><span id="tlabel" class="tl"></span></div>
+  <div class="btns" style="margin-top:6px;justify-content:center"><button data-time="6.3">Sunrise</button><button data-time="12">Noon</button><button data-time="17.7">Sunset</button><button data-time="22">Night</button></div>
+</div>
+<div class="panel" id="foot">Fictional architectural concept. Structure, glass, lightning and utility details are illustrative, not an engineering design. Not approved, not built, not for sale.</div>
 <button id="hide" style="position:fixed;right:16px;bottom:16px;z-index:5" aria-pressed="false">Hide panels (H)</button>
-<div id="banner"></div>
+<div id="banner"></div><div id="hover"></div><div id="flash"></div><div id="fade"></div>
 <div id="labels"></div>
 <script type="module" src="./main.js"></script>
 </body>

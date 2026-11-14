@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { createTower, ringPoint, TP, floorZ, topZ, floorOfY, zoneOf } from "./tower.js";
 
 // Floor 50 plan: X 0..28 (west->east), Z 0..20 (core/back wall -> Gulf-facing glass). Y up, metres.
 const W = 28, D = 20, WALL_H = 3.6, CEIL_Y = 3.2, VOID_Y = 3.45;
@@ -384,7 +385,7 @@ const toggleSlide = () => { slideTarget = slideTarget ? 0 : 1; };
 function updateDoors() { doors.forEach((d) => { d.cur += (d.target - d.cur) * 0.12; d.pivot.rotation.y = d.cur * d.dir; }); slide.forEach((s) => { s.cur += (slideTarget - s.cur) * 0.1; s.gp.position.x = s.x0 + s.run * s.cur; }); }
 
 // ---------------------------------------------------------------- outside: Dubai coast near the Burj Al Arab, sky, sun, moon
-const GROUND = -196;   // street level is ~196 m below floor 50
+const GROUND = -201;   // street level is 201 m below floor 50
 const OUT = new THREE.Group(); scene.add(OUT);
 const skyUniforms = { top: { value: new THREE.Color() }, hor: { value: new THREE.Color() }, bot: { value: new THREE.Color() }, sun: { value: new THREE.Vector3(0, 1, 0) }, glow: { value: new THREE.Color() }, glowK: { value: 0 } };
 const dome = new THREE.Mesh(new THREE.SphereGeometry(14000, 32, 20), new THREE.ShaderMaterial({
@@ -409,7 +410,7 @@ const cityMat = new THREE.MeshStandardMaterial({ color: 0xffffff, map: winColor,
 { // skyline east/west of the site + low-rise beachfront
   for (let i = 0; i < 70; i++) { const w = 22 + rnd() * 30, h = 90 + rnd() * rnd() * 330, x = -1500 + rnd() * 700, z = 90 + rnd() * 200; const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, w * (0.8 + rnd() * 0.5)), cityMat); b.position.set(x, GROUND + h / 2, z); OUT.add(b); }
   for (let i = 0; i < 90; i++) { const w = 20 + rnd() * 40, h = 8 + rnd() * 24, x = -1500 + rnd() * 3500, z = 140 + rnd() * 160; const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, 20 + rnd() * 20), cityMat); b.position.set(x, GROUND + h / 2, z); OUT.add(b); }
-  const own = new THREE.Mesh(new THREE.BoxGeometry(W, -GROUND - 0.5, D), cityMat); own.position.set(W / 2, GROUND / 2 - 0.25, D / 2); OUT.add(own);   // the tower body below floor 50
+  const own = new THREE.Mesh(new THREE.BoxGeometry(W, -GROUND - 0.5, D), cityMat); own.position.set(W / 2, GROUND / 2 - 0.25, D / 2); OUT.add(own); OUT.userData.own = own;   // the tower body below floor 50
 }
 const burjMat = new THREE.MeshStandardMaterial({ color: 0xf3f3f1, roughness: 0.45, side: THREE.DoubleSide, emissive: 0x2c64ff, emissiveIntensity: 0 });
 { // stylised Burj Al Arab on its island (visual reference only, not a surveyed model)
@@ -427,21 +428,24 @@ const burjMat = new THREE.MeshStandardMaterial({ color: 0xf3f3f1, roughness: 0.4
 const sunDir = new THREE.Vector3();
 const cl = (v, a, b) => Math.max(a, Math.min(b, v)); const sm = (a, b, v) => { const t = cl((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 const C = (h) => new THREE.Color(h);
+const FOCUS = new THREE.Vector3(W / 2, 0, D / 2);
+let towerAPI = null, storm = 0;
 const moonLight = new THREE.DirectionalLight(0x8fa8ff, 0); moonLight.target.position.set(W / 2, 0, D / 2); scene.add(moonLight, moonLight.target);
 const hemi = scene.children.find((o) => o.isHemisphereLight);
 let hourNow = 15.5;
 function setTime(h) {
   hourNow = h; const th = ((h - 6) / 12) * Math.PI;
   sunDir.set(Math.cos(th), Math.sin(th) * 0.8, 0.15 - Math.sin(th) * 0.45).normalize();
-  const e = sunDir.y, day = sm(-0.06, 0.26, e), warmK = Math.exp(-Math.pow(e / 0.2, 2)) * (e > -0.22 ? 1 : 0);
+  const e = sunDir.y, day = sm(-0.06, 0.26, e) * (1 - 0.6 * storm), warmK = Math.exp(-Math.pow(e / 0.2, 2)) * (e > -0.22 ? 1 : 0) * (1 - storm);
   skyUniforms.top.value.copy(C(0x08122b).lerp(C(0x4f8fd0), day)).lerp(C(0x5d4a7a), warmK * 0.35);
   skyUniforms.hor.value.copy(C(0x141f38).lerp(C(0xcfe2f1), day)).lerp(C(0xff9b5e), warmK * 0.75);
   skyUniforms.bot.value.copy(C(0x0b1220).lerp(C(0x9fb6c6), day));
+  skyUniforms.top.value.lerp(C(0x2b313c), storm * 0.85); skyUniforms.hor.value.lerp(C(0x56606d), storm * 0.8); skyUniforms.bot.value.lerp(C(0x3a414c), storm * 0.7);
   skyUniforms.sun.value.copy(sunDir); skyUniforms.glow.value.copy(C(0xffa763)); skyUniforms.glowK.value = cl(e + 0.2, 0, 1) * (0.4 + warmK * 0.8);
   scene.fog.color.copy(skyUniforms.hor.value); scene.fog.density = state.mep ? 0 : 0.00035;
-  sun.position.copy(sunDir).multiplyScalar(90).add(new THREE.Vector3(W / 2, 0, D / 2)); sun.color.copy(C(0xff9248).lerp(C(0xfff1da), cl(e / 0.55, 0, 1)));
+  sun.position.copy(sunDir).multiplyScalar(90).add(FOCUS); sun.target.position.copy(FOCUS); sun.color.copy(C(0xff9248).lerp(C(0xfff1da), cl(e / 0.55, 0, 1)));
   sun.intensity = 2.8 * day * (0.35 + 0.65 * cl(e / 0.4, 0, 1)) + 0.0001;
-  moonLight.position.set(W / 2 - sunDir.x * 80, -sunDir.y * 80 + 5, D / 2 - sunDir.z * 80); moonLight.intensity = 0.55 * (1 - day) * sm(0.02, 0.25, -e);
+  moonLight.position.set(FOCUS.x - sunDir.x * 80, -sunDir.y * 80 + 5, FOCUS.z - sunDir.z * 80); moonLight.intensity = 0.55 * (1 - day) * sm(0.02, 0.25, -e);
   hemi.intensity = 0.07 + 0.55 * day; hemi.color.copy(C(0x6f86c6).lerp(C(0xdcecff), day));
   scene.environmentIntensity = state.mep ? 0.9 : 0.09 + 0.46 * day; renderer.toneMappingExposure = 1.0 + 0.25 * (1 - day);
   sunDisc.position.copy(sunDir).multiplyScalar(9000); sunDisc.visible = e > -0.03; sunDisc.material.color.copy(C(0xffcf8a).lerp(C(0xfff6dc), cl(e / 0.5, 0, 1)));
@@ -450,12 +454,13 @@ function setTime(h) {
   seaMat.color.copy(C(0x061a2c).lerp(C(0x1f86ad), day)).lerp(C(0xb86a48), warmK * 0.35);
   sandMat.color.copy(C(0x2a2a30).lerp(C(0xcdb48a), day)); roadMat.color.copy(C(0x14161a).lerp(C(0x2c2f35), day));
   cityMat.emissiveIntensity = 1.5 * (1 - day); cityMat.color.copy(C(0x6d7b8a).lerp(C(0xffffff), day)); burjMat.emissiveIntensity = 1.4 * (1 - day); burjMat.color.copy(C(0x9aa3b8).lerp(C(0xf3f3f1), day));
+  towerAPI && towerAPI.setNight(cl(1 - day * 1.4, 0, 1));
   document.getElementById("tlabel") && (document.getElementById("tlabel").textContent = `${String(Math.floor(h)).padStart(2, "0")}:${String(Math.round((h % 1) * 60) % 60).padStart(2, "0")}  ${day > 0.6 ? "day" : day < 0.05 ? "night" : e > 0 && h < 12 ? "sunrise" : "sunset"}`);
   document.getElementById("tslider") && (document.getElementById("tslider").value = String(h));
   if (state.lightsAuto) { const on = day < 0.35; Object.keys(lightsOn).forEach((k) => (lightsOn[k] = on)); applyLights(); syncLightButtons(); }
 }
 const lightsOn = {}; Object.keys(ROOMS).forEach((k) => (lightsOn[k] = false));
-function applyLights() { Object.keys(ROOMS).forEach((k) => { const on = lightsOn[k]; LM[k].emissiveIntensity = on ? 2.2 : 0.03; LM[k].color.set(on ? 0xfff1d6 : 0xb8b2a8); roomLights[k].forEach((o) => (o.p.intensity = on ? o.base : 0)); }); }
+function applyLights() { Object.keys(ROOMS).forEach((k) => { const on = lightsOn[k], inMode = k === "lobby" ? state.mode === "lobby" : state.mode === "floor"; LM[k].emissiveIntensity = on ? 2.2 : 0.03; LM[k].color.set(on ? 0xfff1d6 : 0xb8b2a8); roomLights[k].forEach((o) => (o.p.intensity = on && inMode ? o.base : 0)); }); }
 
 // ---------------------------------------------------------------- utilities (illustrative routing)
 const COL = { elecL: 0xffd21f, elecP: 0xff8a1f, elecH: 0xff4a3a, cold: 0x2f86ff, hot: 0xff3b30, soil: 0x9a4d10, waste: 0xb5bd2a, vent: 0xd3dae0 };
@@ -650,6 +655,43 @@ const fireHeads = [], fireDetectors = [], fireStrobes = [];
   function white2() { return new THREE.MeshStandardMaterial({ color: 0xf8f8f8, roughness: 0.4 }); }
 }
 
+// ---------------------------------------------------------------- the real tower (exact port of the Blender model) + lobby interior
+const tower = createTower({ rnd });
+towerAPI = tower; scene.add(tower.root);
+const LOBBY = new THREE.Group(); scene.add(LOBBY); LOBBY.visible = false;
+ROOMS.lobby = "Lobby"; LM.lobby = MAT.light.clone(); roomLights.lobby = []; lightsOn.lobby = false;
+{
+  const g = LOBBY, w3 = (p) => new THREE.Vector3(-p.x, p.z, p.y), lp = (z, th, o = 0) => w3(ringPoint(z, th, o));
+  const poly = (z, off) => Array.from({ length: 144 }, (_, i) => lp(z, (2 * Math.PI * i) / 144, off));
+  const lobbyFloorMat = new THREE.MeshStandardMaterial({ map: marbleTex([0.09, 0.09]), roughness: 0.1, metalness: 0.05 });
+  const shapeMesh = (z, off, mat, flip) => { const pts = poly(z, off), s = new THREE.Shape(pts.map((p) => new THREE.Vector2(p.x, -p.z))); const gm = new THREE.ShapeGeometry(s); gm.rotateX(-Math.PI / 2); const m = new THREE.Mesh(gm, mat); m.position.y = z; if (flip) m.rotation.x = Math.PI; m.receiveShadow = true; g.add(m); return m; };
+  shapeMesh(0.03, -0.1, lobbyFloorMat); const ceilM = shapeMesh(9.0, -0.1, new THREE.MeshStandardMaterial({ color: 0xf3efe8, roughness: 0.9, side: THREE.DoubleSide }));
+  // marble inlay rings
+  for (const r of [10.5, 17.5]) { const m = new THREE.Mesh(new THREE.RingGeometry(r, r + 0.12, 96), new THREE.MeshStandardMaterial({ color: 0xc9a25a, metalness: 1, roughness: 0.25 })); m.rotation.x = -Math.PI / 2; m.position.y = 0.045; g.add(m); }
+  // central lift core, clad in dark marble with bronze fins and three lift portals
+  cyl(g, 6.4, 6.4, 9, MAT.marbleDark, 0, 0, 0, 64);
+  for (let i = 0; i < 36; i++) { const a = (i / 36) * 6.283; box(g, 0.18, 9, 0.4, MAT.brass, Math.cos(a) * 6.55, 0, Math.sin(a) * 6.55, -a + Math.PI / 2); }
+  for (const a of [Math.PI * 0.5, Math.PI * 1.17, Math.PI * 1.83]) { const x = Math.cos(a) * 6.5, z = Math.sin(a) * 6.5; for (const k of [-1.1, 1.1]) { const o = box(g, 1.7, 2.6, 0.16, MAT.steel, x - Math.sin(a) * k, 0.05, z + Math.cos(a) * k, -a + Math.PI / 2); } box(g, 4.4, 0.35, 0.2, new THREE.MeshStandardMaterial({ color: 0xffe3b8, emissive: 0xffc27a, emissiveIntensity: 1.5 }), x, 2.9, z, -a + Math.PI / 2).material = LM.lobby; }
+  // curved reception desk on the entrance (south) side
+  for (let k = 0; k < 11; k++) { const a = (-150 + k * 12) * Math.PI / 180, R = 13.2, x = Math.cos(a) * R, z = Math.sin(a) * R, rot = -(a + Math.PI / 2); box(g, 2.7, 1.12 + 0.002 * k, 0.9, MAT.marbleDark, x, 0, z, rot); box(g, 2.9, 0.06, 1.15, MAT.marble, x, 1.17 + 0.004 * k, z, rot); }
+  { const m = new THREE.Mesh(new THREE.TorusGeometry(13.2, 0.04, 8, 90, 2.1), LM.lobby); m.rotation.x = Math.PI / 2; m.rotation.z = -150 * Math.PI / 180; m.position.y = 0.3; g.add(m); }
+  const back = local(g, 0, 0, 0); for (let k = 0; k < 5; k++) { const a = (-132 + k * 22) * Math.PI / 180; box(back, 1.2, 2.2, 0.06, new THREE.MeshStandardMaterial({ map: artTex(["#e8d5b5", "#2b4a6b", "#c9a25a", "#7a8f6a", "#d4c3a8"][k], "#1c2b3a", "#f4efe6"), roughness: 0.6 }), Math.cos(a) * 10.4, 1.4, Math.sin(a) * 10.4, -(a + Math.PI / 2)); }
+  // lounge groups on the sea (north) side
+  const lounge = (cx, cz, ry, mat) => { const s = local(g, cx, cz, ry); rbox(s, 3.4, 0.28, 1.0, 0.06, MAT.fabricGrey, 0, 0.06, 0); for (let i = 0; i < 3; i++) rbox(s, 1.06, 0.2, 0.92, 0.08, mat, -1.12 + i * 1.12, 0.32, 0.02); for (let i = 0; i < 3; i++) { const b = rbox(s, 1.06, 0.5, 0.22, 0.09, mat, -1.12 + i * 1.12, 0.5, -0.4); b.rotation.x = -0.14; } rbox(s, 0.26, 0.6, 1.0, 0.1, MAT.fabricGrey, -1.82, 0.06, 0); rbox(s, 0.26, 0.6, 1.0, 0.1, MAT.fabricGrey, 1.82, 0.06, 0); };
+  for (const [a, mat] of [[62, MAT.fabric], [90, MAT.fabricSage], [118, MAT.fabric]]) { const r = 16.4, ar = a * Math.PI / 180, cx = Math.cos(ar) * r, cz = Math.sin(ar) * r; lounge(cx, cz, -(ar - Math.PI / 2) + Math.PI, mat); const ix = Math.cos(ar) * (r - 2.7), iz = Math.sin(ar) * (r - 2.7); cyl(g, 0.6, 0.6, 0.05, MAT.marble, ix, 0.33, iz, 40); cyl(g, 0.22, 0.34, 0.33, MAT.brass, ix, 0.0, iz, 24); rbox(g, 4.4, 0.025, 3.2, 0.01, MAT.rug, ix, 0.035, iz, -(ar - Math.PI / 2)); }
+  for (const a of [28, 152, 208, 332]) { const ar = a * Math.PI / 180; plant(g, Math.cos(ar) * 20, Math.sin(ar) * 20, 1.8, 2.8); }
+  // chandelier above the lounge: tiers of glowing globes
+  for (let k = 0; k < 28; k++) for (let lvl = 0; lvl < 4; lvl++) { const a = (k / 28) * 6.283 + lvl * 0.2, r = 1.4 + lvl * 0.75; const s = sph(g, 0.1, MAT.light, Math.cos(a) * r, 7.4 - lvl * 0.95, 16 + Math.sin(a) * r); s.material = LM.lobby; }
+  cyl(g, 0.04, 0.04, 2.0, MAT.brass, 0, 7.0, 16, 8); cyl(g, 0.6, 0.6, 0.06, MAT.brass, 0, 8.95, 16, 24);
+  // ceiling cove light ring + downlights
+  { const pts = poly(8.88, -1.2); const geo = new THREE.BufferGeometry().setFromPoints(pts); const l = new THREE.LineLoop(geo, new THREE.LineBasicMaterial({ color: 0xffd9a0 })); g.add(l); for (let i = 0; i < 144; i += 4) { const p = pts[i]; const m = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.08, 0.14), LM.lobby); m.position.set(p.x, 8.9, p.z); m.lookAt(0, 8.9, 0); g.add(m); } }
+  for (let ring = 0; ring < 3; ring++) for (let i = 0; i < 10 + ring * 6; i++) { const a = (i / (10 + ring * 6)) * 6.283, r = 9.5 + ring * 5; const m = cyl(g, 0.12, 0.12, 0.03, LM.lobby, Math.cos(a) * r, 8.9, Math.sin(a) * r, 16); }
+  [[0, 3, -12], [0, 3, 14], [13, 3, 0], [-13, 3, 0], [0, 3, 0], [-10, 3, 16], [10, 3, 16], [-12, 3, -10], [12, 3, -10]].forEach(([x, y, z]) => { const p = warm(x, 6.5, z, 70, 22); roomLights.lobby.push(pointLights[pointLights.length - 1]); });
+  // entrance side: bronze door frame and a welcome mat
+  box(g, 7.4, 0.01, 3.4, new THREE.MeshStandardMaterial({ color: 0x4b3a2a, roughness: 1 }), 0, 0.03, -21.4);
+}
+const lobbyPick = tower.skinMesh;
+
 // ---------------------------------------------------------------- flow dots
 const dots = new THREE.Group(); scene.add(dots);
 flows.forEach((f) => {
@@ -726,7 +768,7 @@ function updateDemo(t) {
 }
 
 // ---------------------------------------------------------------- state / UI
-const state = { furn: true, elec: false, water: false, sewer: false, fire: false, ac: false, xray: false, ceil: false, flow: true, mep: false, lightsAuto: true };
+const state = { mode: "tower", furn: true, elec: false, water: false, sewer: false, fire: false, ac: false, xray: false, ceil: false, flow: true, mep: false, lightsAuto: true, struct: false, rebar: false, found: false, glass: false, rain: false, xrayT: false, grades: true, site: true, selFloor: 50, strike: false };
 const DESC = {
   none: { t: "Furnished floor 50", p: "A sky penthouse level: open living, dining and kitchen facing the Gulf, master suite with walk-in and bath, guest suite, powder room, laundry and a terrace with plunge pool. The view looks toward the Burj Al Arab and the Jumeirah coast.", li: ["Time of day: drag the slider (sun rises in the east, sets in the west)", "Lights: switch rooms on or off; they come on by themselves at night", "Doors: click a door in the 3D view to open or close it", "Systems: electricity, water, sewage, fire safety, air-conditioning"] },
   elec: { t: "Electricity", c: "#ffc21a", p: "Power enters at the distribution boards in the two service risers, runs in trunking above the ceiling, then drops inside the walls to each switch and socket.", li: ["Yellow: lighting circuit, switches at 1.2 m", "Orange: socket circuits (0.3 m, 1.1 m in kitchen/bath)", "Red: dedicated heavy circuits (AC, hob, oven, washer)", "Blue box: smart-home / data hub in the foyer"] },
@@ -735,6 +777,28 @@ const DESC = {
   fire: { t: "Fire safety", c: "#ff4a4f", p: "Detectors sense smoke or heat and tell the fire alarm panel. The panel sounds alarms and calls the control room. Heat bursts a sprinkler bulb and water from the wet riser puts out the fire.", li: ["Wet fire riser + floor control valve with flow switch", "Sprinkler heads (red glass bulb) on red pipes above the ceiling", "Smoke detectors (white), heat detector over the kitchen (orange), magenta signal loop to the panel", "Fire alarm control panel (FACP), manual call points, sounder + strobe", "Hose reel cabinet, extinguishers, green exit sign", "Press 'Fire demo' to see it work in the kitchen"] },
   ac: { t: "Air-conditioning", c: "#25d9e8", p: "Chilled water from the tower's central plant rises in the risers to a fan-coil unit (FCU) above the ceiling in each zone. The FCU cools the air and blows it through ducts to ceiling diffusers; room air returns through a grille.", li: ["Cyan pipes: chilled-water supply; orange: return", "Grey boxes: fan-coil units, with supply ducts to diffusers", "Green: condensate drain into the soil stack", "Purple: thermostat wiring to each FCU", "No outdoor unit on this floor: the plant is central"] },
 };
+const gradeHex = (c) => "#" + c.toString(16).padStart(6, "0");
+const GRT = `<table>${tower.GRADES.map((g) => `<tr><td><span class="sw" style="background:${gradeHex(g.col)}"></span>${g.name}</td><td>floors ${g.from}–${g.to}</td></tr>`).join("")}</table>`;
+const DT = {
+  none: { t: "The building", p: "50 floors: a 205 m glass shaft plus a 32 m crown and 28 m spire. A tri-lobed plan that tapers and twists 96° with 72 bronze fins and curved balconies on floors 22–46. Hover the glass to find a floor and click to select it.", li: ["Click floor 50 to go up to the penthouse level", "Click the bottom glass (or the Lobby button) to enter the lobby", "Turn on Concrete, Iron, Foundation or Glass layers to look inside", "Try the Rain test and the Thunder strike", "Zones: lobby (1), offices (2–20), residences (21–46), penthouses (47–50)"] },
+  struct: { t: "Concrete", c: "#b9bdc4", p: "A buttressed reinforced-concrete core (three wings, like a Y) carries the wind loads and holds the lifts, stairs and risers. 18 perimeter columns follow the twist, and every floor is a post-tensioned flat slab. Two steel outrigger levels tie the core to the columns.", li: ["Concrete is stronger (higher grade) at the base and lighter at the top", "Steel outrigger + belt trusses (blue) at floors 20 and 35", "Gulf-coast mix: sulphate-resisting cement with fly-ash or slag, low permeability, thick cover over the iron", "Colours show the grade by height (toggle in Display)"] , extra: GRT },
+  rebar: { t: "Iron (reinforcing steel)", c: "#ff7a2a", p: "Concrete is strong when pressed but weak when pulled, so it is reinforced with ribbed steel bars (orange). Dense vertical bars and ties sit inside the core walls and columns; each slab has a top and bottom mesh; the raft has a heavy double mat.", li: ["Select any floor to see its slab mat (two layers of bars)", "Ties (hoops) every floor keep the vertical bars from buckling", "Near the sea, bars get extra cover and corrosion protection", "The same steel also forms the lightning cage (see Thunder strike)"] },
+  found: { t: "Foundation", c: "#9aa0a8", p: "A thick reinforced-concrete raft sits on deep bored piles that carry the whole weight into the ground. Pour cooling and low-heat cement stop the thick raft from cracking while it cures.", li: ["Raft about 4 m thick", "About 150 piles, 1.5 m wide, 46 m deep (concept numbers)", "Ground is made see-through so you can look under it"] },
+  glass: { t: "Glass layers", c: "#6fb8ff", p: "The tower wears a unitized glass wall. The exploded panel in front of floor 50 shows its layers. The outer lite, the sealed cavity and the laminated inner lite keep the sun, the rain and the wind out.", li: ["1  Outer 8 mm tempered glass with a blue low-E coating (cuts heat)", "2  16 mm argon-filled cavity, sealed with a warm-edge spacer", "3  Inner 6+6 mm laminated glass: a PVB film holds it together if hit", "Bronze aluminium frame: rain-screen with drained, pressure-equalised joints and EPDM seals", "Gaps at each slab edge are fire-stopped"] },
+  rain: { t: "Rain test", c: "#35d4ff", p: "Rain runs down the glass and fins and is caught at the slab-edge drain channel on every floor (cyan lines), then flows down inside the wall. The sealed joints stop water getting in; roof and podium drains lead to storm-water tanks.", li: ["Glass is slightly hydrophobic so water sheets off", "Pressure-equalised joints: wind cannot push rain through", "Balcony slabs fall away from the glass"] },
+  strike: { t: "Thunder strike", c: "#9aa8ff", p: "Lightning hits the highest metal point (the spire tip). The building is a Faraday cage: the current runs down dedicated conductors bonded to the steel and rebar, not through the rooms, and goes into the earth.", li: ["Air terminal: the spire tip", "Crown ring shares the current between 6 down conductors", "Green boxes: surge protectors on each floor's electrical board", "Earth ring and foundation piles spread the current into the ground", "Press the button again to reset"] },
+};
+const infoEl = document.getElementById("info");
+function floorCard(f) { const g = tower.GRADES.find((x) => f >= x.from && f <= x.to); const y = f === 1 ? "0–9 m" : `${floorZ(f).toFixed(0)}–${(floorZ(f) + TP.floorH).toFixed(0)} m`; return `<h2>Floor ${f} · ${zoneOf(f)}</h2><p>Height ${y}. Structure here: concrete ${g.name}${[20, 21, 35, 36].includes(f) ? "; steel outrigger level nearby" : ""}.${f === 50 ? " Press 'Go to this floor' to enter the furnished level." : f === 1 ? " Press 'Go to this floor' to enter the lobby." : " This demo has furnished interiors only for the lobby and floor 50."}</p>`; }
+const kvTable = (rows) => `<table>${rows.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join("")}</table>`;
+function renderInfo() {
+  let h = "";
+  if (state.mode === "floor") { const keys = LAYERS.filter((k) => state[k]); const render = (k) => `<h2${DESC[k].c ? ` style="color:${DESC[k].c}"` : ""}>${DESC[k].t}</h2><p>${DESC[k].p}</p><ul>${DESC[k].li.map((x) => `<li>${x}</li>`).join("")}</ul>`; h = keys.length ? keys.map(render).join("") : render("none"); }
+  else if (state.mode === "lobby") h = `<h2>Lobby</h2><p>A double-height (9 m) arrival hall inside the tower's ground ring: marble floor with bronze inlay, a dark-marble lift core with bronze fins, a curved reception desk, three lounges facing the Gulf and a tiered chandelier.</p><ul><li>The glass wall is the same lobby glazing as the exterior</li><li>Use the time slider to see it by day and by night</li><li>Switch the lobby lights from the left panel</li></ul>`;
+  else { const keys = ["struct", "rebar", "found", "glass", "rain"].filter((k) => state[k]); if (state.strike) keys.push("strike"); const r = (k) => `<h2${DT[k].c ? ` style="color:${DT[k].c}"` : ""}>${DT[k].t}</h2><p>${DT[k].p}</p><ul>${DT[k].li.map((x) => `<li>${x}</li>`).join("")}</ul>${DT[k].extra || ""}`; h = (keys.length ? keys.map(r).join("") : r("none")) + (state.selFloor ? floorCard(state.selFloor) : ""); }
+  infoEl.innerHTML = h + `<span class="tag">fictional concept</span><span class="tag">illustrative details</span>`;
+}
+const SPIRE = new THREE.Vector3(0, tower.TOP + TP.crown + TP.spire, 0), w3b = (p) => new THREE.Vector3(-p.x, p.z, p.y);
 const LABELS = [
   { l: "elec", p: [9, 1.9, 0.3], t: "Main distribution board", c: "#ffc21a" }, { l: "elec", p: [27.2, 1.9, 0.3], t: "Sub-board", c: "#ffc21a" }, { l: "elec", p: [15, 2.3, 0.2], t: "Smart-home hub", c: "#2c8cff" }, { l: "elec", p: [20.5, 3.4, 8.2], t: "Ceiling trunking", c: "#ff4a3a" },
   { l: "water", p: [9, 4.4, 0.55], t: "Cold + hot risers", c: "#3d8bff" }, { l: "water", p: [27.1, 1.6, 2.7], t: "Hot-water cylinder", c: "#ff3b30" }, { l: "water", p: [4.1, 1.0, 0.0], t: "Basin taps", c: "#3d8bff" }, { l: "water", p: [20.5, 1.1, 0.0], t: "Kitchen sink", c: "#3d8bff" }, { l: "water", p: [22, 1.2, 12.2], t: "Guest shower", c: "#3d8bff" },
@@ -742,85 +806,151 @@ const LABELS = [
   { l: "fire", p: [9.65, 4.4, 1.9], t: "Wet fire riser", c: "#ff4a4f" }, { l: "fire", p: [9.65, 2.8, 1.9], t: "Floor valve + flow switch", c: "#ff4a4f" }, { l: "fire", p: [16, 3.1, 13.5], t: "Sprinkler head", c: "#ff4a4f" }, { l: "fire", p: [13.5, 3.25, 3.5], t: "Smoke detector", c: "#ffffff" }, { l: "fire", p: [20.5, 3.25, 3.6], t: "Heat detector", c: "#ffa23a" },
   { l: "fire", p: [16.9, 2.0, 2.0], t: "Fire alarm panel (FACP)", c: "#35ff7a" }, { l: "fire", p: [7.84, 1.6, 12.4], t: "Manual call point", c: "#ff4a4f" }, { l: "fire", p: [13.5, 3.25, 6.4], t: "Sounder + strobe", c: "#ff4a4f" }, { l: "fire", p: [15.6, 1.8, 0.3], t: "Hose reel", c: "#ff4a4f" }, { l: "fire", p: [13.4, 2.85, 0.16], t: "Exit sign", c: "#20c060" }, { l: "fire", p: [24.8, 0.9, 5.0], t: "Fire extinguisher", c: "#ff4a4f" },
   { l: "ac", p: [16, 3.5, 16.5], t: "Fan-coil unit (FCU)", c: "#25d9e8" }, { l: "ac", p: [17.7, 3.35, 16.5], t: "Supply air diffuser", c: "#25d9e8" }, { l: "ac", p: [16, 3.35, 17.7], t: "Return air grille", c: "#ff9f1c" }, { l: "ac", p: [9.55, 4.4, 0.85], t: "Chilled-water supply", c: "#25d9e8" }, { l: "ac", p: [9.85, 4.1, 0.85], t: "Chilled-water return", c: "#ff9f1c" }, { l: "ac", p: [21.9, 1.7, 19.0], t: "Thermostat", c: "#b47cff" }, { l: "ac", p: [18, 3.2, 3], t: "Condensate drain → soil stack", c: "#4cd964" },
+  // whole building
+  { l: "struct", T: 1, p: [9, 40, 0], t: "Concrete core C80 (base grade)", c: "#cfd3d8" }, { l: "struct", T: 1, p: [9, 118, 0], t: "Core C70 → C60", c: "#cfd3d8" }, { l: "struct", T: 1, p: [8, 235, 0], t: "Core C50 (top)", c: "#cfd3d8" },
+  { l: "struct", T: 1, p: w3b(ringPoint(floorZ(28) + 2, 1.1, -2.4)).toArray(), t: "Perimeter column", c: "#cfd3d8" }, { l: "struct", T: 1, p: w3b(ringPoint(floorZ(35) + 4, 2.2, -2.4)).toArray(), t: "Steel outrigger + belt truss", c: "#5aa0ff" }, { l: "struct", T: 1, p: w3b(ringPoint(floorZ(24) + 4, 4.0, -0.4)).toArray(), t: "Post-tensioned slab 300 mm", c: "#cfd3d8" },
+  { l: "rebar", T: 1, p: [-7, 80, 7], t: "Rebar in core wall", c: "#ff7a2a" }, { l: "rebar", T: 1, p: w3b(ringPoint(floorZ(15) + 2, 5.0, -2.4)).toArray(), t: "Column cage + ties", c: "#ff7a2a" }, { l: "found", T: 1, p: [0, -2, 14], t: "Raft ~4 m thick", c: "#cfd3d8" }, { l: "found", T: 1, p: [12, -28, 8], t: "Bored piles 1.5 m × 46 m", c: "#cfd3d8" },
+  { l: "strike", T: 1, p: SPIRE.toArray(), t: "Air terminal (spire tip)", c: "#ffe86a" }, { l: "strike", T: 1, p: [0, tower.TOP + 6, 0], t: "Crown ring", c: "#ffd84a" }, { l: "strike", T: 1, p: w3b(ringPoint(floorZ(26), 2.4, -2.4)).toArray(), t: "Down conductor (6)", c: "#fff2a8" }, { l: "strike", T: 1, p: [3.6, floorZ(30) + 2, 1.2], t: "Surge protector on every floor", c: "#35ff7a" }, { l: "strike", T: 1, p: [20, -1.4, 22], t: "Earth ring + piles", c: "#ffd84a" },
 ];
+tower.facLabels.forEach((o) => LABELS.push({ l: "glass", T: 1, p: o.p.toArray(), t: o.t, c: "#9fd0ff" }));
 const labelBox = document.getElementById("labels");
 LABELS.forEach((o) => { o.el = document.createElement("div"); o.el.className = "lbl"; o.el.textContent = o.t; o.el.style.setProperty("--c", o.c); labelBox.appendChild(o.el); o.v = new THREE.Vector3(...o.p); });
+LABELS.push({ l: "rain", T: 1, p: [0, 0, 0], t: "", c: "#fff", el: document.createElement("div"), v: new THREE.Vector3() });
 
 function setMat(group, fn) { group.traverse((m) => { if (m.isMesh) fn(m); }); }
 const fadeCache = new Map();
-function fade(group, op) {
-  setMat(group, (m) => {
-    const mats = Array.isArray(m.material) ? m.material : [m.material];
-    mats.forEach((mt) => { if (!fadeCache.has(mt)) fadeCache.set(mt, { t: mt.transparent, o: mt.opacity, w: mt.depthWrite }); const s = fadeCache.get(mt); mt.transparent = op < 1 || s.t; mt.opacity = op < 1 ? Math.min(s.o, op) : s.o; mt.depthWrite = op < 1 ? false : s.w; mt.needsUpdate = true; });
-  });
-}
+function fade(group, op) { setMat(group, (m) => { const mats = Array.isArray(m.material) ? m.material : [m.material]; mats.forEach((mt) => { if (!fadeCache.has(mt)) fadeCache.set(mt, { t: mt.transparent, o: mt.opacity, w: mt.depthWrite }); const s = fadeCache.get(mt); mt.transparent = op < 1 || s.t; mt.opacity = op < 1 ? Math.min(s.o, op) : s.o; mt.depthWrite = op < 1 ? false : s.w; mt.needsUpdate = true; }); }); }
 const LAYERS = ["elec", "water", "sewer", "fire", "ac"];
 const anyMep = () => LAYERS.some((k) => state[k]);
+let strikeStorm = 0;
 function apply() {
-  const mep = anyMep(); state.mep = mep; const xr = state.xray || mep;
-  G.furn.visible = state.furn || mep; fade(G.furn, mep ? 0.08 : 1);
+  const fl = state.mode === "floor", tw = state.mode === "tower", lb = state.mode === "lobby";
+  document.body.dataset.mode = state.mode;
+  const mep = fl && anyMep(); state.mep = mep; const xr = state.xray || mep;
+  G.struct.visible = fl; G.walls.visible = fl; G.furn.visible = fl && (state.furn || mep); fade(G.furn, mep ? 0.08 : 1);
   [oakFloor, stoneFloor, deckMat].forEach((m) => { m.color.setScalar(mep ? 0.3 : 1); m.transparent = mep; m.opacity = mep ? 0.16 : 1; m.depthWrite = !mep; m.needsUpdate = true; });
-  if (!state.furn && !mep) G.furn.visible = false;
-  scene.background = mep ? new THREE.Color(0x10151c) : null; dome.visible = !mep; OUT.visible = !mep; scene.fog.density = mep ? 0 : 0.00035;
-  setTime(hourNow);
-  G.ceil.visible = state.ceil; LAYERS.forEach((k) => (G[k].visible = state[k]));
+  G.ceil.visible = fl && state.ceil; LAYERS.forEach((k) => (G[k].visible = fl && state[k]));
   fade(G.walls, xr ? 0.07 : 1); wallMat.depthWrite = !xr;
   G.struct.children.forEach((m) => { if (m.isMesh && (m.material === MAT.slab || m.material === MAT.concrete)) { m.material.transparent = mep; m.material.opacity = mep ? 0.1 : 1; m.material.depthWrite = !mep; m.material.needsUpdate = true; } });
+  const strikeOn = state.strike;
+  tower.root.visible = tw || lb; tower.G.skin.visible = true;
+  tower.G.struct.visible = tw && (state.struct || strikeOn); tower.G.rebar.visible = tw && state.rebar; tower.G.found.visible = tw && (state.found || strikeOn); tower.G.raftRebar.visible = state.rebar; tower.G.facade.visible = tw && state.glass; tower.G.rain.visible = tw && state.rain; tower.G.site.visible = (tw || lb) && state.site && !state.found;
+  tower.setGradeColors(state.grades); tower.setXray(tw && (state.xrayT || state.struct || state.rebar || state.found || strikeOn)); tower.setWet(state.rain && tw);
+  tower.clouds.visible = tw; tower.showSlabRebar(tw && state.rebar ? state.selFloor : 0);
+  LOBBY.visible = lb;
+  storm = Math.max(tw && state.rain ? 0.35 : 0, strikeStorm);
+  const under = tw && state.found; [sandMat, roadMat, seaMat].forEach((m) => { m.transparent = under; m.opacity = under ? 0.2 : 1; m.depthWrite = !under; m.needsUpdate = true; });
+  scene.background = mep ? new THREE.Color(0x10151c) : null; dome.visible = !mep; OUT.visible = !mep; OUT.position.set(fl ? 0 : -14, fl ? 0 : 201, fl ? 0 : -10); OUT.userData.own.visible = fl;
+  scene.fog.density = mep ? 0 : 0.00035; if (tw) scene.fog.density = 0.00022;
+  setTime(hourNow);
   document.querySelectorAll("[data-layer]").forEach((b) => b.setAttribute("aria-pressed", String(!!state[b.dataset.layer])));
+  document.querySelectorAll("[data-t]").forEach((b) => b.setAttribute("aria-pressed", String(!!state[b.dataset.t])));
+  document.querySelectorAll("#nav [data-mode]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === state.mode)));
   document.getElementById("allmep").setAttribute("aria-pressed", String(LAYERS.every((k) => state[k])));
-  const keys = LAYERS.filter((k) => state[k]); const info = document.getElementById("info");
-  const render = (k) => `<h2${DESC[k].c ? ` style="color:${DESC[k].c}"` : ""}>${DESC[k].t}</h2><p>${DESC[k].p}</p><ul>${DESC[k].li.map((x) => `<li>${x}</li>`).join("")}</ul>`;
-  info.innerHTML = (keys.length ? keys.map(render).join("") : render("none")) + `<span class="tag">fictional concept</span><span class="tag">illustrative routing</span>`;
+  document.getElementById("lobbyLights").setAttribute("aria-pressed", String(!!lightsOn.lobby));
+  renderInfo();
 }
+// ---------------- floor-50 controls (unchanged behaviour)
 document.querySelectorAll("[data-layer]").forEach((b) => b.addEventListener("click", () => { const k = b.dataset.layer; const was = anyMep(); state[k] = !state[k]; if (!was && anyMep()) goView("mep"); if (k === "fire" && !state.fire && demo.on) stopDemo(); apply(); }));
 document.getElementById("allmep").addEventListener("click", () => { const on = !LAYERS.every((k) => state[k]); const was = anyMep(); LAYERS.forEach((k) => (state[k] = on)); if (!was && on) goView("mep"); apply(); });
 document.getElementById("fireDemo").addEventListener("click", () => (demo.on ? (stopDemo(), apply()) : startDemo()));
-
-// time of day
 const tsl = document.getElementById("tslider"); tsl.addEventListener("input", () => setTime(parseFloat(tsl.value)));
 document.querySelectorAll("[data-time]").forEach((b) => b.addEventListener("click", () => setTime(parseFloat(b.dataset.time))));
-// lights
 const lbox = document.getElementById("lightbtns");
-Object.entries(ROOMS).forEach(([k, name]) => { const b = document.createElement("button"); b.textContent = name; b.dataset.room = k; b.setAttribute("aria-pressed", "false"); b.addEventListener("click", () => { state.lightsAuto = false; lightsOn[k] = !lightsOn[k]; applyLights(); syncLightButtons(); }); lbox.appendChild(b); });
-function syncLightButtons() { lbox.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(!!lightsOn[b.dataset.room]))); }
+Object.entries(ROOMS).filter(([k]) => k !== "lobby").forEach(([k, name]) => { const b = document.createElement("button"); b.textContent = name; b.dataset.room = k; b.setAttribute("aria-pressed", "false"); b.addEventListener("click", () => { state.lightsAuto = false; lightsOn[k] = !lightsOn[k]; applyLights(); syncLightButtons(); }); lbox.appendChild(b); });
+function syncLightButtons() { lbox.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(!!lightsOn[b.dataset.room]))); const lb = document.getElementById("lobbyLights"); lb && lb.setAttribute("aria-pressed", String(!!lightsOn.lobby)); }
 document.getElementById("lightsOn").addEventListener("click", () => { state.lightsAuto = false; Object.keys(lightsOn).forEach((k) => (lightsOn[k] = true)); applyLights(); syncLightButtons(); });
 document.getElementById("lightsOff").addEventListener("click", () => { state.lightsAuto = false; Object.keys(lightsOn).forEach((k) => (lightsOn[k] = false)); applyLights(); syncLightButtons(); });
 document.getElementById("lightsAuto").addEventListener("click", () => { state.lightsAuto = true; setTime(hourNow); });
-// doors
+document.getElementById("lobbyAuto").addEventListener("click", () => { state.lightsAuto = true; setTime(hourNow); });
+document.getElementById("lobbyLights").addEventListener("click", () => { state.lightsAuto = false; lightsOn.lobby = !lightsOn.lobby; applyLights(); syncLightButtons(); });
 document.getElementById("doorsOpen").addEventListener("click", () => { doors.forEach((d) => (d.target = 1)); slideTarget = 1; });
 document.getElementById("doorsClose").addEventListener("click", () => { doors.forEach((d) => (d.target = 0)); slideTarget = 0; });
 document.getElementById("slideDoor").addEventListener("click", toggleSlide);
-const ray = new THREE.Raycaster(), mouse = new THREE.Vector2(); let down = null;
+// ---------------- whole-building controls
+document.querySelectorAll("[data-t]").forEach((b) => b.addEventListener("click", () => { const k = b.dataset.t; state[k] = !state[k]; if ((k === "struct" || k === "rebar") && state[k]) goViewT("struct"); if (k === "found" && state.found) goViewT("under"); if (k === "glass" && state.glass) goViewT("facade"); if (k === "rain" && state.rain) goViewT("podium"); apply(); }));
+const slider = document.getElementById("floorSlider"), flabel = document.getElementById("flabel");
+function selectFloor(f, move) { state.selFloor = f; slider.value = String(f); flabel.textContent = `Floor ${f}`; tower.highlight(f); tower.showSlabRebar(state.mode === "tower" && state.rebar ? f : 0); renderInfo(); if (move) { const y = f === 1 ? 4 : floorZ(f) + 2; tweenTo([110 + y * 0.12, y + 25, 190 + y * 0.35], [0, y, 0]); } }
+slider.addEventListener("input", () => selectFloor(parseInt(slider.value, 10), true));
+const goToFloor = (f) => { selectFloor(f, false); if (f === 50) setMode("floor"); else if (f === 1) setMode("lobby"); else selectFloor(f, true); };
+document.getElementById("floorGo").addEventListener("click", () => goToFloor(parseInt(slider.value, 10)));
+document.getElementById("goLobby").addEventListener("click", () => setMode("lobby")); document.getElementById("goF50").addEventListener("click", () => setMode("floor"));
+document.querySelectorAll("#nav [data-mode]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
+// audio
+let actx = null;
+function thunderSound(delay) { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const sr = actx.sampleRate, mk = (dur, fn) => { const b = actx.createBuffer(1, Math.floor(dur * sr), sr), d = b.getChannelData(0); let last = 0; for (let i = 0; i < d.length; i++) { last = (last + 0.03 * (Math.random() * 2 - 1)) / 1.03; d[i] = fn(i / sr, last); } return b; };
+  const crack = actx.createBufferSource(); crack.buffer = mk(0.35, (t) => (Math.random() * 2 - 1) * Math.exp(-t * 14)); const hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 900; const g1 = actx.createGain(); g1.gain.value = 0.7; crack.connect(hp).connect(g1).connect(actx.destination); crack.start(actx.currentTime + delay);
+  const roll = actx.createBufferSource(); roll.buffer = mk(4.6, (t, l) => l * 6 * Math.exp(-t * 0.8) * (1 + 0.5 * Math.sin(t * 9))); const lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 380; const g2 = actx.createGain(); g2.gain.value = 1.0; roll.connect(lp).connect(g2).connect(actx.destination); roll.start(actx.currentTime + delay + 0.25); } catch (e) { /* audio is optional */ } }
+const bannerEl = document.getElementById("banner"), flashEl = document.getElementById("flash");
+function startStrike() { state.strike = true; strikeStorm = 0.9; state.rebar = state.rebar; tower.startStrike(); thunderSound(0.9); goViewT("strike"); bannerEl.className = "t"; bannerEl.style.display = "block"; bannerEl.textContent = tower.steps[0][1]; document.getElementById("strikeBtn").setAttribute("aria-pressed", "true"); apply(); }
+function stopStrike() { state.strike = false; strikeStorm = 0; tower.stopStrike(); bannerEl.style.display = "none"; bannerEl.className = ""; flashEl.style.opacity = "0"; document.getElementById("strikeBtn").setAttribute("aria-pressed", "false"); apply(); }
+document.getElementById("strikeBtn").addEventListener("click", () => (state.strike ? stopStrike() : startStrike()));
+// pick floors by clicking the glass
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2(); let down = null; const hoverEl = document.getElementById("hover");
 canvas.addEventListener("pointerdown", (e) => (down = [e.clientX, e.clientY]));
+function pickFloor(e) { mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(mouse, camera); const h = ray.intersectObjects([tower.skinMesh, tower.lobbyGlass], false)[0]; return h ? floorOfY(h.point.y) : null; }
 canvas.addEventListener("pointerup", (e) => {
-  if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 5) return; mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(mouse, camera);
+  if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 5) return;
+  if (state.mode === "tower") { const f = pickFloor(e); if (f) { selectFloor(f, false); if (f === 50) setMode("floor"); else if (f === 1) setMode("lobby"); } return; }
+  mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(mouse, camera);
   const hit = ray.intersectObjects(doorMeshes, false)[0]; if (!hit) return; if (hit.object.userData.slide) toggleSlide(); else { const d = hit.object.userData.door; d.target = d.target ? 0 : 1; }
 });
-canvas.addEventListener("pointermove", (e) => { mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(mouse, camera); canvas.style.cursor = ray.intersectObjects(doorMeshes, false).length ? "pointer" : "grab"; });
+canvas.addEventListener("pointermove", (e) => {
+  if (state.mode === "tower") { const f = pickFloor(e); if (f) { tower.highlight(f); hoverEl.style.display = "block"; hoverEl.style.left = e.clientX + 14 + "px"; hoverEl.style.top = e.clientY + 14 + "px"; hoverEl.textContent = `Floor ${f} · ${zoneOf(f)}${f === 50 || f === 1 ? " — click to enter" : " — click to select"}`; canvas.style.cursor = "pointer"; } else { tower.highlight(state.selFloor); hoverEl.style.display = "none"; canvas.style.cursor = "grab"; } return; }
+  hoverEl.style.display = "none"; mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(mouse, camera); canvas.style.cursor = state.mode === "floor" && ray.intersectObjects(doorMeshes, false).length ? "pointer" : "grab";
+});
 
 // camera presets
+const fa = tower.facAnchor;
 const VIEWS = {
   over: [[14, 25, 48], [14, 0, 7]], mep: [[14, 29, 33], [14, 0.3, 8]], plan: [[14, 46, 11], [14, 0, 10.9]], living: [[10.5, 1.7, 7.8], [18, 1.1, 16]], kitchen: [[18.2, 2.0, 6.6], [22, 0.9, 1.5]],
   bed: [[7.2, 2.2, 17.2], [3.2, 0.9, 11]], bath: [[7.4, 2.1, 5.4], [3, 0.7, 1.5]], dubai: [[15.5, 1.75, 16.8], [-290, -105, 380]], terrace: [[17, 1.9, 23.2], [-300, -125, 420]], fire: [[19.5, 6.2, 13.5], [22.8, 1.0, 2.0]],
 };
+const VT = { over: [[-150, 140, -340], [0, 125, 0]], struct: [[-70, 115, -135], [0, 112, 0]], crown: [[58, 238, 88], [0, 238, 0]], f50: [[70, 208, 112], [0, 201, 0]], podium: [[90, 26, 130], [0, 14, 0]], under: [[100, -26, 105], [0, -22, 0]], strike: [[170, 135, 340], [0, 135, 0]],
+  facade: [fa.c.clone().addScaledVector(fa.nv, 25).add(new THREE.Vector3(0, 0.4, 0)).toArray(), fa.c.clone().addScaledVector(fa.nv, 9).toArray()] };
+const VL = { entrance: [[0, 1.7, -21], [0, 3, 8]], desk: [[7, 1.9, -20], [-2, 1.2, -12.8]], lounge: [[-17, 1.8, -3], [2, 2.0, 15]], sea: [[-9, 1.7, 12], [25, 14, 60]], top: [[0, 52, 0.1], [0, 0, 0]] };
 let tween = null;
-function goView(name) { const [p, t] = VIEWS[name]; tween = { t0: performance.now(), dur: 900, p0: camera.position.clone(), t0v: controls.target.clone(), p1: new THREE.Vector3(...p), t1: new THREE.Vector3(...t) }; }
+function tweenTo(p, t, dur = 900) { tween = { t0: performance.now(), dur, p0: camera.position.clone(), t0v: controls.target.clone(), p1: new THREE.Vector3(...p), t1: new THREE.Vector3(...t) }; }
+function goView(name) { const [p, t] = VIEWS[name]; tweenTo(p, t); }
+function goViewT(name) { const [p, t] = VT[name]; tweenTo(p, t, 1100); }
+function goViewL(name) { const [p, t] = VL[name]; tweenTo(p, t); }
+function putCamera(p, t) { tween = null; camera.position.set(...p); controls.target.set(...t); controls.update(); }
 document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => goView(b.dataset.view)));
-camera.position.set(...VIEWS.over[0]); controls.target.set(...VIEWS.over[1]); controls.update();
+document.querySelectorAll("[data-tv]").forEach((b) => b.addEventListener("click", () => { if (b.dataset.tv === "under") { state.found = true; apply(); } if (b.dataset.tv === "facade") { state.glass = true; apply(); } goViewT(b.dataset.tv); }));
+document.querySelectorAll("[data-lv]").forEach((b) => b.addEventListener("click", () => goViewL(b.dataset.lv)));
+
+const fadeEl = document.getElementById("fade");
+function setMode(m) {
+  if (m === state.mode) return;
+  fadeEl.style.opacity = "1";
+  setTimeout(() => {
+    if (state.strike) stopStrike(); if (demo.on) stopDemo();
+    state.mode = m;
+    if (m === "floor") { FOCUS.set(W / 2, 0, D / 2); controls.maxDistance = 90; controls.maxPolarAngle = Math.PI / 2 - 0.02; putCamera(...VIEWS.over); }
+    else if (m === "lobby") { FOCUS.set(0, 0, 0); controls.maxDistance = 120; controls.maxPolarAngle = Math.PI / 2 - 0.02; putCamera(...VL.entrance); }
+    else { FOCUS.set(0, 100, 0); controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; putCamera(...VT.over); }
+    sun.castShadow = m !== "tower"; moonLight.target.position.copy(FOCUS);
+    Object.keys(lightsOn).forEach((k) => (lightsOn[k] = lightsOn[k])); applyLights(); syncLightButtons(); apply(); tower.highlight(m === "tower" ? state.selFloor : 0);
+    fadeEl.style.opacity = "0";
+  }, 300);
+}
 
 function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener("resize", resize); resize();
 
-const clock = new THREE.Clock(); const v = new THREE.Vector3();
+const clock = new THREE.Clock(); const v = new THREE.Vector3(); let lastNow = performance.now() / 1000;
 function frame() {
-  const t = clock.getElapsedTime(), now = performance.now() / 1000;
+  const t = clock.getElapsedTime(), now = performance.now() / 1000, dt = Math.min(0.1, now - lastNow); lastNow = now;
   if (tween) { const k = Math.min(1, (performance.now() - tween.t0) / tween.dur), e = k * k * (3 - 2 * k); camera.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.t0v, tween.t1, e); if (k >= 1) tween = null; }
-  controls.update(); updateFlow(t); updateDoors(); updateDemo(now);
-  LABELS.forEach((o) => { const on = state[o.l]; if (!on) { o.el.style.display = "none"; return; } v.copy(o.v).project(camera); if (v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05) { o.el.style.display = "none"; return; } o.el.style.display = "block"; o.el.style.left = ((v.x + 1) / 2) * innerWidth + "px"; o.el.style.top = ((1 - v.y) / 2) * innerHeight + "px"; });
+  controls.update(); if (state.mode === "floor") { updateFlow(t); updateDoors(); updateDemo(now); }
+  const sr = tower.update(now, dt); if (sr) { flashEl.style.opacity = String(sr.flash * 0.85); bannerEl.textContent = sr.step; }
+  LABELS.forEach((o) => { const on = state[o.l] && (o.T ? state.mode === "tower" : state.mode === "floor"); if (!on || !o.t) { o.el.style.display = "none"; return; } v.copy(o.v).project(camera); if (v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05) { o.el.style.display = "none"; return; } o.el.style.display = "block"; o.el.style.left = ((v.x + 1) / 2) * innerWidth + "px"; o.el.style.top = ((1 - v.y) / 2) * innerHeight + "px"; });
   renderer.render(scene, camera); requestAnimationFrame(frame);
 }
 const panels = [...document.querySelectorAll(".panel")]; const hideBtn = document.getElementById("hide");
 function togglePanels() { const on = hideBtn.getAttribute("aria-pressed") !== "true"; hideBtn.setAttribute("aria-pressed", String(on)); panels.forEach((p) => (p.style.display = on ? "none" : "")); }
 hideBtn.addEventListener("click", togglePanels); addEventListener("keydown", (e) => { if (e.key === "h" || e.key === "H") togglePanels(); });
-setTime(15.5); applyLights(); syncLightButtons(); apply(); frame();
-window.__f50 = { state, apply, goView, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons };
+// start in the whole-building view
+controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; FOCUS.set(0, 100, 0); sun.castShadow = false; putCamera(...VT.over);
+setTime(15.5); applyLights(); syncLightButtons(); apply(); tower.highlight(50); frame();
+window.__f50 = { state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };
