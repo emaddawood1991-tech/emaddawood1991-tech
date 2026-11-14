@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Agentoon.ai: Ep 18 Six open-source alternatives</title>
+<link rel="stylesheet" href="kit/agentoon.css" />
+<style>
+  /* Look: "Card Deck". Graphite field, lime accent, PAID tags that flip over into each project's own logo. Real captures of each project's website inside a browser frame.
+     Hero technique: 3D card flip (paid -> open source). Everything shown is a screenshot or README text; nothing is a live demo. */
+  :root { --bg: #0F1115; --lime: #C8F031; --red: #FF5A4D; --ink: #F5F6F8; --mute: #9AA1AE; --amber: #FFB23E; }
+  .chip { position: absolute; white-space: nowrap; z-index: 8; }
+  #capLayer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+  #fx { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+  .hd { position: absolute; font-family: var(--body); font-weight: 900; letter-spacing: -.02em; text-transform: uppercase; white-space: nowrap; }
+  .mono { font-family: var(--mono); white-space: pre; }
+  .flip { position: absolute; transform-style: preserve-3d; }
+  .face { position: absolute; inset: 0; box-sizing: border-box; border-radius: 24px; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; align-items: center; }
+  .front { background: #1B1E26; border: 3px solid #3A3F4C; }
+  .back { background: #F5F6F8; border: 3px solid #C8F031; transform: rotateY(180deg); color: #0F1115; }
+  .frame { position: absolute; box-sizing: border-box; overflow: hidden; border-radius: 20px; background: #fff; border: 3px solid #C8F031; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 50px rgba(200,240,49,.15); }
+  .note { position: absolute; box-sizing: border-box; border-radius: 22px; background: #1B1E26; border: 3px solid #C8F031; color: #F5F6F8; box-shadow: 0 26px 60px rgba(0,0,0,.55); }
+  img { display: block; }
+</style>
+<script src="kit/vendor/gsap.min.js"></script>
+<script src="kit/robot.js"></script>
+<script src="kit/captions.js"></script>
+<script src="kit/camera.js"></script>
+<script src="kit/outro.js"></script>
+<script src="timeline.js"></script>
+<script src="data/lipsync.js"></script>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="{{TOTAL}}">
+{{SECTIONS}}
+  <div id="capLayer"></div>
+  <div id="fx"></div>
+  <audio id="mix" src="audio/mix.wav" data-start="0" data-duration="{{TOTAL}}" data-track-index="9" data-volume="1"></audio>
+</div>
+
+<script>
+(function () {
+  const tl = gsap.timeline({ paused: true });
+  const E = window.EP, LIP = window.LIPSYNC, $ = id => document.getElementById(id), S = {{SCENES}};
+  const P = id => E.phrases.find(p => p.id === id);
+  const PW = (pid, txt, n) => { const p = P(pid); let c = 0; for (const w of E.words) { if (w.s >= p.start - 0.001 && w.s <= p.end && w.w.replace(/[.,:!?"“”'+]/g, "").toLowerCase() === txt.toLowerCase()) { if (c === (n || 0)) return w.s; c++; } } throw new Error("word " + pid + ":" + txt); };
+  const el = (host, id, cls, css, text) => { const d = document.createElement("div"); d.id = id; d.className = cls || ""; if (css) d.style.cssText = (/position:/.test(css) || !/(left|top):/.test(css) ? "" : "position:absolute;") + css; if (text) d.textContent = text; host.appendChild(d); return d; };
+  const LI = "#C8F031", RD = "#FF5A4D", IN = "#F5F6F8", MU = "#9AA1AE", AM = "#FFB23E", BG = "#0F1115";
+  const botAt = (host, id, x, y, w) => Robot.create(host, { id, w: w || 200, x, y });
+  const chip = (host, id, x, y, text, o) => { o = o || {}; return el(host, id, "chip", "left:" + x + "px;top:" + y + "px;padding:" + (o.pad || "10px 20px 12px") + ";border-radius:999px;font:800 " + Math.max(28, o.size || 28) + "px/1 var(--mono);letter-spacing:.03em;color:" + (o.fg || IN) + ";background:" + (o.bg || "#1B1E26") + ";border:3px solid " + (o.bd || LI), text); };
+  const imgIn = (host, id, file, css) => { const im = document.createElement("img"); im.id = id; im.src = file; im.style.cssText = "position:absolute;" + (css || ""); host.appendChild(im); return im; };
+  const scene = (k, flip) => {
+    const inn = $(k + "i"); el(inn, "bg" + k, "", "position:absolute;inset:0;background:#0F1115");
+    const st = el(inn, "st" + k, "", "position:absolute;left:-400px;top:-400px;width:1900px;height:2700px;background:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 60px,transparent 60px 120px)"); tl.fromTo(st, { x: 0 }, { x: flip ? -240 : 240, duration: S[k].len, ease: "none" }, S[k].start);
+    const gl = el(inn, "gl" + k, "", "position:absolute;left:" + (flip ? 560 : -260) + "px;top:1100px;width:780px;height:780px;border-radius:50%;background:radial-gradient(circle,rgba(200,240,49,.20),transparent 68%)"); tl.fromTo(gl, { y: 0, scale: 1 }, { y: -160, scale: 1.2, duration: S[k].len, ease: "sine.inOut" }, S[k].start);
+    return inn;
+  };
+  const presenter = (bot, k) => { bot.face(tl, 0, -1, 0.01); bot.rise(tl, S[k].start + 0.3, 420, 0.4); bot.blinks(tl, S[k].start, S[k].end, 1.1); bot.P.wrap.style.zIndex = 12; return bot; };
+  const speak = (bot, pid) => { const p = P(pid); bot.speak(tl, LIP, p.start, p.end); };
+  const trans = (k, prev, kind) => { const b = S[k].b, o = "#" + prev + "i", n = "#" + k + "i"; if (kind === "push") Cam.push(tl, b, 0.5, { out: o, inn: n, ox: 540, oy: 860, scale: 3.2 }); else Cam.whip(tl, b, 0.5, { out: o, inn: n, dir: kind === "whipL" ? -1 : 1, blur: 24 }); };
+  const flipCard = (host, id, x, y, w, h, front, back, tFlip) => {
+    const c = el(host, id, "flip", "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px;z-index:7"); const f = el(c, id + "f", "face front"), b = el(c, id + "b", "face back"); front(f); back(b);
+    gsap.set(c, { transformPerspective: 1000 }); gsap.set(b, { opacity: 0 }); tl.fromTo(c, { rotationY: 0 }, { rotationY: 180, duration: 0.7, ease: "power3.inOut" }, tFlip); tl.set(f, { opacity: 0 }, tFlip + 0.35); tl.set(b, { opacity: 1 }, tFlip + 0.35); return c;
+  };
+  const LG = { oga: ["assets/logos/oga-banner.png", "Open Generative AI"], seo: ["assets/logos/openseo-icon.png", "OpenSEO"], flowy: ["assets/logos/appflowy.svg", "AppFlowy"], whispr: ["assets/logos/openwhispr.svg", "OpenWhispr"], cal: ["assets/logos/cal.svg", "Cal.diy"], cap: ["assets/logos/cap.png", "Cap"] };
+  const logoFace = (b, key, lh, nameSize) => { const [f, n] = LG[key]; const im = document.createElement("img"); im.src = f; im.style.cssText = "height:" + lh + "px;width:" + lh + "px;margin-left:18px;border-radius:" + Math.round(lh * 0.2) + "px;object-fit:" + (key === "oga" ? "cover" : "contain"); b.appendChild(im); const t = document.createElement("div"); t.textContent = n; t.style.cssText = "margin-left:16px;font:900 " + nameSize + "px/1.05 var(--body);letter-spacing:-.02em;color:#0F1115"; b.appendChild(t); };
+
+  /* ===== S1 HOOK: robot + six paid-tool tags flipping into open-source logos ===== */
+  const s1 = scene("s1", false);
+  const h1 = el(s1, "h1", "hd", "left:0;right:0;top:330px;text-align:center;font-size:100px;line-height:1;color:" + IN + ";z-index:6", "6 OPEN-SOURCE"), h2 = el(s1, "h2", "hd", "left:0;right:0;top:440px;text-align:center;font-size:100px;line-height:1;color:" + LI + ";z-index:6", "ALTERNATIVES");
+  tl.from(h1, { opacity: 0, y: -60, duration: 0.45, ease: "back.out(1.6)" }, 0.1); tl.from(h2, { opacity: 0, y: 60, duration: 0.45, ease: "back.out(1.6)" }, 0.3);
+  const six = [["HIGGSFIELD", "oga"], ["SEMRUSH", "seo"], ["NOTION", "flowy"], ["WISPR FLOW", "whispr"], ["CALENDLY", "cal"], ["LOOM", "cap"]]; const pos = [[40, 700], [740, 700], [40, 970], [740, 970], [40, 1240], [740, 1240]]; const tO = PW("p1", "open-source");
+  six.forEach(([paid, key], i) => {
+    const c = flipCard(s1, "fc" + i, pos[i][0], pos[i][1], 300, 210, f => { f.style.flexDirection = "column"; f.style.justifyContent = "center"; f.style.alignItems = "center"; const tg = document.createElement("div"); tg.textContent = "PAID"; tg.style.cssText = "font:800 28px/1 var(--mono);color:#fff;background:#FF5A4D;border-radius:999px;padding:6px 18px 8px;margin-bottom:14px"; f.appendChild(tg); const w = document.createElement("div"); w.textContent = paid; w.style.cssText = "font:900 " + (paid.length > 8 ? 36 : 44) + "px/1 var(--body);color:#F5F6F8;letter-spacing:-.01em"; f.appendChild(w); }, b => { logoFace(b, key, 96, key === "oga" ? 28 : 34); }, tO + i * 0.22);
+    tl.from(c, { opacity: 0, scale: 0.4, y: 80, duration: 0.45, ease: "back.out(1.6)", transformOrigin: "50% 50%" }, 0.6 + i * 0.2);
+  });
+  const bot1 = botAt(s1, "bot1", 395, 960, 290); presenter(bot1, "s1"); speak(bot1, "p1"); bot1.react(tl, PW("p1", "pay"), "think"); bot1.react(tl, tO + 0.2, "wow"); bot1.aimPoint(tl, PW("p1", "six") - 0.2, { x: 395, y: 960, target: [200, 820], hold: 1.0 });
+  const hs = chip(s1, "hs", 50, 1560, "LOGOS: EACH PROJECT'S OWN · PAID NAMES AS TEXT", { size: 28, bd: "#5A5F73" }); hs.style.zIndex = 9; tl.from(hs, { opacity: 0, duration: 0.3 }, 3.2);
+
+  /* ===== tool scenes ===== */
+  const T = {
+    s2: { key: "oga", paid: "HIGGSFIELD", site: "muapi.ai/open-generative-ai", gh: "Anil-matcha/Open-Generative-AI", lic: "MIT", pids: ["p2", "p2b", "p2c"], name: "pid2", shots: [["openai-0.png", null, "50% 30%"], ["openai-0.png", null, "50% 88%"]], swap: ["p2c", "Cloud", -0.5], chips: [["600+ MODELS · 14 STUDIOS", "p2b", "600", LI], ["CLOUD MODELS: MuAPI KEY", "p2c", "key", AM], ["LOCAL MODELS: NO KEY", "p2c", "Local", LI]], first: "First", react: ["p2c", "Local"] },
+    s3: { key: "seo", paid: "SEMRUSH · AHREFS", site: "openseo.so", gh: "every-app/open-seo", lic: "MIT", pids: ["p3", "p3b"], shots: [["openseo-0.png", null, "50% 45%"], ["openseo-1.png", null, "50% 40%"]], swap: ["p3", "backlinks", -0.2], chips: [["KEYWORD RESEARCH · RANK TRACKING", "p3", "keyword", LI], ["BACKLINKS · SITE AUDITS", "p3", "backlinks", LI], ["BYO DataForSEO KEY · PAY PER USE", "p3b", "DataForSEO", AM]], first: "Next", react: ["p3b", "pay"] },
+    s4: { key: "flowy", paid: "NOTION", site: "appflowy.com", gh: "AppFlowy-IO/AppFlowy", lic: "AGPL-3.0", pids: ["p4", "p4b"], shots: [["appflowy-0.png", null, "45% 88%"], ["appflowy-2.png", null, "50% 45%"]], swap: ["p4", "databases", -0.1], chips: [["DOCS · DATABASES · PROJECTS", "p4", "documents", LI], ["AGPL-3.0 LICENSE", "p4b", "AGPL", LI], ["SELF-HOSTING GUIDE", "p4b", "self-hosting", LI]], first: "Need", react: ["p4b", "guide"] },
+    s5: { key: "whispr", paid: "WISPR FLOW", site: "openwhispr.com", gh: "OpenWhispr/openwhispr", lic: "MIT", pids: ["p5", "p5b"], shots: [["openwhispr-1.png", null, "50% 45%"], ["openwhispr-3.png", null, "28% 40%"]], swap: ["p5", "local", -0.2], chips: [["SPEECH → TEXT AT YOUR CURSOR", "p5", "speech", LI], ["LOCAL + CLOUD MODELS", "p5", "options", LI], ["LOCAL: AUDIO STAYS ON DEVICE", "p5b", "audio", LI]], first: "OpenWhispr", react: ["p5b", "Flow"] },
+    s7: { key: "cap", paid: "LOOM", site: "cap.so", gh: "CapSoftware/Cap", lic: null, pids: ["p7", "p7b"], shots: [["cap-0.png", null, "50% 35%"], ["cap-1.png", null, "58% 45%"], ["cap-2.png", null, "50% 72%"]], swaps: [["p7", "capturing", -0.2], ["p7b", "Instant", -0.2]], chips: [["OPEN-SOURCE LOOM ALTERNATIVE", "p7", "alternative", LI], ["INSTANT MODE · SHARE LINK", "p7b", "share", LI], ["CLOUD OR SELF-HOSTED", "p7b", "soon", LI]], first: "Cap", react: ["p7b", "stop"] }
+  };
+  Object.keys(T).forEach((k, ki) => {
+    const C = T[k], inn = scene(k, ki % 2 === 0), t0 = S[k].start, tName = PW(C.pids[0], C.first);
+    const [lf, ln] = LG[C.key];
+    /* flip card: PAID tag -> project logo + name */
+    const fc = flipCard(inn, "fl" + k, 50, 330, 980, 150, f => { f.style.paddingLeft = "30px"; const tg = document.createElement("div"); tg.textContent = "PAID"; tg.style.cssText = "font:800 30px/1 var(--mono);color:#fff;background:#FF5A4D;border-radius:999px;padding:8px 22px 10px"; f.appendChild(tg); const w = document.createElement("div"); w.textContent = C.paid; w.style.cssText = "margin-left:26px;font:900 54px/1 var(--body);color:#F5F6F8"; f.appendChild(w); }, b => { logoFace(b, C.key, 112, ln.length > 12 ? 54 : 64); const lc = document.createElement("div"); lc.textContent = C.lic ? "OPEN SOURCE · " + C.lic : "OPEN SOURCE"; lc.style.cssText = "margin-left:auto;margin-right:26px;font:800 28px/1 var(--mono);color:#0F1115;background:#C8F031;border-radius:999px;padding:8px 20px 10px;white-space:nowrap"; b.appendChild(lc); }, tName - 0.2);
+    tl.from(fc, { opacity: 0, y: -70, duration: 0.45, ease: "power3.out" }, t0 + 0.25);
+    /* browser frame with the real screenshot */
+    const W = 980, H = 612, fr = el(inn, "fr" + k, "frame", "left:50px;top:520px;width:" + W + "px;height:" + (H + 56) + "px;z-index:6");
+    const bar = el(fr, "bar" + k, "", "left:0;top:0;width:" + W + "px;height:56px;background:#E9EBEF"); [0, 1, 2].forEach(i => el(bar, "bd" + k + i, "", "left:" + (20 + i * 30) + "px;top:18px;width:20px;height:20px;border-radius:50%;background:" + ["#FF5F57", "#FEBC2E", "#28C840"][i])); el(bar, "url" + k, "mono", "left:150px;top:8px;width:790px;height:40px;border-radius:20px;background:#fff;font:700 28px/40px var(--mono);color:#333;padding-left:18px;box-sizing:border-box;overflow:hidden", C.site);
+    const vp = el(fr, "vp" + k, "", "left:0;top:56px;width:" + W + "px;height:" + H + "px;overflow:hidden;background:#fff");
+    const imgs = C.shots.map((s, i) => { const im = imgIn(vp, "im" + k + i, "assets/sites/" + s[0], "left:0;top:0;width:" + W + "px;height:" + H + "px"); im.style.transformOrigin = s[2]; return im; });
+    tl.from(fr, { opacity: 0, y: 90, duration: 0.5, ease: "power3.out" }, t0 + 0.45);
+    const sw = C.swaps || (C.swap ? [C.swap] : []); const swT = sw.map(s => PW(s[0], s[1]) + s[2]);
+    C.shots.forEach((s, i) => { const a = i === 0 ? t0 + 0.5 : swT[i - 1], z = i === 0 ? swT[0] || S[k].end : (swT[i] || S[k].end - 0.4); if (i > 0) { gsap.set(imgs[i], { opacity: 0 }); tl.to(imgs[i], { opacity: 1, duration: 0.35 }, a); } if (i < C.shots.length - 1) tl.to(imgs[i], { opacity: 0, duration: 0.35 }, swT[i]); tl.fromTo(imgs[i], { scale: 1 }, { scale: i === 0 ? 1.5 : 1.45, duration: Math.max(1.6, z - a + 0.3), ease: "power1.inOut" }, a); });
+    /* fact chips on their words */
+    C.chips.forEach((c, i) => { const ch = chip(inn, "fc" + k + i, 50, 1260 + i * 72, c[0], { size: 30, bd: c[3] }); ch.style.zIndex = 9; tl.from(ch, { opacity: 0, scale: 0.7, x: -40, duration: 0.32, ease: "back.out(1.8)", transformOrigin: "0 50%" }, PW(c[1], c[2]) - 0.1); });
+    const lb = chip(inn, "lb" + k, 50, 1490, "WEBSITE SCREENSHOT · NOT A LIVE DEMO", { size: 28, bd: AM }); lb.style.zIndex = 9; tl.from(lb, { opacity: 0, duration: 0.3 }, t0 + 1.2);
+    const gh = chip(inn, "gh" + k, 50, 1555, "GITHUB: " + C.gh, { size: 28, bd: "#5A5F73" }); gh.style.zIndex = 9; tl.from(gh, { opacity: 0, duration: 0.3 }, t0 + 1.4);
+    const bot = botAt(inn, "bot" + k, 800, 1560, 220); presenter(bot, k); C.pids.forEach(p => speak(bot, p)); bot.aimPoint(tl, tName + 0.2, { x: 800, y: 1560, target: [540, 840], hold: 1.2 }); bot.react(tl, PW(C.react[0], C.react[1]) + 0.1, k === "s3" || k === "s2" ? "nod" : "wow");
+  });
+
+  /* ===== S6 CAL.DIY: README text (verbatim), no booking UI capture available ===== */
+  const s6 = scene("s6", true); const t6 = S.s6.start, tCal = PW("p6", "Caldiy");
+  const fc6 = flipCard(s6, "fl6", 50, 330, 980, 150, f => { f.style.paddingLeft = "30px"; const tg = document.createElement("div"); tg.textContent = "PAID"; tg.style.cssText = "font:800 30px/1 var(--mono);color:#fff;background:#FF5A4D;border-radius:999px;padding:8px 22px 10px"; f.appendChild(tg); const w = document.createElement("div"); w.textContent = "CALENDLY"; w.style.cssText = "margin-left:26px;font:900 54px/1 var(--body);color:#F5F6F8"; f.appendChild(w); }, b => { const im = document.createElement("img"); im.src = "assets/logos/calword.svg"; im.style.cssText = "height:84px;margin-left:30px"; b.appendChild(im); const lc = document.createElement("div"); lc.textContent = "OPEN SOURCE · MIT"; lc.style.cssText = "margin-left:auto;margin-right:26px;font:800 28px/1 var(--mono);color:#0F1115;background:#C8F031;border-radius:999px;padding:8px 20px 10px;white-space:nowrap"; b.appendChild(lc); }, tCal - 0.2);
+  tl.from(fc6, { opacity: 0, y: -70, duration: 0.45, ease: "power3.out" }, t6 + 0.25);
+  const rd = el(s6, "rd6", "frame", "left:50px;top:520px;width:980px;height:668px;z-index:6;background:#0F1115;border-color:" + AM); el(rd, "rdb", "", "left:0;top:0;width:980px;height:56px;background:#1B1E26"); el(rd, "rdt", "mono", "left:24px;top:8px;font:800 28px/40px var(--mono);color:" + AM, "README.md · calcom/cal.diy · VERBATIM");
+  const q1 = el(rd, "q1", "", "left:30px;top:84px;width:920px;font:700 38px/1.3 var(--body);color:#F5F6F8;white-space:normal", "“Use at your own risk. Cal.diy … is intended for users who want to self-host their own Cal.diy instance.”"), q2 = el(rd, "q2", "", "left:30px;top:290px;width:920px;font:900 44px/1.25 var(--body);color:" + AM + ";white-space:normal", "“It is strictly recommended for personal, non-production use.”"), q3 = el(rd, "q3", "", "left:30px;top:480px;width:920px;font:700 38px/1.3 var(--body);color:#F5F6F8;white-space:normal", "“There is no hosted/managed version. You run it on your own infrastructure.”");
+  tl.from(rd, { opacity: 0, y: 90, duration: 0.5, ease: "power3.out" }, t6 + 0.45); tl.from(q1, { opacity: 0, x: 60, duration: 0.4 }, tCal + 0.6); tl.from(q2, { opacity: 0, x: 60, scale: 0.96, duration: 0.45, ease: "back.out(1.4)" }, PW("p6", "production") - 0.6); tl.from(q3, { opacity: 0, x: 60, duration: 0.4 }, PW("p6b", "hosted") - 0.9);
+  const c6 = [["SELF-HOSTED ONLY", "p6b", "hosted", LI], ["NOT FOR PRODUCTION USE", "p6", "production", AM], ["NODE.JS + POSTGRESQL", "p6b", "edition", LI]]; c6.forEach((c, i) => { const ch = chip(s6, "fc6" + i, 50, 1260 + i * 72, c[0], { size: 30, bd: c[3] }); ch.style.zIndex = 9; tl.from(ch, { opacity: 0, scale: 0.7, x: -40, duration: 0.32, ease: "back.out(1.8)", transformOrigin: "0 50%" }, PW(c[1], c[2]) - 0.1); });
+  const lb6 = chip(s6, "lb6", 50, 1490, "README TEXT · BOOKING UI NOT CAPTURED", { size: 28, bd: AM }); lb6.style.zIndex = 9; tl.from(lb6, { opacity: 0, duration: 0.3 }, t6 + 1.2); const gh6 = chip(s6, "gh6", 50, 1555, "GITHUB: calcom/cal.diy", { size: 28, bd: "#5A5F73" }); gh6.style.zIndex = 9; tl.from(gh6, { opacity: 0, duration: 0.3 }, t6 + 1.4);
+  const bot6 = botAt(s6, "bot6", 800, 1560, 220); presenter(bot6, "s6"); speak(bot6, "p6"); speak(bot6, "p6b"); bot6.aimPoint(tl, PW("p6", "production") - 0.3, { x: 800, y: 1560, target: [540, 790], hold: 1.2 }); bot6.react(tl, PW("p6", "production") + 0.2, "worried");
+
+  /* ===== S8 RECAP: six-card mosaic + cost reminder ===== */
+  const s8 = scene("s8", false); const tZ = PW("p8", "zero");
+  ["OPEN SOURCE", "DOESN'T ALWAYS", "MEAN ZERO COST"].forEach((t, i) => { const h = el(s8, "rh" + i, "hd", "left:0;right:0;top:" + (330 + i * 92) + "px;text-align:center;font-size:" + (i === 2 ? 84 : 76) + "px;line-height:1;color:" + (i === 2 ? LI : IN) + ";z-index:6", t); tl.from(h, { opacity: 0, y: 50, scale: 1.1, duration: 0.4, ease: "back.out(1.6)" }, S.s8.start + 0.3 + i * 0.35); });
+  Object.keys(LG).forEach((key, i) => { const x = 50 + (i % 2) * 500, y = 660 + Math.floor(i / 2) * 190; const c = el(s8, "mc" + i, "", "left:" + x + "px;top:" + y + "px;width:480px;height:170px;border-radius:22px;background:#F5F6F8;border:3px solid #C8F031;z-index:6;display:flex;align-items:center"); logoFace(c, key, 100, LG[key][1].length > 12 ? 34 : 44); tl.from(c, { opacity: 0, scale: 0.5, rotationY: 90, duration: 0.5, ease: "back.out(1.5)", transformOrigin: "50% 50%" }, S.s8.start + 1.0 + i * 0.28); });
+  ["HOSTING", "INFRASTRUCTURE", "AI SERVICES"].forEach((t, i) => { const ch = chip(s8, "rc" + i, [50, 330, 700][i], 1270, t, { size: 30, bd: AM }); ch.style.zIndex = 9; tl.from(ch, { opacity: 0, scale: 0.7, duration: 0.3, ease: "back.out(1.8)" }, PW("p8", ["Hosting", "infrastructure", "AI"][i]) - 0.1); });
+  const ls = chip(s8, "rls", 50, 1350, "MAY STILL COST MONEY", { size: 34, bd: RD }); ls.style.zIndex = 9; tl.from(ls, { opacity: 0, x: -40, duration: 0.3 }, PW("p8", "cost", 1) - 0.1);
+  const bot8 = botAt(s8, "bot8", 800, 1500, 220); presenter(bot8, "s8"); speak(bot8, "p8"); bot8.react(tl, tZ + 0.1, "think");
+
+  /* ===== S9 CTA ===== */
+  const s9 = scene("s9", true); const tFo = PW("p9", "follow") - 0.35;
+  const wq = el(s9, "wq", "hd", "left:0;right:0;top:420px;text-align:center;font-size:84px;line-height:1.05;color:" + IN + ";z-index:6;white-space:pre", "WHICH WOULD\nYOU TRY FIRST?"); tl.from(wq, { opacity: 0, y: 60, scale: 1.1, duration: 0.5, ease: "back.out(1.6)" }, S.s9.start + 0.3);
+  const row = el(s9, "row9", "", "left:50px;top:760px;width:980px;height:120px;z-index:6"); Object.keys(LG).forEach((key, i) => { const im = document.createElement("img"); im.src = LG[key][0]; im.style.cssText = "position:absolute;left:" + (i * 165) + "px;top:0;width:120px;height:120px;border-radius:26px;background:#F5F6F8;object-fit:" + (key === "oga" ? "cover" : "contain") + ";padding:" + (key === "oga" ? 0 : 10) + "px;box-sizing:border-box"; row.appendChild(im); tl.from(im, { opacity: 0, y: 60, scale: 0.5, duration: 0.4, ease: "back.out(1.8)" }, S.s9.start + 0.8 + i * 0.12); });
+  const botO = botAt(s9, "botO", -400, 470, 300); const bot9 = botAt(s9, "bot9", 800, 1520, 200); presenter(bot9, "s9"); speak(bot9, "p9"); tl.set(bot9.P.wrap, { opacity: 0 }, tFo); tl.set([wq, row], { opacity: 0 }, tFo + 0.4);
+  Outro.build(tl, s9, tFo, { bot: botO, cx: 390, y: 470, fromX: -400, cta: "Follow @agentoon.ai", tag: "Real AI Tools • Skills • Automation" }); speak(botO, "p9");
+  const fe = el(s9, "fe9", "hd", "left:0;right:0;top:1420px;text-align:center;font-size:62px;line-height:1.05;color:" + IN + ";z-index:7", "6 OPEN-SOURCE ALTERNATIVES"); gsap.set(fe, { opacity: 0 }); tl.to(fe, { opacity: 1, duration: 0.4 }, tFo + 0.9);
+
+  /* motion bursts: a short nudge on the whole scene about every 2.6 s, clear of transitions */
+  Object.keys(S).forEach((k, ki) => { const inn = $(k + "i"); let n = 0; for (let tt = S[k].start + 1.1; tt < S[k].end - 1.3; tt += 2.6, n++) { const sg = (n + ki) % 2 ? 1 : -1; tl.to(inn, { x: sg * 24, y: -sg * 14, scale: 1.02, duration: 0.16, ease: "power2.out", transformOrigin: "50% 50%" }, tt); tl.to(inn, { x: 0, y: 0, scale: 1, duration: 0.34, ease: "power2.inOut" }, tt + 0.16); } });
+  trans("s2", "s1", "push"); trans("s3", "s2", "whipL"); trans("s4", "s3", "whipR"); trans("s5", "s4", "whipL"); trans("s6", "s5", "whipR"); trans("s7", "s6", "push"); trans("s8", "s7", "whipL"); trans("s9", "s8", "push");
+  Captions.build(tl, $("capLayer"), E.words, { style: "pill", bottom: 1700, active: "#0F1115", block: "#C8F031", maxWords: 4, maxChars: 24 });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+})();
+</script>
+</body>
+</html>

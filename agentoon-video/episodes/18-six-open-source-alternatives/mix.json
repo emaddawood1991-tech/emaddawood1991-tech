@@ -1,0 +1,182 @@
+{
+ "total": 87.4,
+ "music": [
+  {
+   "t0": 0.0,
+   "t1": 5.34,
+   "mood": "hook"
+  },
+  {
+   "t0": 5.34,
+   "t1": 73.6,
+   "mood": "demo"
+  },
+  {
+   "t0": 73.6,
+   "t1": 87.4,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "sparkle",
+   "t": 0.3,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 3.77,
+   "gain": 0.3
+  },
+  {
+   "name": "pop",
+   "t": 3.92,
+   "gain": 0.3
+  },
+  {
+   "name": "pop",
+   "t": 4.07,
+   "gain": 0.3
+  },
+  {
+   "name": "pop",
+   "t": 4.22,
+   "gain": 0.3
+  },
+  {
+   "name": "pop",
+   "t": 4.37,
+   "gain": 0.3
+  },
+  {
+   "name": "pop",
+   "t": 4.52,
+   "gain": 0.3
+  },
+  {
+   "name": "whoosh",
+   "t": 5.29,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 5.44,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 6.34,
+   "gain": 0.28
+  },
+  {
+   "name": "tick",
+   "t": 19.33,
+   "gain": 0.3
+  },
+  {
+   "name": "whoosh",
+   "t": 20.71,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 20.86,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 21.76,
+   "gain": 0.28
+  },
+  {
+   "name": "tick",
+   "t": 30.87,
+   "gain": 0.3
+  },
+  {
+   "name": "whoosh",
+   "t": 32.02,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 32.17,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 33.07,
+   "gain": 0.28
+  },
+  {
+   "name": "whoosh",
+   "t": 43.35,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 43.5,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 44.4,
+   "gain": 0.28
+  },
+  {
+   "name": "whoosh",
+   "t": 53.16,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 53.31,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 54.21,
+   "gain": 0.28
+  },
+  {
+   "name": "whoosh",
+   "t": 64.71,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 64.86,
+   "gain": 0.35
+  },
+  {
+   "name": "tick",
+   "t": 65.76,
+   "gain": 0.28
+  },
+  {
+   "name": "tick",
+   "t": 71.83,
+   "gain": 0.3
+  },
+  {
+   "name": "whoosh",
+   "t": 73.55,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 75.73,
+   "gain": 0.4
+  },
+  {
+   "name": "whoosh",
+   "t": 80.53,
+   "gain": 0.4
+  },
+  {
+   "name": "sparkle",
+   "t": 83.8,
+   "gain": 0.4
+  }
+ ]
+}
