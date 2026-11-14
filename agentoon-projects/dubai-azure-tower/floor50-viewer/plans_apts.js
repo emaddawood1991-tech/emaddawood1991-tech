@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { createKit } from "./plans_core.js";
+import { addMEP } from "./plans_mep.js";
 
 // Floor 50 - three sky residences around a private lift lobby: 3-bedroom (west), 1-bedroom (centre), 2-bedroom (east).
 // Plan: x 0..34 (west->east), z 0..20 (core side -> Gulf glass), terraces z 20..26.5, each with its own raised glass pool.
@@ -112,6 +113,7 @@ export function buildApts(H) {
 
   F.extentD = 26.5;
   F.finish();
+  addMEP(F, { risers: [{ x: 14.7, z: 3.0 }, { x: 23.3, z: 3.0 }], blinds: [[0, 20, 34, 20], [0, 0, 0, 20], [34, 0, 34, 20], [0, 0, 14, 0]] });
   F.liftOpen = (on) => F.liftDoors.forEach((d) => (d.target = on ? 1 : 0));
   F.update = (dt) => { F.updateDoors(dt); F.liftDoors.forEach((d) => { d.cur += (d.target - d.cur) * Math.min(1, dt * 3); d.a.position.x = d.ax - d.cur * 0.5; d.b.position.x = d.bx + d.cur * 0.5; }); };
   F.setNight = (k) => F.pools.forEach((p) => p.setNight(k));

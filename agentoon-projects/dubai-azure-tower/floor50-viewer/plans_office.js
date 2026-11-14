@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { createKit } from "./plans_core.js";
+import { addMEP } from "./plans_mep.js";
 
 // Floor 12 - a multi-tenant office floor: Medical center, IT company, Trading office, Real-estate agency.
 // Plan: x 0..40 (west->east), z 0..28 (back -> Gulf-facing glass). Core x14..26 z0..9, lift lobby z9..15, lounge z15..28.
@@ -135,6 +136,7 @@ export function buildOffice(H) {
   board("FLOOR 12", 20, 2.95, 9.2, 0, 1.8, 0.3, "#14202e", "#f2e3c6", 40);
 
   F.finish();
+  addMEP(F, { risers: [{ x: 14.6, z: 7.4 }, { x: 25.4, z: 7.4 }], blinds: [[0, 28, 40, 28], [0, 0, 14, 0]] });
   // lift doors open / close (animated)
   F.liftOpen = (on) => F.liftDoors.forEach((d) => (d.target = on ? 1 : 0));
   F.update = (dt) => { F.updateDoors(dt); F.liftDoors.forEach((d) => { d.cur += (d.target - d.cur) * Math.min(1, dt * 3); d.a.position.x = d.ax - d.cur * 0.55; d.b.position.x = d.bx + d.cur * 0.55; }); };
