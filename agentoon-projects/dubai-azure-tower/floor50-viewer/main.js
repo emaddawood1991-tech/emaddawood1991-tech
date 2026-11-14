@@ -878,9 +878,9 @@ document.getElementById("goLobby").addEventListener("click", () => setMode("lobb
 document.querySelectorAll("#nav [data-mode]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
 // audio
 let actx = null;
-function thunderSound(delay) { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const sr = actx.sampleRate, mk = (dur, fn) => { const b = actx.createBuffer(1, Math.floor(dur * sr), sr), d = b.getChannelData(0); let last = 0; for (let i = 0; i < d.length; i++) { last = (last + 0.03 * (Math.random() * 2 - 1)) / 1.03; d[i] = fn(i / sr, last); } return b; };
+let thunderSound = function (delay) { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const sr = actx.sampleRate, mk = (dur, fn) => { const b = actx.createBuffer(1, Math.floor(dur * sr), sr), d = b.getChannelData(0); let last = 0; for (let i = 0; i < d.length; i++) { last = (last + 0.03 * (Math.random() * 2 - 1)) / 1.03; d[i] = fn(i / sr, last); } return b; };
   const crack = actx.createBufferSource(); crack.buffer = mk(0.35, (t) => (Math.random() * 2 - 1) * Math.exp(-t * 14)); const hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 900; const g1 = actx.createGain(); g1.gain.value = 0.7; crack.connect(hp).connect(g1).connect(actx.destination); crack.start(actx.currentTime + delay);
-  const roll = actx.createBufferSource(); roll.buffer = mk(4.6, (t, l) => l * 6 * Math.exp(-t * 0.8) * (1 + 0.5 * Math.sin(t * 9))); const lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 380; const g2 = actx.createGain(); g2.gain.value = 1.0; roll.connect(lp).connect(g2).connect(actx.destination); roll.start(actx.currentTime + delay + 0.25); } catch (e) { /* audio is optional */ } }
+  const roll = actx.createBufferSource(); roll.buffer = mk(4.6, (t, l) => l * 6 * Math.exp(-t * 0.8) * (1 + 0.5 * Math.sin(t * 9))); const lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 380; const g2 = actx.createGain(); g2.gain.value = 1.0; roll.connect(lp).connect(g2).connect(actx.destination); roll.start(actx.currentTime + delay + 0.25); } catch (e) { /* audio is optional */ } };
 const bannerEl = document.getElementById("banner"), flashEl = document.getElementById("flash");
 function startStrike() { state.strike = true; strikeStorm = 0.9; state.rebar = state.rebar; tower.startStrike(); thunderSound(0.9); goViewT("strike"); bannerEl.className = "t"; bannerEl.style.display = "block"; bannerEl.textContent = tower.steps[0][1]; document.getElementById("strikeBtn").setAttribute("aria-pressed", "true"); apply(); }
 function stopStrike() { state.strike = false; strikeStorm = 0; tower.stopStrike(); bannerEl.style.display = "none"; bannerEl.className = ""; flashEl.style.opacity = "0"; document.getElementById("strikeBtn").setAttribute("aria-pressed", "false"); apply(); }
@@ -935,6 +935,76 @@ function setMode(m) {
   }, 300);
 }
 
+// ---------------------------------------------------------------- cinematic tour (+ optional recording to WebM)
+const audio = { ctx: null, master: null, dest: null, music: null };
+function ensureAudio() {
+  if (audio.ctx) return audio; const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return audio;
+  audio.ctx = new AC(); audio.master = audio.ctx.createGain(); audio.master.gain.value = 0.9; audio.master.connect(audio.ctx.destination);
+  try { audio.dest = audio.ctx.createMediaStreamDestination(); audio.master.connect(audio.dest); } catch (e) { audio.dest = null; } return audio;
+}
+function startMusic() {
+  const a = ensureAudio(); if (!a.ctx || a.music) return; const ctx = a.ctx, out = ctx.createGain(); out.gain.value = 0; out.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 3); out.connect(a.master);
+  const chords = [[50, 57, 62, 66, 69], [47, 54, 59, 62, 66], [43, 50, 55, 59, 62], [45, 52, 57, 61, 64]], f = (n) => 440 * Math.pow(2, (n - 69) / 12), voices = [];
+  chords[0].forEach((n, i) => { for (const det of [-6, 6]) { const o = ctx.createOscillator(); o.type = i % 2 ? "triangle" : "sine"; o.frequency.value = f(n); o.detune.value = det; const g = ctx.createGain(); g.gain.value = 0.07; o.connect(g).connect(out); o.start(); voices.push({ o, i }); } });
+  let step = 0; const timer = setInterval(() => { step++; const c = chords[Math.floor(step / 8) % chords.length]; voices.forEach((v) => v.o.frequency.setTargetAtTime(f(c[v.i]), ctx.currentTime, 1.6));
+    const bell = ctx.createOscillator(), bg = ctx.createGain(); bell.type = "sine"; bell.frequency.value = f(c[2 + (step % 3)] + 12); bg.gain.setValueAtTime(0.0001, ctx.currentTime); bg.gain.exponentialRampToValueAtTime(0.09, ctx.currentTime + 0.02); bg.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 2.4); bell.connect(bg).connect(out); bell.start(); bell.stop(ctx.currentTime + 2.6); }, 1875);
+  a.music = { out, voices, timer };
+}
+function stopMusic() { const a = audio; if (!a.music) return; const m = a.music; m.out.gain.cancelScheduledValues(a.ctx.currentTime); m.out.gain.setTargetAtTime(0, a.ctx.currentTime, 0.6); clearInterval(m.timer); setTimeout(() => m.voices.forEach((v) => v.o.stop()), 2500); a.music = null; }
+// thunder now goes through the master bus so it is recorded too
+thunderSound = function (delay) { try { const a = ensureAudio(), ctx = a.ctx, sr = ctx.sampleRate, mk = (dur, fn) => { const b = ctx.createBuffer(1, Math.floor(dur * sr), sr), d = b.getChannelData(0); let last = 0; for (let i = 0; i < d.length; i++) { last = (last + 0.03 * (Math.random() * 2 - 1)) / 1.03; d[i] = fn(i / sr, last); } return b; };
+  const crack = ctx.createBufferSource(); crack.buffer = mk(0.35, (t) => (Math.random() * 2 - 1) * Math.exp(-t * 14)); const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 900; const g1 = ctx.createGain(); g1.gain.value = 0.7; crack.connect(hp).connect(g1).connect(a.master); crack.start(ctx.currentTime + delay);
+  const roll = ctx.createBufferSource(); roll.buffer = mk(4.6, (t, l) => l * 6 * Math.exp(-t * 0.8) * (1 + 0.5 * Math.sin(t * 9))); const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 380; const g2 = ctx.createGain(); g2.gain.value = 1.0; roll.connect(lp).connect(g2).connect(a.master); roll.start(ctx.currentTime + delay + 0.25); } catch (e) { /* audio is optional */ } };
+
+const capEl = document.getElementById("cap"), titleEl = document.getElementById("titleCard"), stopTourBtn = document.getElementById("stopTour");
+const tour = { on: false, t0: 0, i: 0, orbit: null, tAnim: null, rec: null, chunks: [] };
+const TL = (k) => Object.assign(state, { struct: false, rebar: false, found: false, glass: false, rain: false, xrayT: false }, k);
+const showCap = (t) => { capEl.textContent = t; capEl.style.opacity = "1"; };
+const showTitle = (a, b) => { titleEl.innerHTML = `<div class="t1">${a}</div><div class="t2">${b}</div>`; titleEl.style.opacity = "1"; };
+const hideTitle = () => { titleEl.style.opacity = "0"; };
+const STEPS_T = [
+  [0, () => { TL({}); setMode("tower"); setTime(17.4); tour.orbit = { r: 330, y: 150, ty: 125, a0: -2.2, spd: 0.055 }; showTitle("DUBAI AZURE TOWER", "A conceptual architectural vision"); capEl.style.opacity = "0"; apply(); }],
+  [6.5, () => { hideTitle(); showCap("Fifty floors. One continuous twist."); }],
+  [14, () => { tour.orbit = null; goViewT("crown"); showCap("An illuminated crown and a 28 m spire"); }],
+  [20, () => { tour.tAnim = { from: 17.6, to: 22.2, t0: performance.now() / 1000, dur: 6 }; tour.orbit = { r: 300, y: 150, ty: 130, a0: 0.2, spd: -0.06 }; showCap("By night the glass becomes light"); }],
+  [28, () => { tour.orbit = null; tour.tAnim = { from: 22.2, to: 15.2, t0: performance.now() / 1000, dur: 3 }; TL({ struct: true }); apply(); goViewT("struct"); showCap("Inside: a buttressed concrete core, 18 columns, post-tensioned slabs"); }],
+  [35, () => { TL({ struct: true, rebar: true }); selectFloor(30, false); apply(); tweenTo([-42, 96, -62], [0, 90, 0], 2200); showCap("Every concrete element is reinforced with steel bars"); }],
+  [42, () => { TL({ found: true }); apply(); goViewT("under"); showCap("A raft on deep piles carries the weight into the ground"); }],
+  [49, () => { TL({ glass: true }); apply(); goViewT("facade"); showCap("Four layers of glass keep the sun, rain and wind out"); }],
+  [56, () => { TL({ rain: true }); apply(); goViewT("podium"); showCap("Rain is caught at every floor and drained away"); }],
+  [62, () => { TL({}); apply(); startStrike(); showCap("Lightning is carried safely to the ground"); capEl.style.opacity = "0"; }],
+  [73, () => { stopStrike(); TL({}); setTime(19.6); setMode("lobby"); showCap("The lobby: a double-height welcome"); }],
+  [79, () => { goViewL("lounge"); showCap("Lounges look out over the Gulf"); }],
+  [85, () => { setMode("floor"); setTime(19.2); showCap("Floor 50: the sky penthouse"); }],
+  [91, () => { goView("living"); showCap("Open living, dining and kitchen"); }],
+  [97, () => { goView("dubai"); tour.tAnim = { from: 19.2, to: 21.6, t0: performance.now() / 1000, dur: 6 }; showCap("And the lights of Dubai beyond"); }],
+  [104, () => { capEl.style.opacity = "0"; showTitle("DUBAI AZURE TOWER", "Fictional concept · not approved · not built · not for sale"); }],
+  [110, () => stopTour(true)],
+];
+function startTour(record) {
+  if (tour.on) return; tour.on = true; tour.t0 = performance.now() / 1000; tour.i = 0; tour.orbit = null; tour.tAnim = null;
+  controls.enabled = false; document.querySelectorAll(".panel,#hide").forEach((p) => (p.style.display = "none")); stopTourBtn.style.display = "block"; state.lightsAuto = true;
+  ensureAudio(); if (audio.ctx.state === "suspended") audio.ctx.resume(); startMusic();
+  if (record && window.MediaRecorder) { try { const vs = canvas.captureStream(30), tracks = [...vs.getVideoTracks(), ...(audio.dest ? audio.dest.stream.getAudioTracks() : [])], mt = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"].find((m) => MediaRecorder.isTypeSupported(m)); tour.chunks = []; tour.rec = new MediaRecorder(new MediaStream(tracks), { mimeType: mt, videoBitsPerSecond: 9000000 }); tour.rec.ondataavailable = (e) => e.data.size && tour.chunks.push(e.data); tour.rec.onstop = () => { const blob = new Blob(tour.chunks, { type: "video/webm" }), a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "Dubai_Azure_Tower_Tour.webm"; document.body.appendChild(a); a.click(); setTimeout(() => a.remove(), 1000); }; tour.rec.start(1000); } catch (e) { tour.rec = null; } }
+}
+function stopTour(finished) {
+  if (!tour.on) return; tour.on = false; tour.orbit = null; tour.tAnim = null; stopMusic();
+  if (tour.rec && tour.rec.state !== "inactive") tour.rec.stop(); tour.rec = null;
+  if (state.strike) stopStrike(); hideTitle(); capEl.style.opacity = "0"; stopTourBtn.style.display = "none"; controls.enabled = true;
+  document.querySelectorAll(".panel,#hide").forEach((p) => (p.style.display = "")); hideBtn.setAttribute("aria-pressed", "false"); TL({}); apply();
+}
+function tourUpdate(now) {
+  if (!tour.on) return false; const e = now - tour.t0;
+  while (tour.i < STEPS_T.length && e >= STEPS_T[tour.i][0]) { STEPS_T[tour.i][1](); tour.i++; }
+  if (tour.orbit && !tween) { const o = tour.orbit, a = o.a0 + o.spd * e; camera.position.set(Math.cos(a) * o.r, o.y, Math.sin(a) * o.r); controls.target.set(0, o.ty, 0); camera.lookAt(controls.target); }
+  if (tour.tAnim) { const k = Math.min(1, (now - tour.tAnim.t0) / tour.tAnim.dur); setTime(tour.tAnim.from + (tour.tAnim.to - tour.tAnim.from) * (k * k * (3 - 2 * k))); if (k >= 1) tour.tAnim = null; }
+  return true;
+}
+document.getElementById("tourBtn").addEventListener("click", () => startTour(false));
+document.getElementById("recBtn").addEventListener("click", () => startTour(true));
+stopTourBtn.addEventListener("click", () => stopTour(false));
+addEventListener("keydown", (e) => { if (e.key === "Escape") stopTour(false); });
+
 function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener("resize", resize); resize();
 
@@ -942,7 +1012,7 @@ const clock = new THREE.Clock(); const v = new THREE.Vector3(); let lastNow = pe
 function frame() {
   const t = clock.getElapsedTime(), now = performance.now() / 1000, dt = Math.min(0.1, now - lastNow); lastNow = now;
   if (tween) { const k = Math.min(1, (performance.now() - tween.t0) / tween.dur), e = k * k * (3 - 2 * k); camera.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.t0v, tween.t1, e); if (k >= 1) tween = null; }
-  controls.update(); if (state.mode === "floor") { updateFlow(t); updateDoors(); updateDemo(now); }
+  const touring = tourUpdate(now); if (!touring) controls.update(); if (state.mode === "floor") { updateFlow(t); updateDoors(); updateDemo(now); }
   const sr = tower.update(now, dt); if (sr) { flashEl.style.opacity = String(sr.flash * 0.85); bannerEl.textContent = sr.step; }
   LABELS.forEach((o) => { const on = state[o.l] && (o.T ? state.mode === "tower" : state.mode === "floor"); if (!on || !o.t) { o.el.style.display = "none"; return; } v.copy(o.v).project(camera); if (v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05) { o.el.style.display = "none"; return; } o.el.style.display = "block"; o.el.style.left = ((v.x + 1) / 2) * innerWidth + "px"; o.el.style.top = ((1 - v.y) / 2) * innerHeight + "px"; });
   renderer.render(scene, camera); requestAnimationFrame(frame);
@@ -953,4 +1023,4 @@ hideBtn.addEventListener("click", togglePanels); addEventListener("keydown", (e)
 // start in the whole-building view
 controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; FOCUS.set(0, 100, 0); sun.castShadow = false; putCamera(...VT.over);
 setTime(15.5); applyLights(); syncLightButtons(); apply(); tower.highlight(50); frame();
-window.__f50 = { state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };
+window.__f50 = { startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };
