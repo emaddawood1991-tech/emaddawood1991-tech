@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dubai Azure Tower</title>
-<meta name="description" content="Interactive fictional Dubai Azure Tower concept: whole building, structure, rebar, glass, lightning, lobby and floor 50 with systems.">
+<meta name="description" content="Interactive fictional Dubai Azure Tower concept: whole building, structure, rebar, glass, lightning, lobby, offices, apartments and floor 49 with systems.">
 <style>
   :root{--bg:#0e1116;--panel:rgba(18,22,30,.84);--line:rgba(255,255,255,.12);--text:#eef1f6;--mut:#9aa6b8;--gold:#e3c48a}
   *{box-sizing:border-box}
@@ -47,7 +47,14 @@
   #stopTour{position:fixed;right:16px;top:16px;z-index:13;display:none}
   #flash{position:fixed;inset:0;background:#dfe6ff;opacity:0;pointer-events:none;z-index:8}
   #fade{position:fixed;inset:0;background:#0e1116;opacity:0;pointer-events:none;z-index:9;transition:opacity .28s}
-  body:not([data-mode=tower]) .m-tower,body:not([data-mode=floor]) .m-floor,body:not([data-mode=lobby]) .m-lobby,body:not([data-mode=park]) .m-park{display:none!important}
+  body:not([data-mode=tower]) .m-tower,body:not([data-mode=floor]) .m-floor,body:not([data-mode=lobby]) .m-lobby,body:not([data-mode=park]) .m-park,body:not([data-mode=office]) .m-office,body:not([data-mode=apts]) .m-apts{display:none!important}
+  body[data-mode=lift] #ctl,body[data-mode=lift] #info,body[data-mode=lift] #timebar{display:none!important}
+  #nav{flex-wrap:wrap;justify-content:center;max-width:min(980px,94vw)}
+  #liftHud{left:50%;bottom:7%;transform:translateX(-50%);width:min(560px,92vw);display:none;z-index:10;text-align:center}
+  body[data-mode=lift] #liftHud{display:block}
+  #liftHud .fl{font:600 54px/1 ui-monospace,Menlo,monospace;color:#ffb347;letter-spacing:.04em} #liftHud .row{display:flex;gap:14px;justify-content:center;align-items:baseline;color:var(--mut);font-size:13px}
+  #liftHud .bar{height:8px;border-radius:99px;background:rgba(255,255,255,.12);margin:8px 0;overflow:hidden} #liftHud .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e3c48a,#ffb347);border-radius:99px}
+  #liftHud b{color:#fff}
   @media (max-width:860px){#info{display:none}#head{max-width:none;right:16px}#nav{top:auto;bottom:70px}#ctl{width:auto;right:16px;top:auto;bottom:110px;max-height:40vh}#foot{display:none}}
 </style>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/addons/"}}</script>
@@ -59,7 +66,9 @@
   <button data-mode="tower" aria-pressed="true">Whole building</button>
   <button data-mode="lobby" aria-pressed="false">Lobby</button>
   <button data-mode="park" aria-pressed="false">Parking</button>
-  <button data-mode="floor" aria-pressed="false">Floor 50</button>
+  <button data-mode="office" aria-pressed="false">Floor 12 · Offices</button>
+  <button data-mode="floor" aria-pressed="false">Floor 49 · Penthouse</button>
+  <button data-mode="apts" aria-pressed="false">Floor 50 · 3 Apartments</button>
   <button id="tourBtn" class="big">&#9654; Cinematic tour</button>
   <button id="journeyBtn" class="big">&#9654; Guest journey</button>
   <button id="recBtn" title="Plays the tour and saves it as a video file">&#9679; Record tour</button>
@@ -78,8 +87,8 @@
   </details>
   <details class="grp m-tower" open><summary>Choose a floor <span class="tl" id="flabel">Floor 50</span></summary>
     <input id="floorSlider" type="range" min="1" max="50" step="1" value="50" aria-label="Floor">
-    <div class="btns" style="margin-top:6px"><button id="floorGo" class="big">Go to this floor</button><button id="goLobby">Lobby</button><button id="goF50">Floor 50</button></div>
-    <p style="margin:6px 0 0;font-size:12px;color:var(--mut)">Or just click the glass: floor 50 opens the penthouse level, the bottom opens the lobby.</p>
+    <div class="btns" style="margin-top:6px"><button id="floorGo" class="big">Go to this floor</button><button id="goLobby">Lobby</button><button id="goF12">Floor 12</button><button id="goF49">Floor 49</button><button id="goF50">Floor 50</button></div>
+    <p style="margin:6px 0 0;font-size:12px;color:var(--mut)">Or click the glass: floor 12 = offices, 49 = sky penthouse, 50 = three apartments, the bottom opens the lobby.</p>
   </details>
   <details class="grp m-tower"><summary>Display</summary>
     <div class="btns"><button data-t="xrayT" aria-pressed="false">X-ray glass</button><button data-t="grades" aria-pressed="true">Concrete grade colours</button><button data-t="site" aria-pressed="true">Podium + palms</button></div>
@@ -88,7 +97,7 @@
     <div class="btns"><button data-tv="over">Whole tower</button><button data-tv="crown">Crown + spire</button><button data-tv="f50">Floor 50</button><button data-tv="podium">Podium</button><button data-tv="under">Underground</button><button data-tv="facade">Glass section</button><button data-tv="arrival">Street + arrival</button><button data-tv="drive">Driveway</button></div>
   </details>
   <details class="grp m-lobby" open><summary>Go</summary>
-    <div class="btns"><button id="goPark" class="big">&#11015; Down to parking</button></div>
+    <div class="btns"><button id="goPark" class="big">&#11015; Down to parking</button><button id="rideLobby" class="big">&#11014; Ride lift to floor 50</button></div>
   </details>
   <details class="grp m-lobby" open><summary>Lobby lights</summary>
     <div class="btns"><button id="lobbyLights" aria-pressed="false">Lobby lights</button><button id="lobbyAuto">Auto (night)</button></div>
@@ -102,6 +111,41 @@
   </details>
   <details class="grp m-park" open><summary>Camera</summary>
     <div class="btns"><button data-pv="cut">Cutaway</button><button data-pv="ramp">Ramp</button><button data-pv="b2">Inside level B2</button><button data-pv="air">Air shafts</button><button data-pv="lift">Lift lobby</button></div>
+  </details>
+  <details class="grp m-office" open><summary>Lift + floors</summary>
+    <div class="btns"><button id="rideO50" class="big">&#11014; Ride lift to floor 50</button><button id="rideOLobby">&#11015; Ride down to lobby</button><button id="liftDoorsO" aria-pressed="false">Open lift doors</button></div>
+  </details>
+  <details class="grp m-office" open><summary>Tenants (click to fly there)</summary>
+    <div class="btns"><button data-ov="med"><i style="background:#2f8f6a"></i>Medical center</button><button data-ov="it"><i style="background:#6ec8ff"></i>IT company</button><button data-ov="trade"><i style="background:#e2c27a"></i>Trading office</button><button data-ov="re"><i style="background:#c98b5f"></i>Real estate</button><button data-ov="lounge">Lounge + lifts</button><button data-ov="over">Overview</button><button data-ov="plan">Plan</button></div>
+  </details>
+  <details class="grp m-office"><summary>Lights</summary>
+    <div class="btns"><button id="lightsOnO">All on</button><button id="lightsOffO">All off</button><button id="lightsAutoO">Auto (night)</button></div>
+    <div class="btns" id="lightbtnsO" style="margin-top:6px"></div>
+  </details>
+  <details class="grp m-office"><summary>Doors <span class="tl">or click one in 3D</span></summary>
+    <div class="btns"><button id="doorsOpenO">Open all</button><button id="doorsCloseO">Close all</button></div>
+  </details>
+  <details class="grp m-office"><summary>Display</summary>
+    <div class="btns"><button data-layer="furn" aria-pressed="true">Furniture</button><button data-layer="xray" aria-pressed="false">X-ray walls</button><button data-layer="ceil" aria-pressed="false">Ceiling</button><button data-layer="names" aria-pressed="true">Room labels</button></div>
+  </details>
+  <details class="grp m-apts" open><summary>Lift + floors</summary>
+    <div class="btns"><button id="rideA12" class="big">&#11015; Ride lift down to floor 12</button><button id="rideALobby">&#11015; Ride down to lobby</button><button id="rideAUp" class="big">&#9654; Replay ride up from lobby</button><button id="liftDoorsA" aria-pressed="false">Open lift doors</button></div>
+  </details>
+  <details class="grp m-apts" open><summary>Residences (click to fly there)</summary>
+    <div class="btns"><button data-av="br3"><i style="background:#e3c48a"></i>3 bedroom</button><button data-av="br2"><i style="background:#8f9bff"></i>2 bedroom</button><button data-av="br1"><i style="background:#7fe9ff"></i>1 bedroom</button><button data-av="lobby">Private lobby</button><button data-av="over">Overview</button><button data-av="plan">Plan</button></div>
+  </details>
+  <details class="grp m-apts" open><summary>Pools (all three glass pools)</summary>
+    <div class="btns"><button data-layer="poolsys" aria-pressed="false"><i style="background:#7fe9ff"></i>Pool systems</button><button data-av="p3">3BR pool</button><button data-av="p2">2BR pool</button><button data-av="p1">1BR pool</button><button data-av="pools">All pools</button><button data-time="22">Pools at night</button></div>
+  </details>
+  <details class="grp m-apts"><summary>Lights</summary>
+    <div class="btns"><button id="lightsOnA">All on</button><button id="lightsOffA">All off</button><button id="lightsAutoA">Auto (night)</button></div>
+    <div class="btns" id="lightbtnsA" style="margin-top:6px"></div>
+  </details>
+  <details class="grp m-apts"><summary>Doors <span class="tl">or click one in 3D</span></summary>
+    <div class="btns"><button id="doorsOpenA">Open all</button><button id="doorsCloseA">Close all</button></div>
+  </details>
+  <details class="grp m-apts"><summary>Display</summary>
+    <div class="btns"><button data-layer="furn" aria-pressed="true">Furniture</button><button data-layer="xray" aria-pressed="false">X-ray walls</button><button data-layer="ceil" aria-pressed="false">Ceiling</button><button data-layer="names" aria-pressed="true">Room labels</button></div>
   </details>
   <details class="grp m-floor" open><summary>Show behind the walls</summary>
     <div class="btns">
@@ -137,6 +181,7 @@
 <div class="panel" id="foot">Fictional architectural concept. Structure, glass, lightning and utility details are illustrative, not an engineering design. Not approved, not built, not for sale.</div>
 <button id="hide" style="position:fixed;right:16px;bottom:16px;z-index:5" aria-pressed="false">Hide panels (H)</button>
 <div id="cap"></div><div id="titleCard"></div><button id="stopTour">Stop tour (Esc)</button>
+<div class="panel" id="liftHud"><div class="row"><span id="liftDir">&#9650;</span><span class="fl" id="liftFloor">12</span><span id="liftZone">Offices</span></div><div class="bar"><i id="liftBar"></i></div><div class="row"><span>Speed <b id="liftSpeed">0.0</b> m/s</span><span>Height <b id="liftAlt">0</b> m</span><span id="liftNote">real time</span></div><div class="btns" style="justify-content:center;margin-top:8px"><button id="liftFast" aria-pressed="false">&#9193; Fast-forward x3</button><button id="liftSkip">Skip</button></div></div>
 <div id="banner"></div><div id="hover"></div><div id="flash"></div><div id="fade"></div>
 <div id="labels"></div>
 <script type="module" src="./main.js"></script>
