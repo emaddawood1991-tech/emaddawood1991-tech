@@ -9,7 +9,7 @@ import { buildExtras } from "./extras.js";
 const W = 28, D = 20, WALL_H = 3.6, CEIL_Y = 3.2, VOID_Y = 3.45;
 
 const canvas = document.getElementById("c");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, logarithmicDepthBuffer: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -948,7 +948,7 @@ function setMode(m) {
     else if (m === "lobby") { FOCUS.set(0, 0, 0); controls.maxDistance = 120; controls.maxPolarAngle = Math.PI / 2 - 0.02; putCamera(...VL.entrance); }
     else if (m === "park") { FOCUS.set(0, -5, 0); controls.maxDistance = 700; controls.maxPolarAngle = Math.PI - 0.05; putCamera(...VP.cut); }
     else { FOCUS.set(0, 100, 0); controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; putCamera(...VT.over); }
-    sun.castShadow = m === "floor" || m === "lobby"; if (X.parkDemoOn()) X.stopParkDemo(); moonLight.target.position.copy(FOCUS);
+    sun.castShadow = m === "floor" || m === "lobby"; camera.near = m === "tower" ? 1.0 : m === "park" ? 0.3 : 0.1; camera.updateProjectionMatrix(); if (X.parkDemoOn()) X.stopParkDemo(); moonLight.target.position.copy(FOCUS);
     Object.keys(lightsOn).forEach((k) => (lightsOn[k] = lightsOn[k])); applyLights(); syncLightButtons(); apply(); tower.highlight(m === "tower" ? state.selFloor : 0);
     fadeEl.style.opacity = "0";
   }, 300);
@@ -1048,7 +1048,7 @@ const clock = new THREE.Clock(); const v = new THREE.Vector3(); let lastNow = pe
 function frame() {
   const t = clock.getElapsedTime(), now = performance.now() / 1000, dt = Math.min(0.1, now - lastNow); lastNow = now;
   if (tween) { const k = Math.min(1, (performance.now() - tween.t0) / tween.dur), e = k * k * (3 - 2 * k); camera.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.t0v, tween.t1, e); if (k >= 1) tween = null; }
-  const touring = tourUpdate(now); if (!touring) controls.update(); if (state.mode === "floor") { updateFlow(t); updateDoors(); updateDemo(now); }
+  const touring = tourUpdate(now); if (!touring) controls.update(); else if (!tour.orbit || tween) camera.lookAt(controls.target); if (state.mode === "floor") { updateFlow(t); updateDoors(); updateDemo(now); }
   const xmsg = X.update(now, dt, { night: nightK }); if (xmsg && state.mode === "park") { bannerEl.className = ""; bannerEl.style.display = "block"; bannerEl.textContent = xmsg; }
   const dl = (state.elev && (state.mode === "tower" || state.mode === "park")) ? X.dyn() : []; dynEls.forEach((el, i) => { const o = dl[i]; if (!o) { el.style.display = "none"; return; } v.copy(o.pos).project(camera); if (v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05) { el.style.display = "none"; return; } el.style.display = "block"; el.textContent = o.text; el.style.setProperty("--c", o.color); el.style.left = ((v.x + 1) / 2) * innerWidth + "px"; el.style.top = ((1 - v.y) / 2) * innerHeight + "px"; });
   const sr = tower.update(now, dt); if (sr) { flashEl.style.opacity = String(sr.flash * 0.85); bannerEl.textContent = sr.step; }
@@ -1059,6 +1059,6 @@ const panels = [...document.querySelectorAll(".panel")]; const hideBtn = documen
 function togglePanels() { const on = hideBtn.getAttribute("aria-pressed") !== "true"; hideBtn.setAttribute("aria-pressed", String(on)); panels.forEach((p) => (p.style.display = on ? "none" : "")); }
 hideBtn.addEventListener("click", togglePanels); addEventListener("keydown", (e) => { if (e.key === "h" || e.key === "H") togglePanels(); });
 // start in the whole-building view
-controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; FOCUS.set(0, 100, 0); sun.castShadow = false; putCamera(...VT.over);
+controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; FOCUS.set(0, 100, 0); sun.castShadow = false; camera.near = 1.0; camera.updateProjectionMatrix(); putCamera(...VT.over);
 setTime(15.5); applyLights(); syncLightButtons(); apply(); tower.highlight(50); frame();
 window.__f50 = { startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };
