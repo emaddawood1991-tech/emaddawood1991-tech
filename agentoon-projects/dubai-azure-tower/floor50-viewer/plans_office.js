@@ -28,10 +28,10 @@ export function buildOffice(H) {
   F.wall(14, 0, 14, 9, { t: 0.3, mat: M.core }); F.wall(26, 0, 26, 9, { t: 0.3, mat: M.core }); F.wall(14, 9, 26, 9, { t: 0.3, mat: M.core });
   box(F.walls, 11.4, 3.6, 0.2, M.core, 20, 0, 8.7);
   const LIFTX = [16.1, 18.7, 21.3, 23.9];
-  LIFTX.forEach((x, i) => { const a = box(F.walls, 0.6, 2.3, 0.05, M.steel, x - 0.3, 0, 8.93), b = box(F.walls, 0.6, 2.3, 0.05, M.steel, x + 0.3, 0, 8.93); F.liftDoors.push({ a, b, ax: x - 0.3, bx: x + 0.3, cur: 0, target: 0 }); box(F.walls, 1.5, 0.12, 0.06, M.brass, x, 2.4, 8.92); box(F.walls, 1.6, 0.04, 0.05, M.brass, x, 2.3, 8.93);
-    const disp = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.14), new THREE.MeshBasicMaterial({ map: canvasTex(128, 48, (c, w, h) => { c.fillStyle = "#050a10"; c.fillRect(0, 0, w, h); c.fillStyle = "#ffb347"; c.font = "bold 34px monospace"; c.textBaseline = "middle"; c.textAlign = "center"; c.fillText("▲ 12", w / 2, h / 2); }), toneMapped: false })); disp.position.set(x, 2.58, 8.89); disp.rotation.y = 0; F.walls.add(disp);
-    box(F.walls, 0.1, 0.22, 0.05, M.steel, x + 1.05, 1.0, 8.92); F.fp("call-" + i, x + 1.05, 8.9, 0.1, 0.05, 0, { wall: true, soft: true }); });
-  board("LIFTS A · B  EXPRESS 12 → 50     LIFTS C · D  OFFICE FLOORS 2–20", 20, 3.05, 8.88, 0, 8.6, 0.5, "#14202e", "#f2e3c6", 28);
+  LIFTX.forEach((x, i) => { const a = box(F.walls, 0.6, 2.3, 0.05, M.steel, x - 0.3, 0, 9.18), b = box(F.walls, 0.6, 2.3, 0.05, M.steel, x + 0.3, 0, 9.18); F.liftDoors.push({ a, b, ax: x - 0.3, bx: x + 0.3, cur: 0, target: 0 }); box(F.walls, 1.5, 0.12, 0.06, M.brass, x, 2.4, 9.19); box(F.walls, 1.6, 0.04, 0.05, M.brass, x, 2.3, 9.2);
+    const disp = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.14), new THREE.MeshBasicMaterial({ map: canvasTex(128, 48, (c, w, h) => { c.fillStyle = "#050a10"; c.fillRect(0, 0, w, h); c.fillStyle = "#ffb347"; c.font = "bold 34px monospace"; c.textBaseline = "middle"; c.textAlign = "center"; c.fillText("▲ 12", w / 2, h / 2); }), toneMapped: false })); disp.position.set(x, 2.58, 9.2); disp.rotation.y = 0; F.walls.add(disp);
+    box(F.walls, 0.1, 0.22, 0.05, M.steel, x + 1.05, 1.0, 9.19); F.fp("call-" + i, x + 1.05, 9.2, 0.1, 0.05, 0, { wall: true, soft: true }); });
+  board("LIFTS A · B  EXPRESS 12 → 50     LIFTS C · D  OFFICE FLOORS 2–20", 20, 3.05, 9.2, 0, 8.6, 0.5, "#14202e", "#f2e3c6", 28);
   // service door + stair on the core (decor)
   F.wall(14, 15, 14, 28, { t: 0.2, doors: [{ c: 23.6, w: 1.2, swing: -1, name: "IT company entrance", glass: true }] });
 
@@ -132,7 +132,7 @@ export function buildOffice(H) {
   F.table(20, 25.2, 1.2, 1.2, { round: true, top: M.walnut }); [[19.2, 25.2, -Math.PI / 2], [20.8, 25.2, Math.PI / 2]].forEach(([x, z, r]) => F.chair(x, z, r, M.rust)); F.plant(15.2, 27.2, 1.1, 1.8); F.plant(24.8, 27.2, 1.1, 1.8);
   F.cabinet(20, 15.3, Math.PI, 3.2, 0.9, 0.45, M.walnut, { tag: "console" });
   board("FLOOR 12 · BUSINESS LOUNGE", 20, 2.6, 14.95, 0, 3.4, 0.4, "#14202e", "#f2e3c6", 28);
-  board("FLOOR 12", 20, 2.95, 9.18, 0, 1.8, 0.3, "#14202e", "#f2e3c6", 40);
+  board("FLOOR 12", 20, 2.95, 9.2, 0, 1.8, 0.3, "#14202e", "#f2e3c6", 40);
 
   F.finish();
   // lift doors open / close (animated)

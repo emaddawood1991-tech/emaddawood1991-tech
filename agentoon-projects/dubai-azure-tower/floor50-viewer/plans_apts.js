@@ -27,10 +27,10 @@ export function buildApts(H) {
   // ---------------------------------------------------------------- core (lifts + stairs) and private lobby
   F.wall(14, 0, 14, 4.5, { t: 0.3, mat: M.core }); F.wall(24, 0, 24, 4.5, { t: 0.3, mat: M.core }); F.wall(14, 4.5, 24, 4.5, { t: 0.3, mat: M.core }); F.wall(14, 0, 24, 0, { t: 0.3, mat: M.core });
   const LIFTX = [16.0, 18.0, 20.0, 22.0];
-  LIFTX.forEach((x, i) => { const a = box(F.walls, 0.55, 2.3, 0.05, M.steel, x - 0.275, 0, 4.36), b = box(F.walls, 0.55, 2.3, 0.05, M.steel, x + 0.275, 0, 4.36); F.liftDoors.push({ a, b, ax: x - 0.275, bx: x + 0.275, cur: 0, target: 0 }); box(F.walls, 1.4, 0.12, 0.06, M.brass, x, 2.4, 4.35);
-    box(F.walls, 0.1, 0.22, 0.05, M.steel, x + 0.9, 1.0, 4.36); F.fp("call" + i, x + 0.9, 4.37, 0.1, 0.05, 0, { wall: true, soft: true }); });
-  board("RESIDENTIAL LIFTS · EXPRESS", 19, 2.9, 4.33, 0, 5.4, 0.36, "#14202e", "#f2e3c6", 26);
-  board("FLOOR 50", 19, 3.25, 4.33, 0, 1.8, 0.3, "#14202e", "#f2e3c6", 40);
+  LIFTX.forEach((x, i) => { const a = box(F.walls, 0.55, 2.3, 0.05, M.steel, x - 0.275, 0, 4.68), b = box(F.walls, 0.55, 2.3, 0.05, M.steel, x + 0.275, 0, 4.68); F.liftDoors.push({ a, b, ax: x - 0.275, bx: x + 0.275, cur: 0, target: 0 }); box(F.walls, 1.4, 0.12, 0.06, M.brass, x, 2.4, 4.69);
+    box(F.walls, 0.1, 0.22, 0.05, M.steel, x + 0.9, 1.0, 4.68); F.fp("call" + i, x + 0.9, 4.7, 0.1, 0.05, 0, { wall: true, soft: true }); });
+  board("RESIDENTIAL LIFTS · EXPRESS", 19, 2.9, 4.7, 0, 5.4, 0.36, "#14202e", "#f2e3c6", 26);
+  board("FLOOR 50", 19, 3.25, 4.7, 0, 1.8, 0.3, "#14202e", "#f2e3c6", 40);
   // lobby: three doors, one per residence + service
   F.wall(24, 4.5, 24, 7, { t: 0.2, doors: [{ c: 5.7, w: 1.0, swing: 1, name: "Service door" }] });
   F.wall(14, 9, 24, 9, { t: 0.2, doors: [{ c: 19.0, w: 1.1, swing: -1, name: "1-bedroom entrance" }] });
@@ -104,7 +104,7 @@ export function buildApts(H) {
   F.pool(29.5, 23.2, 7.0, 2.4, { side: -1, name: "2-bedroom pool" }); poolFp(null, 29.5, 23.2, 7.0, 2.4);
   sunbed(29.0, 21.0, Math.PI / 2); sunbed(32.4, 21.0, Math.PI / 2); sunbed(27.0, 25.6, Math.PI / 2); sunbed(30.8, 25.6, Math.PI / 2); planter(33.0, 26.0, 1.0);
   // lobby
-  F.sofa(19, 8.4, Math.PI, 2.2, M.cream); F.plant(14.9, 5.2, 1.1, 1.8); F.plant(23.1, 5.2, 1.1, 1.8); F.table(16.2, 7.5, 0.7, 0.7, { round: true }); F.table(21.8, 7.5, 0.7, 0.7, { round: true });
+  F.sofa(15.9, 8.2, Math.PI, 1.8, M.cream); F.sofa(22.1, 8.2, Math.PI, 1.8, M.cream); F.plant(14.9, 5.2, 1.1, 1.8); F.plant(23.1, 5.2, 1.1, 1.8); F.table(17.9, 7.7, 0.7, 0.7, { round: true }); F.table(20.1, 7.7, 0.7, 0.7, { round: true });
   frame(14.1, 1.9, 6.7, Math.PI / 2, 1.0, 1.4, "#274c5e", "#e0c28f", "#f2e3c6");
   board("SKY RESIDENCES · FLOOR 50", 19, 2.6, 8.92, Math.PI, 3.6, 0.4, "#14202e", "#f2e3c6", 28);
   board("3 BEDROOM", 14.07, 2.7, 6.7, Math.PI / 2, 1.6, 0.28, "#f2e3c6", "#14202e", 36); board("2 BEDROOM", 23.93, 2.7, 8.2, -Math.PI / 2, 1.6, 0.28, "#f2e3c6", "#14202e", 36); board("1 BEDROOM", 19, 2.7, 9.07, 0, 1.6, 0.28, "#f2e3c6", "#14202e", 36);
