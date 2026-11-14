@@ -14,9 +14,14 @@
   #head{left:16px;top:16px;max-width:340px}
   #head h1{margin:0 0 2px;font-size:17px;letter-spacing:.04em;color:var(--gold);font-weight:600}
   #head p{margin:0;color:var(--mut);font-size:12.5px}
-  #ctl{left:16px;top:112px;width:340px}
+  #ctl{left:16px;top:104px;width:350px;max-height:calc(100% - 190px);overflow:auto}
+  .tl{float:right;color:var(--gold);text-transform:none;letter-spacing:0;font-size:12px;font-weight:600}
+  input[type=range]{width:100%;accent-color:#e3c48a}
+  #banner{position:fixed;left:50%;top:16px;transform:translateX(-50%);max-width:min(620px,90vw);background:rgba(120,10,14,.9);border:1px solid #ff6a6f;border-radius:12px;padding:10px 16px;font-weight:600;display:none;z-index:6;text-align:center}
   .grp{margin:0 0 12px}
   .grp:last-child{margin:0}
+  .grp summary{cursor:pointer;margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600;list-style:none}
+  .grp summary::before{content:'\25B8  '}.grp[open] summary::before{content:'\25BE  '}
   .grp h2{margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600}
   .btns{display:flex;flex-wrap:wrap;gap:6px}
   button{font:inherit;color:var(--text);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:8px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;min-height:36px;transition:background .15s,border-color .15s}
@@ -48,36 +53,49 @@
   <p>Dubai Azure Tower — fictional architectural concept. Drag to orbit, scroll to zoom, right-drag to pan.</p>
 </div>
 <div class="panel" id="ctl">
-  <div class="grp"><h2>Show behind the walls</h2>
+  <details class="grp" open><summary>Show behind the walls</summary>
     <div class="btns">
       <button data-layer="elec" aria-pressed="false"><i style="background:#ffc21a"></i>Electricity</button>
       <button data-layer="water" aria-pressed="false"><i style="background:#3d8bff"></i>Water</button>
       <button data-layer="sewer" aria-pressed="false"><i style="background:#9a6a35"></i>Sewage</button>
-      <button id="allmep" aria-pressed="false">All utilities</button>
+      <button data-layer="fire" aria-pressed="false"><i style="background:#ff4a4f"></i>Fire safety</button>
+      <button data-layer="ac" aria-pressed="false"><i style="background:#25d9e8"></i>Air-con</button>
+      <button id="allmep" aria-pressed="false">All systems</button>
+      <button id="fireDemo" aria-pressed="false">&#9654; Fire demo</button>
     </div>
-  </div>
-  <div class="grp"><h2>Display</h2>
+  </details>
+  <details class="grp" open><summary>Time of day <span id="tlabel" class="tl"></span></summary>
+    <input id="tslider" type="range" min="0" max="24" step="0.05" value="15.5" aria-label="Time of day">
+    <div class="btns" style="margin-top:6px">
+      <button data-time="6.3">Sunrise</button><button data-time="12">Noon</button><button data-time="17.7">Sunset</button><button data-time="22">Night</button>
+    </div>
+  </details>
+  <details class="grp"><summary>Lights</summary>
+    <div class="btns"><button id="lightsOn">All on</button><button id="lightsOff">All off</button><button id="lightsAuto">Auto (night)</button></div>
+    <div class="btns" id="lightbtns" style="margin-top:6px"></div>
+  </details>
+  <details class="grp"><summary>Doors <span class="tl">or click one in 3D</span></summary>
+    <div class="btns"><button id="doorsOpen">Open all</button><button id="doorsClose">Close all</button><button id="slideDoor">Terrace door</button></div>
+  </details>
+  <details class="grp"><summary>Display</summary>
     <div class="btns">
       <button data-layer="furn" aria-pressed="true">Furniture</button>
       <button data-layer="xray" aria-pressed="false">X-ray walls</button>
       <button data-layer="ceil" aria-pressed="false">Ceiling</button>
       <button data-layer="flow" aria-pressed="true">Flow animation</button>
     </div>
-  </div>
-  <div class="grp"><h2>Camera</h2>
+  </details>
+  <details class="grp" open><summary>Camera</summary>
     <div class="btns">
-      <button data-view="over">Overview</button>
-      <button data-view="plan">Plan view</button>
-      <button data-view="living">Living</button>
-      <button data-view="kitchen">Kitchen</button>
-      <button data-view="bed">Master suite</button>
-      <button data-view="bath">Bathroom</button>
+      <button data-view="over">Overview</button><button data-view="plan">Plan</button><button data-view="living">Living</button><button data-view="kitchen">Kitchen</button>
+      <button data-view="bed">Master suite</button><button data-view="bath">Bathroom</button><button data-view="dubai">Dubai view</button><button data-view="terrace">Terrace</button>
     </div>
-  </div>
+  </details>
 </div>
 <div class="panel" id="info"></div>
 <div class="panel" id="foot">Conceptual schematic for visualisation only. Utility routes are illustrative, not an engineering design. Not approved, not built, not for sale.</div>
 <button id="hide" style="position:fixed;right:16px;bottom:16px;z-index:5" aria-pressed="false">Hide panels (H)</button>
+<div id="banner"></div>
 <div id="labels"></div>
 <script type="module" src="./main.js"></script>
 </body>
