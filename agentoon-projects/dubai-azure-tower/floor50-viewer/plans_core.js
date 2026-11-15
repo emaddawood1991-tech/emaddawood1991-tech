@@ -73,7 +73,9 @@ export function createKit(H) {
       for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) { const x = x1 + ((i + 0.5) * (x2 - x1)) / nx, z = z1 + ((j + 0.5) * (z2 - z1)) / nz; if (o.round) cyl(F.ceil, 0.09, 0.09, 0.02, mat, x, CEIL - 0.03, z, 16); else box(F.ceil, 0.6, 0.02, 0.6, mat, x, CEIL - 0.03, z); }
       F.rooms[key] = { key, name, mat, pl, base: o.inten || 7, x1, z1, x2, z2 }; F.lightsOn[key] = false; return F.rooms[key];
     };
-    F.setLight = (key, on) => { const r = F.rooms[key]; if (!r) return; F.lightsOn[key] = on; r.mat.emissiveIntensity = on ? 2.2 : 0.03; r.mat.color.set(on ? 0xfff1d6 : 0xb8b2a8); r.pl.intensity = on ? r.base : 0; };
+    F.pointOK = true;
+    F.setLight = (key, on) => { const r = F.rooms[key]; if (!r) return; F.lightsOn[key] = on; r.mat.emissiveIntensity = on ? 2.2 : 0.03; r.mat.color.set(on ? 0xfff1d6 : 0xb8b2a8); r.pl.intensity = on && F.pointOK ? r.base : 0; };
+    F.setPointOK = (v) => { F.pointOK = v; Object.keys(F.rooms).forEach((k) => F.setLight(k, !!F.lightsOn[k])); };
     F.setAllLights = (on) => Object.keys(F.rooms).forEach((k) => F.setLight(k, on));
     F.roomAt = (x, z) => Object.values(F.rooms).find((r) => x >= r.x1 && x <= r.x2 && z >= r.z1 && z <= r.z2);
     F.slab = (x1, z1, x2, z2) => box(F.floorG, x2 - x1, 0.4, z2 - z1, std(0xb9b6b0, 0.95), (x1 + x2) / 2, -0.4, (z1 + z2) / 2);

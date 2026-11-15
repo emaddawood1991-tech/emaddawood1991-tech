@@ -1,0 +1,58 @@
+// Functional regression test for the Explorer. Usage: NODE_PATH=$(npm root -g) node qa.mjs [url] [out.json]
+import { createRequire } from "module"; import { writeFileSync } from "fs"; const require = createRequire(import.meta.url);
+const { chromium, devices } = require("playwright");
+const url = process.argv[2] || "http://localhost:8765/index.html", outFile = process.argv[3] || "";
+const args = ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist", "--no-sandbox"];
+const R = []; const rec = (name, ok, note = "") => { R.push({ name, ok, note }); console.log(ok ? "PASS" : "FAIL", name, note); };
+const b = await chromium.launch({ args });
+const ctx = await b.newContext({ viewport: { width: 800, height: 500 } }); const p = await ctx.newPage();
+const errs = []; p.on("console", (m) => ["error", "warning"].includes(m.type()) && errs.push(m.text().slice(0, 160))); p.on("pageerror", (e) => errs.push("PAGEERR " + e.message));
+await p.goto(url + "?q=low"); await p.waitForFunction(() => window.__f50, null, { timeout: 120000 }); await p.waitForTimeout(2000);
+const ev = (f, a) => p.evaluate(f, a), wait = (ms) => p.waitForTimeout(ms);
+const mode = () => ev(() => __f50.state.mode);
+async function go(m) { await ev((m) => __f50.setMode(m), m); await wait(900); return (await mode()) === m; }
+rec("page loads, debug hook present", await ev(() => !!(__f50.OFFICE && __f50.APTS && typeof __f50.metrics === "function")));
+// every mode via the nav buttons
+for (const m of ["tower", "lobby", "park", "office", "floor", "apts"]) { await ev((m) => document.querySelector(`#nav [data-mode=${m}]`).click(), m); await wait(900); rec(`nav button → ${m}`, (await mode()) === m); }
+// layout checkers
+const chk = await ev(() => ({ o: __f50.OFFICE.check(), a: __f50.APTS.check() })); rec("floor 12 layout check", chk.o.length === 0, chk.o.join("; ")); rec("floor 50 layout check", chk.a.length === 0, chk.a.join("; "));
+// click every control that belongs to a mode (skip the ones tested separately)
+const SKIP = new Set(["tourBtn", "journeyBtn", "recBtn", "strikeBtn", "parkDemo", "fireDemo", "goPark", "goLobby", "goLobbyP", "goF12", "goF49", "goF50", "floorGo", "rideLobby", "rideO50", "rideOLobby", "rideA12", "rideALobby", "rideAUp", "hide", "liftFast", "liftSkip"]);
+for (const m of ["tower", "lobby", "park", "office", "floor", "apts"]) {
+  await go(m); const before = errs.length;
+  const n = await ev(async ({ m, skip }) => { const bs = [...document.querySelectorAll(`.m-${m} button`)].filter((b) => !skip.includes(b.id)); for (const b of bs) { b.click(); await new Promise((r) => setTimeout(r, 120)); } return bs.length; }, { m, skip: [...SKIP] });
+  await wait(1500); rec(`controls in ${m} mode (${n} buttons clicked)`, errs.length === before, errs.slice(before).join(" | ")); await ev(() => { Object.assign(__f50.state, { struct: false, rebar: false, found: false, glass: false, rain: false, elev: false, elec: false, water: false, sewer: false, fire: false, ac: false, sensors: false, blinds: false, xray: false, ceil: false, poolsys: false, photo: false }); __f50.apply(); });
+}
+// time buttons
+{ const before = errs.length; await go("tower"); await ev(() => document.querySelectorAll("[data-time]").forEach((b) => b.click())); rec("time of day buttons (sunrise/noon/sunset/night)", errs.length === before); }
+// doors + lights + lifts doors in each plan mode
+for (const [m, o, c, l, f] of [["office", "doorsOpenO", "doorsCloseO", "lightsOnO", "OFFICE"], ["apts", "doorsOpenA", "doorsCloseA", "lightsOnA", "APTS"], ["floor", "doorsOpen", "doorsClose", "lightsOn", null]]) {
+  await go(m); await ev((i) => document.getElementById(i).click(), o); await wait(300); const opened = await ev((f) => (f ? __f50[f].doors.every((d) => d.target === 1) : __f50.doors.every((d) => d.target === 1)), f);
+  await ev((i) => document.getElementById(i).click(), c); await wait(300); const closed = await ev((f) => (f ? __f50[f].doors.every((d) => d.target === 0) : __f50.doors.every((d) => d.target === 0)), f);
+  await ev((i) => document.getElementById(i).click(), l); await wait(300); const lit = await ev((f) => (f ? Object.values(__f50[f].lightsOn).every(Boolean) : Object.values(__f50.lightsOn).every(Boolean)), f);
+  rec(`doors open/close + lights on (${m})`, opened && closed && lit, `open=${opened} closed=${closed} lit=${lit}`);
+}
+// thunder strike, car-park fire demo
+{ await go("tower"); await ev(() => document.getElementById("strikeBtn").click()); await wait(1500); const on = await ev(() => __f50.state.strike); await ev(() => document.getElementById("strikeBtn").click()); await wait(500); rec("thunder strike start/stop", on && !(await ev(() => __f50.state.strike))); }
+{ await go("park"); await ev(() => document.getElementById("parkDemo").click()); await wait(1500); const on = await ev(() => document.getElementById("parkDemo").getAttribute("aria-pressed")); await ev(() => document.getElementById("parkDemo").click()); rec("car-park fire demo start/stop", on === "true"); }
+{ await go("floor"); await ev(() => document.getElementById("fireDemo").click()); await wait(1200); await ev(() => document.getElementById("fireDemo").click()); rec("floor 49 fire demo start/stop", true); }
+// floor picker routing
+for (const [f, m] of [[1, "lobby"], [12, "office"], [49, "floor"], [50, "apts"]]) { await go("tower"); await ev((f) => { const s = document.getElementById("floorSlider"); s.value = f; s.dispatchEvent(new Event("input")); document.getElementById("floorGo").click(); }, f); await wait(1000); rec(`floor ${f} → ${m}`, (await mode()) === m); }
+// lift ride (skip ahead) 12 → 50
+{ await go("office"); await ev(() => __f50.startRide(12, 50, "apts")); const inLift = await p.waitForFunction(() => __f50.state.mode === "lift", null, { timeout: 30000 }).then(() => true, () => false); await wait(500); await ev(() => document.getElementById("liftSkip").click()); await wait(6000); rec("lift ride 12 → 50 arrives at floor 50", inLift && (await mode()) === "apts", `mode=${await mode()}`); }
+// cinematic tour, guest journey, recording
+for (const [id, n] of [["tourBtn", "cinematic tour"], ["journeyBtn", "guest journey"], ["recBtn", "tour recording"]]) { const before = errs.length; await go("tower"); await ev((i) => document.getElementById(i).click(), id); await wait(6000); const on = await ev(() => __f50.tour.on); await ev(() => __f50.stopTour(false)); await wait(1500); rec(`${n} starts and stops`, on && errs.length === before && (await ev(() => !__f50.tour.on)), errs.slice(before).join(" | ")); }
+// quality tiers
+for (const t of ["low", "medium", "high", "ultra"]) { await ev((t) => { const s = document.getElementById("gfx"); const o = [...s.options].find((x) => x.value === t); if (o.disabled) return; s.value = t; s.dispatchEvent(new Event("change")); }, t); await wait(500);
+  const s = await ev(() => ({ tier: __f50.Q.tier, dpr: __f50.renderer.getPixelRatio(), dis: [...document.getElementById("gfx").options].find((o) => o.value === "ultra").disabled })); const want = { low: 1, medium: 1.25, high: 1.75, ultra: 2 }[t];
+  if (t === "ultra" && s.dis) rec("ultra disabled on unsupported device (software GPU)", true); else rec(`quality ${t}`, s.tier === t && Math.min(s.dpr, want) === s.dpr && (await ev(() => __f50.metrics().drawCalls)) > 0, JSON.stringify(s)); }
+{ const m = await ev(() => __f50.metrics()); rec("metrics hook returns live stats", m.drawCalls > 0 && m.triangles > 0 && m.fps > 0, JSON.stringify(m)); }
+rec("no JS errors during the whole run", errs.length === 0, [...new Set(errs)].slice(0, 6).join(" | "));
+// default-tier rules + automatic fallback (pure logic, independent of this machine's GPU)
+{ const r = await ev(async () => { const m = await import("./quality.js"); const t = (o) => m.autoTier({ software: false, mobile: false, cores: 8, mem: 8, ...o }); __f50.Q.set("medium", false); const dn = __f50.Q.stepDown("test"); const t2 = __f50.Q.tier; const dn2 = __f50.Q.stepDown("test"); return { phone: t({ mobile: true, cores: 6 }), desk8: t({}), desk2: t({ cores: 2 }), soft: t({ software: true }), dn, t2, dn2 }; });
+  rec("default tiers: phone→Medium, strong desktop→High, weak desktop→Medium, software→Low", r.phone === "medium" && r.desk8 === "high" && r.desk2 === "medium" && r.soft === "low", JSON.stringify(r)); rec("automatic fallback steps Medium → Low and stops at Low", r.dn && r.t2 === "low" && !r.dn2); await ev(() => __f50.Q.set("low", false)); }
+// device-based defaults (fresh pages)
+async function tierFor(opts, q = "") { const c = await b.newContext(opts); const pg = await c.newPage(); await pg.goto(url + q, { waitUntil: "domcontentloaded", timeout: 120000 }); await pg.waitForFunction(() => window.__f50, null, { timeout: 120000 }); const t = await pg.evaluate(() => ({ initial: __f50.Q.initial, dev: __f50.Q.dev })); await c.close(); return t; }
+{ const t = await tierFor({ ...devices["iPhone 13"] }); rec("iPhone profile defaults (software GPU here → Low; Medium on real phones)", t.dev.mobile && ["low", "medium"].includes(t.initial), JSON.stringify({ initial: t.initial, mobile: t.dev.mobile, software: t.dev.software })); }
+{ const t = await tierFor({ viewport: { width: 1280, height: 720 } }); rec("desktop with software GPU defaults to Low", t.initial === "low", JSON.stringify({ initial: t.initial })); }
+console.log(`\n${R.filter((r) => r.ok).length}/${R.length} checks passed`); if (outFile) writeFileSync(outFile, JSON.stringify({ date: new Date().toISOString(), results: R }, null, 1)); await b.close();

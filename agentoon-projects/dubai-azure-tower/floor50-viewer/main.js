@@ -8,13 +8,15 @@ import { BURJ_PHOTO, BURJ_CREDIT } from "./assets.js";
 import { buildOffice } from "./plans_office.js";
 import { buildApts } from "./plans_apts.js";
 import { buildLift } from "./plans_lift.js";
+import { createQuality, createMetrics, TIERS } from "./quality.js";
+const Q = createQuality();
 
 // Floor 50 plan: X 0..28 (west->east), Z 0..20 (core/back wall -> Gulf-facing glass). Y up, metres.
 const W = 28, D = 20, WALL_H = 3.6, CEIL_Y = 3.2, VOID_Y = 3.45;
 
 const canvas = document.getElementById("c");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, logarithmicDepthBuffer: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: Q.antialias, preserveDrawingBuffer: true, logarithmicDepthBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, Q.cfg.dpr));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -171,7 +173,7 @@ for (const [x, z] of [[2, 14], [6, 14], [2, 17.5], [6, 17.5], [4, 8], [2.5, 2.5]
 scene.add(new THREE.HemisphereLight(0xdcecff, 0x8a7a66, 0.55));
 const sun = new THREE.DirectionalLight(0xfff0d8, 2.6);
 sun.position.set(40, 38, 70); sun.target.position.set(W / 2, 0, D / 2);
-sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+sun.castShadow = Q.cfg.shadows; sun.shadow.mapSize.set(Q.cfg.shadowMap, Q.cfg.shadowMap);
 Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 5, far: 160 }); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03;
 scene.add(sun, sun.target);
 const pointLights = [];
@@ -463,7 +465,7 @@ function setTime(h) {
   if (state.lightsAuto) { const on = day < 0.35; Object.keys(lightsOn).forEach((k) => (lightsOn[k] = on)); applyLights(); syncLightButtons(); planAPI && planAPI.lights(on); }
 }
 const lightsOn = {}; Object.keys(ROOMS).forEach((k) => (lightsOn[k] = false));
-function applyLights() { Object.keys(ROOMS).forEach((k) => { const on = lightsOn[k], inMode = k === "lobby" ? state.mode === "lobby" : state.mode === "floor"; LM[k].emissiveIntensity = on ? 2.2 : 0.03; LM[k].color.set(on ? 0xfff1d6 : 0xb8b2a8); roomLights[k].forEach((o) => (o.p.intensity = on && inMode ? o.base : 0)); }); }
+function applyLights() { Object.keys(ROOMS).forEach((k) => { const on = lightsOn[k], inMode = k === "lobby" ? state.mode === "lobby" : state.mode === "floor"; LM[k].emissiveIntensity = on ? 2.2 : 0.03; LM[k].color.set(on ? 0xfff1d6 : 0xb8b2a8); roomLights[k].forEach((o) => (o.p.intensity = on && inMode && Q.cfg.pointLights ? o.base : 0)); }); }
 
 // ---------------------------------------------------------------- utilities (illustrative routing)
 const COL = { elecL: 0xffd21f, elecP: 0xff8a1f, elecH: 0xff4a3a, cold: 0x2f86ff, hot: 0xff3b30, soil: 0x9a4d10, waste: 0xb5bd2a, vent: 0xd3dae0 };
@@ -1015,6 +1017,7 @@ document.getElementById("rideLobby").addEventListener("click", () => startRide(1
 document.getElementById("goPark").addEventListener("click", () => setMode("park")); document.getElementById("goLobbyP").addEventListener("click", () => setMode("lobby"));
 document.getElementById("parkDemo").addEventListener("click", () => { if (X.parkDemoOn()) { X.stopParkDemo(); bannerEl.style.display = "none"; document.getElementById("parkDemo").setAttribute("aria-pressed", "false"); } else { state.pfire = true; state.pair = true; apply(); X.startParkDemo(); goViewP("b2"); document.getElementById("parkDemo").setAttribute("aria-pressed", "true"); } });
 const fadeEl = document.getElementById("fade");
+let shadowWanted = false;
 function setMode(m, cb) {
   if (m === state.mode) { cb && cb(); return; }
   fadeEl.style.opacity = "1";
@@ -1028,7 +1031,7 @@ function setMode(m, cb) {
     else if (m === "apts") { FOCUS.set(17, 0, 13); controls.maxDistance = 100; controls.maxPolarAngle = Math.PI / 2 - 0.02; putCamera(...VA.over); }
     else if (m === "lift") { FOCUS.set(400, 0, 0); controls.maxDistance = 20; controls.maxPolarAngle = Math.PI; putCamera(LIFT.cam.p, LIFT.cam.t); }
     else { FOCUS.set(0, 100, 0); controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; putCamera(...VT.over); }
-    sun.castShadow = m === "floor" || m === "lobby" || m === "office" || m === "apts"; Object.assign(sun.shadow.camera, m === "office" || m === "apts" ? { left: -34, right: 34, top: 34, bottom: -34 } : { left: -26, right: 26, top: 26, bottom: -26 }); sun.shadow.camera.updateProjectionMatrix(); camera.near = m === "tower" ? 1.0 : m === "park" ? 0.3 : m === "lift" ? 0.05 : 0.1; camera.updateProjectionMatrix(); if (X.parkDemoOn()) X.stopParkDemo(); moonLight.target.position.copy(FOCUS);
+    shadowWanted = m === "floor" || m === "lobby" || m === "office" || m === "apts"; sun.castShadow = shadowWanted && Q.cfg.shadows; Object.assign(sun.shadow.camera, m === "office" || m === "apts" ? { left: -34, right: 34, top: 34, bottom: -34 } : { left: -26, right: 26, top: 26, bottom: -26 }); sun.shadow.camera.updateProjectionMatrix(); camera.near = m === "tower" ? 1.0 : m === "park" ? 0.3 : m === "lift" ? 0.05 : 0.1; camera.updateProjectionMatrix(); if (X.parkDemoOn()) X.stopParkDemo(); moonLight.target.position.copy(FOCUS);
     Object.keys(lightsOn).forEach((k) => (lightsOn[k] = lightsOn[k])); applyLights(); syncLightButtons(); apply(); tower.highlight(m === "tower" ? state.selFloor : 0);
     fadeEl.style.opacity = "0"; cb && cb();
   }, 300);
@@ -1120,6 +1123,19 @@ document.getElementById("recBtn").addEventListener("click", () => startTour(true
 stopTourBtn.addEventListener("click", () => stopTour(false));
 addEventListener("keydown", (e) => { if (e.key === "Escape") stopTour(false); });
 
+
+// ---------------------------------------------------------------- graphics quality + metrics (see quality.js)
+const METRICS = createMetrics(renderer, Q, () => state.mode);
+function applyTier() {
+  const c = Q.cfg; renderer.setPixelRatio(Math.min(devicePixelRatio, c.dpr)); resize();
+  if (sun.shadow.mapSize.x !== c.shadowMap) { sun.shadow.mapSize.set(c.shadowMap, c.shadowMap); if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; } }
+  sun.castShadow = shadowWanted && c.shadows; OFFICE.setPointOK(c.pointLights); APTS.setPointOK(c.pointLights); applyLights();
+  const sel = document.getElementById("gfx"); if (sel) { sel.value = Q.pref; sel.options[0].textContent = `Auto (${TIERS[Q.pref === "auto" ? Q.tier : Q.tier].label})`; }
+  Q.fadeUntil = performance.now() + 2500;
+}
+Q.toast = (t) => { const el = document.getElementById("toast"); if (!el) return; el.textContent = t; el.style.opacity = "1"; clearTimeout(Q.tt); Q.tt = setTimeout(() => (el.style.opacity = "0"), 5000); };
+Q.onChange(applyTier);
+{ const sel = document.getElementById("gfx"); if (sel) { [...sel.options].forEach((o) => { if (o.value === "ultra" && !Q.dev.ultraOK) { o.disabled = true; o.textContent = "Ultra (not supported on this device)"; } }); sel.addEventListener("change", () => Q.set(sel.value)); } }
 function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener("resize", resize); resize();
 
@@ -1133,12 +1149,13 @@ function frame() {
   const dl = (state.elev && (state.mode === "tower" || state.mode === "park")) ? X.dyn() : []; dynEls.forEach((el, i) => { const o = dl[i]; if (!o) { el.style.display = "none"; return; } v.copy(o.pos).project(camera); if (v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05) { el.style.display = "none"; return; } el.style.display = "block"; el.textContent = o.text; el.style.setProperty("--c", o.color); el.style.left = ((v.x + 1) / 2) * innerWidth + "px"; el.style.top = ((1 - v.y) / 2) * innerHeight + "px"; });
   const sr = tower.update(now, dt); if (sr) { flashEl.style.opacity = String(sr.flash * 0.85); bannerEl.textContent = sr.step; }
   LABELS.forEach((o) => { const on = state[o.l] && !(o.l === "names" && state.mep) && (o.M || (o.T ? ["tower"] : ["floor"])).includes(state.mode); if (!on || !o.t) { o.el.style.display = "none"; return; } v.copy(o.v).project(camera); if (v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05) { o.el.style.display = "none"; return; } o.el.style.display = "block"; o.el.style.left = ((v.x + 1) / 2) * innerWidth + "px"; o.el.style.top = ((1 - v.y) / 2) * innerHeight + "px"; });
-  renderer.render(scene, camera); requestAnimationFrame(frame);
+  renderer.render(scene, camera); Q.frame(performance.now()); METRICS.update(); requestAnimationFrame(frame);
 }
 const panels = [...document.querySelectorAll(".panel")]; const hideBtn = document.getElementById("hide");
 function togglePanels() { const on = hideBtn.getAttribute("aria-pressed") !== "true"; hideBtn.setAttribute("aria-pressed", String(on)); panels.forEach((p) => (p.style.display = on ? "none" : "")); }
 hideBtn.addEventListener("click", togglePanels); addEventListener("keydown", (e) => { if (e.key === "h" || e.key === "H") togglePanels(); });
 // start in the whole-building view
-controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; FOCUS.set(0, 100, 0); sun.castShadow = false; camera.near = 1.0; camera.updateProjectionMatrix(); putCamera(...VT.over);
-setTime(15.5); applyLights(); syncLightButtons(); apply(); tower.highlight(50); frame();
-window.__f50 = { OFFICE, APTS, LIFT, RIDE, startRide, VO, VA, PHOTO, startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };
+controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; FOCUS.set(0, 100, 0); sun.castShadow = false; shadowWanted = false; camera.near = 1.0; camera.updateProjectionMatrix(); putCamera(...VT.over);
+setTime(15.5); applyLights(); syncLightButtons(); apply(); tower.highlight(50); frame(); applyTier();
+
+window.__f50 = { renderer, Q, sun, scene, metrics: () => METRICS.get(), OFFICE, APTS, LIFT, RIDE, startRide, VO, VA, PHOTO, startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };

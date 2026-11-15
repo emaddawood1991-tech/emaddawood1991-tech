@@ -15,7 +15,7 @@
   #head h1{margin:0;font-size:16px;letter-spacing:.05em;color:var(--gold);font-weight:600}
   #head p{margin:2px 0 0;color:var(--mut);font-size:12px}
   #nav{left:50%;top:16px;transform:translateX(-50%);display:flex;gap:6px;padding:6px;z-index:5}
-  #ctl{left:16px;top:84px;width:352px;max-height:calc(100% - 170px);overflow:auto}
+  #ctl{left:16px;top:122px;width:352px;max-height:calc(100% - 208px);overflow:auto}
   summary{cursor:pointer;margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600;list-style:none}
   summary::before{content:'\25B8  '} details[open]>summary::before{content:'\25BE  '}
   .grp{margin:0 0 10px} .grp:last-child{margin:0}
@@ -38,6 +38,9 @@
   #timebar{left:50%;bottom:16px;transform:translateX(-50%);width:min(520px,calc(100% - 40px));padding:8px 14px;z-index:4}
   #timebar .row{display:flex;gap:8px;align-items:center} #timebar input{flex:1} #timebar .tl{float:none;min-width:96px;text-align:right}
   .lbl{position:fixed;left:0;top:0;transform:translate(-50%,-130%);pointer-events:none;font-size:11.5px;font-weight:600;white-space:nowrap;padding:2px 8px;border-radius:99px;background:rgba(10,12,16,.84);border:1px solid var(--c,#fff);color:#fff;display:none;z-index:3}
+  #toast{position:fixed;left:50%;top:150px;transform:translateX(-50%);background:rgba(18,22,30,.92);border:1px solid var(--gold);border-radius:10px;padding:8px 14px;opacity:0;transition:opacity .4s;z-index:14;pointer-events:none;font-size:13px}
+  select{font:inherit;color:var(--text);background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:8px;padding:3px 6px}
+  select option{color:#111}
   #banner{position:fixed;left:50%;top:70px;transform:translateX(-50%);max-width:min(660px,90vw);background:rgba(120,10,14,.92);border:1px solid #ff6a6f;border-radius:12px;padding:10px 16px;font-weight:600;display:none;z-index:6;text-align:center}
   #banner.t{background:rgba(24,28,90,.93);border-color:#8f9bff}
   #hover{position:fixed;pointer-events:none;background:rgba(10,12,16,.9);border:1px solid var(--gold);border-radius:8px;padding:3px 9px;font-size:12px;display:none;z-index:7;white-space:nowrap}
@@ -61,7 +64,7 @@
 </head>
 <body data-mode="tower">
 <canvas id="c" aria-label="3D model of the Dubai Azure Tower"></canvas>
-<div class="panel" id="head"><h1>DUBAI AZURE TOWER</h1><p>Fictional concept · drag to orbit, scroll to zoom, right-drag to pan</p></div>
+<div class="panel" id="head"><h1>DUBAI AZURE TOWER</h1><p>Fictional concept · drag to orbit, scroll to zoom, right-drag to pan</p><p style="margin-top:6px"><label for="gfx" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase">Graphics</label> <select id="gfx" aria-label="Graphics quality"><option value="auto">Auto</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="ultra">Ultra</option></select> <span style="font-size:11px">· P = stats</span></p></div>
 <div class="panel" id="nav">
   <button data-mode="tower" aria-pressed="true">Whole building</button>
   <button data-mode="lobby" aria-pressed="false">Lobby</button>
@@ -188,6 +191,7 @@
 <button id="hide" style="position:fixed;right:16px;bottom:16px;z-index:5" aria-pressed="false">Hide panels (H)</button>
 <div id="cap"></div><div id="titleCard"></div><button id="stopTour">Stop tour (Esc)</button>
 <div class="panel" id="liftHud"><div class="row"><span id="liftDir">&#9650;</span><span class="fl" id="liftFloor">12</span><span id="liftZone">Offices</span></div><div class="bar"><i id="liftBar"></i></div><div class="row"><span>Speed <b id="liftSpeed">0.0</b> m/s</span><span>Height <b id="liftAlt">0</b> m</span><span id="liftNote">real time</span></div><div class="btns" style="justify-content:center;margin-top:8px"><button id="liftFast" aria-pressed="false">&#9193; Fast-forward x3</button><button id="liftSkip">Skip</button></div></div>
+<div id="toast"></div>
 <div id="banner"></div><div id="hover"></div><div id="flash"></div><div id="fade"></div>
 <div id="labels"></div>
 <script type="module" src="./main.js"></script>

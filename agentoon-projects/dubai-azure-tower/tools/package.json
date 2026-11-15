@@ -1,0 +1,8 @@
+{
+  "name": "dubai-azure-tower-tools",
+  "private": true,
+  "type": "module",
+  "description": "Dev tooling only (bundle + QA). Not used by the Vercel deployment, which serves floor50-viewer as static files.",
+  "scripts": { "bundle": "node build.mjs", "shots": "node shots.mjs", "qa": "node qa.mjs" },
+  "devDependencies": { "esbuild": "^0.25.0", "playwright": "1.63.0" }
+}
