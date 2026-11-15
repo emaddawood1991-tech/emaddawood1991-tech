@@ -10,6 +10,8 @@ import { buildApts } from "./plans_apts.js";
 import { buildLift } from "./plans_lift.js";
 import { createQuality, createMetrics, TIERS } from "./quality.js";
 import { buildEnvironment } from "./environment.js";
+import { buildLandscape } from "./landscape.js";
+import { makeRig } from "./camrig.js";
 const Q = createQuality();
 
 // Floor 50 plan: X 0..28 (west->east), Z 0..20 (core/back wall -> Gulf-facing glass). Y up, metres.
@@ -428,6 +430,7 @@ const cityMat = new THREE.MeshStandardMaterial({ color: 0xffffff, map: winColor,
   for (let i = 0; i < 90; i++) { const w = 20 + rnd() * 40, h = 8 + rnd() * 24, x = -1500 + rnd() * 3500, z = 140 + rnd() * 160; const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, 20 + rnd() * 20), cityMat); b.position.set(x, GROUND + h / 2, z); OUT.add(b); }
   const own = new THREE.Mesh(new THREE.BoxGeometry(W, -GROUND - 0.5, D), cityMat); own.position.set(W / 2, GROUND / 2 - 0.25, D / 2); OUT.add(own); OUT.userData.own = own;   // the tower body below floor 50
 }
+ENV.addDistrict(cityMat);
 const burjMat = new THREE.MeshStandardMaterial({ color: 0xf3f3f1, roughness: 0.45, side: THREE.DoubleSide, emissive: 0x2c64ff, emissiveIntensity: 0 });
 { // stylised Burj Al Arab on its island (visual reference only, not a surveyed model)
   const b = new THREE.Group(); b.position.set(-560, GROUND, 610); OUT.add(b);
@@ -456,21 +459,22 @@ function setTime(h) {
   skyUniforms.top.value.copy(C(0x08122b).lerp(C(0x4f8fd0), day)).lerp(C(0x5d4a7a), warmK * 0.35);
   skyUniforms.hor.value.copy(C(0x141f38).lerp(C(0xcfe2f1), day)).lerp(C(0xff9b5e), warmK * 0.75);
   skyUniforms.bot.value.copy(C(0x0b1220).lerp(C(0x9fb6c6), day));
+  const blueK = Math.exp(-(((e + 0.115) / 0.09) ** 2)) * (1 - storm); skyUniforms.top.value.lerp(C(0x24528f), blueK * 0.9); skyUniforms.hor.value.lerp(C(0x8a88bd), blueK * 0.55); skyUniforms.bot.value.lerp(C(0x1b2a4a), blueK * 0.6);
   skyUniforms.top.value.lerp(C(0x2b313c), storm * 0.85); skyUniforms.hor.value.lerp(C(0x56606d), storm * 0.8); skyUniforms.bot.value.lerp(C(0x3a414c), storm * 0.7);
   skyUniforms.cloud.value.copy(C(0xffffff).lerp(C(0xff9f78), warmK * 0.55)).lerp(C(0x232a3a), 1 - day).lerp(C(0x5a626c), storm * 0.8); skyUniforms.cloudK.value = (0.22 + 0.55 * storm) * (0.35 + 0.65 * day) + 0.1; skyUniforms.sun.value.copy(sunDir); skyUniforms.glow.value.copy(C(0xffa763)); skyUniforms.glowK.value = cl(e + 0.2, 0, 1) * (0.4 + warmK * 0.8);
   scene.fog.color.copy(skyUniforms.hor.value); scene.fog.density = state.mep ? 0 : 0.00035;
   sun.position.copy(sunDir).multiplyScalar(90).add(FOCUS); sun.target.position.copy(FOCUS); sun.color.copy(C(0xff9248).lerp(C(0xfff1da), cl(e / 0.55, 0, 1)));
   sun.intensity = 2.8 * day * (0.35 + 0.65 * cl(e / 0.4, 0, 1)) + 0.0001;
   moonLight.position.set(FOCUS.x - sunDir.x * 80, -sunDir.y * 80 + 5, FOCUS.z - sunDir.z * 80); moonLight.intensity = 0.55 * (1 - day) * sm(0.02, 0.25, -e);
-  hemi.intensity = 0.07 + 0.55 * day + (state.mode === "park" ? 0.9 : state.mode === "lift" ? 0.45 : 0); hemi.color.copy(C(0x6f86c6).lerp(C(0xdcecff), day));
-  scene.environmentIntensity = state.mep || state.mode === "park" ? 0.9 : state.mode === "lift" ? 0.55 : (0.09 + 0.46 * day) * (state.mode === "tower" ? 1.25 : 1); renderer.toneMappingExposure = 1.0 + 0.25 * (1 - day);
+  hemi.intensity = 0.07 + 0.55 * day + 0.55 * blueK + 0.2 * warmK * (1 - day) + (state.mode === "park" ? 0.9 : state.mode === "lift" ? 0.45 : 0); hemi.color.copy(C(0x6f86c6).lerp(C(0xdcecff), day));
+  scene.environmentIntensity = state.mep || state.mode === "park" ? 0.9 : state.mode === "lift" ? 0.55 : (0.09 + 0.46 * day + 0.45 * blueK + 0.12 * warmK) * (state.mode === "tower" ? 1.25 : 1); renderer.toneMappingExposure = 1.0 + 0.25 * (1 - day);
   sunDisc.position.copy(sunDir).multiplyScalar(9000); sunDisc.visible = e > -0.03; sunDisc.material.color.copy(C(0xffcf8a).lerp(C(0xfff6dc), cl(e / 0.5, 0, 1)));
   moonDisc.position.copy(sunDir).multiplyScalar(-9000); moonDisc.visible = -e > 0.05 && day < 0.6;
   stars.material.opacity = cl(1 - day * 1.6, 0, 0.95); stars.visible = stars.material.opacity > 0.02;
   seaMat.color.copy(C(0x061a2c).lerp(C(0x1f86ad), day)).lerp(C(0xb86a48), warmK * 0.35);
   sandMat.color.copy(C(0x2a2a30).lerp(C(0xcdb48a), day)); roadMat.color.copy(C(0x14161a).lerp(C(0x2c2f35), day));
   cityMat.emissiveIntensity = 1.5 * (1 - day); cityMat.color.copy(C(0x6d7b8a).lerp(C(0xffffff), day)); burjMat.emissiveIntensity = 1.4 * (1 - day); burjMat.color.copy(C(0x9aa3b8).lerp(C(0xf3f3f1), day));
-  nightK = cl(1 - day * 1.4, 0, 1); towerAPI && towerAPI.setNight(nightK); extrasAPI && extrasAPI.setPoolNight(nightK); planAPI && planAPI.night(nightK); ENV.setNight(nightK); refreshSkyEnv(false);
+  nightK = cl(1 - day * 1.4, 0, 1); towerAPI && towerAPI.setNight(nightK); extrasAPI && extrasAPI.setPoolNight(nightK); planAPI && planAPI.night(nightK); ENV.setNight(nightK); LAND.setNight(nightK); refreshSkyEnv(false);
   document.getElementById("tlabel") && (document.getElementById("tlabel").textContent = `${String(Math.floor(h)).padStart(2, "0")}:${String(Math.round((h % 1) * 60) % 60).padStart(2, "0")}  ${day > 0.6 ? "day" : day < 0.05 ? "night" : e > 0 && h < 12 ? "sunrise" : "sunset"}`);
   document.getElementById("tslider") && (document.getElementById("tslider").value = String(h));
   if (state.lightsAuto) { const on = day < 0.35; Object.keys(lightsOn).forEach((k) => (lightsOn[k] = on)); applyLights(); syncLightButtons(); planAPI && planAPI.lights(on); }
@@ -711,6 +715,7 @@ const PHOTO = new THREE.Group(); scene.add(PHOTO); PHOTO.visible = false;
 { const tex = new THREE.TextureLoader().load(BURJ_PHOTO); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
   const D2 = 1100, Wp = 1560, Hp = Wp * (1068 / 1600); const m = new THREE.Mesh(new THREE.PlaneGeometry(Wp, Hp), new THREE.MeshBasicMaterial({ map: tex, fog: false, toneMapped: false, depthWrite: false })); m.rotation.y = Math.PI; m.position.set(14, 0.022 * Hp, 10 + D2); m.renderOrder = -5; PHOTO.add(m); }
 const X = buildExtras({ rnd, TP, topZ, floorZ, canvasTex }); extrasAPI = X; [X.STREET, X.PARK, X.ELEV, X.POOLG, X.CROWD].forEach((g) => { g.visible = false; scene.add(g); });
+const LAND = buildLandscape({ rnd, canvasTex, drive: X.driveCurve, makeCar: X.makeCar }); X.STREET.add(LAND.group);
 // ---- floor 12 offices, floor 50 apartments, lift ride cabin
 const KH = { box, rbox, cyl, sph, local, MAT, std, canvasTex, oakTex, marbleTex, rnd, plant, lamp, pillow, art, artTex };
 const OFFICE = buildOffice(KH), APTS = buildApts(KH), LIFT = buildLift(KH);
@@ -919,6 +924,7 @@ document.getElementById("allmep").addEventListener("click", allMep); ["allmepO",
 document.getElementById("fireDemo").addEventListener("click", () => (demo.on ? (stopDemo(), apply()) : startDemo()));
 const tsl = document.getElementById("tslider"); tsl.addEventListener("input", () => setTime(parseFloat(tsl.value)));
 document.querySelectorAll("[data-time]").forEach((b) => b.addEventListener("click", () => setTime(parseFloat(b.dataset.time))));
+document.querySelectorAll("[data-scene]").forEach((b) => b.addEventListener("click", () => { setTime(parseFloat(b.dataset.scene)); document.querySelectorAll("[data-scene]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
 const lbox = document.getElementById("lightbtns");
 Object.entries(ROOMS).filter(([k]) => k !== "lobby").forEach(([k, name]) => { const b = document.createElement("button"); b.textContent = name; b.dataset.room = k; b.setAttribute("aria-pressed", "false"); b.addEventListener("click", () => { state.lightsAuto = false; lightsOn[k] = !lightsOn[k]; applyLights(); syncLightButtons(); }); lbox.appendChild(b); });
 function syncLightButtons() { lbox.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(!!lightsOn[b.dataset.room]))); const lb = document.getElementById("lobbyLights"); lb && lb.setAttribute("aria-pressed", String(!!lightsOn.lobby)); }
@@ -1094,14 +1100,14 @@ const STEPS_T = [
   [104, () => { capEl.style.opacity = "0"; showTitle("DUBAI AZURE TOWER", "Fictional concept · not approved · not built · not for sale"); }],
   [110, () => stopTour(true)],
 ];
-function startTour(record, steps) {
+function startTour(record, steps, opts = {}) {
   if (tour.on) return; tour.steps = steps || STEPS_T; tour.on = true; tour.t0 = performance.now() / 1000; tour.i = 0; tour.orbit = null; tour.tAnim = null;
   controls.enabled = false; document.querySelectorAll(".panel,#hide").forEach((p) => (p.style.display = "none")); stopTourBtn.style.display = "block"; state.lightsAuto = true;
-  ensureAudio(); if (audio.ctx.state === "suspended") audio.ctx.resume(); startMusic();
+  if (!opts.silent) { ensureAudio(); if (audio.ctx.state === "suspended") audio.ctx.resume(); startMusic(); }
   if (record && window.MediaRecorder) { try { const vs = canvas.captureStream(30), tracks = [...vs.getVideoTracks(), ...(audio.dest ? audio.dest.stream.getAudioTracks() : [])], mt = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"].find((m) => MediaRecorder.isTypeSupported(m)); tour.chunks = []; tour.rec = new MediaRecorder(new MediaStream(tracks), { mimeType: mt, videoBitsPerSecond: 9000000 }); tour.rec.ondataavailable = (e) => e.data.size && tour.chunks.push(e.data); tour.rec.onstop = () => { const blob = new Blob(tour.chunks, { type: "video/webm" }), a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "Dubai_Azure_Tower_Tour.webm"; document.body.appendChild(a); a.click(); setTimeout(() => a.remove(), 1000); }; tour.rec.start(1000); } catch (e) { tour.rec = null; } }
 }
 function stopTour(finished) {
-  if (!tour.on) return; tour.on = false; tour.orbit = null; tour.tAnim = null; stopMusic();
+  if (!tour.on) return; tour.on = false; tour.orbit = null; tour.tAnim = null; tour.cam = null; camera.near = state.mode === "tower" ? 1.0 : 0.1; camera.updateProjectionMatrix(); stopMusic();
   if (tour.rec && tour.rec.state !== "inactive") tour.rec.stop(); tour.rec = null;
   if (state.strike) stopStrike(); hideTitle(); capEl.style.opacity = "0"; stopTourBtn.style.display = "none"; controls.enabled = true;
   document.querySelectorAll(".panel,#hide").forEach((p) => (p.style.display = "")); hideBtn.setAttribute("aria-pressed", "false"); TL({}); state.photo = false; state.elev = false; state.pair = false; state.pfire = false; if (X.parkDemoOn()) X.stopParkDemo(); bannerEl.style.display = "none"; apply(); if (state.mode !== "tower") setMode("tower");
@@ -1109,10 +1115,27 @@ function stopTour(finished) {
 function tourUpdate(now) {
   if (!tour.on) return false; const e = now - tour.t0;
   while (tour.i < tour.steps.length && e >= tour.steps[tour.i][0]) { tour.steps[tour.i][1](); tour.i++; }
+  if (tour.cam) { const c = tour.cam, r = c.rig.at(now - c.t0); camera.position.copy(r.pos); controls.target.copy(r.tgt); camera.lookAt(r.tgt); }
   if (tour.orbit && !tween) { const o = tour.orbit, a = o.a0 + o.spd * e; camera.position.set(Math.cos(a) * o.r, o.y, Math.sin(a) * o.r); controls.target.set(0, o.ty, 0); camera.lookAt(controls.target); }
   if (tour.tAnim) { const k = Math.min(1, (now - tour.tAnim.t0) / tour.tAnim.dur); setTime(tour.tAnim.from + (tour.tAnim.to - tour.tAnim.from) * (k * k * (3 - 2 * k))); if (k >= 1) tour.tAnim = null; }
   return true;
 }
+// ---- Luxury Arrival Experience: one continuous exterior camera rig, then a fade into the lobby and a second rig
+const LOBBY_PT = new THREE.Vector3(0, 2, -24);
+const dpose = (u, off, y) => { const p = X.driveCurve.getPointAt(u), t = X.driveCurve.getTangentAt(u), l = Math.hypot(t.x, t.z); return [p.x - (t.z / l) * off, y, p.z + (t.x / l) * off]; };
+const LUX_EXT = makeRig([
+  [0, [-235, 150, -335], [0, 35, -70]], [8, [-150, 105, -255], [0, 45, -70]], [16, [-72, 34, -170], [0, 45, -40]], [24, [-30, 3.0, -147], [0, 75, -15]], [28, [-26, 9.0, -124], [0, 40, -15]], [32, [-26, 8.6, -112], [0, 3, -100]], [38, [-14, 4.2, -106], [0, 3.5, -99]],
+  [44, [9, 2.8, -90], [0, 3.8, -99]], [48, [3, 3.0, -74], [-20, 1.8, -52]], [53, [-2, 2.8, -60], [-30, 1.8, -52]], [58, [-3, 2.6, -53], [-6, 1.8, -42]], [64, [-4, 2.4, -50], [0, 6, -24]], [70, [-3, 2.0, -38], [0, 5, -24]], [76, [0, 1.75, -30], [0, 2.2, -18]], [80, [0, 1.7, -25.5], [0, 2.2, -12]]]);
+const LUX_INT = makeRig([[0, [0, 1.7, -21], [0, 3, 8]], [5, [0, 1.75, -16], [0, 3.5, 8]], [10, [-5, 2.4, -12], [0, 4, 6]], [14, [-7, 2.8, -9], [2, 4.5, 8]]]);
+const startCam = (rig) => { tour.cam = { rig, t0: performance.now() / 1000 }; };
+const LUXURY = [
+  [0, () => { TL({}); state.elev = false; setMode("tower"); setTime(17.4); camera.near = 0.3; camera.updateProjectionMatrix(); X.resetArrival(0.2); startCam(LUX_EXT); tour.tAnim = { from: 17.4, to: 19.1, t0: performance.now() / 1000, dur: 84 }; showTitle("LUXURY ARRIVAL", "Dubai Azure Tower · a fictional concept"); capEl.style.opacity = "0"; apply(); }],
+  [6, () => { hideTitle(); showCap("A tower set in a landscaped garden"); }], [17, () => showCap("Approaching the entrance gardens")], [25, () => showCap("A low angle reveals the facade in the evening light")], [33, () => showCap("Gliding over palms, lawns and stone paths")],
+  [43, () => showCap("The reflecting fountain")], [51, () => showCap("Along the arrival driveway")], [63, () => showCap("The grand entrance")], [76, () => showCap("Through the glass doors")],
+  [81, () => { tour.cam = null; setMode("lobby", () => { camera.near = 0.1; camera.updateProjectionMatrix(); startCam(LUX_INT); showCap("The double-height lobby"); }); }],
+  [96, () => { capEl.style.opacity = "0"; showTitle("DUBAI AZURE TOWER", "Fictional concept · not approved · not built · not for sale"); }], [101, () => stopTour(true)],
+];
+document.getElementById("luxBtn").addEventListener("click", () => startTour(false, LUXURY, { silent: true }));
 const JOURNEY = [
   [0, () => { TL({}); setMode("tower"); setTime(18.4); X.resetArrival(0.27); tweenTo(...VT.arrival, 1200); showTitle("A GUEST ARRIVES", "From the street to the lift"); capEl.style.opacity = "0"; apply(); }],
   [4, () => { hideTitle(); showCap("A street curves up to the covered arrival"); }],
@@ -1140,7 +1163,7 @@ const METRICS = createMetrics(renderer, Q, () => state.mode);
 function applyTier() {
   const c = Q.cfg; renderer.setPixelRatio(Math.min(devicePixelRatio, c.dpr)); resize();
   if (sun.shadow.mapSize.x !== c.shadowMap) { sun.shadow.mapSize.set(c.shadowMap, c.shadowMap); if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; } }
-  sun.castShadow = shadowWanted && c.shadows; OFFICE.setPointOK(c.pointLights); APTS.setPointOK(c.pointLights); applyLights();
+  LAND.setDensity(c.landscape, c.water); sun.castShadow = shadowWanted && c.shadows; OFFICE.setPointOK(c.pointLights); APTS.setPointOK(c.pointLights); applyLights();
   const sel = document.getElementById("gfx"); if (sel) { sel.value = Q.pref; sel.options[0].textContent = `Auto (${TIERS[Q.pref === "auto" ? Q.tier : Q.tier].label})`; }
   Q.fadeUntil = performance.now() + 2500;
 }
@@ -1157,6 +1180,8 @@ function frame() {
   skyUniforms.t.value = t;
   if (tween) { const k = Math.min(1, (performance.now() - tween.t0) / tween.dur), e = k * k * (3 - 2 * k); camera.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.t0v, tween.t1, e); if (k >= 1) tween = null; }
   const touring = tourUpdate(now); if (state.mode === "lift") liftCamera(); else if (!touring) controls.update(); else if (!tour.orbit || tween) camera.lookAt(controls.target); if (state.mode === "floor") { updateFlow(t); updateDoors(); updateDemo(now); } if (state.mode === "office") OFFICE.update(dt); if (state.mode === "apts") APTS.update(dt); liftUpdate(dt);
+  if (state.mode === "tower" || state.mode === "lobby") LAND.update(now, camera.position, dt);
+  if (state.mode === "tower") LOBBY.visible = !tour.orbit && camera.position.distanceTo(LOBBY_PT) < 80;   // see into the lobby through the glass when close to the entrance
   const xmsg = X.update(now, dt, { night: nightK }); if (xmsg && state.mode === "park") { bannerEl.className = ""; bannerEl.style.display = "block"; bannerEl.textContent = xmsg; }
   const dl = (state.elev && (state.mode === "tower" || state.mode === "park")) ? X.dyn() : []; dynEls.forEach((el, i) => { const o = dl[i]; if (!o) { el.style.display = "none"; return; } v.copy(o.pos).project(camera); if (v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05) { el.style.display = "none"; return; } el.style.display = "block"; el.textContent = o.text; el.style.setProperty("--c", o.color); el.style.left = ((v.x + 1) / 2) * innerWidth + "px"; el.style.top = ((1 - v.y) / 2) * innerHeight + "px"; });
   const sr = tower.update(now, dt); if (sr) { flashEl.style.opacity = String(sr.flash * 0.85); bannerEl.textContent = sr.step; }
@@ -1170,4 +1195,4 @@ hideBtn.addEventListener("click", togglePanels); addEventListener("keydown", (e)
 controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; FOCUS.set(0, 100, 0); sun.castShadow = false; shadowWanted = false; camera.near = 1.0; camera.updateProjectionMatrix(); putCamera(...VT.over);
 setTime(15.5); applyLights(); syncLightButtons(); apply(); tower.highlight(50); frame(); applyTier();
 
-window.__f50 = { renderer, Q, sun, scene, ENV, refreshSkyEnv, metrics: () => METRICS.get(), OFFICE, APTS, LIFT, RIDE, startRide, VO, VA, PHOTO, startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };
+window.__f50 = { LUX_EXT, LUX_INT, LUXURY, LAND, renderer, Q, sun, scene, ENV, refreshSkyEnv, metrics: () => METRICS.get(), OFFICE, APTS, LIFT, RIDE, startRide, VO, VA, PHOTO, startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };

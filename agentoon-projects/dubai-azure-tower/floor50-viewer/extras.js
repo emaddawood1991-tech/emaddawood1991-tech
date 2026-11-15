@@ -60,12 +60,10 @@ export function buildExtras(ctx) {
   { const pos = []; for (let x = -250; x < 250; x += 10) pos.push(x, 0.1, -150, x + 5, 0.1, -150); STREET.add(lines(pos, 0xf3f3ef)); const e = []; for (const z of [-140.3, -159.7]) e.push(-260, 0.1, z, 260, 0.1, z); STREET.add(lines(e, 0xf3f3ef)); }
   const driveYf = (x) => 0.47 - 0.41 * sm(58, 112, Math.abs(x));
   const drivePts = [[-125, -150], [-100, -124], [-72, -88], [-40, -54], [0, -42], [40, -54], [72, -88], [100, -124], [125, -150]].map(([x, z]) => V(x, driveYf(x), z));
-  const drive = new THREE.CatmullRomCurve3(drivePts, false, "catmullrom", 0.5); STREET.add(ribbon(drive, 10, asphalt));
+  const drive = new THREE.CatmullRomCurve3(drivePts, false, "catmullrom", 0.5); STREET.add(ribbon(drive, 10, asphalt)); API.driveCurve = drive;
   { const pos = []; for (let i = 0; i < 160; i += 2) { const a = drive.getPointAt(i / 160), b = drive.getPointAt((i + 1) / 160); pos.push(a.x, a.y + 0.04, a.z, b.x, b.y + 0.04, b.z); } STREET.add(lines(pos, 0xe8c24a)); }
   // pavement + canopy at the drop-off
-  box(STREET, 44, 0.12, 13, std(0xd9cdb5, 0.8), 0, 0.4, -30.5); const canopyM = std(0x2b2f36, 0.3, 0.5);
-  box(STREET, 38, 0.5, 14, canopyM, 0, 7.2, -37); for (const x of [-17, -6, 6, 17]) cyl(STREET, 0.35, 0.35, 7.2, std(0xc9a25a, 0.3, 1), x, 0.4, -30.8, 16);
-  { const strip = new THREE.Mesh(new THREE.BoxGeometry(36, 0.1, 0.3), new THREE.MeshStandardMaterial({ color: 0xffe3b8, emissive: 0xffc27a, emissiveIntensity: 1.2 })); strip.position.set(0, 7.15, -30.2); STREET.add(strip); }
+  // (entrance plaza, canopy, sign and pools now live in landscape.js)
   // approach arrows + sign posts
   { const pos = []; for (const [x, z, dx, dz] of [[-95, -118, 1, 1.2], [-60, -74, 1, 1.1], [60, -74, 1, -1.1]]) { const l = Math.hypot(dx, dz); pos.push(x, 0.2, z, x + (dx / l) * 5, 0.2, z + (dz / l) * 5); } STREET.add(lines(pos, 0x6fd0ff)); }
   const signM = (txt, col) => { const t = canvasTex(256, 96, (g, w, h) => { g.fillStyle = col; g.fillRect(0, 0, w, h); g.fillStyle = "#fff"; g.font = "bold 40px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(txt, w / 2, h / 2); }); return new THREE.MeshBasicMaterial({ map: t }); };
@@ -98,8 +96,7 @@ export function buildExtras(ctx) {
     const stripes = canvasTex(256, 32, (g, w, h) => { for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? "#ffffff" : "#d8232a"; g.fillRect((i * w) / 8, 0, w / 8, h); } });
     barrier = new THREE.Group(); barrier.position.set(91.4, p0.y + 1.05, -124); const arm = new THREE.Mesh(new THREE.BoxGeometry(3.7, 0.12, 0.12), new THREE.MeshStandardMaterial({ map: stripes, roughness: 0.5 })); arm.position.set(-1.85, 0, 0); barrier.add(arm); STREET.add(barrier); }
 
-  // street trees
-  { const tm = std(0x8a6a48), lm = std(0x3f7a3d); for (const [x, z] of [[-120, -134], [-80, -134], [-20, -134], [20, -134], [80, -134], [124, -134], [-60, -164], [60, -164]]) { cyl(STREET, 0.16, 0.22, 4, tm, x, 0, z, 8); const l = new THREE.Mesh(new THREE.SphereGeometry(2, 12, 10), lm); l.position.set(x, 5, z); STREET.add(l); } }
+  // (street trees replaced by the planted arrival garden in landscape.js)
   // moving cars on the loop and down the ramp
   const arrCar = makeCar(3); STREET.add(arrCar);
   const car2 = makeCar(1); STREET.add(car2);

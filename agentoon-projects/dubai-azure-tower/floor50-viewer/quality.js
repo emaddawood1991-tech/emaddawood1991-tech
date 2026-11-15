@@ -3,10 +3,10 @@
 // renderer is created (a change of AA needs a reload), everything else applies live.
 const KEY = "azure.gfx";
 export const TIERS = {
-  low: { label: "Low", dpr: 1, shadows: false, shadowMap: 1024, pointLights: false },
-  medium: { label: "Medium", dpr: 1.25, shadows: true, shadowMap: 1024, pointLights: true },
-  high: { label: "High", dpr: 1.75, shadows: true, shadowMap: 2048, pointLights: true },
-  ultra: { label: "Ultra", dpr: 2, shadows: true, shadowMap: 4096, pointLights: true },
+  low: { label: "Low", dpr: 1, shadows: false, shadowMap: 1024, pointLights: false, landscape: 0.3, water: false },
+  medium: { label: "Medium", dpr: 1.25, shadows: true, shadowMap: 1024, pointLights: true, landscape: 0.65, water: true },
+  high: { label: "High", dpr: 1.75, shadows: true, shadowMap: 2048, pointLights: true, landscape: 1, water: true },
+  ultra: { label: "Ultra", dpr: 2, shadows: true, shadowMap: 4096, pointLights: true, landscape: 1, water: true },
 };
 const ORDER = ["low", "medium", "high", "ultra"];
 

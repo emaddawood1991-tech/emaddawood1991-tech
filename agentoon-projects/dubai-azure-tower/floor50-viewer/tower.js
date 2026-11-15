@@ -145,7 +145,12 @@ export function createTower(ctx) {
   G.pick.add(skinMesh.clone()); G.pick.visible = false;
 
   // ---- site: arrival plaza, podium terraces, palms
-  { const mk = (r, h, y, col) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 64), new THREE.MeshStandardMaterial({ color: col, roughness: 0.8 })); m.position.set(0, y + h / 2, 0); m.scale.set(1.0, 1, 0.82); G.site.add(m); return m; };
+  { const mk = (r, h, y, col) => {
+      // the two raised terraces are opened on the street side so the arrival plaza meets the lobby at ground level
+      const cut = r < 80, mat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.8, side: THREE.DoubleSide });
+      const m = new THREE.Mesh(cut ? new THREE.CylinderGeometry(r, r, h, 64, 1, false, Math.PI + 0.5, Math.PI * 2 - 1.0) : new THREE.CylinderGeometry(r, r, h, 64), mat); m.position.set(0, y + h / 2, 0); m.scale.set(1.0, 1, 0.82);
+      if (cut) for (const th of [Math.PI + 0.5, Math.PI - 0.5]) { const p = new THREE.Mesh(new THREE.PlaneGeometry(r, h), mat); p.position.set((Math.sin(th) * r) / 2, 0, (Math.cos(th) * r) / 2); p.rotation.y = th - Math.PI / 2; m.add(p); }
+      G.site.add(m); return m; };
     mk(86, 0.4, 0.0, 0xcfc2a8); mk(66, 5.5, 0, 0xd9cdb5).position.y = 2.75 - 0.6; mk(50, 5.5, 5.5, 0xe0d5bf).position.y = 5.5 + 2.75 - 0.6;
     const palmG = new THREE.Group(); const trunk = new THREE.CylinderGeometry(0.22, 0.32, 7, 7), leaf = new THREE.ConeGeometry(0.5, 4.4, 4), tm = new THREE.MeshStandardMaterial({ color: 0x8a6a48 }), lm = new THREE.MeshStandardMaterial({ color: 0x3f7a3d });
     for (let i = 0; i < 70; i++) { const a = rnd() * 6.283, r = 52 + rnd() * 30; if (Math.sin(a) < -0.45) continue; const x = Math.cos(a) * r, z = Math.sin(a) * r * 0.82, y0 = r < 66 ? (r < 50 ? 11 : 5.5) : 0.4; const t = new THREE.Mesh(trunk, tm); t.position.set(x, y0 + 3.5, z); const g = new THREE.Group(); for (let k = 0; k < 7; k++) { const l = new THREE.Mesh(leaf, lm); l.position.set(0, 0, 2); l.rotation.x = Math.PI / 2 + 0.5; const pv = new THREE.Group(); pv.add(l); pv.rotation.y = (k / 7) * 6.283; g.add(pv); } g.position.set(x, y0 + 7, z); palmG.add(t, g); }

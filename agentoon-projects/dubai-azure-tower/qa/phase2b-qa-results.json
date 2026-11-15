@@ -1,0 +1,225 @@
+{
+ "date": "2026-11-15T09:03:42.361Z",
+ "results": [
+  {
+   "name": "page loads, debug hook present",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "nav button → tower",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "nav button → lobby",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "nav button → park",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "nav button → office",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "nav button → floor",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "nav button → apts",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "floor 12 layout check",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "floor 50 layout check",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "controls in tower mode (17 buttons clicked)",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "controls in lobby mode (7 buttons clicked)",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "controls in park mode (8 buttons clicked)",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "controls in office mode (41 buttons clicked)",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "controls in floor mode (37 buttons clicked)",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "controls in apts mode (48 buttons clicked)",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "time of day buttons (sunrise/noon/sunset/night)",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "doors open/close + lights on (office)",
+   "ok": true,
+   "note": "open=true closed=true lit=true"
+  },
+  {
+   "name": "doors open/close + lights on (apts)",
+   "ok": true,
+   "note": "open=true closed=true lit=true"
+  },
+  {
+   "name": "doors open/close + lights on (floor)",
+   "ok": true,
+   "note": "open=true closed=true lit=true"
+  },
+  {
+   "name": "thunder strike start/stop",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "car-park fire demo start/stop",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "floor 49 fire demo start/stop",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "floor 1 → lobby",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "floor 12 → office",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "floor 49 → floor",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "floor 50 → apts",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "lift ride 12 → 50 arrives at floor 50",
+   "ok": true,
+   "note": "mode=apts"
+  },
+  {
+   "name": "cinematic tour starts and stops",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "guest journey starts and stops",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "tour recording starts and stops",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "lighting scenarios: day / golden / blue / night",
+   "ok": true,
+   "note": "13:00  day | 17:36  sunset | 18:33  night | 22:00  night"
+  },
+  {
+   "name": "Luxury Arrival camera path stays clear of trees, palms, benches, water and ground",
+   "ok": true,
+   "note": "{\"bad\":0,\"intMin\":1.694175202963924,\"total\":94}"
+  },
+  {
+   "name": "Luxury Arrival tour starts with the exterior camera rig and stops cleanly",
+   "ok": true,
+   "note": "{\"on\":true,\"cam\":true,\"mode\":\"tower\"}"
+  },
+  {
+   "name": "Luxury Arrival transitions from the entrance into the lobby",
+   "ok": true,
+   "note": "{\"mode\":\"lobby\",\"cam\":true}"
+  },
+  {
+   "name": "quality low",
+   "ok": true,
+   "note": "{\"tier\":\"low\",\"dpr\":1,\"dis\":true}"
+  },
+  {
+   "name": "quality medium",
+   "ok": true,
+   "note": "{\"tier\":\"medium\",\"dpr\":1,\"dis\":true}"
+  },
+  {
+   "name": "quality high",
+   "ok": true,
+   "note": "{\"tier\":\"high\",\"dpr\":1,\"dis\":true}"
+  },
+  {
+   "name": "ultra disabled on unsupported device (software GPU)",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "metrics hook returns live stats",
+   "ok": true,
+   "note": "{\"fps\":1.8,\"frameMs\":560.8,\"drawCalls\":172,\"triangles\":184699,\"geometries\":6073,\"textures\":77,\"programs\":112,\"pixelRatio\":1,\"canvas\":\"800x500\",\"tier\":\"high\",\"mode\":\"tower\",\"heapMB\":133}"
+  },
+  {
+   "name": "no JS errors during the whole run",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "default tiers: phone→Medium, strong desktop→High, weak desktop→Medium, software→Low",
+   "ok": true,
+   "note": "{\"phone\":\"medium\",\"desk8\":\"high\",\"desk2\":\"medium\",\"soft\":\"low\",\"dn\":true,\"t2\":\"low\",\"dn2\":false}"
+  },
+  {
+   "name": "automatic fallback steps Medium → Low and stops at Low",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "iPhone profile defaults (software GPU here → Low; Medium on real phones)",
+   "ok": true,
+   "note": "{\"initial\":\"low\",\"mobile\":true,\"software\":true}"
+  },
+  {
+   "name": "desktop with software GPU defaults to Low",
+   "ok": true,
+   "note": "{\"initial\":\"low\"}"
+  }
+ ]
+}

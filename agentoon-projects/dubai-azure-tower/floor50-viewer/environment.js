@@ -43,5 +43,14 @@ export function buildEnvironment({ rnd, GROUND, canvasTex }) {
   group.add(poles, heads);
   [palmsT, palmsF, poles, heads].forEach((m) => { m.frustumCulled = false; });   // instances span kilometres; one bounding box would cull wrongly
 
-  return { group, asphalt, sand, setNight: (k) => { headMat.emissiveIntensity = 2.6 * k; }, stats: { palms: palmSpots.length, lamps: lampSpots.length } };
+  // land-side city district (merged into two meshes): mid-rise rows behind the arrival street + far silhouettes for atmospheric depth
+  const addDistrict = (cityMat) => {
+    const geos = { near: [], far: [] };
+    const uvFix = (g, w, d, h) => { const u = g.attributes.uv; for (let i = 0; i < 24; i++) { const f = Math.floor(i / 4); u.setXY(i, u.getX(i) * (f < 2 ? d : f < 4 ? 1 : w) / 18, u.getY(i) * (f >= 2 && f < 4 ? 1 : h / 22)); } };
+    const add = (set, x, z, w, d, h, kind) => { const parts = []; if (kind === 1) { for (let k = 0; k < 3; k++) { const ww = w * (1 - k * 0.22), dd = d * (1 - k * 0.22), hh = h * (0.45 - k * 0.1) + 12; parts.push([ww, dd, hh, k === 0 ? 0 : parts.reduce((a, p) => a + p[2], 0)]); } } else parts.push([w, d, h, 0]);
+      parts.forEach(([ww, dd, hh, y0]) => { let g; if (kind === 2) { g = new THREE.CylinderGeometry(ww / 2, ww / 2, hh, 20, 1, false); const u = g.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, u.getX(i) * (Math.PI * ww) / 18, u.getY(i) * hh / 22); g = g.toNonIndexed(); } else { g = new THREE.BoxGeometry(ww, hh, dd); uvFix(g, ww, dd, hh); g = g.toNonIndexed(); } g.translate(x, GROUND + y0 + hh / 2, z); set.push(g); }); };
+    for (const [set, z0, z1, hmin, hmax, step] of [[geos.near, -330, -380, 40, 110, 60], [geos.near, -470, -560, 70, 170, 70], [geos.near, -700, -820, 110, 290, 80], [geos.far, -1500, -2600, 160, 420, 90]]) for (let x = -1100 + rnd() * 40; x < 1100; x += step + rnd() * 30) { if (set === geos.near && z0 > -400 && Math.abs(x) < 80) continue; const w = 26 + rnd() * 34, d = 26 + rnd() * 30, h = hmin + (hmax - hmin) * rnd() * rnd() + (hmax - hmin) * 0.15, kind = rnd() < 0.3 ? 1 : rnd() < 0.18 ? 2 : 0; add(set, x, z0 + rnd() * (z1 - z0), w, d, h, kind); }
+    for (const k of ["near", "far"]) { const list = geos[k]; let n = 0; list.forEach((g) => (n += g.attributes.position.count)); const P = new Float32Array(n * 3), N = new Float32Array(n * 3), U = new Float32Array(n * 2); let o = 0; list.forEach((g) => { P.set(g.attributes.position.array, o * 3); N.set(g.attributes.normal.array, o * 3); U.set(g.attributes.uv.array, o * 2); o += g.attributes.position.count; }); const G = new THREE.BufferGeometry(); G.setAttribute("position", new THREE.BufferAttribute(P, 3)); G.setAttribute("normal", new THREE.BufferAttribute(N, 3)); G.setAttribute("uv", new THREE.BufferAttribute(U, 2)); const m = new THREE.Mesh(G, cityMat); m.frustumCulled = false; group.add(m); }
+  };
+  return { group, asphalt, sand, addDistrict, setNight: (k) => { headMat.emissiveIntensity = 2.6 * k; }, stats: { palms: palmSpots.length, lamps: lampSpots.length } };
 }
