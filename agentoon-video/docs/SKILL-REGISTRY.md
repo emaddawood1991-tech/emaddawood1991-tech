@@ -36,3 +36,28 @@ Node 22, npm packages in `agentoon-video/remotion-fx/package.json` (remotion 4.0
 - The reference video `1000290009.mp4` was not found in the uploads; the three style names were implemented from their descriptions in your brief (original source unverified).
 - Test A/B screenshots are third-party site captures used only for the proofs.
 - video-effects and Liam's skills are installed but not yet exercised on a real episode.
+
+
+# EXPANSION 2026-11-15: full motion-graphics system
+## Upstream libraries reviewed (licences read from each repo's LICENSE; none is a ready-made Claude skill, so they are wrapped by our components)
+| Library | Licence | Used? |
+|---|---|---|
+| remotion-dev/remotion @cc7879e | Remotion License (free for individuals and small companies; company licence otherwise; Remotion 5 changes it) | YES: engine, `@remotion/transitions`, `motion-blur`, `paths`, `three`, `lottie` installed |
+| remotion-dev/skills | no LICENSE file in the repo | reused via the existing `remotion:*` plugin skills (not copied) |
+| pmndrs/react-three-fiber @d74622e, pmndrs/drei @bf6f4ad, pmndrs/three-stdlib @e0e835a | MIT | R3F + three used by `three.tsx`; drei and three-stdlib installed (drei pinned 10.0.7), not needed by current components (no HDR/env maps: software GL) |
+| mrdoob/three.js @6281ce3 | MIT | YES: SVGLoader, ExtrudeGeometry, FontLoader/TextGeometry, bundled helvetiker typeface |
+| greensock/GSAP @5e6c35f | GreenSock standard "no charge" licence (all plugins free incl. commercial) | installed; used by the HyperFrames episodes (kit). Not used in the Remotion components (Remotion's `spring`/`interpolate` are frame-deterministic) |
+| motiondivision/motion @f95ab94 | MIT | REVIEWED, NOT integrated: real-time animation engine; Remotion springs cover the need |
+| airbnb/lottie-web @bede03d | MIT | `@remotion/lottie` + lottie-web installed for Lottie assets; no Lottie file is used yet (no demo claimed) |
+| Blender (bpy 5.3.0 from PyPI) | GPL | YES: `blender/render_logo_turntable.py` rendered a real Cycles turntable (public/blender/cal, 36 frames) used in showcase S04 |
+
+## New slash skills (all with working components + rendered demos)
+`/agentoon-data-motion`, `/agentoon-3d-motion`, `/agentoon-kinetic-type`, `/agentoon-infographics`, `/agentoon-logo-motion`, `/agentoon-cinematic-fx` (+ the earlier `/scrapbook-collage`, `/explainer-panel-reel`, `/neon-outline`). Components and props: `agentoon-video/remotion-fx/README.md`. Selection data: `.claude/skills/agentoon-director/reference/fx-registry.json` (read by `select-skills.py`).
+
+## Verification (see agentoon-video/remotion-fx/proof/)
+- `npm test`: 6/6 pure-math tests (counter 0 to 1,000 frame by frame, 0 to 95 percent, number formatting, odometer positions, speed ramp, seeded RNG).
+- `python3 scripts/verify-showcase.py`: pixel/motion checks per scene and per transition on the rendered showcase (result in `proof/verify-showcase.json`).
+- Frames viewed by hand during development; bugs found and fixed: 3D panels blank (delayRender inside the R3F tree does not block capture), 3D logo back-face frames, stroke-only SVG parts, missing asset 404, screenshot text warped by the paper filter.
+
+## Limitations
+Blender's SVG import ignores stroke-only shapes and complex SVGs (AppFlowy) import badly: use filled-shape logos; `drei`/`motion`/`lottie` are installed or reviewed but not yet exercised; the showcase uses demo data and illustrative values (labelled); no Lottie demo; software GL makes 3D scenes slow (about 3-6 s per frame).

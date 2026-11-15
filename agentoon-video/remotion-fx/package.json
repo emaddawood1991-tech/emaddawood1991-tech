@@ -8,13 +8,28 @@
     "render:a": "remotion render TestA out/test-a-scrapbook.mp4",
     "render:b": "remotion render TestB out/test-b-explainer.mp4",
     "render:c": "remotion render TestC out/test-c-neon.mp4",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "test": "node --test test/math.test.ts",
+    "render:showcase": "remotion render Showcase out/showcase.mp4 --codec=h264 --crf=18",
+    "verify:showcase": "python3 scripts/verify-showcase.py",
+    "blender:logo": "python3 blender/render_logo_turntable.py public/logos/cal.svg public/blender/cal 36 480"
   },
   "dependencies": {
+    "@react-three/drei": "^10.0.7",
+    "@react-three/fiber": "^9.1.2",
     "@remotion/cli": "4.0.505",
+    "@remotion/lottie": "^4.0.505",
+    "@remotion/motion-blur": "^4.0.505",
+    "@remotion/paths": "^4.0.505",
+    "@remotion/three": "^4.0.505",
+    "@remotion/transitions": "^4.0.505",
+    "@types/three": "^0.171.0",
+    "gsap": "^3.15.1",
+    "lottie-web": "^5.13.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "remotion": "4.0.505"
+    "remotion": "4.0.505",
+    "three": "^0.171.0"
   },
   "devDependencies": {
     "@types/react": "19.2.7",

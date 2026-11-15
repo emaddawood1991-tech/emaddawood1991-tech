@@ -9,3 +9,6 @@ Config.setOverwriteOutput(true);
 Config.setVideoImageFormat("jpeg");
 Config.setJpegQuality(92);
 Config.setConcurrency(2);
+
+// Software GL for @remotion/three on machines without a GPU.
+Config.setChromiumOpenGlRenderer("swangle");

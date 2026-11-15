@@ -1,0 +1,24 @@
+{
+ "_doc": "Machine-readable registry used by scripts/select-skills.py. 'component' paths are checked for existence; 'proof' is the rendered evidence. Updated 2026-11-15.",
+ "effects": [
+  {"skill": "scrapbook-collage", "role": "hero", "component": "agentoon-video/remotion-fx/src/fx/ScrapbookCollage.tsx", "proof": "remotion-fx/proof/test-a-scrapbook.mp4; showcase S10",
+   "signals": "alternatives|roundup|round-up|tools|apps|screenshots?|collage|list of|hook|recap|stack|\\b(?:5|6|7|8|9|10) (?:tools|apps|alternatives)", "why": "several real screenshots/logos shown together as layered paper cards"},
+  {"skill": "explainer-panel-reel", "role": "hero", "component": "agentoon-video/remotion-fx/src/fx/ExplainerPanel.tsx", "proof": "remotion-fx/proof/test-b-explainer.mp4; showcase S11",
+   "signals": "tutorial|how to|step[- ]by[- ]step|settings|website|browser|click|install|walk[- ]?through|setup|dashboard|sign[- ]?up", "why": "UI walk-through: real screenshot, camera glide, cursor, callouts, step cards"},
+  {"skill": "neon-outline", "role": "support", "component": "agentoon-video/remotion-fx/src/fx/NeonOutline.tsx", "proof": "remotion-fx/proof/test-c-neon.mp4; showcase S09", "max_uses": 2,
+   "signals": "robot|presenter|intro|hero|neon|cta|mascot|launch", "why": "presenter/robot hero or emphasis beat (<= 3 s)", "conflicts": ["cinematic-camera", "terminal-inserts", "article-highlights"]},
+  {"skill": "agentoon-data-motion", "role": "support", "component": "agentoon-video/remotion-fx/src/fx/data.tsx", "proof": "showcase S01-S03",
+   "signals": "number|numbers|stats?|statistics|percent|%|count(?:er|down)?|score|benchmark|price|users|stars|growth|chart|graph|progress|timer|\\b\\d{2,}", "why": "numbers that must land on narrated words"},
+  {"skill": "agentoon-3d-motion", "role": "hero", "component": "agentoon-video/remotion-fx/src/fx/three.tsx", "proof": "showcase S04-S05", "max_uses": 2,
+   "signals": "3d|logo reveal|fly[- ]?through|product|camera|floating|depth|blender|hardware|device|launch|cinematic", "why": "real 3D: extruded logo, camera path through floating UI panels"},
+  {"skill": "agentoon-kinetic-type", "role": "support", "component": "agentoon-video/remotion-fx/src/fx/kinetic.tsx", "proof": "showcase S06",
+   "signals": "title|headline|quote|key point|hook|text|morph|wording|caption|subtitles?|tips?|\\b\\d+ (?:tricks|tips|steps|ways)", "why": "key phrases animated word/letter/morph, word-timed subtitles"},
+  {"skill": "agentoon-infographics", "role": "hero", "component": "agentoon-video/remotion-fx/src/fx/infographics.tsx", "proof": "showcase S07-S08",
+   "signals": "mcp|api|connect(?:s|ion|ed)?|workflow|pipeline|diagram|compare|comparison|\\bvs\\b|versus|alternative|architecture|timeline|process|agent", "why": "how systems connect or how two tools compare"},
+  {"skill": "agentoon-logo-motion", "role": "support", "component": "agentoon-video/remotion-fx/src/fx/logo.tsx", "proof": "showcase S12",
+   "signals": "logo|brand|software names|tools|alternatives|intro|reveal|product|github|apps", "why": "named software introduced with its real logo"},
+  {"skill": "agentoon-cinematic-fx", "role": "support", "component": "agentoon-video/remotion-fx/src/fx/cinematic.tsx", "proof": "showcase transitions + S13",
+   "signals": "transition|scenes?|montage|multi[- ]scene|reveal|speed|cinematic|launch|series|tour|chapters?", "why": "scene changes, tracking camera, controlled speed ramps"}
+ ],
+ "rules": ["Never select every effect.", "At most 1 hero + 2 supporting effects per video (3 total), unless the brief is an effects showcase.", "Each effect must be tied to a named scene in data/FX-TIMELINE.json.", "Skip effects whose component file is missing."]
+}

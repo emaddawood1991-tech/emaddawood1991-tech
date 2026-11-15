@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Score an Agentoon.ai video brief and suggest which specialist skills to use. Deterministic keyword scoring: a starting point for /agentoon-director, which still applies judgement.
 Usage: python3 select-skills.py "<brief text>" [--json]"""
-import json, re, sys
+import json, os, re, sys
 ALWAYS = {"agentoon-robot": "presenter in every scene", "agentoon-audio": "narration, music, sound", "agentoon-qc": "final gate"}
 RULES = {
  "agentoon-ui": (r"\b(tutorial|terminal|cli|github|repo|website|browser|app|software|settings|dashboard|login|sign[- ]?up|connector|screen|ui|dev tools|install|command|setup|how to|chatgpt|gemini|claude|tool|prompt)\b", "real software or web screens to show, zoom and highlight"),
@@ -19,6 +19,18 @@ def score(text):
         n = len(re.findall(rx, t))
         if n: out[k] = (n, why)
     return out
+def fx_select(brief, root):
+    """Real Remotion effect skills from reference/fx-registry.json: score by signals, verify the component file exists, cap at 1 hero + 2 supporting."""
+    reg = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "reference/fx-registry.json")))
+    t = brief.lower(); scored = []
+    for e in reg["effects"]:
+        n = len(re.findall(e["signals"], t))
+        if n and os.path.exists(os.path.join(root, e["component"])): scored.append((n, e))
+    scored.sort(key=lambda x: -x[0]); heroes = [e for n, e in scored if e["role"] == "hero"][:1]; sup = [e for n, e in scored if e not in heroes][:2]
+    chosen = heroes + sup; names = {e["skill"] for e in chosen}
+    chosen = [e for e in chosen if not (set(e.get("conflicts", [])) & names)]
+    return [{"skill": e["skill"], "role": e["role"], "why": e["why"], "proof": e["proof"]} for e in chosen]
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     if not args: sys.exit(__doc__)
@@ -30,11 +42,16 @@ def main():
     if "agentoon-ui" in names and "agentoon-3d" in names and sc["agentoon-3d"][0] < 2 and sc["agentoon-ui"][0] >= 2: chosen = [(k, v) for k, v in chosen if k != "agentoon-3d"]
     if "agentoon-3d" in [k for k, _ in chosen] and sc["agentoon-3d"][0] < 2 and not re.search(r"\b3d|blender|render|architect|tower|villa|walkthrough\b", brief.lower()): chosen = [(k, v) for k, v in chosen if k != "agentoon-3d"]
     res = {"specialists": [{"skill": k, "score": v[0], "why": v[1]} for k, v in chosen], "always": [{"skill": k, "why": w} for k, w in ALWAYS.items()]}
+    root = os.getcwd()
+    while root != "/" and not os.path.isdir(os.path.join(root, "agentoon-video/remotion-fx")): root = os.path.dirname(root)
+    res["effects"] = fx_select(brief, root) if root != "/" else []
     res["total"] = len(res["specialists"]) + len(ALWAYS)
     if "--json" in sys.argv: print(json.dumps(res, indent=1)); return
     print("Brief:", brief[:160])
     print("Always:", ", ".join(ALWAYS))
     print("Specialists:", ", ".join(f"{s['skill']}({s['score']})" for s in res["specialists"]) or "none")
     for s in res["specialists"]: print(f"  - /{s['skill']}: {s['why']}")
+    print("Real effect skills (Remotion, rendered-proof; max 1 hero + 2 supporting):", ", ".join(f"{e['skill']}[{e['role']}]" for e in res["effects"]) or "none")
+    for e in res["effects"]: print(f"  - /{e['skill']}: {e['why']}  (proof: {e['proof']})")
     print("Total skills:", res["total"], "(cap 9). Apply judgement: drop any skill you cannot tie to a named scene.")
 if __name__ == "__main__": main()
