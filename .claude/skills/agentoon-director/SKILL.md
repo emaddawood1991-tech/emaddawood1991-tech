@@ -39,3 +39,14 @@ Execute with the chosen skills in this order: robot acting plan, ui/diagrams/mor
 
 ## Engine rule
 Use Remotion as the compositor when it is installed and verified in this environment (`bash ${CLAUDE_SKILL_DIR}/scripts/check-env.sh`), otherwise HyperFrames (verified, used for episodes 0-14). Say which one ran; never claim an engine, MCP or asset that did not run.
+
+## 7. Motion-graphics pipeline (mandatory since 2026-11-15; extends sections 1-6)
+A skill name in a plan is not proof of an effect. Every planned effect must exist as code AND as rendered footage that was inspected.
+1. **Analyse** the topic, script and any footage: which beats are lists/roundups, UI walk-throughs, presenter emphasis, numbers/comparisons.
+2. **Inspect the real skills**: `python3 ${CLAUDE_SKILL_DIR}/scripts/discover-skills.py` (flags `doc-only` skills) and read `reference/fx-styles.md` for what actually renders.
+3. **Choose styles that carry the message** (never all): roundup/hook → `/scrapbook-collage`; software walk-through → `/explainer-panel-reel`; robot/presenter hero beat → `/neon-outline`; talking-head footage → `video-effects`; kinetic text/diagram → `motion-graphics`. One hero effect + at most two supporting effects, each ≤ 3 uses.
+4. **Write the timeline** `<episode>/data/FX-TIMELINE.json`: `[{"id","skill","comp","start","end","clip","note"}]` (seconds; `clip` = rendered MP4 path relative to the episode; `note` = the narrated beat it supports). Software tutorials also need real logos + screenshots; important points use kinetic typography; alternatives use an animated comparison; camera moves direct attention; the original robot lip-syncs.
+5. **Apply** in code: Remotion FX → `bash ${CLAUDE_SKILL_DIR}/scripts/render-fx.sh <CompId> <episode>/fx/<name>.mp4` (compositions live in `agentoon-video/remotion-fx/src`); base scenes stay HyperFrames/GSAP; Blender only if a Blender asset actually exists.
+6. **Render and inspect**: view the 5 extracted frames; run `python3 ${CLAUDE_SKILL_DIR}/scripts/check-fx-usage.py <episode>`; run the effect's verifier (`agentoon-video/remotion-fx/scripts/verify-fx.py` pattern).
+7. **Fix** weak or missing animation (static holds, overlaps, unreadable text), re-render, re-inspect. Report engines honestly (Remotion vs HyperFrames vs Blender).
+Avoid static slides and generic crossfades; avoid excessive or distracting animation. Installed third-party skills have their own intake questions: the Agentoon defaults (9:16, 1080x1920, 30 fps, no questions) pre-answer them.

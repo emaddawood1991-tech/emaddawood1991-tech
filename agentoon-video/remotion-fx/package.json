@@ -1,0 +1,23 @@
+{
+  "name": "agentoon-remotion-fx",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Agentoon.ai reusable Remotion effects: scrapbook-collage, explainer-panel-reel, neon-outline",
+  "scripts": {
+    "studio": "remotion studio",
+    "render:a": "remotion render TestA out/test-a-scrapbook.mp4",
+    "render:b": "remotion render TestB out/test-b-explainer.mp4",
+    "render:c": "remotion render TestC out/test-c-neon.mp4",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.505",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.505"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  }
+}
