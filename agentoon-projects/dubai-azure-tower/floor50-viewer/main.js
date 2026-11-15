@@ -9,6 +9,7 @@ import { buildOffice } from "./plans_office.js";
 import { buildApts } from "./plans_apts.js";
 import { buildLift } from "./plans_lift.js";
 import { createQuality, createMetrics, TIERS } from "./quality.js";
+import { buildEnvironment } from "./environment.js";
 const Q = createQuality();
 
 // Floor 50 plan: X 0..28 (west->east), Z 0..20 (core/back wall -> Gulf-facing glass). Y up, metres.
@@ -25,7 +26,7 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const scene = new THREE.Scene();
 const pm = new THREE.PMREMGenerator(renderer);
-scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+const roomEnvTex = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environment = roomEnvTex;
 scene.environmentIntensity = 0.55;
 
 const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 30000);
@@ -392,22 +393,32 @@ function updateDoors() { doors.forEach((d) => { d.cur += (d.target - d.cur) * 0.
 // ---------------------------------------------------------------- outside: Dubai coast near the Burj Al Arab, sky, sun, moon
 const GROUND = -201;   // street level is 201 m below floor 50
 const OUT = new THREE.Group(); scene.add(OUT);
-const skyUniforms = { top: { value: new THREE.Color() }, hor: { value: new THREE.Color() }, bot: { value: new THREE.Color() }, sun: { value: new THREE.Vector3(0, 1, 0) }, glow: { value: new THREE.Color() }, glowK: { value: 0 } };
+const skyUniforms = { top: { value: new THREE.Color() }, hor: { value: new THREE.Color() }, bot: { value: new THREE.Color() }, sun: { value: new THREE.Vector3(0, 1, 0) }, glow: { value: new THREE.Color() }, glowK: { value: 0 }, cloud: { value: new THREE.Color(0xffffff) }, cloudK: { value: 0.3 }, t: { value: 0 } };
 const dome = new THREE.Mesh(new THREE.SphereGeometry(14000, 32, 20), new THREE.ShaderMaterial({
   side: THREE.BackSide, depthWrite: false, fog: false, uniforms: skyUniforms,
   vertexShader: "varying vec3 vd; void main(){ vd = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
-  fragmentShader: "uniform vec3 top,hor,bot,glow,sun; uniform float glowK; varying vec3 vd; void main(){ float y = vd.y; vec3 c = y > 0.0 ? mix(hor, top, pow(y, 0.5)) : mix(hor, bot, pow(-y, 0.4)); float s = max(dot(normalize(vd), normalize(sun)), 0.0); c += glow * (pow(s, 6.0) * 0.55 + pow(s, 60.0) * 0.6) * glowK; gl_FragColor = vec4(c, 1.0);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}" }));
+  fragmentShader: "uniform vec3 top,hor,bot,glow,sun,cloud; uniform float glowK,cloudK,t; varying vec3 vd; float h21(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); } float vn(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(h21(i),h21(i+vec2(1,0)),f.x), mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),f.x), f.y); } float fbm(vec2 p){ float a=0.5, s=0.0; for(int i=0;i<4;i++){ s+=a*vn(p); p*=2.03; a*=0.5; } return s; } void main(){ float y = vd.y; vec3 c = y > 0.0 ? mix(hor, top, pow(y, 0.5)) : mix(hor, bot, pow(-y, 0.4)); float s = max(dot(normalize(vd), normalize(sun)), 0.0); c += glow * (pow(s, 6.0) * 0.55 + pow(s, 60.0) * 0.6) * glowK; if (y > 0.0) { vec2 cu = vd.xz / (y + 0.22) * 1.3 + vec2(t * 0.004, t * 0.0015); float n = fbm(cu); float cl = smoothstep(0.5, 0.82, n) * smoothstep(0.0, 0.22, y) * cloudK; c = mix(c, cloud * (0.85 + 0.35 * pow(s, 3.0)), cl); } gl_FragColor = vec4(c, 1.0);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}" }));
 dome.renderOrder = -10; scene.add(dome);
+// image-based lighting from the actual sky (tower/exterior views): glass and metal reflect the real time-of-day sky
+const envScene = new THREE.Scene(); envScene.add(new THREE.Mesh(dome.geometry, dome.material));
+let skyEnvRT = null, skyEnvKey = "";
+function refreshSkyEnv(force) {
+  if (state.mode !== "tower") { scene.environment = roomEnvTex; return; }
+  const key = Math.round(hourNow / 0.3) + ":" + Math.round(storm * 4);
+  if (force || key !== skyEnvKey || !skyEnvRT) { skyEnvKey = key; const rt = pm.fromScene(envScene, 0.02, 1, 30000); if (skyEnvRT) skyEnvRT.dispose(); skyEnvRT = rt; }
+  scene.environment = skyEnvRT.texture;
+}
 const starGeo = new THREE.BufferGeometry(); { const a = new Float32Array(900 * 3); for (let i = 0; i < 900; i++) { const u = Math.random() * 2 - 1, t = Math.random() * 6.283, r = Math.sqrt(1 - u * u); a.set([r * Math.cos(t) * 13000, Math.abs(u) * 13000 * 0.95 + 300, r * Math.sin(t) * 13000], i * 3); } starGeo.setAttribute("position", new THREE.BufferAttribute(a, 3)); }
 const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 30, sizeAttenuation: true, transparent: true, fog: false, depthWrite: false })); scene.add(stars);
 const sunDisc = new THREE.Mesh(new THREE.SphereGeometry(260, 16, 12), new THREE.MeshBasicMaterial({ color: 0xfff1c9, fog: false })); scene.add(sunDisc);
 const moonDisc = new THREE.Mesh(new THREE.SphereGeometry(190, 16, 12), new THREE.MeshBasicMaterial({ color: 0xdfe7ff, fog: false })); scene.add(moonDisc);
 scene.fog = new THREE.FogExp2(0xcfe0ee, 0.00035);
 
-const seaMat = new THREE.MeshStandardMaterial({ color: 0x1f7fa6, roughness: 0.12, metalness: 0.25 });
+const ENV = buildEnvironment({ rnd, GROUND, canvasTex }); OUT.add(ENV.group);
+const seaMat = new THREE.MeshStandardMaterial({ color: 0x1f7fa6, roughness: 0.14, metalness: 0.1 });
 { const sh = new THREE.Shape(); sh.moveTo(-30000, -30000); sh.lineTo(30000, -30000); sh.lineTo(30000, 30000); sh.lineTo(-30000, 30000); sh.closePath(); const hole = new THREE.Path(); hole.moveTo(101, 87); hole.lineTo(111, 87); hole.lineTo(111, 127); hole.lineTo(101, 127); hole.closePath(); sh.holes.push(hole); const sea = new THREE.Mesh(new THREE.ShapeGeometry(sh), seaMat); sea.rotation.x = -Math.PI / 2; sea.position.set(0, GROUND - 0.5, 0); OUT.add(sea); }   // same ramp-cut hole as the land
-const sandMat = std(0xcdb48a, 1); { const sh = new THREE.Shape(); sh.moveTo(-4500, -3000); sh.lineTo(4500, -3000); sh.lineTo(4500, 3000); sh.lineTo(-4500, 3000); sh.closePath(); const hole = new THREE.Path(); hole.moveTo(101.5, -2583); hole.lineTo(110.5, -2583); hole.lineTo(110.5, -2543); hole.lineTo(101.5, -2543); hole.closePath(); sh.holes.push(hole); const land = new THREE.Mesh(new THREE.ShapeGeometry(sh), sandMat); land.rotation.x = -Math.PI / 2; land.position.set(0, GROUND, 330 - 3000); OUT.add(land); }   // hole = the open ramp cut to the car park
-const roadMat = std(0x2c2f35, 0.9); for (const [x, z, w, d] of [[0, 120, 5000, 22], [0, 250, 5000, 14], [-200, -1200, 16, 3000], [500, -1200, 16, 3000]]) { const r = new THREE.Mesh(new THREE.PlaneGeometry(w, d), roadMat); r.rotation.x = -Math.PI / 2; r.position.set(x, GROUND + 0.3, z); OUT.add(r); }
+const sandMat = std(0xcdb48a, 1, 0, { map: ENV.sand }); { const sh = new THREE.Shape(); sh.moveTo(-4500, -3000); sh.lineTo(4500, -3000); sh.lineTo(4500, 3000); sh.lineTo(-4500, 3000); sh.closePath(); const hole = new THREE.Path(); hole.moveTo(101.5, -2583); hole.lineTo(110.5, -2583); hole.lineTo(110.5, -2543); hole.lineTo(101.5, -2543); hole.closePath(); sh.holes.push(hole); const land = new THREE.Mesh(new THREE.ShapeGeometry(sh), sandMat); land.rotation.x = -Math.PI / 2; land.position.set(0, GROUND, 330 - 3000); OUT.add(land); }   // hole = the open ramp cut to the car park
+const roadMat = std(0x2c2f35, 0.9, 0, { map: ENV.asphalt }); for (const [x, z, w, d] of [[0, 120, 5000, 22], [0, 250, 5000, 14], [-200, -1200, 16, 3000], [500, -1200, 16, 3000]]) { const rg = new THREE.PlaneGeometry(w, d); rg.attributes.uv.array.forEach((v, i, a) => (a[i] = v * (i % 2 ? d : w) / 10)); const r = new THREE.Mesh(rg, roadMat); r.rotation.x = -Math.PI / 2; r.position.set(x, GROUND + 0.3, z); OUT.add(r); }
 // window textures for towers (colour + lit-window emissive mask)
 const winColor = canvasTex(128, 256, (g, w, h) => { g.fillStyle = "#53697f"; g.fillRect(0, 0, w, h); for (let y = 0; y < h; y += 8) for (let x = 0; x < w; x += 8) { g.fillStyle = `rgba(20,40,60,${0.25 + rnd() * 0.3})`; g.fillRect(x + 1, y + 1, 6, 5); } }, [1, 1]);
 const winMask = (() => { const t = canvasTex(128, 256, (g, w, h) => { g.fillStyle = "#000"; g.fillRect(0, 0, w, h); for (let y = 0; y < h; y += 8) for (let x = 0; x < w; x += 8) if (rnd() > 0.45) { g.fillStyle = rnd() > 0.5 ? "#ffd9a0" : "#bcd8ff"; g.fillRect(x + 1, y + 1, 6, 5); } }, [1, 1]); return t; })();
@@ -446,20 +457,20 @@ function setTime(h) {
   skyUniforms.hor.value.copy(C(0x141f38).lerp(C(0xcfe2f1), day)).lerp(C(0xff9b5e), warmK * 0.75);
   skyUniforms.bot.value.copy(C(0x0b1220).lerp(C(0x9fb6c6), day));
   skyUniforms.top.value.lerp(C(0x2b313c), storm * 0.85); skyUniforms.hor.value.lerp(C(0x56606d), storm * 0.8); skyUniforms.bot.value.lerp(C(0x3a414c), storm * 0.7);
-  skyUniforms.sun.value.copy(sunDir); skyUniforms.glow.value.copy(C(0xffa763)); skyUniforms.glowK.value = cl(e + 0.2, 0, 1) * (0.4 + warmK * 0.8);
+  skyUniforms.cloud.value.copy(C(0xffffff).lerp(C(0xff9f78), warmK * 0.55)).lerp(C(0x232a3a), 1 - day).lerp(C(0x5a626c), storm * 0.8); skyUniforms.cloudK.value = (0.22 + 0.55 * storm) * (0.35 + 0.65 * day) + 0.1; skyUniforms.sun.value.copy(sunDir); skyUniforms.glow.value.copy(C(0xffa763)); skyUniforms.glowK.value = cl(e + 0.2, 0, 1) * (0.4 + warmK * 0.8);
   scene.fog.color.copy(skyUniforms.hor.value); scene.fog.density = state.mep ? 0 : 0.00035;
   sun.position.copy(sunDir).multiplyScalar(90).add(FOCUS); sun.target.position.copy(FOCUS); sun.color.copy(C(0xff9248).lerp(C(0xfff1da), cl(e / 0.55, 0, 1)));
   sun.intensity = 2.8 * day * (0.35 + 0.65 * cl(e / 0.4, 0, 1)) + 0.0001;
   moonLight.position.set(FOCUS.x - sunDir.x * 80, -sunDir.y * 80 + 5, FOCUS.z - sunDir.z * 80); moonLight.intensity = 0.55 * (1 - day) * sm(0.02, 0.25, -e);
   hemi.intensity = 0.07 + 0.55 * day + (state.mode === "park" ? 0.9 : state.mode === "lift" ? 0.45 : 0); hemi.color.copy(C(0x6f86c6).lerp(C(0xdcecff), day));
-  scene.environmentIntensity = state.mep || state.mode === "park" ? 0.9 : state.mode === "lift" ? 0.55 : 0.09 + 0.46 * day; renderer.toneMappingExposure = 1.0 + 0.25 * (1 - day);
+  scene.environmentIntensity = state.mep || state.mode === "park" ? 0.9 : state.mode === "lift" ? 0.55 : (0.09 + 0.46 * day) * (state.mode === "tower" ? 1.25 : 1); renderer.toneMappingExposure = 1.0 + 0.25 * (1 - day);
   sunDisc.position.copy(sunDir).multiplyScalar(9000); sunDisc.visible = e > -0.03; sunDisc.material.color.copy(C(0xffcf8a).lerp(C(0xfff6dc), cl(e / 0.5, 0, 1)));
   moonDisc.position.copy(sunDir).multiplyScalar(-9000); moonDisc.visible = -e > 0.05 && day < 0.6;
   stars.material.opacity = cl(1 - day * 1.6, 0, 0.95); stars.visible = stars.material.opacity > 0.02;
   seaMat.color.copy(C(0x061a2c).lerp(C(0x1f86ad), day)).lerp(C(0xb86a48), warmK * 0.35);
   sandMat.color.copy(C(0x2a2a30).lerp(C(0xcdb48a), day)); roadMat.color.copy(C(0x14161a).lerp(C(0x2c2f35), day));
   cityMat.emissiveIntensity = 1.5 * (1 - day); cityMat.color.copy(C(0x6d7b8a).lerp(C(0xffffff), day)); burjMat.emissiveIntensity = 1.4 * (1 - day); burjMat.color.copy(C(0x9aa3b8).lerp(C(0xf3f3f1), day));
-  nightK = cl(1 - day * 1.4, 0, 1); towerAPI && towerAPI.setNight(nightK); extrasAPI && extrasAPI.setPoolNight(nightK); planAPI && planAPI.night(nightK);
+  nightK = cl(1 - day * 1.4, 0, 1); towerAPI && towerAPI.setNight(nightK); extrasAPI && extrasAPI.setPoolNight(nightK); planAPI && planAPI.night(nightK); ENV.setNight(nightK); refreshSkyEnv(false);
   document.getElementById("tlabel") && (document.getElementById("tlabel").textContent = `${String(Math.floor(h)).padStart(2, "0")}:${String(Math.round((h % 1) * 60) % 60).padStart(2, "0")}  ${day > 0.6 ? "day" : day < 0.05 ? "night" : e > 0 && h < 12 ? "sunrise" : "sunset"}`);
   document.getElementById("tslider") && (document.getElementById("tslider").value = String(h));
   if (state.lightsAuto) { const on = day < 0.35; Object.keys(lightsOn).forEach((k) => (lightsOn[k] = on)); applyLights(); syncLightButtons(); planAPI && planAPI.lights(on); }
@@ -1143,6 +1154,7 @@ const dynEls = Array.from({ length: 5 }, () => { const d = document.createElemen
 const clock = new THREE.Clock(); const v = new THREE.Vector3(); let lastNow = performance.now() / 1000;
 function frame() {
   const t = clock.getElapsedTime(), now = performance.now() / 1000, dt = Math.min(0.1, now - lastNow); lastNow = now;
+  skyUniforms.t.value = t;
   if (tween) { const k = Math.min(1, (performance.now() - tween.t0) / tween.dur), e = k * k * (3 - 2 * k); camera.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.t0v, tween.t1, e); if (k >= 1) tween = null; }
   const touring = tourUpdate(now); if (state.mode === "lift") liftCamera(); else if (!touring) controls.update(); else if (!tour.orbit || tween) camera.lookAt(controls.target); if (state.mode === "floor") { updateFlow(t); updateDoors(); updateDemo(now); } if (state.mode === "office") OFFICE.update(dt); if (state.mode === "apts") APTS.update(dt); liftUpdate(dt);
   const xmsg = X.update(now, dt, { night: nightK }); if (xmsg && state.mode === "park") { bannerEl.className = ""; bannerEl.style.display = "block"; bannerEl.textContent = xmsg; }
@@ -1158,4 +1170,4 @@ hideBtn.addEventListener("click", togglePanels); addEventListener("keydown", (e)
 controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; FOCUS.set(0, 100, 0); sun.castShadow = false; shadowWanted = false; camera.near = 1.0; camera.updateProjectionMatrix(); putCamera(...VT.over);
 setTime(15.5); applyLights(); syncLightButtons(); apply(); tower.highlight(50); frame(); applyTier();
 
-window.__f50 = { renderer, Q, sun, scene, metrics: () => METRICS.get(), OFFICE, APTS, LIFT, RIDE, startRide, VO, VA, PHOTO, startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };
+window.__f50 = { renderer, Q, sun, scene, ENV, refreshSkyEnv, metrics: () => METRICS.get(), OFFICE, APTS, LIFT, RIDE, startRide, VO, VA, PHOTO, startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };

@@ -31,5 +31,6 @@ const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftsha
 const p = await b.newPage({ viewport: { width: 1100, height: 620 } });
 const errs = []; p.on("console", (m) => ["error", "warning"].includes(m.type()) && errs.push(m.type() + ": " + m.text().slice(0, 200))); p.on("pageerror", (e) => errs.push("PAGEERR " + e.message));
 await p.goto(url + (q ? "?q=" + q : "")); await p.waitForFunction(() => window.__f50, null, { timeout: 90000 }); await p.waitForTimeout(3000);
-for (const [name, code, wait] of STEPS) { try { await p.evaluate(code); await p.waitForTimeout(wait); await p.screenshot({ path: `${out}/${name}.png`, timeout: 240000 }); console.log("ok", name); } catch (e) { console.log("FAIL", name, String(e).slice(0, 120)); } }
+const only = process.env.ONLY ? new RegExp(process.env.ONLY) : null;
+for (const [name, code, wait] of STEPS) { if (only && !only.test(name)) continue; try { await p.evaluate(code); await p.waitForTimeout(wait); await p.screenshot({ path: `${out}/${name}.png`, timeout: 240000 }); console.log("ok", name); } catch (e) { console.log("FAIL", name, String(e).slice(0, 120)); } }
 console.log(errs.slice(0, 10).join("\n") || "no console errors"); await b.close();

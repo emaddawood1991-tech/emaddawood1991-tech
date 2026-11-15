@@ -56,16 +56,29 @@ export function createTower(ctx) {
   const rp = (z, th, o = 0) => ringPoint(z, th, o);
 
   // ---- window texture (colour + lit-window mask)
-  const CELLS_X = 72, CELLS_Y = 51, CW = 16;
-  const winColor = canvasTex(CELLS_X * CW, CELLS_Y * CW, (g, w, h) => { g.fillStyle = "#ffffff"; g.fillRect(0, 0, w, h); g.strokeStyle = "rgba(10,40,70,.35)"; g.lineWidth = 2; for (let x = 0; x <= w; x += CW) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); } for (let y = 0; y <= h; y += CW * 1) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); } });
-  const winMask = canvasTex(CELLS_X * CW, CELLS_Y * CW, (g, w, h) => { g.fillStyle = "#000"; g.fillRect(0, 0, w, h); for (let cy = 0; cy < CELLS_Y; cy++) for (let cx = 0; cx < CELLS_X; cx++) if (rnd() > 0.3) { g.fillStyle = rnd() > 0.5 ? "#ffd9a0" : "#ffe9c4"; g.fillRect(cx * CW + 2, cy * CW + 3, CW - 4, CW - 8); } });
-  const skinMat = new THREE.MeshPhysicalMaterial({ color: lin(0.07, 0.30, 0.55), map: winColor, roughness: 0.06, metalness: 0.45, envMapIntensity: 1.4, emissive: 0xffffff, emissiveMap: winMask, emissiveIntensity: 0, clearcoat: 0.6, clearcoatRoughness: 0.05, side: THREE.DoubleSide });
+  const CELLS_X = 72, CELLS_Y = 51, CW = 24;
+  // colour map: glass panes with a sky-like gradient and per-pane tint, bronze mullions + transoms, darker spandrel at each slab
+  const winColor = canvasTex(CELLS_X * CW, CELLS_Y * CW, (g, w, h) => {
+    const tints = [[30, 92, 130], [26, 80, 118], [38, 104, 140], [22, 70, 104], [44, 96, 112]];
+    for (let cy = 0; cy < CELLS_Y; cy++) for (let cx = 0; cx < CELLS_X; cx++) {
+      const x = cx * CW, y = cy * CW, t = tints[Math.floor(rnd() * tints.length)], gr = g.createLinearGradient(0, y, 0, y + CW * 0.76);
+      gr.addColorStop(0, `rgb(${t[0] + 40},${t[1] + 46},${t[2] + 48})`); gr.addColorStop(1, `rgb(${t[0]},${t[1]},${t[2]})`); g.fillStyle = gr; g.fillRect(x, y, CW, CW * 0.78);
+      g.fillStyle = "#2b2f36"; g.fillRect(x, y + CW * 0.78, CW, CW * 0.22);                      // spandrel (slab zone)
+      g.fillStyle = "#a07a45"; g.fillRect(x, y, 2, CW); g.fillRect(x, y, CW, 2); g.fillRect(x, y + CW * 0.78, CW, 2);   // mullion, transom, sill
+    }
+  });
+  // roughness (G) + metalness (B) map: glass is smooth and non-metal, frames are rougher bronze metal
+  const winORM = canvasTex(CELLS_X * CW, CELLS_Y * CW, (g, w, h) => { g.fillStyle = "rgb(255,10,26)"; g.fillRect(0, 0, w, h); for (let cy = 0; cy < CELLS_Y; cy++) for (let cx = 0; cx < CELLS_X; cx++) { const x = cx * CW, y = cy * CW; g.fillStyle = "rgb(255,120,150)"; g.fillRect(x, y + CW * 0.78, CW, CW * 0.22); g.fillStyle = "rgb(255,95,255)"; g.fillRect(x, y, 2, CW); g.fillRect(x, y, CW, 2); g.fillRect(x, y + CW * 0.78, CW, 2); } }); winORM.colorSpace = THREE.NoColorSpace;
+  const winMask = canvasTex(CELLS_X * CW, CELLS_Y * CW, (g, w, h) => { g.fillStyle = "#000"; g.fillRect(0, 0, w, h); for (let cy = 0; cy < CELLS_Y; cy++) for (let cx = 0; cx < CELLS_X; cx++) if (rnd() > 0.3) { g.fillStyle = rnd() > 0.5 ? "#ffd9a0" : "#ffe9c4"; g.fillRect(cx * CW + 3, cy * CW + 3, CW - 5, CW * 0.74 - 4); } });
+  const skinMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: winColor, roughnessMap: winORM, metalnessMap: winORM, roughness: 1, metalness: 1, envMapIntensity: 2.0, emissive: 0xffffff, emissiveMap: winMask, emissiveIntensity: 0, clearcoat: 0.6, clearcoatRoughness: 0.05, side: THREE.DoubleSide });
   const lobbyGlassMat = new THREE.MeshPhysicalMaterial({ color: lin(0.75, 0.88, 0.95), roughness: 0.03, transparent: true, opacity: 0.22, depthWrite: false, side: THREE.DoubleSide });
   const bronze = new THREE.MeshStandardMaterial({ color: lin(0.78, 0.58, 0.36), roughness: 0.3, metalness: 1 });
   const stone = new THREE.MeshStandardMaterial({ color: lin(0.82, 0.77, 0.67), roughness: 0.55 });
   const stoneLight = new THREE.MeshStandardMaterial({ color: lin(0.9, 0.88, 0.82), roughness: 0.45 });
   const balcGlass = new THREE.MeshPhysicalMaterial({ color: lin(0.8, 0.92, 1), roughness: 0.03, transparent: true, opacity: 0.25, depthWrite: false, side: THREE.DoubleSide });
   const crownMat = new THREE.MeshStandardMaterial({ color: lin(0.55, 0.88, 1), roughness: 0.15, metalness: 0.4, emissive: lin(0.55, 0.88, 1), emissiveIntensity: 0.35 });
+  const finMat = new THREE.MeshStandardMaterial({ color: bronze.color, roughness: 0.3, metalness: 1, side: THREE.DoubleSide, emissive: 0xffb060, emissiveIntensity: 0 });
+  const bandMat = new THREE.MeshStandardMaterial({ color: stoneLight.color, roughness: 0.45, side: THREE.DoubleSide, emissive: 0xffe2b0, emissiveIntensity: 0 });
   const mats = [skinMat, lobbyGlassMat, balcGlass];
 
   // ---- skin: lobby glass, tower glass, slab edge bands, fins, balconies, crown, base, portal
@@ -76,7 +89,7 @@ export function createTower(ctx) {
     for (let k = 1; k < zs.length; k++) for (const z of [zs[k], zs[k] + 0.55]) rings.push(Array.from({ length: N }, (_, i) => rp(z, thetaI(i), 0.38)));
     const pos = []; rings.forEach((r) => r.forEach((p) => { const v = w3(p); pos.push(v.x, v.y, v.z); }));
     for (let b = 0; b < rings.length; b += 2) for (let i = 0; i < N; i++) { const j = (i + 1) % N, a = b * N + i, bb = b * N + j, c = (b + 1) * N + j, d = (b + 1) * N + i; bandIdx.push(a, bb, c, a, c, d); }
-    const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(bandIdx); g.computeVertexNormals(); G.skin.add(new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: stoneLight.color, roughness: 0.45, side: THREE.DoubleSide })));
+    const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(bandIdx); g.computeVertexNormals(); G.skin.add(new THREE.Mesh(g, bandMat));
   }
   { // 72 bronze fins following the twist
     const pos = [], idx = []; const FS = N / TP.fins;
@@ -89,7 +102,7 @@ export function createTower(ctx) {
       const b0 = pos.length / 3; rings.forEach((r) => r.forEach((p) => { const v = w3(p); pos.push(v.x, v.y, v.z); }));
       for (let k = 0; k < rings.length - 1; k++) for (const [a, b] of [[1, 2], [2, 3], [3, 0]]) idx.push(b0 + k * 4 + a, b0 + k * 4 + b, b0 + (k + 1) * 4 + b, b0 + k * 4 + a, b0 + (k + 1) * 4 + b, b0 + (k + 1) * 4 + a);
     }
-    const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); G.skin.add(new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: bronze.color, roughness: 0.3, metalness: 1, side: THREE.DoubleSide })));
+    const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); G.skin.add(new THREE.Mesh(g, finMat));
   }
   { // curved balconies on floors 22..46
     const span = (TP.span * Math.PI) / 180, segs = 12, pos = [], idx = [], gp = [], gi = [];
@@ -118,7 +131,7 @@ export function createTower(ctx) {
       const b0 = pos.length / 3; rs.forEach((r) => r.forEach((p) => { const v = w3(p); pos.push(v.x, v.y, v.z); }));
       for (let k = 0; k < rs.length - 1; k++) for (const [a, b] of [[1, 2], [2, 3], [3, 0]]) idx.push(b0 + k * 4 + a, b0 + k * 4 + b, b0 + (k + 1) * 4 + b, b0 + k * 4 + a, b0 + (k + 1) * 4 + b, b0 + (k + 1) * 4 + a);
     }
-    const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); G.skin.add(new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: bronze.color, roughness: 0.3, metalness: 1, side: THREE.DoubleSide })));
+    const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); G.skin.add(new THREE.Mesh(g, finMat));
     for (const s of [0.25, 0.5, 0.75]) { const r1 = Array.from({ length: N }, (_, i) => crownPoint(s, thetaI(i), 0.25)), r2 = r1.map((p) => ({ ...p, z: p.z + 0.5 })); G.skin.add(new THREE.Mesh(loft([r1, r2]), crownMat)); }
     const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 1.1, TP.spire + 2, 16), crownMat); spire.position.set(0, TOP + TP.crown - 2 + (TP.spire + 2) / 2, 0); G.skin.add(spire);
   }
@@ -250,8 +263,8 @@ export function createTower(ctx) {
     if (prog >= 1) { const r = Math.min(1, (e - 4.4) / 1.8); ripple.visible = true; const s = 10 + r * 70; ripple.scale.set(s, s, s); ripple.material.opacity = Math.max(0, 1 - r); G.pileInst.material.emissive = new THREE.Color(0x3bd8ff).multiplyScalar(Math.max(0, 1 - Math.abs(r - 0.4) * 2)); }
     return { flash, step: STEPS.filter(([t]) => e >= t).pop()[1], done: e > 9 };
   };
-  API.setNight = (nightK) => { skinMat.emissiveIntensity = 1.5 * nightK; crownMat.emissiveIntensity = 0.35 + 1.3 * nightK; };
-  API.setWet = (wet) => { skinMat.roughness = wet ? 0.02 : 0.06; skinMat.clearcoat = wet ? 1 : 0.6; };
+  API.setNight = (nightK) => { finMat.emissiveIntensity = 0.09 * nightK; bandMat.emissiveIntensity = 0.14 * nightK; skinMat.emissiveIntensity = 1.5 * nightK; crownMat.emissiveIntensity = 0.35 + 1.3 * nightK; };
+  API.setWet = (wet) => { skinMat.roughness = wet ? 0.45 : 1; skinMat.clearcoat = wet ? 1 : 0.6; };
   API.setXray = (on) => { skinMat.transparent = on; skinMat.opacity = on ? 0.1 : 1; skinMat.depthWrite = !on; skinMat.needsUpdate = true;
     G.skin.children.forEach((m) => { if (!m.isMesh || m === lobbyGlass || m === skinMesh) return; const mt = m.material; if (mt === balcGlass || mt === crownMat) return; if (mt.userData.o === undefined) mt.userData.o = mt.opacity; mt.transparent = on || mt.userData.t; mt.opacity = on ? 0.12 : mt.userData.o; mt.depthWrite = !on; mt.needsUpdate = true; }); };
   API.setGradeColors = (on) => { G.struct.children.forEach((m) => { if (m.userData && m.userData.grade !== undefined) m.material.color.set(on ? GRADES[m.userData.grade].col : 0x8a8d92); }); };
