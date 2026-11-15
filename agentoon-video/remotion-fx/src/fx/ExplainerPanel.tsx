@@ -76,7 +76,7 @@ export const ExplainerPanel: React.FC<PanelProps> = ({ shot, shotW, shotH, url, 
 
       {/* highlight boxes (draw-on border + pulse) */}
       {highlights.map((h, i) => {
-        if (frame < h.f || frame > h.to) return null;
+        if (frame < h.f || frame > h.to || !inView(h.x + h.w / 2, h.y + h.h / 2)) return null;
         const a = mapPt(h.x, h.y, c, shotW), b = mapPt(h.x + h.w, h.y + h.h, c, shotW);
         const w = b.x - a.x, hh = b.y - a.y, per = 2 * (w + hh);
         const draw = interpolate(frame, [h.f, h.f + 10], [per, 0], { extrapolateRight: "clamp" });

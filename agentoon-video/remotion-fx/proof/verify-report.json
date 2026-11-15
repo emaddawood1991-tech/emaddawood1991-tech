@@ -1,0 +1,54 @@
+{
+ "A lime title highlight + notes present": {
+  "pass": true,
+  "detail": "lime pixel share 0.023"
+ },
+ "A paper texture (grain variance on background)": {
+  "pass": true,
+  "detail": "bg std 3.37"
+ },
+ "A white paper cards / sticker borders": {
+  "pass": true,
+  "detail": "near-white share 0.177"
+ },
+ "A staggered entrances (frame 10 != frame 90)": {
+  "pass": true,
+  "detail": "mean abs diff 34.8"
+ },
+ "A camera depth (late frames still move)": {
+  "pass": true,
+  "detail": "mean abs diff 17.95"
+ },
+ "B amber highlight/callout/connector": {
+  "pass": true,
+  "detail": "amber share 0.0119"
+ },
+ "B lime caption/step highlight": {
+  "pass": true,
+  "detail": "lime share 0.0130"
+ },
+ "B camera glides (zoom changes between 20 and 60)": {
+  "pass": true,
+  "detail": "diff 20.2"
+ },
+ "B steps advance (frame 50 != 105)": {
+  "pass": true,
+  "detail": "diff 20.9"
+ },
+ "B cursor/click ripple moves": {
+  "pass": true,
+  "detail": "white-pixel XOR between f30 and f36"
+ },
+ "C neon pixels hug the silhouette contour": {
+  "pass": true,
+  "detail": "ring 0.068 vs far 0.00001"
+ },
+ "C outline animates (sweep/pulse change between frames)": {
+  "pass": true,
+  "detail": "diff 2.48"
+ },
+ "C subject stays on top (teal body present)": {
+  "pass": true,
+  "detail": "teal share 0.053"
+ }
+}
