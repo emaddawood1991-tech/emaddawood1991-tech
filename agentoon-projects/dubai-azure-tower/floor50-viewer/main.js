@@ -680,6 +680,7 @@ const fireHeads = [], fireDetectors = [], fireStrobes = [];
 // ---------------------------------------------------------------- the real tower (exact port of the Blender model) + lobby interior
 const tower = createTower({ rnd });
 towerAPI = tower; scene.add(tower.root);
+const TERR = []; tower.root.traverse((o) => { const p = o.isMesh && o.geometry.parameters; if (p && p.radialSegments === 64 && p.height === 5.5 && (p.radiusTop === 50 || p.radiusTop === 66)) TERR.push(o); });
 const LOBBY = new THREE.Group(); scene.add(LOBBY); LOBBY.visible = false;
 ROOMS.lobby = "Lobby"; LM.lobby = MAT.light.clone(); roomLights.lobby = []; lightsOn.lobby = false;
 {
@@ -1240,6 +1241,7 @@ function frame() {
   const touring = tourUpdate(now); if (state.mode === "lift") liftCamera(); else if (!touring) controls.update(); else if (!tour.orbit || tween) camera.lookAt(controls.target); if (state.mode === "floor") { updateFlow(t); updateDoors(); updateDemo(now); } if (state.mode === "office") OFFICE.update(dt); if (state.mode === "apts") APTS.update(dt); if (state.mode === "wellness" && WELL) { WELL.update(dt, now, Q.cfg.water); const cy = camera.position.y; if (!state.mep) { WELL.L10.ceil.visible = state.ceil || cy < 7.7; WELL.L11.ceil.visible = state.ceil || (cy >= 3.9 && cy < 7.7); } } if (state.mode === "sky" && SKY) { SKY.update(dt); if (!state.mep) SKY.ceil.visible = state.ceil || camera.position.y < 3.6; } liftUpdate(dt);
   if (state.mode === "tower" || state.mode === "lobby") LAND.update(now, camera.position, dt);
   // ceilings: shown automatically when the camera is inside a room below the ceiling (so lights never float against the sky), hidden for top-down views
+  if (TERR) { const hide = state.mode === "lobby" && camera.position.y > 11 && Math.hypot(camera.position.x, camera.position.z) < 60; for (const m of TERR) m.visible = !hide; }
   if (!state.mep) { const cy = camera.position.y; if (state.mode === "office") OFFICE.ceil.visible = state.ceil || cy < 3.45; else if (state.mode === "apts") APTS.ceil.visible = state.ceil || cy < 3.55; else if (state.mode === "floor") G.ceil.visible = state.ceil || (cy < 3.45 && camera.position.x > 0 && camera.position.x < W && camera.position.z > 0 && camera.position.z < D); }
   if (state.mode === "tower") LOBBY.visible = !tour.orbit && camera.position.distanceTo(LOBBY_PT) < 80;   // see into the lobby through the glass when close to the entrance
   const xmsg = X.update(now, dt, { night: nightK }); if (xmsg && state.mode === "park") { bannerEl.className = ""; bannerEl.style.display = "block"; bannerEl.textContent = xmsg; }

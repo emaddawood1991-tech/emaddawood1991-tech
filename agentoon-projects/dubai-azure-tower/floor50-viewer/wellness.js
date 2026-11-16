@@ -118,6 +118,16 @@ export function buildWellness(H) {
   R11.forEach(([k, n, a1, a2, t1, t2, na, nt]) => B.roomPts(k, n, gridPts(a1, a2, t1, t2, na, nt), { round: true, inten: 6.5, range: 16 }));
   // ---- finishing: merge furniture, picking records, lights, animation
   root.updateMatrixWorld(true); [A, B].forEach((F) => F.items.forEach((it) => it.box.setFromObject(it.g)));
+  // ---- wall finishes by zone (replaces the plain white partitions): each zone gets its own palette
+  {
+    const wm = (c, r = 0.7, e = 0.2) => new THREE.MeshStandardMaterial({ color: c, roughness: r, envMapIntensity: e });
+    const P10 = [[40, 125, wm(0xa9c9cc, 0.55)], [125, 190, wm(0x6b727c, 0.8, 0.12)], [190, 250, wm(0xb88e66, 0.55, 0.25)], [250, 290, wm(0xd9c8a6, 0.85)], [290, 330, wm(0x9db3a6, 0.5)], [330, 400, wm(0xa07a5e, 0.75, 0.15)]];
+    const P11 = [[190, 330, wm(0x3d424a, 0.8, 0.1)], [330, 400, wm(0x5d6b73, 0.7)], [40, 190, wm(0xa59885, 0.8)]];
+    const pick = (P, deg0) => { for (const [a1, a2, m] of P) { const d = ((deg0 - a1) % 360 + 360) % 360; if (d <= a2 - a1) return m; } return null; };
+    const v = new THREE.Vector3();
+    [[A, P10], [B, P11]].forEach(([F, P]) => F.walls.traverse((m) => { if (!m.isMesh || m.material !== M.wall) return; m.getWorldPosition(v); const ang = ((Math.atan2(v.z - O.OZ, v.x - O.OX) * 180) / Math.PI + 360) % 360, mat = pick(P, ang); if (mat) m.material = mat; }));
+    CEIL_M.color.set(0xeee7da);
+  }
   [A, B].forEach((F) => { F.mergeStatic(F.furn); F.mergeStatic(F.walls); F.finish(); });
   const lvl = { L10: A, L11: B };
   const all = (fn) => [A, B].forEach(fn);
