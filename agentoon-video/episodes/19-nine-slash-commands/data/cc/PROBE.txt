@@ -1,0 +1,1 @@
+news-broadcast skill-body probe: answer cited NewsBroadcast.tsx + props (presenter, headline, name, role, panels, ticker) from SKILL.md only; no render allowed

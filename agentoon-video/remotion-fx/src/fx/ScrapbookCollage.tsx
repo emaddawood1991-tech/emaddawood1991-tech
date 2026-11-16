@@ -33,7 +33,7 @@ const PaperDefs: React.FC = () => (
   </svg>
 );
 
-const PaperBackground: React.FC<{ driftX: number; driftY: number }> = ({ driftX, driftY }) => (
+export const PaperRaw: React.FC<{ driftX: number; driftY: number }> = ({ driftX, driftY }) => (
   <AbsoluteFill style={{ background: theme.paper }}>
     <svg width="100%" height="100%" viewBox="0 0 1080 1920" style={{ position: "absolute", inset: 0, transform: `translate(${driftX * 0.2}px, ${driftY * 0.2}px) scale(1.08)` }}>
       <defs>
@@ -46,6 +46,11 @@ const PaperBackground: React.FC<{ driftX: number; driftY: number }> = ({ driftX,
       <rect width="1080" height="1920" fill="url(#vig)" />
     </svg>
   </AbsoluteFill>
+);
+
+/** Pre-baked paper (npx remotion still PaperBake public/img/paper.png): the turbulence filters are far too slow to evaluate every frame in software GL. */
+const PaperBackground: React.FC<{ driftX: number; driftY: number }> = ({ driftX, driftY }) => (
+  <AbsoluteFill style={{ background: theme.paper }}><Img src={staticFile("img/paper.png")} style={{ position: "absolute", inset: 0, width: 1080, height: 1920, transform: `translate(${driftX * 0.2}px, ${driftY * 0.2}px) scale(1.08)` }} /></AbsoluteFill>
 );
 
 const entranceOffset = (from: CollageItem["from"], k: number) => {
@@ -67,20 +72,22 @@ const Item: React.FC<{ it: CollageItem; cam: { x: number; y: number; s: number }
   const common: React.CSSProperties = { position: "absolute", left: 0, top: 0, width: it.w, transform: tf, transformOrigin: "50% 50%", opacity, zIndex: Math.round(it.depth * 10) };
 
   if (it.kind === "cutout") {
-    const st = ["4px 0 0", "-4px 0 0", "0 4px 0", "0 -4px 0", "3px 3px 0", "-3px -3px 0", "3px -3px 0", "-3px 3px 0"].map((o) => `drop-shadow(${o} #fff)`).join(" ");
-    return <div style={{ ...common, filter: `${st} drop-shadow(0 22px 22px rgba(40,25,5,.38))` }}><Img src={staticFile(it.seq ? seqSrc(it.seq, frame) : it.src!)} style={{ width: it.w, display: "block" }} /></div>;
+    // sticker outline is baked into the alpha sequence (public/robot-sticker): eight stacked CSS drop-shadows cost ~50 s/frame in software GL
+    if (it.seq) { const k = (it.w * 568) / 540, m = (it.w * 14) / 540; return <div style={{ ...common, filter: "drop-shadow(0 22px 22px rgba(40,25,5,.38))" }}><Img src={staticFile(seqSrc({ ...it.seq, dir: "robot-sticker" }, frame))} style={{ width: k, display: "block", marginLeft: -m, marginTop: -m }} /></div>; }
+    const st = ["4px 0 0", "-4px 0 0", "0 4px 0", "0 -4px 0"].map((o) => `drop-shadow(${o} #fff)`).join(" ");
+    return <div style={{ ...common, filter: `${st} drop-shadow(0 22px 22px rgba(40,25,5,.38))` }}><Img src={staticFile(it.src!)} style={{ width: it.w, display: "block" }} /></div>;
   }
   if (it.kind === "note") {
     return (
       <div style={{ ...common, filter: "drop-shadow(0 12px 14px rgba(40,25,5,.3))" }}>
-        <div style={{ background: it.accent ?? theme.lime, color: theme.ink, fontFamily: theme.mono, fontWeight: 800, fontSize: 40, padding: "18px 26px", filter: "url(#paperEdge)", whiteSpace: "nowrap" }}>{it.text}</div>
+        <div style={{ background: it.accent ?? theme.lime, color: theme.ink, fontFamily: theme.mono, fontWeight: 800, fontSize: 40, padding: "18px 26px", whiteSpace: "nowrap" }}>{it.text}</div>
       </div>
     );
   }
   if (it.kind === "logo") {
     return (
       <div style={{ ...common, height: it.w, filter: "drop-shadow(0 14px 16px rgba(40,25,5,.32))" }}>
-        <div style={{ position: "absolute", inset: 0, background: "#fff", borderRadius: 26, filter: "url(#paperEdge)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "#fff", borderRadius: 26, }} />
         <Img src={staticFile(it.src!)} style={{ position: "absolute", left: 18, top: 18, width: it.w - 36, height: it.w - 36, objectFit: "contain" }} />
       </div>
     );
@@ -89,7 +96,7 @@ const Item: React.FC<{ it: CollageItem; cam: { x: number; y: number; s: number }
   const z = it.zoom ? interpolate(frame, [it.delay, durationInFrames], [1, it.zoom.to], { extrapolateLeft: "clamp", easing: Easing.inOut(Easing.quad) }) : 1;
   return (
     <div style={{ ...common, height: h, filter: "drop-shadow(0 20px 24px rgba(40,25,5,.4))" }}>
-      <div style={{ position: "absolute", inset: 0, background: "#fff", filter: "url(#paperEdge)" }} />
+      <div style={{ position: "absolute", inset: 0, background: "#fff", }} />
       <div style={{ position: "absolute", left: 16, top: 16, width: it.w - 32, height: h - 32, overflow: "hidden", background: "#ddd" }}>
         <Img src={staticFile(it.src!)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${z})`, transformOrigin: it.zoom ? `${it.zoom.ox}% ${it.zoom.oy}%` : "50% 50%" }} />
       </div>

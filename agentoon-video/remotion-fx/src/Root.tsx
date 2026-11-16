@@ -1,6 +1,7 @@
 import React from "react";
 import { Composition } from "remotion";
 import { FPS, H, W } from "./fx/theme";
+import { PaperRaw } from "./fx/ScrapbookCollage";
 import { TestA } from "./tests/TestA";
 import { TestB } from "./tests/TestB";
 import { TestC } from "./tests/TestC";
@@ -16,6 +17,7 @@ export const Root: React.FC = () => (
     <Composition id="TestC" component={TestC} durationInFrames={150} fps={FPS} width={W} height={H} />
     <Composition id="Showcase" component={Showcase} durationInFrames={SHOWCASE_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="RobotTake" component={RobotTake} durationInFrames={170} fps={FPS} width={W} height={H} />
+    <Composition id="PaperBake" component={() => <PaperRaw driftX={0} driftY={0} />} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="RobotTakeAlpha" component={() => <RobotTake transparent />} durationInFrames={170} fps={FPS} width={540} height={756} />
     {DEMOS.map(([id, C]) => <Composition key={id} id={id} component={C} durationInFrames={DEMO_FRAMES} fps={FPS} width={W} height={H} />)}
     {SCENES.map((s) => <Composition key={s.id} id={s.id} component={s.C} durationInFrames={s.dur} fps={FPS} width={W} height={H} />)}
