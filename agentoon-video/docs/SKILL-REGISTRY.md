@@ -61,3 +61,6 @@ Node 22, npm packages in `agentoon-video/remotion-fx/package.json` (remotion 4.0
 
 ## Limitations
 Blender's SVG import ignores stroke-only shapes and complex SVGs (AppFlowy) import badly: use filled-shape logos; `drei`/`motion`/`lottie` are installed or reviewed but not yet exercised; the showcase uses demo data and illustrative values (labelled); no Lottie demo; software GL makes 3D scenes slow (about 3-6 s per frame).
+
+## Final test results (2026-11-16)
+`python3 scripts/verify-showcase.py` on the rendered `proof/showcase/agentoon-motion-showcase.mp4` (1080x1920, 30 fps, 39.3 s, 13 scenes, 12 transitions): ALL PASS (14 scene checks + 12 transition checks). The first run FAILED 4 checks and exposed a real bug (scenes after the diagonal wipe rendered black because the clip-path polygon degenerated at progress 1); fixed in `cinematic.tsx`, re-rendered, re-verified. `npm test`: 6/6. Per-category clips: `proof/clips/`. Frames: `proof/showcase/contact-13-scenes.png`, `transitions-mid.png`.

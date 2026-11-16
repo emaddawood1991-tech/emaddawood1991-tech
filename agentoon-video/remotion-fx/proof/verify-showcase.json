@@ -1,0 +1,106 @@
+{
+ "01 counter: digits animate (frame 2 vs 72)": {
+  "pass": true,
+  "detail": "diff 12.9, lime 0.027->0.080"
+ },
+ "02 percent: digits roll and ring fills": {
+  "pass": true,
+  "detail": "diff 22.8, lime 0.070->0.062"
+ },
+ "03 bar chart: bars grow, line draws": {
+  "pass": true,
+  "detail": "diff 23.1, cyan 0.0037, lime 0.0327"
+ },
+ "04 3D logo rotates (frame 20 vs 55 differ, blue body present)": {
+  "pass": true,
+  "detail": "diff 22.5, blue 0.319/0.016"
+ },
+ "04 Blender render panel animates (bottom-right region)": {
+  "pass": true,
+  "detail": "diff 5.27"
+ },
+ "05 fly-through: camera moves through textured panels": {
+  "pass": true,
+  "detail": "diff 20.3, mean lum 35/38"
+ },
+ "06 kinetic type: words/letters/morph appear progressively": {
+  "pass": true,
+  "detail": "diff 25.6, lime 0.027"
+ },
+ "07 MCP diagram: amber/lime/cyan nodes + flowing dots move": {
+  "pass": true,
+  "detail": "amber 0.0024 lime 0.0061 cyan 0.0047 dots-diff 3.61"
+ },
+ "08 morphing comparison: red (paid) -> lime (open source)": {
+  "pass": true,
+  "detail": "red 0.0091->0.0000, lime 0.0014->0.0049"
+ },
+ "09 robot neon outline hugs the silhouette": {
+  "pass": true,
+  "detail": "ring 0.068 vs far 0.00001"
+ },
+ "10 scrapbook: cards fly in, paper + lime highlight": {
+  "pass": true,
+  "detail": "diff 71.3, lime 0.023"
+ },
+ "11 explainer panel: amber callouts + steps advance": {
+  "pass": true,
+  "detail": "amber 0.0122, diff 22.4"
+ },
+ "12 logo motion: logos animate, particle logo assembles": {
+  "pass": true,
+  "detail": "particle diff 22.9"
+ },
+ "13 tracking camera + speed ramp (fast segment moves more than slow)": {
+  "pass": true,
+  "detail": "fast 11.98 vs slow 7.84"
+ },
+ "transition 1->2: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 21.0, mid-vs-after 7.9"
+ },
+ "transition 2->3: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 15.0, mid-vs-after 7.6"
+ },
+ "transition 3->4: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 40.1, mid-vs-after 30.4"
+ },
+ "transition 4->5: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 41.0, mid-vs-after 38.9"
+ },
+ "transition 5->6: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 29.3, mid-vs-after 8.7"
+ },
+ "transition 6->7: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 17.4, mid-vs-after 10.6"
+ },
+ "transition 7->8: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 16.1, mid-vs-after 9.6"
+ },
+ "transition 8->9: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 30.5, mid-vs-after 46.5"
+ },
+ "transition 9->10: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 172.0, mid-vs-after 17.0"
+ },
+ "transition 10->11: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 70.6, mid-vs-after 83.0"
+ },
+ "transition 11->12: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 76.4, mid-vs-after 18.5"
+ },
+ "transition 12->13: blends two scenes mid-way": {
+  "pass": true,
+  "detail": "mid-vs-before 54.2, mid-vs-after 30.8"
+ }
+}
