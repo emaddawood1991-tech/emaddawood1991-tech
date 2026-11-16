@@ -1,0 +1,156 @@
+{
+ "ui-depth-reel": {
+  "comp": "D01",
+  "prompt": "/ui-depth-reel Render a preview still of composition D01 at frame 120 by running exactly: npx remotion still D01 out/cc/D01.png --frame=120  then run: ls -l out/cc/D01.png  and report the file size in one short sentence.",
+  "bash": [
+   "npx remotion still D01 out/cc/D01.png --frame=120",
+   "ls -l out/cc/D01.png"
+  ],
+  "results": [
+   [
+    "Rendered 0/1",
+    "Rendered 0/1"
+   ],
+   [
+    "-rw-r--r-- 1 root root 1301598 Nov 16 16:07 out/cc/D01.png"
+   ]
+  ],
+  "final": "The D01 still rendered to `out/cc/D01.png` at frame 120. The file is 1,301,598 bytes (about 1.3 MB)."
+ },
+ "scrapbook-collage": {
+  "comp": "D02",
+  "prompt": "/scrapbook-collage Render a preview still of composition D02 at frame 120 by running exactly: npx remotion still D02 out/cc/D02.png --frame=120  then run: ls -l out/cc/D02.png  and report the file size in one short sentence.",
+  "bash": [
+   "npx remotion still D02 out/cc/D02.png --frame=120 && ls -l out/cc/D02.png"
+  ],
+  "results": [
+   [
+    "Rendered 0/1",
+    "Rendered 0/1"
+   ]
+  ],
+  "final": "The D02 still rendered at frame 120 to `agentoon-video/remotion-fx/out/cc/D02.png`, and the file is about 2.6 MB (2,632,905 bytes)."
+ },
+ "news-broadcast": {
+  "comp": "D03",
+  "prompt": "/news-broadcast Render a preview still of composition D03 at frame 120 by running exactly: npx remotion still D03 out/cc/D03.png --frame=120  then run: ls -l out/cc/D03.png  and report the file size in one short sentence.",
+  "bash": [
+   "npx remotion still D03 out/cc/D03.png --frame=120",
+   "ls -l out/cc/D03.png"
+  ],
+  "results": [
+   [
+    "Rendered 0/1",
+    "Rendered 0/1"
+   ],
+   [
+    "-rw-r--r-- 1 root root 921559 Nov 16 16:08 out/cc/D03.png"
+   ]
+  ],
+  "final": "The D03 preview still rendered to `out/cc/D03.png`, and it is 921,559 bytes (about 900 KB)."
+ },
+ "neon-outline": {
+  "comp": "D04",
+  "prompt": "/neon-outline Render a preview still of composition D04 at frame 120 by running exactly: npx remotion still D04 out/cc/D04.png --frame=120  then run: ls -l out/cc/D04.png  and report the file size in one short sentence.",
+  "bash": [
+   "npx remotion still D04 out/cc/D04.png --frame=120",
+   "ls -l out/cc/D04.png"
+  ],
+  "results": [
+   [
+    "Rendered 0/1",
+    "Rendered 0/1"
+   ],
+   [
+    "-rw-r--r-- 1 root root 969490 Nov 16 16:09 out/cc/D04.png"
+   ]
+  ],
+  "final": "The D04 still at frame 120 rendered to `out/cc/D04.png`, and that file is 969,490 bytes (about 947 KB)."
+ },
+ "agentoon-number-motion": {
+  "comp": "D05",
+  "prompt": "/agentoon-number-motion Render a preview still of composition D05 at frame 120 by running exactly: npx remotion still D05 out/cc/D05.png --frame=120  then run: ls -l out/cc/D05.png  and report the file size in one short sentence.",
+  "bash": [
+   "npx remotion still D05 out/cc/D05.png --frame=120",
+   "ls -l out/cc/D05.png"
+  ],
+  "results": [
+   [
+    "Rendered 0/1",
+    "Rendered 0/1"
+   ],
+   [
+    "-rw-r--r-- 1 root root 1006069 Nov 16 16:09 out/cc/D05.png"
+   ]
+  ],
+  "final": "The D05 still at frame 120 rendered to `out/cc/D05.png`, and that file is 1,006,069 bytes (about 1.0 MB)."
+ },
+ "agentoon-3d-showcase": {
+  "comp": "D06",
+  "prompt": "/agentoon-3d-showcase Render a preview still of composition D06 at frame 100 by running exactly: npx remotion still D06 out/cc/D06.png --frame=100  then run: ls -l out/cc/D06.png  and report the file size in one short sentence.",
+  "bash": [
+   "npx remotion still D06 out/cc/D06.png --frame=100 && ls -l out/cc/D06.png"
+  ],
+  "results": [
+   [
+    "Rendered 0/1",
+    "Rendered 0/1"
+   ]
+  ],
+  "final": "The D06 still rendered at frame 100 to `out/cc/D06.png`, and the file is 121,661 bytes (about 119 KB)."
+ },
+ "agentoon-kinetic-type": {
+  "comp": "D07",
+  "prompt": "/agentoon-kinetic-type Render a preview still of composition D07 at frame 130 by running exactly: npx remotion still D07 out/cc/D07.png --frame=130  then run: ls -l out/cc/D07.png  and report the file size in one short sentence.",
+  "bash": [
+   "npx remotion still D07 out/cc/D07.png --frame=130",
+   "ls -l out/cc/D07.png"
+  ],
+  "results": [
+   [
+    "Rendered 0/1",
+    "Rendered 0/1"
+   ],
+   [
+    "-rw-r--r-- 1 root root 851090 Nov 16 16:10 out/cc/D07.png"
+   ]
+  ],
+  "final": "The still rendered to `out/cc/D07.png` at frame 130, and that file is 851,090 bytes (about 831 KB)."
+ },
+ "agentoon-data-flow": {
+  "comp": "D08",
+  "prompt": "/agentoon-data-flow Render a preview still of composition D08 at frame 120 by running exactly: npx remotion still D08 out/cc/D08.png --frame=120  then run: ls -l out/cc/D08.png  and report the file size in one short sentence.",
+  "bash": [
+   "npx remotion still D08 out/cc/D08.png --frame=120",
+   "ls -l out/cc/D08.png"
+  ],
+  "results": [
+   [
+    "Rendered 0/1",
+    "Rendered 0/1"
+   ],
+   [
+    "-rw-r--r-- 1 root root 967780 Nov 16 16:10 out/cc/D08.png"
+   ]
+  ],
+  "final": "The D08 still rendered at frame 120 to `out/cc/D08.png`, and the file is 967,780 bytes (about 945 KB)."
+ },
+ "agentoon-cinematic-cuts": {
+  "comp": "D09",
+  "prompt": "/agentoon-cinematic-cuts Render a preview still of composition D09 at frame 120 by running exactly: npx remotion still D09 out/cc/D09.png --frame=120  then run: ls -l out/cc/D09.png  and report the file size in one short sentence.",
+  "bash": [
+   "npx remotion still D09 out/cc/D09.png --frame=120",
+   "ls -l out/cc/D09.png"
+  ],
+  "results": [
+   [
+    "Rendered 0/1",
+    "Rendered 0/1"
+   ],
+   [
+    "-rw-r--r-- 1 root root 898858 Nov 16 16:10 out/cc/D09.png"
+   ]
+  ],
+  "final": "The D09 still rendered at frame 120 to `out/cc/D09.png`, and the file is 898,858 bytes (about 878 KB)."
+ }
+}

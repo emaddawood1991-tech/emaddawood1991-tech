@@ -1,0 +1,204 @@
+{
+ "voice": "am_michael",
+ "speed": 1.16,
+ "phrases": [
+  {
+   "id": "hook",
+   "speak": "What if one slash command could turn an ordinary video into professional motion graphics?",
+   "show": "What if one slash command could turn an ordinary video into professional motion graphics?",
+   "pad": 0.781
+  },
+  {
+   "id": "explain",
+   "speak": "These are custom Claude Code skills, built with Remotion and animation components. They are not built in commands. Each one is a small folder with instructions.",
+   "show": "Custom Claude Code skills, built with Remotion. Not built-in commands.",
+   "pad": 0.23
+  },
+  {
+   "id": "howto",
+   "speak": "Skills live in the dot claude skills folder. Type a slash, pick the skill, and Claude follows its instructions to render the result.",
+   "show": "Skills live in .claude/skills. Type /, pick the skill, Claude renders it.",
+   "pad": 0.424
+  },
+  {
+   "id": "s01",
+   "speak": "One. Slash U I depth reel. A flat recording lifts into depth, with floating panels.",
+   "show": "1  /ui-depth-reel",
+   "pad": 0.498
+  },
+  {
+   "id": "s02",
+   "speak": "Two. Slash scrapbook collage. Cutouts and real screenshots pop in, layer by layer.",
+   "show": "2  /scrapbook-collage",
+   "pad": 0.427
+  },
+  {
+   "id": "s03",
+   "speak": "Three. Slash news broadcast. A studio layout with lower third. A style demo, never live news.",
+   "show": "3  /news-broadcast",
+   "pad": 0.23
+  },
+  {
+   "id": "s04",
+   "speak": "Four. Slash neon outline. The glow follows the real silhouette of the robot.",
+   "show": "4  /neon-outline",
+   "pad": 0.715
+  },
+  {
+   "id": "s05",
+   "speak": "Five. Slash agentoon number motion. Counters, rings and bars, all driven by the frame.",
+   "show": "5  /agentoon-number-motion",
+   "pad": 0.23
+  },
+  {
+   "id": "s06",
+   "speak": "Six. Slash agentoon three D showcase. A real three D logo rotates, with floating screens.",
+   "show": "6  /agentoon-3d-showcase",
+   "pad": 0.23
+  },
+  {
+   "id": "s07",
+   "speak": "Seven. Slash agentoon kinetic type. Words land exactly when you say them.",
+   "show": "7  /agentoon-kinetic-type",
+   "pad": 0.882
+  },
+  {
+   "id": "s08",
+   "speak": "Eight. Slash agentoon data flow. Packets travel along the highlighted A P I path.",
+   "show": "8  /agentoon-data-flow",
+   "pad": 0.397
+  },
+  {
+   "id": "s09",
+   "speak": "Nine. Slash agentoon cinematic cuts. Two scenes joined by a motion matched cut.",
+   "show": "9  /agentoon-cinematic-cuts",
+   "pad": 0.242
+  },
+  {
+   "id": "skills",
+   "speak": "Ours are custom local skills. Build your own the same way, with one skill dot M D file.",
+   "show": "Custom local skills. Build your own with one SKILL.md file.",
+   "pad": 0.23
+  },
+  {
+   "id": "cta",
+   "speak": "Which slash skill would you try first? Save this video and follow Agentoon dot A I for more Claude Code tutorials!",
+   "show": "Which slash skill would you try first? Save this video and follow @agentoon.ai",
+   "pad": 0.232
+  }
+ ],
+ "total": 91.08,
+ "music": [
+  {
+   "t0": 0,
+   "t1": 6.0,
+   "mood": "hook"
+  },
+  {
+   "t0": 6.0,
+   "t1": 24.266666666666666,
+   "mood": "disc"
+  },
+  {
+   "t0": 24.266666666666666,
+   "t1": 77.56666666666666,
+   "mood": "demo"
+  },
+  {
+   "t0": 77.56666666666666,
+   "t1": 91.078,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "type",
+   "t": 6.4,
+   "dur": 1.1,
+   "cps": 15,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 19.27,
+   "dur": 1.4,
+   "cps": 15,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 24.47,
+   "dur": 1.7,
+   "cps": 18,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 30.17,
+   "dur": 1.7,
+   "cps": 18,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 35.87,
+   "dur": 1.7,
+   "cps": 18,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 42.37,
+   "dur": 1.7,
+   "cps": 18,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 48.07,
+   "dur": 1.7,
+   "cps": 18,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 54.07,
+   "dur": 1.7,
+   "cps": 18,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 60.67,
+   "dur": 1.7,
+   "cps": 18,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 66.37,
+   "dur": 1.7,
+   "cps": 18,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 72.07,
+   "dur": 1.7,
+   "cps": 18,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 77.87,
+   "dur": 1.0,
+   "cps": 15,
+   "gain": 0.3
+  },
+  {
+   "name": "ding",
+   "t": 87.97,
+   "gain": 0.22
+  }
+ ]
+}

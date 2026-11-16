@@ -1,0 +1,36 @@
+{
+ "cmd_grep": "grep -E \"^(name|argument-hint|allowed-tools)\" .claude/skills/news-broadcast/SKILL.md",
+ "out_grep": [
+  "name: news-broadcast",
+  "argument-hint: <presenter footage or image sequence> <headline>",
+  "allowed-tools: Read Write Edit Bash(npx remotion *) Bash(bash *)"
+ ],
+ "cmd_fx": "ls agentoon-video/remotion-fx/src/fx | head -8",
+ "out_fx": [
+  "CinematicCuts.tsx",
+  "ExplainerPanel.tsx",
+  "NeonOutline.tsx",
+  "NewsBroadcast.tsx",
+  "RobotRig.tsx",
+  "ScrapbookCollage.tsx",
+  "UiDepthReel.tsx",
+  "blender.tsx"
+ ],
+ "cmd_ls": "ls .claude/skills | grep -E \"^(ui-depth-reel|scrapbook-collage|news-broadcast|neon-outline|agentoon-(number-motion|3d-showcase|kinetic-type|data-flow|cinematic-cuts))$\"",
+ "out_ls": [
+  "agentoon-3d-showcase",
+  "agentoon-cinematic-cuts",
+  "agentoon-data-flow",
+  "agentoon-kinetic-type",
+  "agentoon-number-motion",
+  "neon-outline",
+  "news-broadcast",
+  "scrapbook-collage",
+  "ui-depth-reel"
+ ],
+ "cmd_tree": "ls .claude/skills/news-broadcast",
+ "out_tree": [
+  "SKILL.md"
+ ],
+ "abs": "/home/user/emaddawood1991-tech"
+}
