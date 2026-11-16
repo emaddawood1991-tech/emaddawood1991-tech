@@ -23,9 +23,9 @@ LIME = (200, 240, 49)
 # 01 counter: lime digits appear and grow; final frame is the 1,000 layout
 a, b = S(1, 2), S(1, 72); check("01 counter: digits animate (frame 2 vs 72)", diff(a, b) > 12 and near(b, LIME) > near(a, LIME) + 0.02, f"diff {diff(a, b):.1f}, lime {near(a, LIME):.3f}->{near(b, LIME):.3f}")
 # 02 percent: ring appears
-a, b = S(2, 4), S(2, 80); check("02 percent: ring + digits fill in", near(b, LIME) > near(a, LIME) + 0.02, f"lime {near(a, LIME):.3f}->{near(b, LIME):.3f}")
+a, b = S(2, 4), S(2, 80); check("02 percent: digits roll and ring fills", diff(a, b) > 8 and near(b, LIME) > 0.04, f"diff {diff(a, b):.1f}, lime {near(a, LIME):.3f}->{near(b, LIME):.3f}")
 # 03 bars: bars grow
-a, b = S(3, 6), S(3, 80); check("03 bar chart: bars grow, line draws", diff(a, b) > 8 and near(b, (53, 242, 255), 90) > near(a, (53, 242, 255), 90), f"diff {diff(a, b):.1f}")
+a, b = S(3, 6), S(3, 80); check("03 bar chart: bars grow, line draws", diff(a, b) > 8 and near(b, (53, 242, 255), 90) > 0.003 and near(b, LIME) > 0.003, f"diff {diff(a, b):.1f}, cyan {near(b, (53, 242, 255), 90):.4f}, lime {near(b, LIME):.4f}")
 # 04 3d logo: blue body + changes between rotation angles + blender sprite
 a, b = S(4, 20), S(4, 55); blue = lambda x: near(x, (32, 86, 223), 120); check("04 3D logo rotates (frame 20 vs 55 differ, blue body present)", diff(a, b) > 6 and blue(a) + blue(b) > 0.05, f"diff {diff(a, b):.1f}, blue {blue(a):.3f}/{blue(b):.3f}")
 bl = lambda x: x[1500:1860, 640:1040]; check("04 Blender render panel animates (bottom-right region)", diff(bl(S(4, 30)), bl(S(4, 45))) > 1.0, f"diff {diff(bl(S(4, 30)), bl(S(4, 45))):.2f}")

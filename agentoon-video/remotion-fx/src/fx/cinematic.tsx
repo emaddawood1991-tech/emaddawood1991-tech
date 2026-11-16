@@ -22,8 +22,9 @@ export const circleReveal = (o: { cx?: number; cy?: number; ring?: string } = {}
 
 /** diagonal mask wipe with a bright edge. */
 const DiagonalWipe: React.FC<TransitionPresentationComponentProps<{ angle: number }>> = ({ children, presentationProgress, presentationDirection, passedProps }) => {
-  const p = easeInOutCubic(presentationProgress); const entering = presentationDirection === "entering"; const a = passedProps.angle; const x = lerp(-30, 130, p);
-  const poly = `polygon(${x}% 0%, 100% 0%, 100% 100%, ${x - a}% 100%)`;
+  const p = easeInOutCubic(presentationProgress); const entering = presentationDirection === "entering"; const a = passedProps.angle; const x = lerp(0, 100 + a, p);
+  // revealed region grows from the left edge; at p = 1 it covers the whole frame (x - a >= 100)
+  const poly = p >= 1 ? undefined : `polygon(0% 0%, ${x}% 0%, ${x - a}% 100%, 0% 100%)`;
   return <AbsoluteFill style={{ ...fill, zIndex: entering ? 2 : 1, clipPath: entering ? poly : undefined, transform: entering ? undefined : `translateX(${-p * 4}%)` }}>{children}</AbsoluteFill>;
 };
 export const diagonalWipe = (angle = 30): TransitionPresentation<{ angle: number }> => ({ component: DiagonalWipe, props: { angle } });
