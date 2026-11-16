@@ -20,3 +20,5 @@ Code: `agentoon-video/remotion-fx/src/fx/kinetic.tsx`. Demo: showcase S06 (all s
 | `AnimatedSubtitles` | `words[{w,s,e}],perChunk` | 4-word chunks, active word block + spring pop; feed it TTS word frames |
 
 Rules: ≥ 60 px for titles on phones; captions near the top unless the footage needs it; no more than 2 kinetic styles per scene; word timings come from the episode's `audio/timing.json` (× 30).
+
+Input/output demo: composition `D07` (agentoon-video/remotion-fx/src/nine/demos.tsx): plain static captions become KineticWords + LetterReveal + TextMorph + AnimatedSubtitles timed to the real narration audio (`public/audio/kinetic.wav` + `.json` made by `scripts/make_words.py`).

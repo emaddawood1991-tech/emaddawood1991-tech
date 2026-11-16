@@ -107,3 +107,9 @@ export const LineChart: React.FC<Base & { points: number[]; width?: number; heig
     </svg>
   );
 };
+
+/** numeric transition driven by a SPRING (overshoots then settles) between two values: use for "49 -> 120" style swaps synced to a cue frame. */
+export const SpringNumber: React.FC<{ from: number; to: number; start?: number; decimals?: number; prefix?: string; suffix?: string; size?: number; color?: string; config?: { damping: number; stiffness: number; mass: number } }> = ({ from, to, start = 0, decimals = 0, prefix = "", suffix = "", size = 160, color = theme.cyan, config = { damping: 9, stiffness: 90, mass: 0.9 } }) => {
+  const frame = useCurrentFrame(); const { fps } = useVideoConfig(); const s = spring({ frame: frame - start, fps, config }); const v = from + (to - from) * s;
+  return <div style={{ fontFamily: theme.body, fontWeight: 900, fontSize: size, color, fontVariantNumeric: "tabular-nums", letterSpacing: "-.02em" }}>{prefix}{formatNumber(v, decimals)}{suffix}</div>;
+};

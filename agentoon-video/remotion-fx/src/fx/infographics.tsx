@@ -104,3 +104,31 @@ export const AnimatedArrow: React.FC<{ from: P2; to: P2; start?: number; color?:
     </g>
   );
 };
+
+/** /agentoon-data-flow: workflow where nodes appear one after another, an API path lights up with a moving highlight, and labelled data packets travel along it.
+ *  `static` renders the same diagram as the ordinary input: nothing moves, nothing highlights. */
+export const DataFlow: React.FC<{ start?: number; nodes: { id: string; label: string; sub?: string; x: number; y: number; color?: string }[]; edges: { from: string; to: string; packet?: string }[]; highlight?: string[]; static?: boolean }> = ({ start = 0, nodes, edges, highlight = [], static: st }) => {
+  const frame = useCurrentFrame(); const { fps } = useVideoConfig(); const find = (id: string) => nodes.find((n) => n.id === id)!;
+  return (
+    <svg width={1040} height={1180} viewBox="0 0 1040 1180" style={{ overflow: "visible", fontFamily: theme.body }}>
+      {edges.map((e, i) => {
+        const a = find(e.from), b = find(e.to); const my = (a.y + b.y) / 2; const pts: [P2, P2, P2, P2] = [[a.x, a.y + 75], [a.x, my], [b.x, my], [b.x, b.y - 75]]; const on = highlight.includes(e.from + ">" + e.to);
+        if (st) return <path key={i} d={pathD(pts)} fill="none" stroke="#4A5262" strokeWidth={6} strokeDasharray="4 12" strokeLinecap="round" />;
+        const at = start + 24 + i * 22, draw = easeOutCubic(clamp((frame - at) / 16)), run = frame - at - 14; const t = ((run * 0.014) % 1 + 1) % 1; const [px, py] = bez(pts, t);
+        return (
+          <g key={i}>
+            <path d={pathD(pts)} fill="none" stroke="#2D3340" strokeWidth={14} strokeLinecap="round" opacity={draw} />
+            <path d={pathD(pts)} fill="none" stroke={on ? theme.amber : theme.lime} strokeWidth={on ? 11 : 7} strokeLinecap="round" pathLength={1} strokeDasharray={1} strokeDashoffset={1 - draw} style={{ filter: `drop-shadow(0 0 ${on ? 16 : 8}px ${on ? theme.amber : theme.lime})` }} />
+            {on && run > 0 && <path d={pathD(pts)} fill="none" stroke="#fff" strokeWidth={5} strokeLinecap="round" pathLength={1} strokeDasharray="0.08 0.92" strokeDashoffset={-((run * 0.02) % 1)} opacity={0.9} />}
+            {run > 0 && e.packet && <g transform={`translate(${px},${py})`}><rect x={-44} y={-20} width={88} height={40} rx={10} fill="#fff" /><text y={9} textAnchor="middle" fontFamily={theme.mono} fontWeight={800} fontSize={26} fill="#0F1115">{e.packet}</text></g>}
+          </g>
+        );
+      })}
+      {nodes.map((n, i) => { const p = st ? 1 : spring({ frame: frame - (start + i * 18), fps, config: SPRING.pop }); const col = st ? "#6B7280" : n.color ?? theme.lime; return (
+        <g key={n.id} transform={`translate(${n.x},${n.y}) scale(${p})`} opacity={clamp(p * 2)}>
+          <rect x={-150} y={-75} width={300} height={150} rx={28} fill="#161A22" stroke={col} strokeWidth={5} style={{ filter: st ? "none" : `drop-shadow(0 0 14px ${col})` }} />
+          <text y={n.sub ? -2 : 14} textAnchor="middle" fontWeight={900} fontSize={44} fill={st ? "#C5CAD3" : "#fff"}>{n.label}</text>{n.sub && <text y={46} textAnchor="middle" fontFamily={theme.mono} fontWeight={800} fontSize={28} fill="#9AA1AE">{n.sub}</text>}
+        </g>); })}
+    </svg>
+  );
+};

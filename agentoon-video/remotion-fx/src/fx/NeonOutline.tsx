@@ -1,17 +1,18 @@
 import React from "react";
 import { AbsoluteFill, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig, Easing } from "remotion";
 import { SPRING, theme } from "./theme";
+import { Seq, seqSrc } from "./subject";
 
 /** /neon-outline: glowing outline that follows the ACTUAL alpha silhouette of the subject (RGBA PNG: robot render layer, cut-out presenter, Blender alpha pass).
  *  Built from SVG filters on the subject's own alpha, so it adapts to any silhouette:
  *   dilate(alpha) minus alpha = contour ring -> flooded with neon -> blurred for glow; a rotating bright band masks a travelling highlight along the contour;
  *   a pulse ring expands out of the silhouette on a beat; background is separated with a vignette + tinted halo. */
-export type NeonProps = { src: string; imgW: number; imgH: number; x: number; y: number; width: number; color?: string; color2?: string; pulseEvery?: number; ring?: number; title?: string };
+export type NeonProps = { intro?: boolean; seq?: Seq; src: string; imgW: number; imgH: number; x: number; y: number; width: number; color?: string; color2?: string; pulseEvery?: number; ring?: number; title?: string };
 
-export const NeonOutline: React.FC<NeonProps> = ({ src, imgW, imgH, x, y, width, color = theme.cyan, color2 = theme.magenta, pulseEvery = 45, ring = 5, title }) => {
+export const NeonOutline: React.FC<NeonProps> = ({ seq, src, imgW, imgH, x, y, width, color = theme.cyan, color2 = theme.magenta, pulseEvery = 45, ring = 5, title, intro = true }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const k = width / imgW, h = imgH * k, pad = 90;
+  const href = staticFile(seq ? seqSrc(seq, frame) : src); const k = width / imgW, h = imgH * k, pad = 90;
   const enter = spring({ frame, fps, config: SPRING.settle });
   const lineIn = interpolate(frame, [10, 34], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) });
   const beat = (frame % pulseEvery) / pulseEvery; // 0..1 inside each pulse
@@ -57,15 +58,15 @@ export const NeonOutline: React.FC<NeonProps> = ({ src, imgW, imgH, x, y, width,
             </mask>
           </defs>
           {/* 1 wide glow (breathing) */}
-          <image href={staticFile(src)} width={width} height={h} filter="url(#nGlow)" opacity={0.85 * lineIn * breathe} />
+          <image href={href} width={width} height={h} filter="url(#nGlow)" opacity={0.85 * lineIn * breathe} />
           {/* 2 base contour */}
-          <image href={staticFile(src)} width={width} height={h} filter="url(#nRing)" opacity={0.55 * lineIn} />
+          <image href={href} width={width} height={h} filter="url(#nRing)" opacity={0.55 * lineIn} />
           {/* 3 travelling bright highlight along the contour (rotating band mask), two-tone */}
-          <g mask="url(#nSweep)" opacity={lineIn}><image href={staticFile(src)} width={width} height={h} filter="url(#nRing2)" /></g>
+          <g mask="url(#nSweep)" opacity={lineIn}><image href={href} width={width} height={h} filter="url(#nRing2)" /></g>
           {/* 4 pulse ring expanding off the silhouette */}
-          <image href={staticFile(src)} width={width} height={h} filter="url(#nPulse)" opacity={pulseA} />
+          <image href={href} width={width} height={h} filter="url(#nPulse)" opacity={pulseA} />
           {/* 5 the subject itself on top */}
-          <image href={staticFile(src)} width={width} height={h} />
+          <image href={href} width={width} height={h} />
         </svg>
       </div>
       {title && <div style={{ position: "absolute", left: 0, right: 0, bottom: 150, textAlign: "center", fontFamily: theme.body, fontWeight: 900, fontSize: 84, letterSpacing: "-.02em", color: "#fff", textShadow: `0 0 24px ${color}`, opacity: interpolate(frame, [30, 50], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) }}>{title}</div>}

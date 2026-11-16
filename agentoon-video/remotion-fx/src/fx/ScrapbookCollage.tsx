@@ -1,6 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig, Easing } from "remotion";
 import { SPRING, theme } from "./theme";
+import { Seq, seqSrc } from "./subject";
 
 /** /scrapbook-collage: layered editorial collage. Paper background + torn-edge cards, sticker cutouts, tape, animated screenshots,
  *  staggered spring entrances and parallax camera depth. Every item is data: add items, set delay/depth, done. */
@@ -15,6 +16,7 @@ export type CollageItem = {
   delay: number; // entrance frame
   from?: "left" | "right" | "top" | "bottom";
   tape?: boolean;
+  seq?: Seq; // cutout from an image sequence (footage take with alpha)
   zoom?: { to: number; ox: number; oy: number }; // slow push-in inside a screenshot window
   accent?: string;
 };
@@ -66,7 +68,7 @@ const Item: React.FC<{ it: CollageItem; cam: { x: number; y: number; s: number }
 
   if (it.kind === "cutout") {
     const st = ["4px 0 0", "-4px 0 0", "0 4px 0", "0 -4px 0", "3px 3px 0", "-3px -3px 0", "3px -3px 0", "-3px 3px 0"].map((o) => `drop-shadow(${o} #fff)`).join(" ");
-    return <div style={{ ...common, filter: `${st} drop-shadow(0 22px 22px rgba(40,25,5,.38))` }}><Img src={staticFile(it.src!)} style={{ width: it.w, display: "block" }} /></div>;
+    return <div style={{ ...common, filter: `${st} drop-shadow(0 22px 22px rgba(40,25,5,.38))` }}><Img src={staticFile(it.seq ? seqSrc(it.seq, frame) : it.src!)} style={{ width: it.w, display: "block" }} /></div>;
   }
   if (it.kind === "note") {
     return (

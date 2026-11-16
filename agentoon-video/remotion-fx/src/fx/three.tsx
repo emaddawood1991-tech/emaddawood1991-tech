@@ -88,3 +88,36 @@ export const FlyThrough: React.FC<{ panels: Panel[]; path: [number, number, numb
     </ThreeCanvas>
   );
 };
+
+const CameraOrbit: React.FC<{ angle: number; radius: number; height: number }> = ({ angle, radius, height }) => {
+  const { camera, invalidate } = useThree();
+  useLayoutEffect(() => { camera.position.set(Math.sin(angle) * radius, height, Math.cos(angle) * radius); camera.lookAt(0, 0, 0); camera.updateMatrixWorld(); invalidate(); });
+  return null;
+};
+/** /agentoon-3d-showcase: static logo -> rotating 3D logo with a cinematic camera ORBIT, floating interface panels (real screenshots) circling it at different depths, fog depth
+ *  and dynamic coloured lights that sweep around. `svg` is the real logo file; panels are screenshots. Everything derives from the frame. */
+export const Showcase3D: React.FC<{ svg: string; panels: string[]; width?: number; height?: number; depth?: number; start?: number }> = ({ svg, panels, width = 1080, height = 1920, depth = 26, start = 0 }) => {
+  const frame = useCurrentFrame(); const f = Math.max(0, frame - start); const texs = useTextures(panels);
+  const group = useAsync(async () => {
+    const txt = await (await fetch(staticFile(svg))).text(); const data = new SVGLoader().parse(txt); const g = new THREE.Group(); let layer = 0;
+    data.paths.forEach((p) => { const st = p.userData?.style; const fill = st?.fill;
+      if (st?.stroke && st.stroke !== "none") { const smat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setStyle(st.stroke), roughness: 0.3, metalness: 0.2, side: THREE.DoubleSide }); p.subPaths.forEach((sp) => { const geo = SVGLoader.pointsToStroke(sp.getPoints(), st); if (!geo) return; for (let j = 0; j < 8; j++) { const m = new THREE.Mesh(geo, smat); m.position.z = layer * depth * 0.7 + depth + j * 3.2; g.add(m); } }); }
+      if (!fill || fill === "none") { layer++; return; }
+      const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setStyle(fill), roughness: 0.32, metalness: 0.25, side: THREE.DoubleSide });
+      SVGLoader.createShapes(p).forEach((s) => { const geo = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 3, bevelSize: 2.5, bevelSegments: 3, curveSegments: 18 }); const m = new THREE.Mesh(geo, mat); m.position.z = layer * depth * 0.7; g.add(m); }); layer++; });
+    const box = new THREE.Box3().setFromObject(g); const c = box.getCenter(new THREE.Vector3()); const sz = box.getSize(new THREE.Vector3()); const k = 2.4 / Math.max(sz.x, sz.y); g.children.forEach((m) => m.position.sub(c)); g.scale.set(k, -k, k); return g;
+  }, [svg]);
+  const spin = f * 0.05, angle = 0.6 + f * 0.018, rise = Math.min(1, f / 24); const La = f / 22;
+  return (
+    <ThreeCanvas width={width} height={height} camera={{ position: [0, 1, 9], fov: 38 }}>
+      <color attach="background" args={["#07080C"]} /><fog attach="fog" args={["#07080C", 8, 26]} />
+      <ambientLight intensity={0.45} />
+      <pointLight position={[Math.sin(La) * 6, 3, Math.cos(La) * 6]} intensity={90} color="#C8F031" distance={22} />
+      <pointLight position={[Math.cos(La * 0.8) * -6, -2, Math.sin(La * 0.8) * 5]} intensity={80} color="#35F2FF" distance={22} />
+      <directionalLight position={[3, 6, 5]} intensity={1.8} />
+      <CameraOrbit angle={angle} radius={9 - 1.2 * rise} height={1.2 + Math.sin(f / 30) * 0.8} />
+      {group && <group rotation={[Math.sin(f / 40) * 0.12, spin, 0]} scale={0.5 + 0.5 * easeOutCubic(rise)}><primitive object={group} /></group>}
+      {texs && texs.map((tx, i) => { const a = f * 0.028 + (i * Math.PI * 2) / texs.length, r = 3.4 + (i % 2) * 0.9; return <group key={i} position={[Math.cos(a) * r, Math.sin(f / 26 + i) * 0.35 + (i % 2 ? 1.2 : -1.0), Math.sin(a) * r]} rotation={[0, -a + Math.PI / 2, 0]}><mesh position={[0, 0, -0.04]}><boxGeometry args={[2.34, 1.54, 0.05]} /><meshStandardMaterial color="#C8F031" emissive="#334400" /></mesh><mesh><planeGeometry args={[2.2, 1.375]} /><meshBasicMaterial map={tx} toneMapped={false} /></mesh></group>; })}
+    </ThreeCanvas>
+  );
+};
