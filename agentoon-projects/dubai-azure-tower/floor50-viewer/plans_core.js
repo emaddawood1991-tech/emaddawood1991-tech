@@ -27,7 +27,7 @@ export function createKit(H) {
     const F = { name, W, D, g, walls: new THREE.Group(), glassG: new THREE.Group(), furn: new THREE.Group(), ceil: new THREE.Group(), deco: new THREE.Group(), floorG: new THREE.Group(), doors: [], doorMeshes: [], lights: [], labels: [], reg: [], wallRects: [], M, WALL_H, CEIL, indicators: [], liftDoors: [], dyn: [] };
     [F.floorG, F.walls, F.glassG, F.furn, F.ceil, F.deco].forEach((x) => g.add(x));
     // ------------------------------------------------ slab + floor finishes
-    box(F.floorG, W + 0.6, 0.4, D + 0.3, std(0xb9b6b0, 0.95), W / 2, -0.4, D / 2 - 0.05);
+    if (!opt.noSlab) box(F.floorG, W + 0.6, 0.4, D + 0.3, std(0xb9b6b0, 0.95), W / 2, -0.4, D / 2 - 0.05);
     F.patch = (x1, z1, x2, z2, mat, y = 0.012) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(x2 - x1, z2 - z1), mat); m.rotation.x = -Math.PI / 2; m.position.set((x1 + x2) / 2, y, (z1 + z2) / 2); m.receiveShadow = true; const uv = m.geometry.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * (x2 - x1), uv.getY(i) * (z2 - z1)); F.floorG.add(m); return m; };
     // ------------------------------------------------ walls (explicit segments, doors cut openings)
     F.wall = (x1, z1, x2, z2, o = {}) => {
@@ -60,12 +60,12 @@ export function createKit(H) {
       const sw = axis === "x" ? { x1: c - w / 2, z1: fixed + (swing > 0 ? -w : 0), x2: c + w / 2, z2: fixed + (swing > 0 ? 0 : w) } : { x1: fixed + (swing > 0 ? 0 : -w), z1: c - w / 2, x2: fixed + (swing > 0 ? w : 0), z2: c + w / 2 };
       F.doorSwings = F.doorSwings || []; F.doorSwings.push({ ...sw, name });
     };
-    F.updateDoors = (dt) => { F.doors.forEach((d) => { d.cur += (d.target - d.cur) * Math.min(1, dt * 6); d.pivot.rotation.y = d.cur * d.dir; }); };
+    F.updateDoors = (dt) => { F.doors.forEach((d) => { d.cur += (d.target - d.cur) * Math.min(1, dt * 6); d.pivot.rotation.y = (d.base || 0) + d.cur * d.dir; }); };
     F.setDoors = (open) => F.doors.forEach((d) => (d.target = open ? 1 : 0));
     // ------------------------------------------------ lights
     // rooms: emissive ceiling panels + one point light, switched together
     F.rooms = {}; F.lightsOn = {};
-    box(F.ceil, W, 0.06, D, std(0xf4f2ee, 0.95), W / 2, CEIL, D / 2);   // ceiling plate (shown with the "Ceiling" toggle)
+    if (!opt.noSlab) box(F.ceil, W, 0.06, D, std(0xf4f2ee, 0.95), W / 2, CEIL, D / 2);   // ceiling plate (shown with the "Ceiling" toggle)
     F.room = (key, name, x1, z1, x2, z2, o = {}) => {
       const mat = new THREE.MeshStandardMaterial({ color: 0xb8b2a8, emissive: 0xffd9a0, emissiveIntensity: 0.03, roughness: 0.4 });
       const pl = new THREE.PointLight(0xffd8a8, 0, o.range || 13, 2); pl.position.set((x1 + x2) / 2, CEIL - 0.45, (z1 + z2) / 2); g.add(pl);
@@ -84,7 +84,7 @@ export function createKit(H) {
     F.check = () => {
       const issues = [];
       for (let i = 0; i < F.reg.length; i++) for (let j = i + 1; j < F.reg.length; j++) { const A = F.reg[i], B = F.reg[j]; if (A.soft || B.soft) continue; if (Math.hypot(A.cx - B.cx, A.cz - B.cz) > 8) continue; const f = Math.max(overlapFrac(A.pts, B.pts), overlapFrac(B.pts, A.pts)); if (f > 0.12) issues.push(`overlap ${A.tag} / ${B.tag} (${Math.round(f * 100)}%)`); }
-      F.reg.forEach((A) => { if (A.wall) return; F.wallRects.forEach((w) => { const poly = [[w.x1, w.z1], [w.x2, w.z1], [w.x2, w.z2], [w.x1, w.z2]]; const f = overlapFrac(A.pts, poly); if (f > 0.06) issues.push(`in-wall ${A.tag} @${A.cx.toFixed(1)},${A.cz.toFixed(1)} (${Math.round(f * 100)}%)`); }); if (A.cx < 0.1 || A.cx > W - 0.1 || A.cz < 0.1 || A.cz > (F.extentD || D) + 0.1) issues.push(`outside ${A.tag}`); });
+      F.reg.forEach((A) => { if (A.wall) return; F.wallRects.forEach((w) => { const poly = w.pts || [[w.x1, w.z1], [w.x2, w.z1], [w.x2, w.z2], [w.x1, w.z2]]; const f = overlapFrac(A.pts, poly); if (f > 0.06) issues.push(`in-wall ${A.tag} @${A.cx.toFixed(1)},${A.cz.toFixed(1)} (${Math.round(f * 100)}%)`); }); if (F.insideFn ? !F.insideFn(A.cx, A.cz) : (A.cx < 0.1 || A.cx > W - 0.1 || A.cz < 0.1 || A.cz > (F.extentD || D) + 0.1)) issues.push(`outside ${A.tag}`); });
       (F.doorSwings || []).forEach((s) => { const poly = [[s.x1, s.z1], [s.x2, s.z1], [s.x2, s.z2], [s.x1, s.z2]]; F.reg.forEach((A) => { if (A.soft || A.wall) return; const f = overlapFrac(A.pts, poly); if (f > 0.25) issues.push(`door-swing blocked by ${A.tag} (${s.name})`); }); });
       return issues;
     };
@@ -156,6 +156,25 @@ export function createKit(H) {
       F.pools.push(P); return P;
     };
     F.couch = (x, z, rot) => { const c = L(x, z, rot); box(c, 0.7, 0.55, 1.9, M.white, 0, 0.1, 0); rbox(c, 0.66, 0.1, 1.8, 0.04, M.blue, 0, 0.65, 0); cyl(c, 0.04, 0.04, 0.1, M.steel, 0, 0, 0, 8); box(c, 0.6, 0.1, 0.3, M.white, 0, 0.75, -0.75); F.fp("couch", x, z, 0.7, 1.9, rot); };
+    // ------------------------------------------------ angled walls (radial / chord partitions) with optional hinged doors
+    F.wallA = (x1, z1, x2, z2, o = {}) => {
+      const t = o.t || 0.15, h = o.h || WALL_H, L2 = Math.hypot(x2 - x1, z2 - z1), ux = (x2 - x1) / L2, uz = (z2 - z1) / L2, th = Math.atan2(-uz, ux), mat = o.mat || (o.glass ? M.glass : M.wall), grp = o.glass ? F.glassG : F.walls;
+      const piece = (s, e, y0, hh, m = mat, gr = grp) => { if (e - s < 0.01 || hh < 0.01) return; const c = (s + e) / 2; box(gr, e - s, hh, t, m, x1 + ux * c, y0, z1 + uz * c, th); };
+      const rect = (s, e) => { if (e - s < 0.01 || o.glass) return; const hw = t / 2, nx = -uz, nz = ux, a = [x1 + ux * s + nx * hw, z1 + uz * s + nz * hw], b = [x1 + ux * e + nx * hw, z1 + uz * e + nz * hw], c = [x1 + ux * e - nx * hw, z1 + uz * e - nz * hw], d = [x1 + ux * s - nx * hw, z1 + uz * s - nz * hw]; F.wallRects.push({ pts: [a, b, c, d] }); };
+      let cur = 0; [...(o.doors || [])].sort((p, q) => p.s - q.s).forEach((d) => {
+        const s0 = d.s - d.w / 2, e0 = d.s + d.w / 2, dh = d.h || 2.3; piece(cur, s0, 0, h); piece(s0, e0, dh, h - dh); rect(cur, s0);
+        if (d.leaf !== false) { const pv = new THREE.Group(); pv.position.set(x1 + ux * s0, 0, z1 + uz * s0); pv.rotation.y = th; const leaf = new THREE.Mesh(new THREE.BoxGeometry(d.w - 0.04, 2.1, 0.045), d.glass ? M.glass : M.door); leaf.position.set(d.w / 2 - 0.02, 1.05, 0); leaf.castShadow = !d.glass; leaf.userData.keep = true; pv.add(leaf); F.walls.add(pv); const dd = { pivot: pv, cur: 0, target: 0, base: th, dir: (d.swing || 1) * Math.PI * 0.5 * 0.94, name: d.name || "Door" }; F.doors.push(dd); leaf.userData.door = dd; F.doorMeshes.push(leaf); }
+        cur = e0; });
+      piece(cur, L2, 0, h); rect(cur, L2);
+    };
+    // merge every static mesh of a group into one mesh per material (huge draw-call saving); keep = meshes flagged userData.keep stay separate
+    F.mergeStatic = (grp) => {
+      grp.updateMatrixWorld(true); const inv = new THREE.Matrix4().copy(grp.matrixWorld).invert(), by = new Map(), drop = [];
+      grp.traverse((m) => { if (!m.isMesh || m.userData.keep || m.isInstancedMesh || Array.isArray(m.material)) return; const gm = m.geometry; if (!gm.attributes.position || !gm.attributes.normal) return; const g2 = (gm.index ? gm.toNonIndexed() : gm.clone()); if (!g2.attributes.uv) g2.setAttribute("uv", new THREE.BufferAttribute(new Float32Array(g2.attributes.position.count * 2), 2)); g2.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld)); const key = m.material; if (!by.has(key)) by.set(key, []); by.get(key).push(g2); drop.push(m); });
+      drop.forEach((m) => m.parent && m.parent.remove(m));
+      for (const [mat, list] of by) { let n = 0; list.forEach((g2) => (n += g2.attributes.position.count)); const P = new Float32Array(n * 3), N = new Float32Array(n * 3), U = new Float32Array(n * 2); let o = 0; list.forEach((g2) => { P.set(g2.attributes.position.array, o * 3); N.set(g2.attributes.normal.array, o * 3); U.set(g2.attributes.uv.array, o * 2); o += g2.attributes.position.count; g2.dispose(); }); const G = new THREE.BufferGeometry(); G.setAttribute("position", new THREE.BufferAttribute(P, 3)); G.setAttribute("normal", new THREE.BufferAttribute(N, 3)); G.setAttribute("uv", new THREE.BufferAttribute(U, 2)); const mm = new THREE.Mesh(G, mat); mm.castShadow = !mat.transparent; mm.receiveShadow = true; grp.add(mm); }
+      return by.size;
+    };
     F.finish = () => { g.traverse((m) => { if (m.isMesh && !m.material.transparent) m.castShadow = true; }); };
     F.fade = (op) => { [F.walls].forEach((gr) => gr.traverse((m) => { if (!m.isMesh) return; const mt = m.material; if (mt.userData.o0 === undefined) { mt.userData.o0 = mt.opacity; mt.userData.t0 = mt.transparent; mt.userData.d0 = mt.depthWrite; } mt.transparent = op < 1 || mt.userData.t0; mt.opacity = op < 1 ? Math.min(mt.userData.o0, op) : mt.userData.o0; mt.depthWrite = op < 1 ? false : mt.userData.d0; mt.needsUpdate = true; })); };
     return F;

@@ -9,7 +9,7 @@ const cam = (a) => `setTimeout(()=>${F}.putCamera(${a}),800)`, camp = (a) => `${
 const eng = (flags) => `Object.assign(${F}.state,{struct:false,rebar:false,found:false,glass:false,rain:false,elev:false,${flags}}); ${F}.apply();`;
 const ALL = ["elec", "water", "sewer", "fire", "ac", "sensors", "blinds"].map((k) => `${F}.state.${k}=true`).join(";");
 const NONE = ["elec", "water", "sewer", "fire", "ac", "sensors", "blinds"].map((k) => `${F}.state.${k}=false`).join(";");
-const STEPS = [
+const STEPS = process.env.STEPS_JSON ? JSON.parse(process.env.STEPS_JSON) : [
   ["01_tower_overview", H + set("tower", 15.5) + `setTimeout(()=>${F}.putCamera(...${F}.VT.over),800)`, 5000],
   ["02_tower_crown", camp(`...${F}.VT.crown`), 2500], ["03_tower_floor50", camp(`...${F}.VT.f50`), 2500], ["04_tower_street_arrival", camp(`...${F}.VT.arrival`), 2500],
   ["05_tower_sunset", `${F}.setTime(18.2); ${camp(`...${F}.VT.over`)}`, 3000], ["06_tower_night", `${F}.setTime(22); ${camp(`...${F}.VT.over`)}`, 3000],

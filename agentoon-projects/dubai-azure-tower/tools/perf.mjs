@@ -3,7 +3,7 @@
 import { createRequire } from "module"; import { writeFileSync } from "fs"; const require = createRequire(import.meta.url); const { chromium } = require("playwright");
 const url = process.argv[2] || "http://localhost:8765/index.html", out = process.argv[3] || "";
 const F = "window.__f50";
-const VIEWS = [["tower overview", "tower", `${F}.VT.over`], ["tower street", "tower", `${F}.VT.arrival`], ["lobby", "lobby", `${F}.VL.entrance`], ["parking", "park", "[[170,120,-210],[5,-6,-12]]"], ["floor 12 plan", "office", `${F}.VO.plan`], ["floor 12 medical", "office", `${F}.VO.med`], ["floor 49", "floor", `${F}.VIEWS.over`], ["floor 50 plan", "apts", `${F}.VA.plan`], ["floor 50 3BR", "apts", `${F}.VA.br3`], ["floor 50 pools", "apts", `${F}.VA.pools`], ["lift cabin", "lift", `[${F}.LIFT.cam.p, ${F}.LIFT.cam.t]`]];
+const VIEWS = [["tower overview", "tower", `${F}.VT.over`], ["tower street", "tower", `${F}.VT.arrival`], ["lobby", "lobby", `${F}.VL.entrance`], ["parking", "park", "[[170,120,-210],[5,-6,-12]]"], ["floor 12 plan", "office", `${F}.VO.plan`], ["floor 12 medical", "office", `${F}.VO.med`], ["floor 49", "floor", `${F}.VIEWS.over`], ["floor 50 plan", "apts", `${F}.VA.plan`], ["floor 50 3BR", "apts", `${F}.VA.br3`], ["floor 50 pools", "apts", `${F}.VA.pools`], ["wellness gym", "wellness", `${F}.AV.well('weights')`], ["wellness pool", "wellness", `${F}.AV.well('pool')`], ["sky restaurant", "sky", `${F}.AV.sky('main')`], ["lift cabin", "lift", `[${F}.LIFT.cam.p, ${F}.LIFT.cam.t]`]];
 const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist", "--no-sandbox"] });
 const res = [];
 for (const tier of (process.argv[4] || "high,low").split(",")) {
