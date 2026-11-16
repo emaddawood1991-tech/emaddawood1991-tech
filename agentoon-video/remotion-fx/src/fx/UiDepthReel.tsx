@@ -14,7 +14,7 @@ export const UiDepthReel: React.FC<UiDepthProps> = ({ video, videoW = 1280, vide
   const T = clamp((frame - lift) / (durationInFrames - lift)); // camera journey progress after lift
   const h = (WW * videoH) / videoW;
   // camera: starts flat & frontal, then orbit + dolly THROUGH the panels
-  const camRY = L * (-24 + 44 * easeInOutCubic(T)), camRX = L * (12 - 8 * T), camZ = L * (-120 + 520 * easeInOutCubic(T)), camX = L * (60 - 120 * T);
+  const camRY = L * (-24 + 44 * easeInOutCubic(T)), camRX = L * (12 - 8 * T), camZ = L * (-140 + 330 * easeInOutCubic(T)), camX = L * (50 - 100 * T);
   const flatScale = 1.2 - 0.2 * L; // the flat screen fills the width at the start
   return (
     <AbsoluteFill style={{ background: "radial-gradient(120% 70% at 50% 30%, #1B2130 0%, #0B0D12 75%)", overflow: "hidden", perspective: 1500, perspectiveOrigin: "50% 45%" }}>

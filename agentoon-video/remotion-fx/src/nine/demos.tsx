@@ -18,7 +18,7 @@ export const DEMO_FRAMES = 180;
 /** chip shown on every demo: INPUT while the original is on screen, OUTPUT <command> after the transformation. */
 const Tag: React.FC<{ cmd: string; flip: number; input: string }> = ({ cmd, flip, input }) => {
   const f = useCurrentFrame(); const out = f >= flip;
-  return <div style={{ position: "absolute", left: 40, top: 70, zIndex: 90, display: "flex", gap: 14, alignItems: "center" }}><div style={{ fontFamily: theme.mono, fontWeight: 800, fontSize: 32, padding: "8px 20px", borderRadius: 999, background: out ? theme.lime : "#fff", color: "#0F1115" }}>{out ? "OUTPUT" : "INPUT"}</div><div style={{ fontFamily: theme.mono, fontWeight: 800, fontSize: 32, color: "#fff", textShadow: "0 2px 8px rgba(0,0,0,.8)" }}>{out ? cmd : input}</div></div>;
+  return <div style={{ position: "absolute", left: 40, top: 16, zIndex: 90, display: "flex", gap: 14, alignItems: "center" }}><div style={{ fontFamily: theme.mono, fontWeight: 800, fontSize: 32, padding: "8px 20px", borderRadius: 999, background: out ? theme.lime : "#fff", color: "#0F1115" }}>{out ? "OUTPUT" : "INPUT"}</div><div style={{ fontFamily: theme.mono, fontWeight: 800, fontSize: 32, color: "#fff", textShadow: "0 2px 8px rgba(0,0,0,.8)" }}>{out ? cmd : input}</div></div>;
 };
 /** reveal `after` over `before` with a diagonal sweep between frames w0..w1. */
 const Reveal: React.FC<{ before: React.ReactNode; after: React.ReactNode; w0?: number; w1?: number }> = ({ before, after, w0 = 36, w1 = 56 }) => {
@@ -30,9 +30,9 @@ const Plain: React.FC<{ children: React.ReactNode }> = ({ children }) => <Absolu
 /* 01 ui-depth-reel */
 export const D01: React.FC = () => (
   <AbsoluteFill><UiDepthReel video="footage/screen-cap.mp4" lift={34} liftDur={36} panels={[
-    { src: "shots/cap-0.jpg", crop: [640, 270, 640, 120], srcW: 1920, srcH: 1200, x: 30, y: 250, z: 260, w: 560, label: "MODES", at: 8 },
-    { src: "shots/cap-0.jpg", crop: [680, 850, 560, 130], srcW: 1920, srcH: 1200, x: 520, y: 1180, z: 330, w: 520, label: "DOWNLOAD", at: 18 },
-    { src: "shots/cap-0.jpg", crop: [0, 0, 1920, 110], srcW: 1920, srcH: 1200, x: 90, y: 1240, z: 120, w: 800, label: "NAV", at: 28 },
+    { src: "shots/cap-0.jpg", crop: [640, 270, 640, 120], srcW: 1920, srcH: 1200, x: 40, y: 330, z: 160, w: 520, label: "MODES", at: 8 },
+    { src: "shots/cap-0.jpg", crop: [680, 850, 560, 130], srcW: 1920, srcH: 1200, x: 540, y: 1200, z: 200, w: 480, label: "DOWNLOAD", at: 18 },
+    { src: "shots/cap-0.jpg", crop: [0, 0, 1920, 110], srcW: 1920, srcH: 1200, x: 90, y: 1300, z: 90, w: 760, label: "NAV", at: 28 },
     { src: "shots/openwhispr-1.jpg", crop: [560, 330, 800, 420], srcW: 1920, srcH: 1200, x: 640, y: 300, z: -120, w: 420, at: 14 },
   ]} /><Tag cmd="/ui-depth-reel" flip={34} input="ordinary screen recording" /></AbsoluteFill>
 );
@@ -45,7 +45,7 @@ const collage: CollageItem[] = [
   { id: "logo1", kind: "logo", src: "logos/cap.png", x: 880, y: 150, w: 150, rot: 9, depth: 0.9, delay: 34, from: "top" },
   { id: "note1", kind: "note", text: "REAL SCREENSHOTS", x: 560, y: 1700, w: 420, rot: -3, depth: 0.95, delay: 40, from: "right" },
 ];
-export const D02: React.FC = () => <AbsoluteFill><Reveal before={<Plain><OffthreadVideo src={staticFile("footage/robot-take.mp4")} muted style={{ width: 1080, height: 1920 }} /></Plain>} after={<ScrapbookCollage items={collage} kicker="/SCRAPBOOK-COLLAGE" titleWords={["REAL", "COLLAGE"]} highlightWord={1} titleDelay={4} titleY={110} />} /><Tag cmd="/scrapbook-collage" flip={44} input="ordinary robot footage" /></AbsoluteFill>;
+export const D02: React.FC = () => <AbsoluteFill><Reveal before={<Plain><OffthreadVideo src={staticFile("footage/robot-take.mp4")} muted style={{ width: 1080, height: 1920 }} /></Plain>} after={<ScrapbookCollage items={collage} kicker="/SCRAPBOOK-COLLAGE" titleWords={["REAL", "COLLAGE"]} highlightWord={1} titleDelay={4} titleY={175} />} /><Tag cmd="/scrapbook-collage" flip={44} input="ordinary robot footage" /></AbsoluteFill>;
 /* 03 news-broadcast */
 export const D03: React.FC = () => <AbsoluteFill><Reveal before={<Plain><OffthreadVideo src={staticFile("footage/robot-take.mp4")} muted style={{ width: 1080, height: 1920 }} /></Plain>} after={<NewsBroadcast presenter={ROBOT_SEQ} headline="Nine video styles from one command" name="AGENTOON ROBOT" role="PRESENTER · STYLE DEMO" panels={[{ k: "STYLES", v: "9" }, { k: "ENGINE", v: "REMOTION" }, { k: "FRAMES", v: "30 FPS" }]} ticker="SLASH SKILLS  ·  REAL COMPONENTS  ·  FRAME-DRIVEN ANIMATION" />} /><Tag cmd="/news-broadcast" flip={44} input="ordinary presenter footage" /></AbsoluteFill>;
 /* 04 neon-outline: smooth transition from the original take into the neon version (same position) */
@@ -67,7 +67,7 @@ const StatLayout: React.FC<{ live: boolean }> = ({ live }) => (
 );
 export const D05: React.FC = () => <AbsoluteFill><Reveal before={<StatLayout live={false} />} after={<StatLayout live />} /><Tag cmd="/agentoon-number-motion" flip={44} input="static statistics" /></AbsoluteFill>;
 /* 06 agentoon-3d-showcase */
-export const D06: React.FC = () => <AbsoluteFill><Reveal before={<AbsoluteFill style={{ background: "#F3F4F6", alignItems: "center", justifyContent: "center", display: "flex" }}><Img src={staticFile("logos/openwhispr-icon.png")} style={{ width: 520 }} /></AbsoluteFill>} after={<Showcase3D svg="logos/openwhispr.svg" panels={["shots/cap-0.jpg", "shots/openseo-0.jpg", "shots/appflowy-0.jpg", "shots/openwhispr-1.jpg"]} />} /><Tag cmd="/agentoon-3d-showcase" flip={44} input="static logo" /></AbsoluteFill>;
+export const D06: React.FC = () => <AbsoluteFill><Reveal before={<AbsoluteFill style={{ background: "#F3F4F6", alignItems: "center", justifyContent: "center", display: "flex" }}><Img src={staticFile("logos/openwhispr-icon.png")} style={{ width: 520 }} /></AbsoluteFill>} after={<Showcase3D svg="logos/openwhispr-3d.svg" panels={["shots/cap-0.jpg", "shots/openseo-0.jpg", "shots/appflowy-0.jpg", "shots/openwhispr-1.jpg"]} />} /><Tag cmd="/agentoon-3d-showcase" flip={44} input="static logo" /></AbsoluteFill>;
 /* 07 agentoon-kinetic-type: the words are timed to the real narration audio */
 const words = kwords as { w: string; s: number; e: number }[];
 export const D07: React.FC = () => {

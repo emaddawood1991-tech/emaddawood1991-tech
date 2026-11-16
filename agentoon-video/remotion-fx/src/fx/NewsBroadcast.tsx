@@ -16,8 +16,8 @@ export const NewsBroadcast: React.FC<NewsProps> = ({ presenter, headline, name, 
       {/* live-style moving background graphics (studio set) */}
       <div style={{ position: "absolute", inset: -200, backgroundImage: "repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 70px, transparent 70px 140px)", transform: `translateX(${bg % 140}px)` }} />
       {[0, 1, 2].map((i) => <div key={i} style={{ position: "absolute", left: 540 + Math.cos(frame / 40 + i * 2.1) * 360 - 260, top: 760 + Math.sin(frame / 50 + i * 1.7) * 260 - 260, width: 520, height: 520, borderRadius: "50%", border: `5px solid rgba(80,160,255,${0.28 - i * 0.06})` }} />)}
-      <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 150, background: "linear-gradient(#050B1C,#0B1840)", borderBottom: "5px solid #3D8BFF" }} />
-      <div style={{ position: "absolute", left: 40, top: 40, display: "flex", alignItems: "center", gap: 20 }}><div style={{ background: "#3D8BFF", color: "#fff", fontWeight: 900, fontSize: 54, padding: "6px 22px", letterSpacing: ".04em" }}>{station}</div><div style={{ fontFamily: theme.mono, fontWeight: 800, fontSize: 28, color: "#9fc3ff" }}>STYLE DEMO · NOT A LIVE BROADCAST</div></div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 190, background: "linear-gradient(#050B1C,#0B1840)", borderBottom: "5px solid #3D8BFF" }} />
+      <div style={{ position: "absolute", left: 40, top: 80, display: "flex", alignItems: "center", gap: 20 }}><div style={{ background: "#3D8BFF", color: "#fff", fontWeight: 900, fontSize: 54, padding: "6px 22px", letterSpacing: ".04em" }}>{station}</div><div style={{ fontFamily: theme.mono, fontWeight: 800, fontSize: 28, color: "#9fc3ff" }}>STYLE DEMO · NOT A LIVE BROADCAST</div></div>
       {/* presenter */}
       <div style={{ position: "absolute", left: 40, top: 330, width: 640, transform: `translateY(${(1 - lt) * 80}px)`, opacity: clamp(lt * 2), filter: "drop-shadow(0 30px 40px rgba(0,0,0,.5))" }}><Img src={staticFile(seqSrc(presenter, frame))} style={{ width: 640 }} /></div>
       {/* moving information panels */}

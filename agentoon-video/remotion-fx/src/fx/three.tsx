@@ -30,8 +30,13 @@ const Lights: React.FC<{ key1?: string; rim?: string; fill?: string }> = ({ key1
 export const Logo3D: React.FC<{ svg: string; width?: number; height?: number; depth?: number; spin?: number; bg?: string }> = ({ svg, width = 1080, height = 1920, depth = 26, spin = 0.045, bg = "transparent" }) => {
   const frame = useCurrentFrame(); const group = useAsync(async () => {
     const txt = await (await fetch(staticFile(svg))).text(); const data = new SVGLoader().parse(txt); const g = new THREE.Group();
-    let layer = 0; data.paths.forEach((p) => { const st = p.userData?.style; const fill = st?.fill;
-      if (st?.stroke && st.stroke !== "none") { const smat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setStyle(st.stroke), roughness: 0.3, metalness: 0.2, side: THREE.DoubleSide }); p.subPaths.forEach((sp) => { const geo = SVGLoader.pointsToStroke(sp.getPoints(), st); if (!geo) return; for (let j = 0; j < 8; j++) { const m = new THREE.Mesh(geo, smat); m.position.z = layer * depth * 0.7 + depth + j * 3.2; g.add(m); } }); }
+    let layer = 0; data.paths.forEach((p) => { const st = p.userData?.style;  const fill = st?.fill;
+      if (st?.stroke && st.stroke !== "none") { const smat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setStyle(st.stroke), roughness: 0.3, metalness: 0.2, side: THREE.DoubleSide }); p.subPaths.forEach((sp) => { const pts = sp.getPoints();
+        if (pts.length <= 3) { const A = pts[0], B = pts[pts.length - 1], w = (st.strokeWidth ?? 10) / 2, L = Math.hypot(B.x - A.x, B.y - A.y), ang = Math.atan2(B.y - A.y, B.x - A.x);
+          const sh = new THREE.Shape(); sh.moveTo(0, -w); sh.lineTo(L, -w); sh.absarc(L, 0, w, -Math.PI / 2, Math.PI / 2, false); sh.lineTo(0, w); sh.absarc(0, 0, w, Math.PI / 2, Math.PI * 1.5, false);
+          const cg = new THREE.ExtrudeGeometry(sh, { depth: 14, bevelEnabled: false, curveSegments: 16 }); const cm = new THREE.Mesh(cg, smat); cm.position.set(A.x, A.y, layer * depth * 0.7 + depth); cm.rotation.z = ang; g.add(cm);
+          const cm2 = new THREE.Mesh(cg, smat); cm2.position.set(A.x, A.y, layer * depth * 0.7 - 14); cm2.rotation.z = ang; g.add(cm2); return; }
+        const geo = SVGLoader.pointsToStroke(pts, st); if (!geo) return; for (let j = 0; j < 8; j++) { const m = new THREE.Mesh(geo, smat); m.position.z = layer * depth * 0.7 + depth + j * 3.2; g.add(m); } for (let j = 0; j < 8; j++) { const m = new THREE.Mesh(geo, smat); m.position.z = layer * depth * 0.7 - 1 - j * 3.2; g.add(m); } }); }
       if (!fill || fill === "none") { layer++; return; } const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setStyle(fill), roughness: 0.32, metalness: 0.25, side: THREE.DoubleSide }); SVGLoader.createShapes(p).forEach((s) => { const geo = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 3, bevelSize: 2.5, bevelSegments: 3, curveSegments: 18 }); const m = new THREE.Mesh(geo, mat); m.position.z = layer * depth * 0.7; g.add(m); }); layer++; });
     const box = new THREE.Box3().setFromObject(g); const c = box.getCenter(new THREE.Vector3()); const sz = box.getSize(new THREE.Vector3()); const k = 2.5 / Math.max(sz.x, sz.y); g.children.forEach((m) => m.position.sub(c)); g.scale.set(k, -k, k); return g;
   }, [svg]);
@@ -100,14 +105,19 @@ export const Showcase3D: React.FC<{ svg: string; panels: string[]; width?: numbe
   const frame = useCurrentFrame(); const f = Math.max(0, frame - start); const texs = useTextures(panels);
   const group = useAsync(async () => {
     const txt = await (await fetch(staticFile(svg))).text(); const data = new SVGLoader().parse(txt); const g = new THREE.Group(); let layer = 0;
-    data.paths.forEach((p) => { const st = p.userData?.style; const fill = st?.fill;
-      if (st?.stroke && st.stroke !== "none") { const smat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setStyle(st.stroke), roughness: 0.3, metalness: 0.2, side: THREE.DoubleSide }); p.subPaths.forEach((sp) => { const geo = SVGLoader.pointsToStroke(sp.getPoints(), st); if (!geo) return; for (let j = 0; j < 8; j++) { const m = new THREE.Mesh(geo, smat); m.position.z = layer * depth * 0.7 + depth + j * 3.2; g.add(m); } }); }
+    data.paths.forEach((p) => { const st = p.userData?.style;  const fill = st?.fill;
+      if (st?.stroke && st.stroke !== "none") { const smat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setStyle(st.stroke), roughness: 0.3, metalness: 0.2, side: THREE.DoubleSide }); p.subPaths.forEach((sp) => { const pts = sp.getPoints();
+        if (pts.length <= 3) { const A = pts[0], B = pts[pts.length - 1], w = (st.strokeWidth ?? 10) / 2, L = Math.hypot(B.x - A.x, B.y - A.y), ang = Math.atan2(B.y - A.y, B.x - A.x);
+          const sh = new THREE.Shape(); sh.moveTo(0, -w); sh.lineTo(L, -w); sh.absarc(L, 0, w, -Math.PI / 2, Math.PI / 2, false); sh.lineTo(0, w); sh.absarc(0, 0, w, Math.PI / 2, Math.PI * 1.5, false);
+          const cg = new THREE.ExtrudeGeometry(sh, { depth: 14, bevelEnabled: false, curveSegments: 16 }); const cm = new THREE.Mesh(cg, smat); cm.position.set(A.x, A.y, layer * depth * 0.7 + depth); cm.rotation.z = ang; g.add(cm);
+          const cm2 = new THREE.Mesh(cg, smat); cm2.position.set(A.x, A.y, layer * depth * 0.7 - 14); cm2.rotation.z = ang; g.add(cm2); return; }
+        const geo = SVGLoader.pointsToStroke(pts, st); if (!geo) return; for (let j = 0; j < 8; j++) { const m = new THREE.Mesh(geo, smat); m.position.z = layer * depth * 0.7 + depth + j * 3.2; g.add(m); } for (let j = 0; j < 8; j++) { const m = new THREE.Mesh(geo, smat); m.position.z = layer * depth * 0.7 - 1 - j * 3.2; g.add(m); } }); }
       if (!fill || fill === "none") { layer++; return; }
       const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setStyle(fill), roughness: 0.32, metalness: 0.25, side: THREE.DoubleSide });
       SVGLoader.createShapes(p).forEach((s) => { const geo = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 3, bevelSize: 2.5, bevelSegments: 3, curveSegments: 18 }); const m = new THREE.Mesh(geo, mat); m.position.z = layer * depth * 0.7; g.add(m); }); layer++; });
     const box = new THREE.Box3().setFromObject(g); const c = box.getCenter(new THREE.Vector3()); const sz = box.getSize(new THREE.Vector3()); const k = 2.4 / Math.max(sz.x, sz.y); g.children.forEach((m) => m.position.sub(c)); g.scale.set(k, -k, k); return g;
   }, [svg]);
-  const spin = f * 0.05, angle = 0.6 + f * 0.018, rise = Math.min(1, f / 24); const La = f / 22;
+  const spin = Math.sin(f * 0.052) * 1.05, angle = f * 0.012 - 0.2, rise = Math.min(1, f / 24); const La = f / 22;
   return (
     <ThreeCanvas width={width} height={height} camera={{ position: [0, 1, 9], fov: 38 }}>
       <color attach="background" args={["#07080C"]} /><fog attach="fog" args={["#07080C", 8, 26]} />
@@ -117,7 +127,7 @@ export const Showcase3D: React.FC<{ svg: string; panels: string[]; width?: numbe
       <directionalLight position={[3, 6, 5]} intensity={1.8} />
       <CameraOrbit angle={angle} radius={9 - 1.2 * rise} height={1.2 + Math.sin(f / 30) * 0.8} />
       {group && <group rotation={[Math.sin(f / 40) * 0.12, spin, 0]} scale={0.5 + 0.5 * easeOutCubic(rise)}><primitive object={group} /></group>}
-      {texs && texs.map((tx, i) => { const a = f * 0.028 + (i * Math.PI * 2) / texs.length, r = 3.4 + (i % 2) * 0.9; return <group key={i} position={[Math.cos(a) * r, Math.sin(f / 26 + i) * 0.35 + (i % 2 ? 1.2 : -1.0), Math.sin(a) * r]} rotation={[0, -a + Math.PI / 2, 0]}><mesh position={[0, 0, -0.04]}><boxGeometry args={[2.34, 1.54, 0.05]} /><meshStandardMaterial color="#C8F031" emissive="#334400" /></mesh><mesh><planeGeometry args={[2.2, 1.375]} /><meshBasicMaterial map={tx} toneMapped={false} /></mesh></group>; })}
+      {texs && texs.map((tx, i) => { const a = f * 0.028 + (i * Math.PI * 2) / texs.length, r = 4.2 + (i % 2) * 1.0; return <group key={i} position={[Math.cos(a) * r, Math.sin(f / 26 + i) * 0.35 + (i % 2 ? 1.2 : -1.0), Math.sin(a) * r]} rotation={[0, angle, 0]}><mesh position={[0, 0, -0.04]}><boxGeometry args={[2.34, 1.54, 0.05]} /><meshStandardMaterial color="#C8F031" emissive="#334400" /></mesh><mesh><planeGeometry args={[2.2, 1.375]} /><meshBasicMaterial map={tx} toneMapped={false} /></mesh></group>; })}
     </ThreeCanvas>
   );
 };
