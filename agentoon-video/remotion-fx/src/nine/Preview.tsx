@@ -112,7 +112,7 @@ const Hook: React.FC = () => {
         <Sequence from={0} durationInFrames={45}><Wipe c="D06" b={8} a={104} /></Sequence>
         <Sequence from={45} durationInFrames={45}><Wipe c="D05" b={8} a={110} /></Sequence>
         <Sequence from={90} durationInFrames={45}><Wipe c="D08" b={8} a={110} /></Sequence>
-        <Sequence from={135} durationInFrames={45}><Wipe c="D01" b={8} a={104} /></Sequence>
+        <Sequence from={135} durationInFrames={45}><Wipe c="D03" b={8} a={110} /></Sequence>
       </div>
       <div style={{ position: "absolute", left: 0, right: 0, top: 1400, bottom: 0, background: "linear-gradient(180deg,#0B0D12,#111724)" }} />
       <Caps id="hook" top={40} />
@@ -122,10 +122,15 @@ const Hook: React.FC = () => {
   );
 };
 
+const Drift: React.FC<{ len: number; children: React.ReactNode; z?: number }> = ({ len, children, z = 0.06 }) => {
+  const f = useCurrentFrame(); const k = f / len;
+  return <AbsoluteFill style={{ transform: `scale(${1 + z * k}) translate(${-14 * k}px, ${-26 * k}px)`, transformOrigin: "50% 12%" }}>{children}</AbsoluteFill>;
+};
 /* ---------- EXPLAIN + HOW TO USE: wide terminal on top, "what it produces" clip below ---------- */
 const Explain: React.FC = () => (
   <AbsoluteFill>
     <Bg /><Caps id="explain" top={36} size={54} />
+    <Drift len={302}>
     <Term x={30} y={190} w={1020} h={660} lines={[
       { t: "$ " + TERM.cmd_grep, at: 10, dur: 50, c: theme.lime },
       ...TERM.out_grep.map((t, i) => ({ t, at: 70 + i * 14 } as Ln)),
@@ -136,7 +141,7 @@ const Explain: React.FC = () => (
     <Pill text="CUSTOM SKILL · NOT BUILT-IN" x={40} y={880} at={96} bg={theme.amber} size={34} />
     <Pill text="REMOTION COMPONENTS" x={560} y={880} at={196} size={34} />
     <ClipBox src={clip("D02")} x={60} y={960} scale={0.46} from={40} rate={0.45} />
-    <div style={{ position: "absolute", left: 60, top: 1962 - 0, color: "#fff" }} />
+    </Drift>
     <Narrator start={S("explain").start} x={700} y={1330} w={340} />
   </AbsoluteFill>
 );
@@ -145,6 +150,7 @@ const HowTo: React.FC = () => {
   return (
     <AbsoluteFill>
       <Bg /><Caps id="howto" top={36} size={54} />
+      <Drift len={246}>
       <Term x={30} y={190} w={1020} h={690} lines={[
         { t: "$ " + TERM.cmd_ls, at: 6, dur: 40, c: theme.lime },
         ...TERM.out_ls.map((t, i) => ({ t, at: 50 + i * 5, c: "#9FE7FF" } as Ln)),
@@ -156,6 +162,7 @@ const HowTo: React.FC = () => {
       <Pill text="/news-broadcast" x={40} y={905} at={112} size={42} />
       <Pill text="INSTALLED: .claude/skills/" x={430} y={905} at={20} bg="#fff" size={30} />
       <ClipBox src={clip("D03")} x={60} y={985} scale={0.44} from={30} rate={0.6} />
+      </Drift>
       <Narrator start={S("howto").start} x={700} y={1330} w={340} />
     </AbsoluteFill>
   );
@@ -177,7 +184,7 @@ const Style: React.FC<{ sid: string; skill: string; comp: string; len: number }>
       <Narrator start={sc.start} x={750} y={205} w={300} />
       <Pill text={"/" + skill} x={30} y={625} at={4} size={skill.length > 20 ? 34 : 40} />
       <div style={{ position: "absolute", right: 40, top: 640, fontFamily: theme.mono, fontWeight: 800, fontSize: 30, color: f < 64 ? "#fff" : theme.lime }}>{f < 64 ? "INPUT" : "OUTPUT"}</div>
-      <Sequence from={0} durationInFrames={60}><ClipBox src={clip(comp)} x={194} y={700} scale={0.62} from={0} rate={0.5} end={30} /></Sequence>
+      <Sequence from={0} durationInFrames={60}><ClipBox src={clip(comp)} x={194} y={700} scale={0.62} from={0} rate={0.5} /></Sequence>
       <Sequence from={60}><ClipBox src={clip(comp)} x={194} y={700} scale={0.62} from={30} rate={rate2} /></Sequence>
     </AbsoluteFill>
   );
