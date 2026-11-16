@@ -1,0 +1,12 @@
+HOOK: What if one slash command could transform an ordinary video into professional motion graphics?
+CONCEPT: These are reusable video styles built with Claude Code, Remotion, and real animation components.
+01: Slash ui depth reel. A flat screen recording lifts into depth, with floating panels and a moving camera.
+02: Slash scrapbook collage. Cutouts, screenshots and paper layers pop in, one after another.
+03: Slash news broadcast. A studio layout, lower third and ticker. A style demo, never live news.
+04: Slash neon outline. The glow follows the real silhouette of the subject.
+05: Slash agentoon number motion. Counters, percentages, rings and bars, all driven by the frame.
+06: Slash agentoon three d showcase. The logo rotates in real three D, with floating screens around it.
+07: Slash agentoon kinetic type. Words land exactly when you say them.
+08: Slash agentoon data flow. A static workflow comes alive, packets travel the highlighted path.
+09: Slash agentoon cinematic cuts. Two ordinary scenes, joined by a motion matched cut.
+CTA: Nine styles, one creative workflow. Which would you use first? Follow Agentoon dot AI for more Claude Code tutorials!
