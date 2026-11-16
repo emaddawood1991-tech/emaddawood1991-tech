@@ -1,122 +1,103 @@
 import * as THREE from "three";
 import { createKit } from "./plans_core.js";
 import { addMEP } from "./plans_mep.js";
+import { makeOutline, buildShell, deg } from "./outline.js";
+import { polarKit, polarFurn } from "./plans_polar.js";
 
-// Floor 50 - three sky residences around a private lift lobby: 3-bedroom (west), 1-bedroom (centre), 2-bedroom (east).
-// Plan: x 0..34 (west->east), z 0..20 (core side -> Gulf glass), terraces z 20..26.5, each with its own raised glass pool.
+// Floor 50 - three sky residences around a private lift lobby, laid out on the TRUE floor outline of the tower (tower.js ringPoint:
+// twist, taper, lobes) via outline.js. Zones, from the core outwards: service band (kitchen, baths, walk-ins) t 0..0.38, corridor ring
+// 0.38..0.5, rooms 0.5..1, glass at 1. Terraces + glass pools project 4 m beyond the glass line (approved architectural projections).
+// Angles: 0 = east, 90 = Gulf side, 180 = west, 270 = entrance. Conceptual layout - not an engineering design.
+export const TERRACE_D = 4.0;
 export function buildApts(H) {
-  const { box, rbox, cyl, canvasTex, art, artTex } = H;
-  const kit = createKit(H), M = kit.M, F = kit.floor("apts", 34, 20, { wallH: 3.6, ceilH: 3.3 });
-  F.slab(0, 20, 34, 26.5);
-  const board = (txt, x, y, z, rot, w, h, bg, fg, fs) => { const t = canvasTex(512, Math.max(64, Math.round(512 * h / w)), (c, ww, hh) => { c.fillStyle = bg; c.fillRect(0, 0, ww, hh); c.fillStyle = fg; c.font = `600 ${fs || 44}px Georgia,serif`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(txt, ww / 2, hh / 2); }); const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t, toneMapped: false })); m.position.set(x, y, z); m.rotation.y = rot; F.deco.add(m); return m; };
-  const frame = (x, y, z, rot, w, h, a, b, c2) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: artTex(a, b, c2), toneMapped: false })); m.position.set(x, y, z); m.rotation.y = rot; F.deco.add(m); };
+  const { box, rbox, cyl, canvasTex, artTex } = H;
+  const O = makeOutline(50), kit = createKit(H), M = kit.M, F = kit.floor("apts", 56, 56, { noSlab: true, wallH: 3.6, ceilH: 3.3 });
+  buildShell(F, O, H, { M, noGlass: true }); F.O = O;
+  const P = polarKit(F, O, M), { T, face, faceIn, at } = P, TD = TERRACE_D;
+  const SLAB = new THREE.MeshStandardMaterial({ color: 0xb9b6b0, roughness: 0.95, side: THREE.DoubleSide });
+  const fl = (m, ei = 0.35) => { const c = m.clone(); c.envMapIntensity = ei; return c; };
+  const wood = fl(M.wood, 0.3), stone = fl(M.stone, 0.4), tile = fl(M.stoneDark, 0.35), carpet = new THREE.MeshStandardMaterial({ color: 0xb7a58f, roughness: 1, envMapIntensity: 0.1 }), deck = new THREE.MeshStandardMaterial({ color: 0xb9a58a, roughness: 0.7, map: M.wood.map, envMapIntensity: 0.3 });
+  const board = (txt, p, rot, w, h, bg, fg, fs) => { const t = canvasTex(512, Math.max(64, Math.round((512 * h) / w)), (c, ww, hh) => { c.fillStyle = bg; c.fillRect(0, 0, ww, hh); c.fillStyle = fg; c.font = `600 ${fs || 44}px Georgia,serif`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(txt, ww / 2, hh / 2); }); const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t, toneMapped: false })); m.position.set(p[0], p[1], p[2]); m.rotation.y = rot; F.deco.add(m); };
+  const frame = (p, rot, w, h, a, b, c2) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: artTex(a, b, c2), toneMapped: false })); m.position.set(p[0], p[1], p[2]); m.rotation.y = rot; F.deco.add(m); };
+  const TI = 0.38, TC = 0.5;                                                   // service-band / corridor-ring depth fractions
+  // slab, terraces (projections), floor finishes ---------------------------------------------------------------------------------------------
+  F.sector(0, Math.PI * 2, 0, 1, SLAB, -0.02, 0.1);
+  P.terrace("3-bedroom terrace", 75, 235, TD, deck); P.terrace("1-bedroom terrace", 235, 305, TD, deck); P.terrace("2-bedroom terrace", 305, 435, TD, deck);
+  const sec = P.sec;
+  sec(225, 315, 0, TI, stone);                                                               // lift lobby
+  sec(235, 305, TI, 1, wood); sec(235, 305 + 0, TI, TI, wood); sec(280, 305, TI, 0.62, tile);                              // 1BR
+  sec(175, 235, TI, 1, wood); sec(175, 225, 0, TI, stone); sec(75, 175, TI, TC, stone); sec(125, 175, TC, 1, carpet); sec(75, 125, TC, 1, carpet);  // 3BR living, kitchen, corridor, bedrooms
+  sec(75, 175, 0, TI, tile);
+  sec(305, 360, TI, 1, wood); sec(315, 360, 0, TI, stone); sec(360, 435, TI, TC, stone); sec(360, 435, TC, 1, carpet); sec(360, 435, 0, TI, tile);  // 2BR
+  // party walls + lobby ---------------------------------------------------------------------------------------------------------------
+  const PW = { t: 0.2 };
+  P.radial(225, 0.02, TI, { ...PW, doors: [{ s: 1.7, w: 1.1, swing: 1, name: "3-bedroom entrance" }] }); P.radial(315, 0.02, TI, { ...PW, doors: [{ s: 1.7, w: 1.1, swing: -1, name: "2-bedroom entrance" }] });
+  P.arc(225, 315, TI, { t: 0.2 }, [{ a: 270, w: 1.2, swing: 1, name: "1-bedroom entrance" }]);
+  P.radial(235, TI, 1, PW); P.radial(305, TI, 1, PW); P.radial(75, 0.02, 1, PW);
+  // lifts (four, on the core face) + signs
+  const lifts = []; for (const a of [243, 261, 279, 297]) { const [x, z] = O.pt(deg(a), O.coreR(deg(a)) + 0.12), g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = face(a); F.walls.add(g); const mk = (px) => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.55, 2.3, 0.05), M.steel); m.position.set(px, 1.15, 0.03); g.add(m); return m; }; box(g, 1.4, 0.12, 0.06, M.brass, 0, 2.4, 0.04); lifts.push({ a: mk(-0.28), b: mk(0.28), k: 0, t: 0 }); F.fp("lift" + a, x, z, 1.3, 0.4, face(a), { wall: true, soft: true }); }
+  { const [sx, sz] = at(270, 0, 0, 0.14); board("RESIDENTIAL LIFTS · EXPRESS", [sx, 2.95, sz], face(270), 4.2, 0.36, "#14202e", "#f2e3c6", 26); board("FLOOR 50", [sx, 3.3, sz], face(270), 1.8, 0.3, "#14202e", "#f2e3c6", 40); }
+  // ---- 3-BEDROOM -------------------------------------------------------------------------------------------------------------------------
+  P.arc(75, 175, TC, {}, [{ a: 87, w: 0.95, swing: 1, name: "3BR bedroom 3 door" }, { a: 112, w: 0.95, swing: 1, name: "3BR bedroom 2 door" }, { a: 150, w: 1.0, swing: 1, name: "3BR master door" }]);
+  P.arc(75, 175, TI, {}, [{ a: 87.5, w: 0.85, swing: -1, name: "3BR bath 3 door" }, { a: 112, w: 0.85, swing: -1, name: "3BR bath 2 door" }, { a: 136, w: 0.85, swing: -1, name: "3BR walk-in door" }, { a: 161.5, w: 0.9, swing: -1, name: "3BR master bath door" }]);
+  P.radial(175, TC, 1, { t: 0.15 }); P.radial(125, TC, 1, { t: 0.15 }); P.radial(100, TC, 1, { t: 0.15 });
+  P.radial(175, 0.02, TI, { t: 0.15 }); P.radial(148, 0.02, TI, { t: 0.15 }); P.radial(125, 0.02, TI, { t: 0.15 }); P.radial(100, 0.02, TI, { t: 0.15 });
+  P.arc(175, 225, TI, {}, [{ a: 192, w: 2.4, leaf: false, name: "Kitchen opening" }]);
+  // ---- 2-BEDROOM -------------------------------------------------------------------------------------------------------------------------
+  P.arc(360, 435, TC, {}, [{ a: 15, w: 0.95, swing: 1, name: "2BR bedroom 2 door" }, { a: 55, w: 1.0, swing: 1, name: "2BR master door" }]);
+  P.arc(360, 435, TI, {}, [{ a: 15, w: 0.85, swing: -1, name: "2BR bath door" }, { a: 41, w: 0.85, swing: -1, name: "2BR walk-in door" }, { a: 63.5, w: 0.9, swing: -1, name: "2BR master bath door" }]);
+  P.radial(360, TC, 1, { t: 0.15 }); P.radial(390, TC, 1, { t: 0.15 }); P.radial(360, 0.02, TI, { t: 0.15 }); P.radial(390, 0.02, TI, { t: 0.15 }); P.radial(412, 0.02, TI, { t: 0.15 });
+  P.arc(315, 360, TI, {}, [{ a: 342, w: 2.2, leaf: false, name: "Kitchen opening" }]);
+  // ---- 1-BEDROOM -------------------------------------------------------------------------------------------------------------------------
+  P.radial(280, TI, 1, { t: 0.15, doors: [{ s: 4.2, w: 0.95, swing: 1, name: "1BR bedroom door" }] }); P.arc(280, 305, 0.62, {}, [{ a: 293, w: 0.85, swing: -1, name: "1BR bath door" }]);
+  // ---- glazing with terrace doors --------------------------------------------------------------------------------------------------------
+  const TDOORS = [87, 112, 150, 192, 212, 250, 267, 293, 330, 350, 15, 55].map((a, i) => ({ a: ((a % 360) + 360) % 360, w: 1.5, swing: -1, name: `Terrace door ${i + 1}`, glass: true }));
+  P.glassArc(0, 360, -0.12, TDOORS);
+  [75, 235, 305].forEach((a) => P.cross(a, -0.1, TD, { glass: true, mat: M.frostGlass, t: 0.06, h: 1.9 }));
+  // ---- lights ----------------------------------------------------------------------------------------------------------------------------
+  const R = [["lob", "Private lobby", 225, 315, 0.08, 0.34, 6, 2], ["liv3", "3BR · living / dining", 175, 235, 0.44, 0.96, 5, 2], ["kit3", "3BR · kitchen + entry", 178, 222, 0.06, 0.34, 3, 2], ["cor3", "3BR · hall", 78, 172, 0.41, 0.47, 8, 1], ["b3", "3BR · bedroom 3", 75, 100, 0.55, 0.95, 2, 2], ["b2", "3BR · bedroom 2", 100, 125, 0.55, 0.95, 2, 2], ["mas", "3BR · master suite", 125, 175, 0.55, 0.95, 4, 2], ["ba3", "3BR · baths + dressing", 78, 172, 0.08, 0.34, 6, 1],
+    ["liv1", "1BR · living / kitchen", 235, 280, 0.44, 0.96, 4, 2], ["bd1", "1BR · bedroom", 280, 305, 0.7, 0.96, 2, 1], ["ba1", "1BR · bath", 280, 305, 0.42, 0.6, 2, 1],
+    ["liv2", "2BR · living / kitchen", 305, 360, 0.44, 0.96, 4, 2], ["kit2", "2BR · entry + kitchen", 316, 358, 0.06, 0.34, 3, 2], ["cor2", "2BR · hall", 362, 433, 0.41, 0.47, 6, 1], ["bd2", "2BR · bedroom 2", 360, 390, 0.55, 0.95, 2, 2], ["mas2", "2BR · master bedroom", 390, 435, 0.55, 0.95, 3, 2], ["ba2", "2BR · baths + dressing", 362, 433, 0.08, 0.34, 6, 1]];
+  R.forEach(([k, n, a1, a2, t1, t2, na, nt]) => P.room(k, n, a1, a2, t1, t2, na, nt, 6.5, 13));
+  const terr = [["ter3", "3BR · terrace", 78, 232], ["ter1", "1BR · terrace", 238, 302], ["ter2", "2BR · terrace", 308, 432]]; terr.forEach(([k, n, a1, a2]) => { const pts = []; for (let a = a1; a <= a2; a += (a2 - a1) / 5) pts.push([...P.edge(a, 2.0), 0]); F.roomPts(k, n, pts, { round: true, inten: 5, range: 14, ceilH: F.CEIL }); });
 
-  // ---------------------------------------------------------------- floors
-  const deck = new THREE.MeshStandardMaterial({ color: 0xb9a58a, roughness: 0.7, map: M.wood.map });
-  F.patch(0, 0, 14, 20, M.wood); F.patch(14, 0, 24, 9, M.stone); F.patch(14, 9, 24, 20, M.wood); F.patch(24, 7, 34, 20, M.wood); F.patch(24, 0, 34, 7, M.core);
-  F.patch(0, 5.5, 14, 7.5, M.stone); F.patch(0, 20, 34, 26.5, deck, 0.02);
-  // wet-room tiles
-  F.patch(6.3, 7.5, 12, 12.5, M.stoneDark, 0.02); F.patch(29, 18, 34, 20, M.stoneDark, 0.02); F.patch(14, 10, 17, 14.5, M.stoneDark, 0.02);
+  const { sunbed, planter, wardrobe, bedroom, living, dining, kitchen, wetPod } = polarFurn(F, M, P, H, TI);
+  // 3BR ----------------------------------------------------------------------------------------------------------------------------------
+  bedroom(75, 100, 0.52, "queen"); bedroom(100, 125, 0.52, "queen"); bedroom(125, 175, 0.52, "king", { arm: -3 });
+  wardrobe(75, 0.68, 1, 1.4); wardrobe(125, 0.68, 1, 1.4); wardrobe(175, 0.68, -1, 2.2); F.desk(...at(112, 0.9, 0, -0.2), faceIn(112), { w: 1.2, d: 0.6, mon: 1, chair: true });
+  wetPod(75, 100, "bath"); wetPod(100, 125, "bath"); wetPod(125, 148, "walkin"); wetPod(148, 175, "master");
+  living(176, 212, TI, { c: 194, len: 3.0, sp: 9 }); dining(224, 0.8, 6, 2.4);
+  kitchen(180, 222); F.cabinet(...at(218, 0.4, 0, 0.3), faceIn(218), 1.2, 0.8, 0.35, M.walnut, { tag: "foyer-console" });
+  // 1BR ----------------------------------------------------------------------------------------------------------------------------------
+  bedroom(280, 305, 0.68, "queen"); wardrobe(305, 0.8, -1, 1.4); wetPod(280, 305, "bath", TI, 2.3);
+  living(254, 279, TI, { c: 266, tv: 264, len: 2.4, sp: 7 }); dining(246, 0.78, 4, 1.8);
+  F.kitchenRun(...at(245.5, TI, 0, 0.5), face(245.5), 2.0, { wallCab: true, hob: 0.4, sink: -0.6 }); F.fridge(...at(254.5, TI, 0, 0.5), face(254.5));
+  // 2BR ----------------------------------------------------------------------------------------------------------------------------------
+  bedroom(360, 390, 0.52, "queen"); bedroom(390, 435, 0.52, "king", { arm: 3 }); wardrobe(360, 0.68, 1, 1.4); wardrobe(435, 0.68, -1, 2.2);
+  wetPod(360, 390, "bath"); wetPod(390, 412, "walkin"); wetPod(412, 435, "master");
+  living(306, 336, TI, { c: 321, len: 2.8, sp: 9 }); dining(348, 0.78, 4, 2.0);
+  kitchen(334, 360, { len: 2.0, isl: 1.6, v: 1.15 });
+  // lobby ---------------------------------------------------------------------------------------------------------------------------------
+  F.sofa(...at(240, 0.2, 0, 0.5), faceIn(240) + Math.PI, 1.8, M.cream); F.sofa(...at(300, 0.2, 0, 0.5), faceIn(300) + Math.PI, 1.8, M.cream); F.plant(...at(228, 0.3, 0, 0), 1.1, 1.8); F.plant(...at(312, 0.3, 0, 0), 1.1, 1.8);
+  F.table(...at(262, 0.26, 0, 0), 0.7, 0.7, { round: true }); F.table(...at(278, 0.26, 0, 0), 0.7, 0.7, { round: true });
+  { const [sx, sz] = at(270, TI, 0, 0.12); board("SKY RESIDENCES · FLOOR 50", [sx, 2.6, sz], face(270), 3.6, 0.4, "#14202e", "#f2e3c6", 28); }
+  // terraces: pools + loungers -------------------------------------------------------------------------------------------------------------
+  const pool = (a, L, W, name) => P.fitPool(a, L, W, name, TD);
+  [[155, 8.5, "3-bedroom pool"], [270, 5.5, "1-bedroom pool"], [10, 7.0, "2-bedroom pool"]].forEach(([ang, L, nm], i) => { const pl = pool(ang, L, 2.0, nm); P.around(pl, sunbed, planter); });
 
-  // ---------------------------------------------------------------- shell: Gulf glass, west/east glass, solid core side
-  F.wall(0, 20, 34, 20, { glass: true, t: 0.1, doors: [{ c: 4.0, w: 1.4, swing: -1, name: "3BR terrace door", glass: true }, { c: 10.0, w: 1.4, swing: -1, name: "3BR terrace door 2", glass: true }, { c: 19.0, w: 1.4, swing: -1, name: "1BR terrace door", glass: true }, { c: 26.5, w: 1.4, swing: -1, name: "2BR terrace door", glass: true }] });
-  F.wall(0, 0, 0, 20, { glass: true, t: 0.1 }); F.wall(34, 0, 34, 20, { glass: true, t: 0.1 }); F.wall(0, 0, 14, 0, { glass: true, t: 0.1 }); F.wall(24, 0, 34, 0, { t: 0.2 });
-  // terrace: low glass balustrade, frosted dividers
-  F.wall(0, 26.5, 34, 26.5, { glass: true, t: 0.05, h: 1.15 }); F.wall(0, 20, 0, 26.5, { glass: true, t: 0.05, h: 1.15 }); F.wall(34, 20, 34, 26.5, { glass: true, t: 0.05, h: 1.15 });
-  F.wall(14, 20, 14, 26.5, { glass: true, mat: M.frostGlass, t: 0.06, h: 1.9 }); F.wall(24, 20, 24, 26.5, { glass: true, mat: M.frostGlass, t: 0.06, h: 1.9 });
-
-  // ---------------------------------------------------------------- core (lifts + stairs) and private lobby
-  F.wall(14, 0, 14, 4.5, { t: 0.3, mat: M.core }); F.wall(24, 0, 24, 4.5, { t: 0.3, mat: M.core }); F.wall(14, 4.5, 24, 4.5, { t: 0.3, mat: M.core }); F.wall(14, 0, 24, 0, { t: 0.3, mat: M.core });
-  const LIFTX = [16.0, 18.0, 20.0, 22.0];
-  LIFTX.forEach((x, i) => { const a = box(F.walls, 0.55, 2.3, 0.05, M.steel, x - 0.275, 0, 4.68), b = box(F.walls, 0.55, 2.3, 0.05, M.steel, x + 0.275, 0, 4.68); F.liftDoors.push({ a, b, ax: x - 0.275, bx: x + 0.275, cur: 0, target: 0 }); box(F.walls, 1.4, 0.12, 0.06, M.brass, x, 2.4, 4.69);
-    box(F.walls, 0.1, 0.22, 0.05, M.steel, x + 0.9, 1.0, 4.68); F.fp("call" + i, x + 0.9, 4.7, 0.1, 0.05, 0, { wall: true, soft: true }); });
-  board("RESIDENTIAL LIFTS · EXPRESS", 19, 2.9, 4.7, 0, 5.4, 0.36, "#14202e", "#f2e3c6", 26);
-  board("FLOOR 50", 19, 3.25, 4.7, 0, 1.8, 0.3, "#14202e", "#f2e3c6", 40);
-  // lobby: three doors, one per residence + service
-  F.wall(24, 4.5, 24, 7, { t: 0.2, doors: [{ c: 5.7, w: 1.0, swing: 1, name: "Service door" }] });
-  F.wall(14, 9, 24, 9, { t: 0.2, doors: [{ c: 19.0, w: 1.1, swing: -1, name: "1-bedroom entrance" }] });
-  F.wall(24, 7, 24, 20, { t: 0.2, doors: [{ c: 8.2, w: 1.2, swing: 1, name: "2-bedroom entrance" }] });
-  F.wall(14, 9, 14, 20, { t: 0.2 });
-  // the 3BR front door sits in x=14 between z 4.5..9 (replaces the plain wall above)
-  F.wall(14, 4.5, 14, 9, { t: 0.2, doors: [{ c: 6.7, w: 1.3, swing: -1, name: "3-bedroom entrance" }] });
-  // service strip x24..34 z0..7
-  F.wall(24, 7, 34, 7, { t: 0.2 }); F.wall(34, 0, 34, 7, { t: 0.2 });
-
-  // ---------------------------------------------------------------- 3-BEDROOM (x0..14, z0..20)
-  F.wall(0, 5.5, 14, 5.5, { t: 0.15, doors: [{ c: 5.0, w: 0.95, swing: 1, name: "3BR bedroom 2 door" }, { c: 9.2, w: 0.95, swing: 1, name: "3BR bedroom 3 door" }] }); F.wall(7, 0, 7, 5.5, { t: 0.15 });
-  F.wall(0, 7.5, 12, 7.5, { t: 0.15, doors: [{ c: 3.5, w: 1.0, swing: -1, name: "3BR master door" }, { c: 10.8, w: 0.9, swing: -1, name: "3BR guest bath door" }] });
-  F.wall(6.3, 7.5, 6.3, 12.5, { t: 0.15, doors: [{ c: 8.9, w: 0.9, swing: 1, name: "3BR master bath door" }] }); F.wall(9.5, 7.5, 9.5, 12.5, { t: 0.15 }); F.wall(12, 7.5, 12, 12.5, { t: 0.15 });
-  F.wall(0, 12.5, 12, 12.5, { t: 0.15 });
-  // ---------------------------------------------------------------- 1-BEDROOM (x14..24, z9..20)
-  F.wall(14, 10, 17, 10, { t: 0.15 }); F.wall(17, 10, 17, 14.5, { t: 0.15 }); F.wall(14, 14.5, 19, 14.5, { t: 0.15, doors: [{ c: 15.5, w: 0.9, swing: 1, name: "1BR bath door" }] });
-  F.wall(19, 14.5, 19, 20, { t: 0.15, doors: [{ c: 16.0, w: 0.95, swing: -1, name: "1BR bedroom door" }] });
-  // ---------------------------------------------------------------- 2-BEDROOM (x24..34, z7..20)
-  F.wall(29, 7, 29, 20, { t: 0.15, doors: [{ c: 9.0, w: 0.95, swing: 1, name: "2BR bedroom 2 door" }, { c: 14.2, w: 0.95, swing: 1, name: "2BR master door" }] });
-  F.wall(29, 13, 34, 13, { t: 0.15 }); F.wall(29, 18, 34, 18, { t: 0.15, doors: [{ c: 30.5, w: 0.85, swing: -1, name: "2BR master bath door" }] });
-
-  // ---------------------------------------------------------------- lights
-  const R = [["b2", "3BR · bedroom 2", 0, 0, 7, 5.5], ["b3", "3BR · bedroom 3", 7, 0, 14, 5.5], ["cor", "3BR · hall", 0, 5.5, 14, 7.5], ["mas", "3BR · master suite", 0, 7.5, 6.3, 12.5], ["mba", "3BR · master bath", 6.3, 7.5, 9.5, 12.5], ["gba", "3BR · guest bath", 9.5, 7.5, 12, 12.5], ["liv3", "3BR · living / dining / kitchen", 0, 12.5, 14, 20],
-    ["lob", "Private lobby", 14, 4.5, 24, 9], ["liv1", "1BR · living / kitchen", 17, 10, 24, 20], ["bd1", "1BR · bedroom", 14, 14.5, 19, 20], ["ba1", "1BR · bath", 14, 10, 17, 14.5],
-    ["liv2", "2BR · living / kitchen", 24, 7, 29, 20], ["bd2", "2BR · bedroom 2", 29, 7, 34, 13], ["mas2", "2BR · master bedroom", 29, 13, 34, 18], ["mba2", "2BR · master bath", 29, 18, 34, 20],
-    ["ter3", "3BR · terrace", 0, 20, 14, 26.5], ["ter1", "1BR · terrace", 14, 20, 24, 26.5], ["ter2", "2BR · terrace", 24, 20, 34, 26.5]];
-  R.forEach(([k, n, x1, z1, x2, z2]) => F.room(k, n, x1, z1, x2, z2, { round: true, pitch: 2.8, inten: k.startsWith("ter") ? 5 : 6.5, range: 14 }));
-
-  // helpers --------------------------------------------------------------
-  const sunbed = (x, z, rot) => { const b = F.furn; const c = F.furn; const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; c.add(g); rbox(g, 0.75, 0.14, 2.0, 0.05, M.cream, 0, 0.2, 0); const back = rbox(g, 0.75, 0.14, 0.7, 0.05, M.cream, 0, 0.35, -0.75); back.rotation.x = 0.55; for (const sx of [-0.3, 0.3]) for (const sz of [-0.9, 0.9]) cyl(g, 0.02, 0.02, 0.2, M.brass, sx, 0, sz, 6); F.fp("sunbed", x, z, 0.75, 2.0, rot); };
-  const planter = (x, z, w = 1.2) => { box(F.furn, w, 0.55, 0.45, M.stoneDark, x, 0, z); F.plant(x, z, 0.8, 1.2); };
-  const poolFp = (P, cx, cz, L, Wd) => F.fp("pool", cx, cz, L + 0.8, Wd + 0.8, 0);
-  const bathRoom = null;
-
-  // ================================================================ 3-BEDROOM FURNITURE
-  F.bed(4.8, 2.7, -Math.PI / 2, "queen"); F.bedside(6.5, 1.5, -Math.PI / 2); F.bedside(6.5, 3.9, -Math.PI / 2); F.tall(1.6, 5.15, Math.PI, 2.4, 0.6, 2.4, M.walnut); F.rug(3.6, 2.7, 2.6, 2.2, M.cream); F.armchair(1.0, 1.0, 0.8, M.sage); F.side(1.0, 2.2, true);
-  F.bed(9.3, 2.7, Math.PI / 2, "queen"); F.bedside(7.5, 1.5, Math.PI / 2); F.bedside(7.5, 3.9, Math.PI / 2); F.tall(11.0, 5.15, Math.PI, 2.4, 0.6, 2.4, M.walnut); F.rug(10.0, 2.7, 2.6, 2.2, M.cream); F.desk(12.9, 2.2, -Math.PI / 2, { w: 1.4, d: 0.65, mon: 1, chair: true });
-  // hall
-  F.cabinet(11.5, 6.65, Math.PI, 1.2, 0.8, 0.35, M.walnut, { tag: "hall-console" }); frame(7.0, 1.7, 7.42, Math.PI, 1.2, 0.9, "#c9a25a", "#2a3f5e", "#f2e3c6");
-  // master suite: bed against the south wall (z=12.5), wardrobe on the west wall, bench, armchair
-  F.bed(3.15, 10.4, Math.PI, "king"); F.bedside(1.7, 12.1, Math.PI); F.bedside(4.6, 12.1, Math.PI); F.rug(3.15, 9.3, 3.0, 2.6, M.cream); F.armchair(5.5, 8.4, Math.PI * 0.9, M.sage);
-  // master bath (x6.3..9.5): tub, shower, double vanity, WC
-  F.tub(7.15, 10.2, Math.PI / 2); F.shower(8.8, 8.3, 0, 1.0, 1.0); F.basin(7.0, 12.1, Math.PI, 0.9); F.basin(8.3, 12.1, Math.PI, 0.9); F.wcSet(9.05, 10.5, -Math.PI / 2); F.mirror(7.65, 1.45, 12.4, Math.PI, 2.2, 0.9);
-  // guest bath (x9.5..12)
-  F.shower(11.4, 11.8, 0, 1.0, 1.0); F.basin(9.85, 10.2, Math.PI / 2, 0.8); F.wcSet(11.575, 10.2, -Math.PI / 2);
-  // living / dining / kitchen (z12.5..20)
-  F.kitchenRun(2.8, 12.9, 0, 5.0, { wallCab: true, hob: 3.2, sink: 1.0 }); F.fridge(6.0, 12.95, 0); F.island(3.0, 14.9, 0, 2.8, 1.0); F.stool(2.1, 15.75); F.stool(3.0, 15.75); F.stool(3.9, 15.75);
-  F.table(9.0, 15.0, 2.6, 1.1, { top: M.walnut }); F.chairsAround(9.0, 15.0, 2.6, 1.1, 6, 0, M.cream, { ends: true });
-  F.sofa(4.2, 17.9, 0, 3.0, M.grey); F.coffee(4.2, 19.1, 1.2, 0.6); F.armchair(1.3, 18.6, Math.PI / 2, M.sage); F.armchair(7.0, 18.8, -Math.PI / 2, M.rust); F.rug(4.2, 18.5, 4.2, 2.6, M.cream); F.side(0.6, 17.4, true);
-  F.tv(11.6, 17.5, -Math.PI / 2, 1.4, true); F.sofa(9.6, 18.0, Math.PI / 2, 2.0, M.cream); F.plant(0.5, 19.3, 1.0, 1.6); F.plant(13.4, 13.2, 1.0, 1.6);
-  frame(0.1, 1.8, 16.8, Math.PI / 2, 1.0, 1.4, "#274c5e", "#e0c28f", "#f2e3c6");
-  // terrace 3BR
-  F.pool(7.0, 23.2, 9.0, 2.4, { side: -1, name: "3-bedroom pool" }); poolFp(null, 7.0, 23.2, 9.0, 2.4);
-  sunbed(2.6, 21.0, Math.PI / 2); sunbed(12.0, 21.0, Math.PI / 2); sunbed(4.2, 25.6, Math.PI / 2); sunbed(9.8, 25.6, Math.PI / 2); planter(13.0, 26.0, 1.0); F.table(7.0, 25.8, 0.0001, 0.0001, { round: true });
-  // ================================================================ 1-BEDROOM FURNITURE
-  F.bed(15.4, 17.2, Math.PI / 2, "queen"); F.bedside(14.5, 15.6, Math.PI / 2); F.bedside(14.5, 18.8, Math.PI / 2); F.tall(18.0, 14.85, 0, 1.5, 0.6, 2.4, M.walnut); F.rug(17.0, 17.2, 2.6, 2.2, M.cream); F.armchair(18.2, 19.3, Math.PI, M.sage);
-  F.shower(14.7, 10.7, 0, 1.0, 1.0); F.basin(16.5, 12.3, -Math.PI / 2, 0.8); F.wcSet(14.45, 12.4, Math.PI / 2); F.mirror(16.9, 1.4, 12.3, -Math.PI / 2, 0.8, 0.8);
-  F.cabinet(21.8, 9.3, 0, 1.4, 0.9, 0.4, M.walnut, { tag: "foyer-console" }); F.kitchenRun(23.55, 12.0, Math.PI / 2, 3.2, { wallCab: true, hob: 0.0, sink: -1.0 }); F.fridge(23.55, 14.0, Math.PI / 2);
-  F.table(20.6, 12.6, 1.2, 1.2, { round: true }); F.chair(20.6, 11.7, 0, M.cream); F.chair(20.6, 13.5, Math.PI, M.cream); F.chair(19.7, 12.6, -Math.PI / 2, M.cream); F.chair(21.5, 12.6, Math.PI / 2, M.cream);
-  F.sofa(20.3, 17.4, Math.PI / 2, 2.4, M.grey); F.coffee(21.9, 17.4, 0.9, 0.9, true); F.tv(23.65, 17.4, -Math.PI / 2, 1.3, true); F.armchair(22.2, 19.3, Math.PI, M.rust); F.rug(21.4, 17.4, 3.4, 2.8, M.cream); F.plant(23.5, 9.7, 0.9, 1.4);
-  F.pool(19.0, 23.2, 6.0, 2.2, { side: -1, name: "1-bedroom pool" }); poolFp(null, 19.0, 23.2, 6.0, 2.2);
-  sunbed(15.8, 25.6, Math.PI / 2); sunbed(21.0, 25.6, Math.PI / 2); sunbed(16.5, 21.0, Math.PI / 2); sunbed(22.0, 21.0, Math.PI / 2); planter(23.0, 26.0, 1.0);
-  // ================================================================ 2-BEDROOM FURNITURE
-  F.bed(31.5, 8.3, 0, "queen"); F.bedside(30.1, 7.5, 0); F.bedside(32.9, 7.5, 0); F.tall(29.4, 11.4, Math.PI / 2, 2.2, 0.6, 2.4, M.walnut); F.armchair(33.2, 11.7, -Math.PI / 2, M.sage); F.rug(31.5, 9.1, 2.6, 2.4, M.cream);
-  F.bed(31.5, 14.3, 0, "king"); F.bedside(29.9, 13.5, 0); F.bedside(33.1, 13.5, 0); F.tall(29.4, 16.5, Math.PI / 2, 2.2, 0.6, 2.4, M.walnut); F.sofa(31.5, 16.7, Math.PI, 1.4, M.grey); F.rug(31.5, 15.2, 3.0, 2.6, M.cream);
-  F.shower(29.9, 19.2, 0, 1.0, 1.0); F.basin(31.6, 18.45, 0, 0.9); F.wcSet(32.8, 18.45, 0); F.tub(33.0, 19.45, 0);
-  F.cabinet(26.5, 7.4, 0, 1.4, 0.9, 0.4, M.walnut, { tag: "foyer-console2" }); F.kitchenRun(24.45, 11.9, Math.PI / 2, 3.2, { wallCab: true, hob: 0.0, sink: -1.0 }); F.fridge(24.5, 13.9, Math.PI / 2); F.island(26.7, 11.9, Math.PI / 2, 2.2, 1.0); F.stool(28.0, 11.3); F.stool(28.0, 12.5);
-  F.table(26.5, 15.6, 2.0, 1.0, { top: M.walnut, rot: Math.PI / 2 }); F.chairsAround(26.5, 15.6, 2.0, 1.0, 4, Math.PI / 2, M.cream);
-  F.sofa(26.6, 17.9, 0, 2.4, M.grey); F.coffee(26.6, 19.1, 1.0, 0.5); F.armchair(24.9, 18.9, Math.PI / 2, M.rust); F.armchair(28.4, 18.9, -Math.PI / 2, M.sage); F.plant(24.5, 9.3, 0.9, 1.4);
-  F.pool(29.5, 23.2, 7.0, 2.4, { side: -1, name: "2-bedroom pool" }); poolFp(null, 29.5, 23.2, 7.0, 2.4);
-  sunbed(29.0, 21.0, Math.PI / 2); sunbed(32.4, 21.0, Math.PI / 2); sunbed(27.0, 25.6, Math.PI / 2); sunbed(30.8, 25.6, Math.PI / 2); planter(33.0, 26.0, 1.0);
-  // lobby
-  F.sofa(15.9, 8.2, Math.PI, 1.8, M.cream); F.sofa(22.1, 8.2, Math.PI, 1.8, M.cream); F.plant(14.9, 5.2, 1.1, 1.8); F.plant(23.1, 5.2, 1.1, 1.8); F.table(17.9, 7.7, 0.7, 0.7, { round: true }); F.table(20.1, 7.7, 0.7, 0.7, { round: true });
-  frame(14.1, 1.9, 6.7, Math.PI / 2, 1.0, 1.4, "#274c5e", "#e0c28f", "#f2e3c6");
-  board("SKY RESIDENCES · FLOOR 50", 19, 2.6, 8.92, Math.PI, 3.6, 0.4, "#14202e", "#f2e3c6", 28);
-  board("3 BEDROOM", 14.07, 2.7, 6.7, Math.PI / 2, 1.6, 0.28, "#f2e3c6", "#14202e", 36); board("2 BEDROOM", 23.93, 2.7, 8.2, -Math.PI / 2, 1.6, 0.28, "#f2e3c6", "#14202e", 36); board("1 BEDROOM", 19, 2.7, 9.07, 0, 1.6, 0.28, "#f2e3c6", "#14202e", 36);
-  board("SERVICE", 23.93, 2.5, 5.7, -Math.PI / 2, 1.0, 0.24, "#555a62", "#eee", 30);
-
-  F.extentD = 26.5;
+  // ---- finish ----------------------------------------------------------------------------------------------------------------------------
   F.finish();
-  addMEP(F, { risers: [{ x: 14.7, z: 3.0 }, { x: 23.3, z: 3.0 }], blinds: [[0, 20, 34, 20], [0, 0, 0, 20], [34, 0, 34, 20], [0, 0, 14, 0]] });
-  F.liftOpen = (on) => F.liftDoors.forEach((d) => (d.target = on ? 1 : 0));
-  F.update = (dt) => { F.updateDoors(dt); F.liftDoors.forEach((d) => { d.cur += (d.target - d.cur) * Math.min(1, dt * 3); d.a.position.x = d.ax - d.cur * 0.5; d.b.position.x = d.bx + d.cur * 0.5; }); };
+  // MEP routing uses each room's rectangle: give the wedge rooms a bounding box (illustrative routing)
+  Object.values(F.rooms).forEach((r) => { if (!r.pts || r.key.startsWith("ter")) return; const xs = r.pts.map((p) => p[0]), zs = r.pts.map((p) => p[1]); r.x1 = Math.min(...xs) - 0.3; r.x2 = Math.max(...xs) + 0.3; r.z1 = Math.min(...zs) - 0.3; r.z2 = Math.max(...zs) + 0.3; });
+  addMEP(F, { risers: [{ x: at(236, 0.3)[0], z: at(236, 0.3)[1] }, { x: at(304, 0.3)[0], z: at(304, 0.3)[1] }], blinds: [] });
+  { const bm = new THREE.MeshStandardMaterial({ color: 0xd9d2c3, roughness: 0.9, side: THREE.DoubleSide }); for (let a = 0; a < 360; a += 3) { const p = P.edge(a, -0.3), q = P.edge(a + 3, -0.3), L = Math.hypot(q[0] - p[0], q[1] - p[1]), m = new THREE.Mesh(new THREE.BoxGeometry(L - 0.08, 2.4, 0.02), bm); m.position.set((p[0] + q[0]) / 2, F.WALL_H - 1.25, (p[1] + q[1]) / 2); m.rotation.y = Math.atan2(-(q[1] - p[1]), q[0] - p[0]); F.mep.blinds.add(m); } }
+  F.liftOn = false; F.liftOpen = (on) => { F.liftOn = on; lifts.forEach((l) => (l.t = on ? 1 : 0)); };
+  F.update = (dt) => { F.updateDoors(dt); lifts.forEach((l) => { l.k += (l.t - l.k) * Math.min(1, dt * 3); l.a.position.x = -0.28 - l.k * 0.5; l.b.position.x = 0.28 + l.k * 0.5; }); };
   F.setNight = (k) => F.pools.forEach((p) => p.setNight(k));
-  F.units = [{ name: "3-bedroom residence", beds: 3, baths: 3, area: "280 m²", terrace: "91 m²", pool: F.pools[0] }, { name: "1-bedroom residence", beds: 1, baths: 1, area: "110 m²", terrace: "65 m²", pool: F.pools[1] }, { name: "2-bedroom residence", beds: 2, baths: 2, area: "130 m²", terrace: "65 m²", pool: F.pools[2] }];
+  const ar = (a1, a2, t1, t2) => Math.round(P.sectorArea(a1, a2, t1, t2)), tr = (a1, a2) => Math.round(P.ringArea(a1, a2, 0, TD));
+  F.units = [{ name: "3-bedroom residence", beds: 3, baths: 3, area: `${ar(75, 235, 0.02, 1) - ar(225, 235, 0.02, TI)} m²`, terrace: `${tr(75, 235)} m²`, pool: F.pools[0] }, { name: "1-bedroom residence", beds: 1, baths: 1, area: `${ar(235, 305, TI, 1)} m²`, terrace: `${tr(235, 305)} m²`, pool: F.pools[1] }, { name: "2-bedroom residence", beds: 2, baths: 2, area: `${ar(305, 435, 0.02, 1) - ar(305, 315, 0.02, TI)} m²`, terrace: `${tr(305, 435)} m²`, pool: F.pools[2] }];
+  F.unitPolys = { lobby: [P.sectorPts(225, 315, 0.02, TI)], br1: [P.sectorPts(235, 305, TI, 1)], br3: [P.sectorPts(75, 225, 0.02, 1), P.sectorPts(225, 235, TI, 1)], br2: [P.sectorPts(315, 435, 0.02, 1), P.sectorPts(305, 315, TI, 1)] };
+  F.liftPts = [243, 261, 279, 297].map((a) => { const [x, z] = O.pt(deg(a), O.coreR(deg(a)) + 0.12); return { name: "lift " + a, x, z }; });
+  F.P = P; F.zones = { lobby: [225, 315], br1: [235, 305], br2: [305, 435], br3: [75, 235] };
   return F;
 }

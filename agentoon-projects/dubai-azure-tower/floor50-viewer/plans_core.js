@@ -83,8 +83,8 @@ export function createKit(H) {
     F.fp = (tag, cx, cz, w, d, rot = 0, o = {}) => { F.reg.push({ tag, pts: corners(cx, cz, w, d, rot), soft: !!o.soft, wall: !!o.wall, cx, cz }); };
     F.check = () => {
       const issues = [];
-      for (let i = 0; i < F.reg.length; i++) for (let j = i + 1; j < F.reg.length; j++) { const A = F.reg[i], B = F.reg[j]; if (A.soft || B.soft) continue; if (Math.hypot(A.cx - B.cx, A.cz - B.cz) > 8) continue; const f = Math.max(overlapFrac(A.pts, B.pts), overlapFrac(B.pts, A.pts)); if (f > 0.12) issues.push(`overlap ${A.tag} / ${B.tag} (${Math.round(f * 100)}%)`); }
-      F.reg.forEach((A) => { if (A.wall) return; F.wallRects.forEach((w) => { const poly = w.pts || [[w.x1, w.z1], [w.x2, w.z1], [w.x2, w.z2], [w.x1, w.z2]]; const f = overlapFrac(A.pts, poly); if (f > 0.06) issues.push(`in-wall ${A.tag} @${A.cx.toFixed(1)},${A.cz.toFixed(1)} (${Math.round(f * 100)}%)`); }); if (F.insideFn ? !F.insideFn(A.cx, A.cz) : (A.cx < 0.1 || A.cx > W - 0.1 || A.cz < 0.1 || A.cz > (F.extentD || D) + 0.1)) issues.push(`outside ${A.tag}`); });
+      for (let i = 0; i < F.reg.length; i++) for (let j = i + 1; j < F.reg.length; j++) { const A = F.reg[i], B = F.reg[j]; if (A.soft || B.soft) continue; if (Math.hypot(A.cx - B.cx, A.cz - B.cz) > 8) continue; const f = Math.max(overlapFrac(A.pts, B.pts), overlapFrac(B.pts, A.pts)); if (f > 0.12) issues.push(`overlap ${A.tag} / ${B.tag} @${A.cx.toFixed(1)},${A.cz.toFixed(1)} (${Math.round(f * 100)}%)`); }
+      F.reg.forEach((A) => { if (A.wall) return; F.wallRects.forEach((w) => { const poly = w.pts || [[w.x1, w.z1], [w.x2, w.z1], [w.x2, w.z2], [w.x1, w.z2]]; const f = overlapFrac(A.pts, poly); if (f > 0.06) issues.push(`in-wall ${A.tag} @${A.cx.toFixed(1)},${A.cz.toFixed(1)} (${Math.round(f * 100)}%)`); }); if (F.insideFn ? !F.insideFn(A.cx, A.cz) : (A.cx < 0.1 || A.cx > W - 0.1 || A.cz < 0.1 || A.cz > (F.extentD || D) + 0.1)) issues.push(`outside ${A.tag} @${A.cx.toFixed(1)},${A.cz.toFixed(1)}`); });
       (F.doorSwings || []).forEach((s) => { const poly = [[s.x1, s.z1], [s.x2, s.z1], [s.x2, s.z2], [s.x1, s.z2]]; F.reg.forEach((A) => { if (A.soft || A.wall) return; const f = overlapFrac(A.pts, poly); if (f > 0.25) issues.push(`door-swing blocked by ${A.tag} (${s.name})`); }); });
       return issues;
     };
@@ -129,7 +129,8 @@ export function createKit(H) {
     F.curtains = (x1, x2, z, zoneMat) => { const n = Math.max(2, Math.round((x2 - x1) / 0.5)); for (let i = 0; i < n; i++) { const m = box(F.deco, (x2 - x1) / n, 3.2, 0.03, M.white, x1 + ((i + 0.5) * (x2 - x1)) / n, 0.02, z); m.material = new THREE.MeshStandardMaterial({ color: 0xf6f2ea, roughness: 1, transparent: true, opacity: 0.5, side: THREE.DoubleSide }); } };
     // ------------------------------------------------ raised glass pool + equipment
     F.pools = [];
-    F.pool = (cx, cz, L, Wd, o = {}) => {
+    F.pool = (cx0, cz0, L, Wd, o = {}) => {
+      const rotP = o.rot || 0, wcx = cx0, wcz = cz0, cx = rotP ? 0 : cx0, cz = rotP ? 0 : cz0;   // rotated pools are built at the origin, then turned and moved
       const PG = new THREE.Group(); g.add(PG); const SYS = new THREE.Group(); SYS.visible = false; PG.add(SYS);
       const WD = 1.1, GH = 1.25, conc = std(0xb7b4ad, 0.9), glassP = new THREE.MeshPhysicalMaterial({ color: 0xbfeaf5, roughness: 0.03, transparent: true, opacity: 0.3, depthWrite: false, side: THREE.DoubleSide });
       const x0 = cx - L / 2, x1 = cx + L / 2, z0 = cz - Wd / 2, z1 = cz + Wd / 2, wm = M.water.clone();
@@ -153,6 +154,7 @@ export function createKit(H) {
       const conc3 = +((L + 0.8) * (Wd + 0.8) * 0.3 + L * 0.5 * 0.2 + (2 * (L + Wd)) * 0.12 * 0.25).toFixed(1), vol = L * Wd * WD;
       const info = { name: o.name || "Pool", L, W: Wd, depth: WD, volume: vol, concrete: conc3, rebarT: +(conc3 * 0.11).toFixed(1), weightT: Math.round(vol + conc3 * 2.4), glassThk: "3 × 19 mm laminated, low-iron" };
       const P = { group: PG, SYS, info, labels: lab, leds, lights, setNight: (k) => { lights.forEach((l) => (l.intensity = k * 5)); leds.forEach((b) => b.material.color.set(k > 0.3 ? 0xbffcff : 0x7ff3ff)); wm.emissiveIntensity = k * 1.6; wm.opacity = 0.62 - 0.1 * k; } };
+      if (rotP) { PG.position.set(wcx, 0, wcz); PG.rotation.y = rotP; const cs = Math.cos(rotP), sn = Math.sin(rotP); lab.forEach((l) => { const [x, y, z] = l.p; l.p = [wcx + x * cs + z * sn, y, wcz - x * sn + z * cs]; }); F.fp("pool", wcx, wcz, L + 0.8, Wd + 0.8, rotP); }
       F.pools.push(P); return P;
     };
     F.couch = (x, z, rot) => { const c = L(x, z, rot); box(c, 0.7, 0.55, 1.9, M.white, 0, 0.1, 0); rbox(c, 0.66, 0.1, 1.8, 0.04, M.blue, 0, 0.65, 0); cyl(c, 0.04, 0.04, 0.1, M.steel, 0, 0, 0, 8); box(c, 0.6, 0.1, 0.3, M.white, 0, 0.75, -0.75); F.fp("couch", x, z, 0.7, 1.9, rot); };

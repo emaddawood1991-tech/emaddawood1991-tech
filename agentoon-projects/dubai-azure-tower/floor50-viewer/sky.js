@@ -21,7 +21,7 @@ export function buildSky(H) {
   F.radial(deg(240), 0.02, 1, { doors: [{ s: 8, w: 1.1, swing: -1, name: "VIP room door" }] });
   F.radial(deg(262), 0.02, 1, { doors: [{ s: 9, w: 1.0, swing: 1, name: "Restrooms door" }] });
   F.radial(deg(300), 0.02, 1, { doors: [{ s: 9, w: 1.1, swing: -1, name: "Staff door" }] });
-  F.radial(deg(33 + 360), 0.02, 1, { doors: [{ s: 6, w: 1.4, swing: 1, name: "Kitchen service door" }, { s: 12, w: 1.2, swing: -1, name: "Kitchen pass door" }] });
+  F.radial(deg(33 + 360), 0.02, 1, { doors: [{ s: 6, w: 1.4, swing: 1, name: "Kitchen service door" }, { s: 8.0, w: 1.2, swing: -1, name: "Kitchen pass door" }] });
   F.radial(deg(62), 0.55, 1, { glass: true, t: 0.08, doors: [] });
   // ---- lifts + host
   const lifts = []; for (const a of [40, 47, 54]) { const [x, z] = O.pt(deg(a), O.coreR(deg(a)) + 0.12), g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = face(a); F.walls.add(g); const mk = (px) => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.55, 2.3, 0.05), M.steel); m.position.set(px, 1.15, 0.03); g.add(m); return m; }; lifts.push({ a: mk(-0.28), b: mk(0.28), k: 0, t: 0 }); }

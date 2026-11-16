@@ -35,7 +35,7 @@ export function buildShell(F, O, H, opt = {}) {
   // slab (below the finish level), core block, glass wall, head/sill rails + mullions, ceiling
   const slab = mk(fan(edge, -0.02), slabMat, F.floorG); slab.material = std(0xb9b6b0, 0.95); const sideG = ribbon(edge, -0.4, 0); mk(sideG, new THREE.MeshStandardMaterial({ color: 0xb9b6b0, roughness: 0.95, side: THREE.DoubleSide }), F.floorG);
   const coreMat = opt.coreMat || M.core; const coreClad = new THREE.MeshStandardMaterial({ color: 0x4a413a, roughness: 0.55, side: THREE.DoubleSide, envMapIntensity: 0.5 }); const coreSide = mk(ribbon(coreP, 0, WALL_H), coreClad, F.walls); const coreTop = mk(fan(coreP, WALL_H), new THREE.MeshStandardMaterial({ color: 0xcfc9bf, roughness: 0.9, side: THREE.DoubleSide }), F.walls);
-  const glassPts = O.ring(240, O.edgeR, 0.12), glass = mk(ribbon(glassPts, 0.05, WALL_H), M.glass, F.glassG); glass.material.side = THREE.DoubleSide;
+  const glassPts = O.ring(240, O.edgeR, 0.12); if (!opt.noGlass) { const glass = mk(ribbon(glassPts, 0.05, WALL_H), M.glass, F.glassG); glass.material.side = THREE.DoubleSide; }
   const frameM = M.frame; for (const [y, h] of [[0, 0.07], [WALL_H - 0.07, 0.07]]) mk(ribbon(O.ring(240, O.edgeR, 0.1), y, y + h), new THREE.MeshStandardMaterial({ color: 0xc9a25a, roughness: 0.3, metalness: 1, side: THREE.DoubleSide }), F.walls);
   for (let i = 0; i < 240; i += 3) { const [x, z] = glassPts[i], [x2, z2] = glassPts[(i + 1) % 240], th = Math.atan2(-(z2 - z), x2 - x); const b = new THREE.Mesh(new THREE.BoxGeometry(0.08, WALL_H, 0.12), frameM); b.position.set(x, WALL_H / 2, z); b.rotation.y = th; F.walls.add(b); }
   const ceilMat = new THREE.MeshStandardMaterial({ color: 0xf4f2ee, roughness: 0.95, side: THREE.DoubleSide }); const ceilM = mk(fan(O.ring(180, O.edgeR, 0.1), CEIL), ceilMat, F.ceil);
@@ -49,4 +49,10 @@ export function buildShell(F, O, H, opt = {}) {
   // room with lights at given plan points
   F.roomPts = (key, name, pts, o = {}) => { const mat = new THREE.MeshStandardMaterial({ color: 0xb8b2a8, emissive: 0xffd9a0, emissiveIntensity: 0.03, roughness: 0.4 }); const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length, cz = pts.reduce((s, p) => s + p[1], 0) / pts.length; const pl = new THREE.PointLight(0xffd8a8, 0, o.range || 15, 2); pl.position.set(cx, CEIL - 0.5, cz); F.g.add(pl); const ceilH = o.ceilH || CEIL; const inst = new THREE.InstancedMesh(o.round ? new THREE.CylinderGeometry(0.09, 0.09, 0.02, 14) : new THREE.BoxGeometry(o.long ? 1.4 : 0.6, 0.02, 0.2 * (o.long ? 1 : 3)), mat, pts.length); const m4 = new THREE.Matrix4(); pts.forEach(([x, z, r], i) => { m4.makeRotationY(r || 0).setPosition(x, ceilH - 0.03, z); inst.setMatrixAt(i, m4); }); inst.frustumCulled = false; (o.grp || F.ceil).add(inst); F.rooms[key] = { key, name, mat, pl, base: o.inten || 7, x1: cx, z1: cz, x2: cx, z2: cz, cx, cz, pts }; F.lightsOn[key] = false; return F.rooms[key]; };
   return F;
+}
+
+// ---- single source of truth: the real floor footprint of the tower at floor f (derived from tower.js ringPoint: twist, taper, lobes)
+export function getTowerFloorFootprint(f) {
+  const O = makeOutline(f), poly = O.ring(360, O.edgeR, 0), core = O.ring(240, O.coreR, 0), ar = O.area();
+  return { floor: f, elevation: floorZ(f), z: O.z, outline: O, axis: [OX, OZ], polygon: poly, corePolygon: core, area: ar, twistDeg: (twistAt(O.z) * 180) / Math.PI, radiusAt: radiusAt(O.z), inside: (x, z, inset = 0) => Math.hypot(x - OX, z - OZ) < O.edgeR(Math.atan2(z - OZ, x - OX)) - inset, edgeR: O.edgeR, coreR: O.coreR };
 }
