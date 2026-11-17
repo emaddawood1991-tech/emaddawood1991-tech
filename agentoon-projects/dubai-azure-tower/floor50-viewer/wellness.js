@@ -131,7 +131,7 @@ export function buildWellness(H) {
   [A, B].forEach((F) => { F.mergeStatic(F.furn); F.mergeStatic(F.walls); F.finish(); });
   const lvl = { L10: A, L11: B };
   const all = (fn) => [A, B].forEach(fn);
-  const api = { g: root, L10: A, L11: B, O, items: [...A.items, ...B.items], poolG, poolLights, setLevels: (v) => { A.g.visible = v !== 11; B.g.visible = v !== 10; } };
+  const api = { pool: { c: PC, rot: prot, L: PL, W: PW }, g: root, L10: A, L11: B, O, items: [...A.items, ...B.items], poolG, poolLights, setLevels: (v) => { A.g.visible = v !== 11; B.g.visible = v !== 10; } };
   api.setLevels(0); A.g.visible = true; B.g.visible = true;
   api.doors = [...A.doors, ...B.doors]; api.doorMeshes = [...A.doorMeshes, ...B.doorMeshes]; api.setDoors = (o) => api.doors.forEach((d) => (d.target = o ? 1 : 0));
   api.rooms = { ...A.rooms, ...B.rooms }; api.lightsOn = { ...A.lightsOn }; api.setLight = (k, on) => { (A.rooms[k] ? A : B).setLight(k, on); api.lightsOn[k] = on; }; api.setAllLights = (on) => { Object.keys(api.rooms).forEach((k) => api.setLight(k, on)); };

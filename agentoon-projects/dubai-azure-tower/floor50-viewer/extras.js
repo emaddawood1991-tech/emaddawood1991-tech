@@ -151,7 +151,7 @@ export function buildExtras(ctx) {
   const shaftMat = new THREE.LineBasicMaterial({ color: 0x8aa0b8, transparent: true, opacity: 0.55 });
   const cars = [];
   shaftDefs.forEach((s, i) => {
-    const h = s.y1 - s.y0, geo = new THREE.EdgesGeometry(new THREE.BoxGeometry(2.4, h, 2.4)), sh = new THREE.LineSegments(geo, shaftMat); sh.position.set(s.x, s.y0 + h / 2, s.z); ELEV.add(sh);
+    const h = s.y1 - s.y0, geo = new THREE.EdgesGeometry(new THREE.BoxGeometry(2.2, h, 2.2)), sh = new THREE.LineSegments(geo, shaftMat); sh.position.set(s.x, s.y0 + h / 2, s.z); ELEV.add(sh);
     const car = new THREE.Mesh(new THREE.BoxGeometry(1.9, 2.4, 1.9), new THREE.MeshStandardMaterial({ color: s.col, emissive: s.col, emissiveIntensity: 0.35, roughness: 0.3, metalness: 0.5 })); car.castShadow = false; ELEV.add(car);
     const cw = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1.6, 0.9), std(0x5a5f66, 0.7, 0.6)); ELEV.add(cw);
     const rope = lines([0, 0, 0, 0, 1, 0], 0xcfd5dc); ELEV.add(rope);

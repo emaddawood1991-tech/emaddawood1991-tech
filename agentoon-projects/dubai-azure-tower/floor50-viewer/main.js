@@ -9,6 +9,8 @@ import { buildOffice } from "./plans_office.js";
 import { buildApts, TERRACE_D } from "./plans_apts.js";
 import { buildPent, PENT_TERRACE_D } from "./plans_pent.js";
 import { validateFloor, validateStack, neighbourReport } from "./geomcheck.js";
+import { createEngView } from "./engview.js";
+import { buildBuilding, validateEngineering, SHAFT, PLANT, SYSTEMS, SUB, describeNode, describeEdge } from "./building.js";
 import { getTowerFloorFootprint, makeOutline, OX as PLAN_OX, OZ as PLAN_OZ } from "./outline.js";
 import { buildLift } from "./plans_lift.js";
 import { createQuality, createMetrics, TIERS } from "./quality.js";
@@ -834,6 +836,7 @@ function updateDemo(t) {
 
 // ---------------------------------------------------------------- state / UI
 const state = { mode: "tower", furn: true, elec: false, water: false, sewer: false, fire: false, ac: false, xray: false, ceil: false, flow: true, mep: false, lightsAuto: true, struct: false, rebar: false, found: false, glass: false, rain: false, xrayT: false, grades: true, site: true, selFloor: 50, strike: false, elev: false, pair: false, pfire: false, pcars: true, poolsys: false, photo: false, names: true, sensors: false, blinds: false, level: 0, item: null };
+state.eng = { sys: null, systems: [], floor: null, interior: false };
 const DESC = {
   none: { t: "Furnished floor 49", p: "A sky penthouse level: open living, dining and kitchen facing the Gulf, master suite with walk-in and bath, guest suite, powder room, laundry and a terrace with plunge pool. The view looks toward the Burj Al Arab and the Jumeirah coast.", li: ["Time of day: drag the slider (sun rises in the east, sets in the west)", "Lights: switch rooms on or off; they come on by themselves at night", "Doors: click a door in the 3D view to open or close it", "Systems: electricity, water, sewage, fire safety, air-conditioning"] },
   elec: { t: "Electricity", c: "#ffc21a", p: "Power enters at the distribution boards in the two service risers, runs in trunking above the ceiling, then drops inside the walls to each switch and socket.", li: ["Yellow: lighting circuit, switches at 1.2 m", "Orange: socket circuits (0.3 m, 1.1 m in kitchen/bath)", "Red: dedicated heavy circuits (AC, hob, oven, washer)", "Blue box: smart-home / data hub in the foyer"] },
@@ -942,7 +945,7 @@ function apply() {
   OFFICE.g.visible = of; APTS.g.visible = ap; PENT.g.visible = pt; LIFT.g.visible = lf;
   { const wl = state.mode === "wellness", sk = state.mode === "sky"; if (WELL) { WELL.g.visible = wl; if (wl) { WELL.setLevels(state.level); WELL.L10.furn.visible = WELL.L11.furn.visible = state.furn; WELL.fade(state.xray ? 0.07 : 1); WELL.L10.ceil.visible = WELL.L11.ceil.visible = state.ceil; } } if (SKY) { SKY.g.visible = sk; if (sk) { SKY.furn.visible = state.furn; SKY.fade(state.xray ? 0.07 : 1); SKY.ceil.visible = state.ceil; } } }
   [[OFFICE, of], [APTS, ap], [PENT, pt]].forEach(([P, on]) => { P.mepOn = on; if (!on) return; P.furn.visible = state.furn || mep; fade(P.furn, mep ? 0.08 : 1); fade(P.floorG, mep ? 0.12 : 1); P.ceil.visible = state.ceil; P.fade(xr ? 0.07 : 1); LAYERS.forEach((k) => P.setMepLayer(k, state[k])); P.setMepLayer("sensors", state.sensors); P.setMepLayer("blinds", state.blinds); }); APTS.pools.forEach((P) => (P.SYS.visible = ap && state.poolsys)); PENT.pools.forEach((P) => (P.SYS.visible = pt && state.poolsys));
-  geoApply(); { const XF = state.geoX && tw ? (state.geoX === 50 ? APTS : PENT) : null; [APTS, PENT].forEach((P) => { if (P === XF) { P.g.visible = true; P.furn.visible = true; P.ceil.visible = false; P.g.position.set(-PLAN_OX, floorZ(state.geoX), -PLAN_OZ); } else P.g.position.set(0, 0, 0); }); }
+  geoApply(); intApply(tw);
   storm = Math.max(tw && state.rain ? 0.35 : 0, strikeStorm);
   const under = (tw && state.found) || pk; [sandMat, roadMat, seaMat].forEach((m) => { m.transparent = under; m.opacity = under ? 0.2 : 1; m.depthWrite = !under; m.needsUpdate = true; });
   scene.background = mep || pk || lf ? new THREE.Color(lf ? 0x090a0d : 0x10151c) : null; dome.visible = !mep && !pk && !lf; OUT.visible = !mep && !lf && !(fl && state.photo); PHOTO.visible = fl && state.photo; placeOut();
@@ -1001,7 +1004,7 @@ canvas.addEventListener("pointerdown", (e) => (down = [e.clientX, e.clientY]));
 function pickFloor(e) { mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(mouse, camera); const h = ray.intersectObjects([tower.skinMesh, tower.lobbyGlass], false)[0]; return h ? floorOfY(h.point.y) : null; }
 canvas.addEventListener("pointerup", (e) => {
   if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 5) return;
-  if (state.mode === "tower") { const f = pickFloor(e); if (f) { selectFloor(f, false); if (FLOOR_MODE[f]) setMode(FLOOR_MODE[f]); } return; }
+  if (state.mode === "tower") { if (ENGV && ENGV.group.visible) { mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(mouse, camera); showEngCard(ENGV.pick(ray)); return; } const f = pickFloor(e); if (f) { selectFloor(f, false); if (FLOOR_MODE[f]) setMode(FLOOR_MODE[f]); } return; }
   mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(mouse, camera);
   const AM = state.mode === "wellness" ? WELL : state.mode === "sky" ? SKY : null; const dm = AM ? AM.doorMeshes : state.mode === "office" ? OFFICE.doorMeshes : state.mode === "apts" ? APTS.doorMeshes : state.mode === "pent" ? PENT.doorMeshes : doorMeshes; const hit = ray.intersectObjects(dm, false)[0];
   if (!hit && AM) { let best = null, bd = 1e9; const tmp = new THREE.Vector3(); AM.items.forEach((it) => { if (ray.ray.intersectBox(it.box, tmp)) { const d = tmp.distanceTo(camera.position); if (d < bd) { bd = d; best = it; } } }); state.item = best; renderItem(); return; }
@@ -1050,10 +1053,71 @@ function geoOverlay(P, f, units) {
 }
 const geoTargets = () => [[APTS, 50, APTS], [PENT, 49, PENT]];
 function geoApply() { geoTargets().forEach(([P, f]) => { const g = geoOverlay(P, f); g.visible = !!state.geo; }); if (SKY) geoOverlay(SKY.F, 45).visible = false; }
+
+// interior of a floor shown in TOWER coordinates (exterior-fit debug view and the engineering explorer's "show floor interior")
+function intApply(tw) {
+  const plans = [WELL && WELL.g, SKY && SKY.g, OFFICE.g, APTS.g, PENT.g].filter(Boolean); plans.forEach((g) => g.position.set(0, 0, 0));
+  const f = state.geoX; if (!tw || !f) return; const g = { 10: WELL && WELL.g, 11: WELL && WELL.g, 12: OFFICE.g, 45: SKY && SKY.g, 49: PENT.g, 50: APTS.g }[f];
+  if (f === 1) { LOBBY.visible = true; return; } if (!g) return; g.visible = true; g.position.set(-PLAN_OX, floorZ(f === 11 ? 10 : f), -PLAN_OZ);
+  if (f === 10 || f === 11) { WELL.setLevels(f); WELL.L10.furn.visible = WELL.L11.furn.visible = true; WELL.L10.ceil.visible = WELL.L11.ceil.visible = false; } else { const P = { 12: OFFICE, 45: SKY && SKY.F, 49: PENT, 50: APTS }[f]; if (P) { P.furn.visible = true; P.ceil.visible = false; } }
+}
 function geoExterior(f) {
   const P = f === 50 ? APTS : PENT; state.geoX = f; state.geo = true; state.xrayT = true; state.ceil = false; state.furn = true;
   setMode("tower", () => { state.geoX = f; state.geo = true; state.xrayT = true; apply(); const y = floorZ(f); putCamera([46, y + 22, -62], [0, y - 2, 0]); });
 }
+
+// ---------------------------------------------------------------- building engineering graph (lazy)
+let ENGG = null;
+function engContext() {
+  ensureAmenity("wellness"); ensureAmenity("sky");
+  const lobbyRooms = [0, 1, 2, 3, 4, 5].map((k) => { const a = (30 + k * 60) * Math.PI / 180; return { id: `1.hall${k}`, key: "hall" + k, name: `Lobby zone ${k + 1}`, x: Math.cos(a) * 16, z: Math.sin(a) * 16, pts: [], ceil: 9.0, type: "public" }; });
+  const pods = [175, 355].map((A, i) => { const a = A * Math.PI / 180; return { id: `1.wc${i}`, key: "wc" + i, name: `Lobby washroom ${i + 1}`, x: Math.cos(a) * 18, z: Math.sin(a) * 18, pts: [], ceil: 3.0, type: "wc", a }; });
+  const fixtures = []; pods.forEach((p) => { for (let k = 0; k < 2; k++) { const u = (k - 0.5) * 1.2; fixtures.push({ type: "wc", x: p.x - Math.sin(p.a) * u, z: p.z + Math.cos(p.a) * u, tag: "wc", floor: 1 }); fixtures.push({ type: "basin", x: p.x - Math.sin(p.a) * u - Math.cos(p.a) * 1.0, z: p.z + Math.cos(p.a) * u - Math.sin(p.a) * 1.0, tag: "basin", floor: 1 }); } });
+  return { floors: [{ f: 1, kind: "lobby", name: "Lobby" }, { f: 10, F: WELL.L10, name: "Wellness" }, { f: 11, F: WELL.L11, name: "Gym" }, { f: 12, F: OFFICE, name: "Offices" }, { f: 45, F: SKY.F, name: "Sky restaurant" }, { f: 49, F: PENT, name: "Penthouse" }, { f: 50, F: APTS, name: "Apartments" }],
+    lobby: { rooms: [...lobbyRooms, ...pods], fixtures }, pool: { f: 10, c: WELL.pool.c, rot: WELL.pool.rot, L: WELL.pool.L, W: WELL.pool.W },
+    parking: { levels: [-3.6, -7.2, -10.8], aisles: [-74, -26, 22], supply: [[-60, -97], [40, -97], [-60, 67], [40, 67]], exhaust: [[-92, -45], [-92, 25], [102, 30], [102, 62]] } };
+}
+const engGraph = () => (ENGG = ENGG || buildBuilding(engContext()));
+
+// ---------------------------------------------------------------- Engineering Explorer (conceptual building services, one shared graph)
+let ENGV = null; const engCard = document.createElement("div"); engCard.id = "engCard"; engCard.className = "panel"; engCard.style.display = "none"; document.body.appendChild(engCard);
+const engView = () => { if (!ENGV) { ENGV = createEngView(engGraph(), SYSTEMS, SUB, document.getElementById("labels")); scene.add(ENGV.group); } return ENGV; };
+const ENG_MODELED = [1, 10, 11, 12, 45, 49, 50];
+const hexc = (n) => "#" + n.toString(16).padStart(6, "0");
+function engLegend() { const L = document.getElementById("engLegend"), s = state.eng.sys; if (!s) { L.innerHTML = state.struct ? "" : `<p style="color:var(--mute);font-size:12px">Choose a system to see it inside the building.</p>`; return; } const sub = SUB[s]; L.innerHTML = `<p style="font-size:12px;margin:4px 0">${SYSTEMS[s].blurb}</p>` + Object.entries(sub).map(([k, v]) => `<div style="display:flex;gap:6px;align-items:center;font-size:12px"><i style="width:22px;height:5px;border-radius:3px;background:${hexc(v[0])};display:inline-block"></i>${v[1]}</div>`).join("") + `<div style="font-size:12px;margin-top:4px;color:var(--mute)">Moving dots show the direction of flow. Spheres are components: click one for details.</div><div style="font-size:11px;margin-top:4px;color:#ffb347">Conceptual design basis. Not an engineering design; no code compliance is claimed.</div>`; }
+function engRefresh() { const e = state.eng; if (!e.sys) { ENGV && ENGV.hide(); engCard.style.display = "none"; } else engView().show(e.systems, e.floor); state.geoX = e.sys && e.interior && e.floor && ENG_MODELED.includes(e.floor) ? e.floor : 0; engLegend(); document.querySelectorAll("[data-eng]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.eng === e.sys || (b.dataset.eng === "arch" && !e.sys && !state.struct) || (b.dataset.eng === "struct" && state.struct && !e.sys)))); document.getElementById("engWhole").setAttribute("aria-pressed", String(e.floor == null)); document.getElementById("engFloor").setAttribute("aria-pressed", String(e.floor != null)); document.getElementById("engInterior").setAttribute("aria-pressed", String(!!e.interior)); document.getElementById("engGlass").setAttribute("aria-pressed", String(!!state.xrayT)); apply(); }
+function engCam() { const e = state.eng; if (e.floor == null) tweenTo([210, 150, -250], [0, 98, 0], 1100); else { const y = floorZ(e.floor); tweenTo([27, y + 21, -36], [0, y, 0], 1100); } }
+function engSelect(k) {
+  const e = state.eng;
+  if (k === "arch") { e.sys = null; e.systems = []; state.struct = false; state.xrayT = false; engRefresh(); return; }
+  if (k === "struct") { e.sys = null; e.systems = []; state.struct = true; state.xrayT = true; engRefresh(); tweenTo(...VT.struct, 1100); return; }
+  state.struct = false; state.xrayT = true; e.sys = k; e.systems = [k]; if (ENGV) ENGV.stopDemo(); engRefresh(); engCam();
+}
+const engOpen = (k) => setMode("tower", () => engSelect(k || "elec"));
+document.getElementById("engNav").addEventListener("click", () => engOpen("elec"));
+document.querySelectorAll("[data-eng]").forEach((b) => b.addEventListener("click", () => (state.mode === "tower" ? engSelect(b.dataset.eng) : engOpen(b.dataset.eng))));
+document.getElementById("engWhole").addEventListener("click", () => { state.eng.floor = null; state.eng.interior = false; engRefresh(); engCam(); });
+document.getElementById("engFloor").addEventListener("click", () => { state.eng.floor = parseInt(document.getElementById("engSlider").value, 10); engRefresh(); engCam(); });
+document.getElementById("engSlider").addEventListener("input", (ev) => { document.getElementById("engFlabel").textContent = ev.target.value; if (state.eng.floor != null) { state.eng.floor = parseInt(ev.target.value, 10); engRefresh(); engCam(); } });
+document.getElementById("engInterior").addEventListener("click", () => { if (state.eng.floor == null) { state.eng.floor = parseInt(document.getElementById("engSlider").value, 10); } state.eng.interior = !state.eng.interior; engRefresh(); engCam(); });
+document.getElementById("engGlass").addEventListener("click", () => { state.xrayT = !state.xrayT; engRefresh(); });
+{ let sp = 1; document.getElementById("engSpeed").addEventListener("click", (ev) => { sp = sp === 1 ? 2 : sp === 2 ? 0.5 : 1; engView().setSpeed(sp); ev.currentTarget.textContent = `Flow speed \u00d7${sp}`; }); }
+document.getElementById("engFire").addEventListener("click", () => {
+  const e = state.eng; if (ENGV && ENGV.demoOn) { ENGV.stopDemo(); return; }
+  let f = e.floor != null ? e.floor : parseInt(document.getElementById("engSlider").value, 10); if (!ENG_MODELED.includes(f)) f = 49;
+  if (state.mode !== "tower") { setMode("tower", () => document.getElementById("engFire").click()); return; }
+  state.struct = false; state.xrayT = true; e.sys = "fire"; e.systems = ["fire", "spk", "smoke"]; e.floor = f; e.interior = true; document.getElementById("engSlider").value = f; document.getElementById("engFlabel").textContent = f; engRefresh(); engCam();
+  const bn = document.getElementById("banner"); bn.className = ""; bn.style.display = "block";
+  engView().startDemo(f, (i, txt) => { bn.textContent = txt; }, () => { bn.style.display = "none"; document.getElementById("engFire").setAttribute("aria-pressed", "false"); engRefresh(); });
+  { const fp = engView().demoFocus(); if (fp) tweenTo([fp[0] + 4.5, fp[1] + 2.6, fp[2] - 6.5], [fp[0], fp[1] - 1.6, fp[2]], 1400); }
+  document.getElementById("engFire").setAttribute("aria-pressed", "true");
+});
+function showEngCard(h) {
+  if (!h) { engCard.style.display = "none"; return; } const d = h.type === "node" ? describeNode(h.node) : describeEdge(h.edge), id = h.type === "node" ? h.node.id : h.edge.from, n = h.type === "node" ? h.node : null;
+  const fwd = n && (n.sys === "sewer" || n.sys === "fire") || (n && n.sys === "hvac" && /^(exh|hood)$/.test(n.kind)), label = h.type === "node" && n.sys === "sewer" ? "Follow wastewater to the sewer" : fwd ? "Follow the signal / exhaust to its destination" : "Trace back to the source";
+  engCard.innerHTML = `<b style="color:var(--gold)">${d.title}</b><div style="font-size:11px;color:var(--mute)">${d.kind} · ${d.system}${d.floor !== undefined && d.floor !== null && d.floor !== 0 ? " · floor " + d.floor : ""}</div><p style="font-size:12.5px;margin:6px 0">${d.purpose}</p>${d.flow ? `<p style="font-size:12px;color:#7fe9ff;margin:4px 0">${d.flow}</p>` : ""}<div class="btns"><button data-trace="${id}">${label}</button><button data-trace="">Clear</button><button data-x>Close</button></div>`; engCard.style.display = "block";
+}
+engCard.addEventListener("click", (ev) => { const t = ev.target.closest("button"); if (!t) return; if (t.dataset.x !== undefined) { engCard.style.display = "none"; return; } if (t.dataset.trace === undefined) return; if (!t.dataset.trace) { ENGV.clearTrace(); return; } ENGV.setTrace(ENGV.traceFrom(t.dataset.trace)); });
 let tween = null;
 function tweenTo(p, t, dur = 900) { tween = { t0: performance.now(), dur, p0: camera.position.clone(), t0v: controls.target.clone(), p1: new THREE.Vector3(...p), t1: new THREE.Vector3(...t) }; }
 function goView(name) { const [p, t] = VIEWS[name]; tweenTo(p, t); }
@@ -1120,7 +1184,7 @@ const fadeEl = document.getElementById("fade");
 let shadowWanted = false;
 function setMode(m, cb) {
   if (m === state.mode) { if (!state.geoX || m !== "tower") state.geoX = 0; cb && cb(); return; }
-  state.geoX = 0;
+  state.geoX = 0; if (ENGV) { state.eng.sys = null; state.eng.systems = []; state.eng.floor = null; state.eng.interior = false; ENGV.stopDemo(); ENGV.hide(); engCard.style.display = "none"; }
   fadeEl.style.opacity = "1";
   setTimeout(() => {
     if (state.strike) stopStrike(); if (demo.on) stopDemo();
@@ -1281,6 +1345,7 @@ const clock = new THREE.Clock(); const v = new THREE.Vector3(); let lastNow = pe
 function frame() {
   const t = clock.getElapsedTime(), now = performance.now() / 1000, dt = Math.min(0.1, now - lastNow); lastNow = now;
   skyUniforms.t.value = t;
+  if (ENGV && ENGV.group.visible) { ENGV.update(dt, now); ENGV.placeLabels(camera, innerWidth, innerHeight); }
   if (tween) { const k = Math.min(1, (performance.now() - tween.t0) / tween.dur), e = k * k * (3 - 2 * k); camera.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.t0v, tween.t1, e); if (k >= 1) tween = null; }
   const touring = tourUpdate(now); if (state.mode === "lift") liftCamera(); else if (!touring) controls.update(); else if (!tour.orbit || tween) camera.lookAt(controls.target); if (state.mode === "floor") { updateFlow(t); updateDoors(); updateDemo(now); } if (state.mode === "office") OFFICE.update(dt); if (state.mode === "apts") APTS.update(dt); if (state.mode === "pent") PENT.update(dt); if (state.mode === "wellness" && WELL) { WELL.update(dt, now, Q.cfg.water); const cy = camera.position.y; if (!state.mep) { WELL.L10.ceil.visible = state.ceil || cy < 7.7; WELL.L11.ceil.visible = state.ceil || (cy >= 3.9 && cy < 7.7); } } if (state.mode === "sky" && SKY) { SKY.update(dt); if (!state.mep) SKY.ceil.visible = state.ceil || camera.position.y < 3.6; } liftUpdate(dt);
   if (state.mode === "tower" || state.mode === "lobby") LAND.update(now, camera.position, dt);
@@ -1301,4 +1366,4 @@ hideBtn.addEventListener("click", togglePanels); addEventListener("keydown", (e)
 controls.maxDistance = 1400; controls.maxPolarAngle = Math.PI - 0.05; FOCUS.set(0, 100, 0); sun.castShadow = false; shadowWanted = false; camera.near = 1.0; camera.updateProjectionMatrix(); putCamera(...VT.over);
 setTime(15.5); applyLights(); syncLightButtons(); apply(); tower.highlight(50); frame(); applyTier();
 
-window.__f50 = { GEOM: { validateFloor, validateStack, neighbourReport, getTowerFloorFootprint, run: () => { ensureAmenity("wellness"); ensureAmenity("sky"); const floors = { 12: validateFloor(OFFICE, 12), 49: validateFloor(PENT, 49), 50: validateFloor(APTS, 50), 10: validateFloor(WELL.L10, 10), 11: validateFloor(WELL.L11, 10), 45: validateFloor(SKY.F, 45) }; const lobbyIssues = []; { const cl = makeOutline(1); LOBBY.updateMatrixWorld(true); LOBBY.traverse((o) => { if (!o.isMesh || o.userData.core || /Torus|Ring/.test(o.geometry.type)) return; const g2 = o.geometry; g2.computeBoundingBox(); const bb = g2.boundingBox.clone().applyMatrix4(o.matrixWorld), c = bb.getCenter(new THREE.Vector3()); if (bb.max.y < 0.1 || bb.min.y > 8.9 || (bb.max.x - bb.min.x) > 30) return; const r = Math.hypot(c.x, c.z), a = Math.atan2(c.z, c.x); if (r < cl.coreR(a) - 0.15) lobbyIssues.push({ type: "inside-core", tag: o.geometry.type, detail: `@${(c.x + 27).toFixed(1)},${(c.z + 27).toFixed(1)} r=${r.toFixed(1)} < core ${cl.coreR(a).toFixed(1)}` }); }); } floors.lobby = { floor: 1, name: "lobby", issues: lobbyIssues, stats: { coreMin: 6.1 } }; return { floors, stack: validateStack(), neighbours: { 49: neighbourReport(49), 50: neighbourReport(50) } }; } }, VH, getWELL: () => WELL, getSKY: () => SKY, ensureAmenity, AV, LUX_EXT, LUX_INT, LUXURY, LAND, renderer, Q, sun, scene, ENV, refreshSkyEnv, metrics: () => METRICS.get(), OFFICE, APTS, PENT, LIFT, RIDE, startRide, VO, VA, PHOTO, startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };
+window.__f50 = { ENG: { view: () => ENGV, graph: engGraph, validate: () => validateEngineering(engGraph(), engContext()), SHAFT, PLANT }, GEOM: { validateFloor, validateStack, neighbourReport, getTowerFloorFootprint, run: () => { ensureAmenity("wellness"); ensureAmenity("sky"); const floors = { 12: validateFloor(OFFICE, 12), 49: validateFloor(PENT, 49), 50: validateFloor(APTS, 50), 10: validateFloor(WELL.L10, 10), 11: validateFloor(WELL.L11, 10), 45: validateFloor(SKY.F, 45) }; const lobbyIssues = []; { const cl = makeOutline(1); LOBBY.updateMatrixWorld(true); LOBBY.traverse((o) => { if (!o.isMesh || o.userData.core || /Torus|Ring/.test(o.geometry.type)) return; const g2 = o.geometry; g2.computeBoundingBox(); const bb = g2.boundingBox.clone().applyMatrix4(o.matrixWorld), c = bb.getCenter(new THREE.Vector3()); if (bb.max.y < 0.1 || bb.min.y > 8.9 || (bb.max.x - bb.min.x) > 30) return; const r = Math.hypot(c.x, c.z), a = Math.atan2(c.z, c.x); if (r < cl.coreR(a) - 0.15) lobbyIssues.push({ type: "inside-core", tag: o.geometry.type, detail: `@${(c.x + 27).toFixed(1)},${(c.z + 27).toFixed(1)} r=${r.toFixed(1)} < core ${cl.coreR(a).toFixed(1)}` }); }); } floors.lobby = { floor: 1, name: "lobby", issues: lobbyIssues, stats: { coreMin: 6.1 } }; return { floors, stack: validateStack(), neighbours: { 49: neighbourReport(49), 50: neighbourReport(50) } }; } }, VH, getWELL: () => WELL, getSKY: () => SKY, ensureAmenity, AV, LUX_EXT, LUX_INT, LUXURY, LAND, renderer, Q, sun, scene, ENV, refreshSkyEnv, metrics: () => METRICS.get(), OFFICE, APTS, PENT, LIFT, RIDE, startRide, VO, VA, PHOTO, startTour, stopTour, tour, state, apply, goView, goViewT, goViewL, camera, controls, setTime, lightsOn, applyLights, doors, startDemo, stopDemo, toggleSlide, syncLightButtons, setMode, selectFloor, startStrike, stopStrike, tower, putCamera, VT, VL, VIEWS };

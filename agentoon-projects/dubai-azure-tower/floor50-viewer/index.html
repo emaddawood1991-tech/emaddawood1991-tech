@@ -41,6 +41,8 @@
   #toast{position:fixed;left:50%;top:150px;transform:translateX(-50%);background:rgba(18,22,30,.92);border:1px solid var(--gold);border-radius:10px;padding:8px 14px;opacity:0;transition:opacity .4s;z-index:14;pointer-events:none;font-size:13px}
   select{font:inherit;color:var(--text);background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:8px;padding:3px 6px}
   select option{color:#111}
+  #engCard{position:fixed;right:16px;bottom:70px;width:min(320px,86vw);z-index:6;padding:10px 12px}
+  #engCard .btns{margin-top:6px}
   #banner{position:fixed;left:50%;top:70px;transform:translateX(-50%);max-width:min(660px,90vw);background:rgba(120,10,14,.92);border:1px solid #ff6a6f;border-radius:12px;padding:10px 16px;font-weight:600;display:none;z-index:6;text-align:center}
   #banner.t{background:rgba(24,28,90,.93);border-color:#8f9bff}
   #hover{position:fixed;pointer-events:none;background:rgba(10,12,16,.9);border:1px solid var(--gold);border-radius:8px;padding:3px 9px;font-size:12px;display:none;z-index:7;white-space:nowrap}
@@ -74,6 +76,7 @@
   <button data-mode="sky" aria-pressed="false">Floor 45 · Sky Restaurant</button>
   <button data-mode="pent" aria-pressed="false">Floor 49 · Penthouse</button>
   <button data-mode="apts" aria-pressed="false">Floor 50 · 3 Apartments</button>
+  <button id="engNav" style="border-color:var(--gold)">Engineering Explorer</button>
   <button id="tourBtn" class="big">&#9654; Cinematic tour</button>
   <button id="journeyBtn" class="big">&#9654; Guest journey</button>
   <button id="luxBtn" class="big">&#9654; Luxury arrival</button>
@@ -81,6 +84,13 @@
   <button id="recBtn" title="Plays the tour and saves it as a video file">&#9679; Record tour</button>
 </div>
 <div class="panel" id="ctl">
+  <details class="grp m-tower" open><summary>Engineering Explorer <span class="tl">conceptual</span></summary>
+    <div class="btns" id="engSys"><button data-eng="arch" aria-pressed="true">Architecture</button><button data-eng="struct">Structure</button><button data-eng="elec"><i style="background:#ffc21a"></i>Electricity</button><button data-eng="water"><i style="background:#3d8bff"></i>Clean water</button><button data-eng="sewer"><i style="background:#b07a3c"></i>Sewage</button><button data-eng="hvac"><i style="background:#25d9e8"></i>HVAC</button><button data-eng="fire"><i style="background:#ff3fa0"></i>Fire detection</button><button data-eng="spk"><i style="background:#ff3040"></i>Fire sprinklers</button><button data-eng="smoke"><i style="background:#b9a3ff"></i>Smoke control</button><button data-eng="pool"><i style="background:#5ee0c4"></i>Pool systems</button></div>
+    <div class="btns" style="margin-top:6px"><button id="engWhole" aria-pressed="true">Whole building</button><button id="engFloor" aria-pressed="false">Single floor</button><button id="engInterior" aria-pressed="false">Show floor interior</button><button id="engGlass" aria-pressed="false">Transparent tower</button></div>
+    <div style="margin:6px 0"><input type="range" id="engSlider" min="1" max="50" value="12" style="width:70%"> <b id="engFlabel">12</b></div>
+    <div class="btns"><button id="engFire">&#9654; Fire demo (selected floor)</button><button id="engSpeed">Flow speed &times;1</button></div>
+    <div id="engLegend" style="margin-top:6px"></div>
+  </details>
   <details class="grp m-tower" open><summary>Look inside the structure</summary>
     <div class="btns">
       <button data-t="struct" aria-pressed="false"><i style="background:#9a9ea5"></i>Concrete</button>
