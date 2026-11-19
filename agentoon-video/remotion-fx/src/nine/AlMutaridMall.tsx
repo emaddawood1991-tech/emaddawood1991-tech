@@ -49,7 +49,9 @@ function robotX(g: number): { x: number; flip: boolean } {
 const RobotLayer: React.FC<{ start: number; hide?: boolean }> = ({ start, hide }) => {
   const f = useCurrentFrame(); const g = f + start; const { x, flip } = robotX(g); const pose = pose2(g, { lip: LIP, speaking: [[0, MALL_FRAMES]], walks: WALKS, gestures: GESTS, seed: 4 });
   if (hide) return null;
-  return <div style={{ position: "absolute", left: x, top: FLOORY - W * 1.4 * (272 / 280), zIndex: 60, filter: "drop-shadow(0 18px 18px rgba(0,0,0,.55))" }}><Robot2 pose={pose} width={W} flip={flip} shadow /></div>;
+  return (<>
+    <div style={{ position: "absolute", left: x - 70, top: FLOORY - 70, width: W + 140, height: 130, borderRadius: "50%", background: "radial-gradient(ellipse at center, rgba(245,213,138,.55) 0%, rgba(224,168,74,.22) 45%, rgba(0,0,0,0) 72%)", zIndex: 58 }} />
+    <div style={{ position: "absolute", left: x, top: FLOORY - W * 1.4 * (272 / 280), zIndex: 60, filter: "drop-shadow(0 0 10px rgba(255,243,220,.35)) drop-shadow(0 18px 18px rgba(0,0,0,.55))" }}><Robot2 pose={pose} width={W} flip={flip} shadow={false} rim /></div></>);
 };
 
 /* ---------- shared pieces ---------- */

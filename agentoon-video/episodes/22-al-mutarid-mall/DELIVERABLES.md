@@ -1,0 +1,34 @@
+# Episode 22 — Al Mutarid Mall (مول المطرد) — PREVIEW package
+
+Status: **PREVIEW** (not the final export; waiting for approval; nothing published). Remotion composition `AlMutaridMall` (`agentoon-video/remotion-fx/src/nine/AlMutaridMall.tsx`); output `agentoon-video/remotion-fx/out/AL-MUTARID-MALL-PREVIEW.mp4` (1080×1920, 30 fps, ≈91 s).
+
+## 1. Verified project location and technical audit
+* Supplied file: `al-mutarid-mall1.html` (read-only copy + md5 `746eca46…` in `data/al-mutarid-mall1.html.orig`; **the original was not modified**). The search of this workspace, its git history and branches for المعترض / Al Mu'tarid / Mutarid / Mutared found nothing; the project lived on another laptop (localhost) and was uploaded as this single file.
+* Single bundled HTML (3,885 lines, 486 KB): inline module script containing **Three.js r170** (license banner "Copyright 2010-2024 Three.js Authors, MIT" and `const sa="170"` found in the file) plus the app code. No external requests, no console errors when run (headless Chromium, software WebGL).
+* Page title `Al Mutarid Mall · مول المطرد`; brand bar "AL MUTARID MALL / مول المطرد · العين".
+* Confirmed features (run and recorded): first-person walking (W A S D / arrows, touch joystick on phones), drag to look, directory panel with **32 venues** in 3 sections (Dine In 15, Shops 16, Entertainment 1) that auto-walks the camera to the venue, clicking a sign opens a shop card (e.g. "Jonas Burger — RESTAURANT — Handcrafted premium burgers"; others read "<name> is at Al Mutarid Mall. Category: …" with a link to almutarid.ae), golden ring lights, a glowing fountain, venue signs with bulb borders.
+* **It is a digital concept, not a physical mall.** Shop names and links come from the real Al Mutarid Mall directory (almutarid.ae). The video labels it "Unofficial interactive 3D concept · not the real mall" and invents no venue or feature.
+* **Not verifiable from what was supplied** (stated as such in the video, never invented): the original Claude Code prompt (not in the file), the GitHub repository, the Vercel deployment/URL and dashboard (Vercel team `dawoudlabs` needed an authorization link that was not approved), the "one prompt" claim. "Claude Code" and "Vercel" appear as the creator's statements (labelled on screen).
+* **Name spelling to confirm:** the project itself spells the Arabic name **مول المطرد** and the English **Al Mutarid Mall** (المطرد). The brief wrote المعترض / Al Mu'tarid. The video uses the project's own spelling; one constant (`AR_NAME`, `EN_NAME`) changes it everywhere.
+
+## 2. Footage
+Real HTML project captured deterministically (virtual clock, 30 fps true frame stepping, 720×1280 upscaled to 1080×1920, UI hidden only with injected CSS for cinematic shots; the walk segment keeps the real UI). Segments: hook 3.5 s, reveal 9 s, walkthrough 18 s (directory auto-walk → click sign → real shop card → "Keep walking" → next venue), tour 11 s (two directory auto-walks), end 7 s. Capture script: `/tmp/mall/cap.cjs` (copied to `scripts/capture_mall.cjs`). Real-time recording is impossible on this machine (software WebGL ≈ 0.3 fps at 1080×1920), hence the stepped capture.
+
+## 3. Robot — full body
+Audit: the approved robot is the 2D SVG rig (`kit/robot.js`, `RobotRig.tsx`); **there is no Blender robot rig in the repo** (only an unrelated property-design .blend), so no Blender integration was done. The rig had hip-pivoted leg groups but the earlier compositions cropped them, legs/feet were dark on dark backgrounds, and arms were single stiff segments with few gestures.
+Fix (`src/fx/RobotRig2.tsx`, identity unchanged): hip leg swing + foot lift, weight-shift lean, arm extension (reach out to point/present), hand wrist motion, new gestures `point`, `present`, `both`, `explain`, `invite`; rim light + lighter feet + floor light pool so legs are visible on the dark mall.
+Walk: leg angle A·sin(u); stance-foot speed equals body speed (v = L·cosθ·θ̇), measured planted-foot slide **0.05 viewBox units (≈0.13 px at 520 px width) over a stance** (numerical test at integer frames). Robot stands/walks head-to-feet in every scene (feet at y=1640, above the platform UI zone).
+Test render: `out/ROBOT-FULLBODY-TEST.mp4` (walk in, point, present, explain, walk aside facing left, invite).
+Lip-sync from the loudness envelope of the processed narration; blinking and head motion from the base rig.
+
+## 4. Voice
+Kokoro `am_fenrir` (American male), new voice (not am_michael / am_adam used before). Chosen from am_puck / am_fenrir / am_echo / am_liam by objective metrics (lowest low-frequency energy 0.042, crisp 2–6 kHz energy 0.24, natural 0.93 speed); 161 wpm. Processing: high-pass 100 Hz, +1.5 dB at 3 kHz, light compression; mix −15.4 LUFS, peak −1.5 dBFS, music ducked, only keyboard/click SFX. **I can measure audio but not hear it**: the 10-s sample was sent for your approval; a cloud voice (e.g. ElevenLabs) would likely sound more natural but spends credits and needs your approval. Script: `data/NARRATION-SCRIPT.txt`.
+
+## 5. Agentoon skills — actually used
+All 15 requested skill folders exist. Used (with code): `/agentoon-kinetic-type` (word-timed captions, slam headline), `/agentoon-camera` (slow push-ins, iris reveal), `/agentoon-transitions` (circle iris prompt→website, code→browser), `/agentoon-motion` (staggered spring chips/cards), `/agentoon-ui` (code panel, browser frame, diagram cards), `/agentoon-robot` + `RobotRig2` (full-body), `/agentoon-audio` (TTS timing, ducked music, SFX), `/agentoon-director` (plan), `/agentoon-qc` (checks). 3D title = CSS 3D (perspective/extrusion), not three.js. **Not used** (nothing in the project needed them / no official assets): `/agentoon-logo-motion` (no official logos available offline), `/agentoon-3d-motion` three.js title, `/ui-depth-reel`, `/scrapbook-collage`, `/neon-outline`, `/agentoon-number-motion`, `/agentoon-cinematic-fx` beyond a restrained vignette/light wash.
+
+## 6. Scene plan (≈91 s)
+hook 0–3.5 headline + robot walks in and points · reveal 3.5–13 3D title, location, robot presents · walk 13.5–31.5 real UI walkthrough, labelled features · prompt 31.5–46.5 real HTML code → iris into the running mall (prompt text not shown, stated) · tools 46.5–58.5 verified/declared tool chain with real banner lines · vercel 58.5–70.5 code → browser (creator's statement, labelled) · tour 70.5–81.5 cinematic final tour, labels · cta 81.5–91 question + end card.
+
+## 7. QC log
+(see below)

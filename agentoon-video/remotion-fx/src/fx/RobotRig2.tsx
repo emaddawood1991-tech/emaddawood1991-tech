@@ -11,7 +11,7 @@ export type Pose2 = RobotPose & { legL: number; legR: number; footL: number; foo
 export const NEUTRAL2: Pose2 = { ...NEUTRAL, legL: 0, legR: 0, footL: 0, footR: 0, lean: 0, extL: 1, extR: 1, handL: 0, handR: 0 };
 export const LEG_LEN = 40; // viewBox units from hip pivot (y=224) to foot centre (y=264)
 
-export const Robot2: React.FC<{ pose?: Pose2; width?: number; shadow?: boolean; style?: React.CSSProperties; flip?: boolean }> = ({ pose = NEUTRAL2, width = 300, shadow = true, style, flip }) => {
+export const Robot2: React.FC<{ pose?: Pose2; width?: number; shadow?: boolean; style?: React.CSSProperties; flip?: boolean; rim?: boolean }> = ({ pose = NEUTRAL2, width = 300, shadow = true, style, flip, rim }) => {
   const p = pose; const st = { stroke: C.line, strokeWidth: 4, strokeLinejoin: "round" as const, strokeLinecap: "round" as const };
   const eye = (cx: number) => <g transform={`translate(${p.lookX},${p.lookY}) translate(${cx},90) scale(${1},${p.blink}) translate(${-cx},-90)`}><ellipse cx={cx} cy={90} rx={9} ry={14} fill={C.eye} /><circle cx={cx + 3} cy={85} r={3.2} fill="#fff" /></g>;
   const mouth = { smile: <path d="M84 110 Q100 124 116 110" fill="none" stroke={C.eye} strokeWidth={5} strokeLinecap="round" />, open: <ellipse cx={100} cy={114} rx={9} ry={8} fill={C.eye} />, flat: <path d="M88 114 L112 114" fill="none" stroke={C.eye} strokeWidth={5} strokeLinecap="round" />, worry: <path d="M86 118 Q100 106 114 118" fill="none" stroke={C.eye} strokeWidth={5} strokeLinecap="round" />, big: <path d="M80 106 Q100 134 120 106 Z" fill={C.eye} /> } as any;
@@ -28,8 +28,8 @@ export const Robot2: React.FC<{ pose?: Pose2; width?: number; shadow?: boolean; 
     <svg viewBox="0 0 200 280" width={width} height={width * 1.4} style={{ overflow: "visible", ...style }}>
       {shadow && <ellipse cx={100} cy={272} rx={52} ry={8} fill="#000" opacity={0.22} />}
       <g transform={`translate(0,${p.lift}) ${flip ? "translate(200,0) scale(-1,1)" : ""} translate(100,272) scale(${p.sx},${p.sy}) translate(-100,-272)`}>
-        <g transform={`translate(0,${-p.footL}) rotate(${p.legL} 82 224)`}><rect x={72} y={222} width={20} height={38} rx={10} fill={C.tealD} {...st} /><ellipse cx={80} cy={264} rx={17} ry={8} fill={C.line} /></g>
-        <g transform={`translate(0,${-p.footR}) rotate(${p.legR} 118 224)`}><rect x={108} y={222} width={20} height={38} rx={10} fill={C.tealD} {...st} /><ellipse cx={120} cy={264} rx={17} ry={8} fill={C.line} /></g>
+        <g transform={`translate(0,${-p.footL}) rotate(${p.legL} 82 224)`}><rect x={72} y={222} width={20} height={38} rx={10} fill={rim ? "#1FC9B6" : C.tealD} {...st} stroke={rim ? "#F5D58A" : C.line} strokeWidth={rim ? 3.5 : 4} /><ellipse cx={80} cy={264} rx={17} ry={8} fill={rim ? "#8A93A8" : C.line} stroke={rim ? "#F5D58A" : "none"} strokeWidth={2.5} /></g>
+        <g transform={`translate(0,${-p.footR}) rotate(${p.legR} 118 224)`}><rect x={108} y={222} width={20} height={38} rx={10} fill={rim ? "#1FC9B6" : C.tealD} {...st} stroke={rim ? "#F5D58A" : C.line} strokeWidth={rim ? 3.5 : 4} /><ellipse cx={120} cy={264} rx={17} ry={8} fill={rim ? "#8A93A8" : C.line} stroke={rim ? "#F5D58A" : "none"} strokeWidth={2.5} /></g>
         <g transform={`translate(0,${p.bob}) rotate(${p.lean} 100 232)`}>
           {arm("L")}{arm("R")}
           <rect x={56} y={136} width={88} height={96} rx={30} fill={C.teal} {...st} />
