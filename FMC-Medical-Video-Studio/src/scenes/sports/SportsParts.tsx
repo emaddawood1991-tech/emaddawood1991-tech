@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, OffthreadVideo, staticFile, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, OffthreadVideo, Sequence, staticFile, useCurrentFrame} from 'remotion';
 import {ss, win} from '../../components/FMCMedicalHighlight';
 import {FONT_AR, FONT_DISPLAY} from '../../styles/theme';
 
@@ -18,7 +18,9 @@ export const ClipSeg: React.FC<{seg: Seg; from: number; fade?: number}> = ({seg,
   return (
     <AbsoluteFill style={{opacity: o}}>
       <AbsoluteFill style={{transform: `scale(${z})`, transformOrigin: seg.origin ?? '50% 70%'}}>
-        <OffthreadVideo src={staticFile(`footage/sports-injury-rehab/raw/${seg.id}.mp4`)} muted playbackRate={sp} startFrom={Math.round(seg.ss * 30)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: seg.pos ?? '50% 50%'}} />
+        <Sequence from={from} durationInFrames={dur + 2} layout="none">
+          <OffthreadVideo src={staticFile(`footage/sports-injury-rehab/raw/${seg.id}.mp4`)} muted playbackRate={sp} startFrom={Math.round(seg.ss * 30)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: seg.pos ?? '50% 50%'}} />
+        </Sequence>
       </AbsoluteFill>
     </AbsoluteFill>
   );
