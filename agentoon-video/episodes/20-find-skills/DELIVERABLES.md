@@ -60,4 +60,6 @@ Approved external skills reused: Remotion best-practice skills (installed plugin
 > Find thousands of Claude Code skills with ONE skill 🤯 Find Skills by Vercel Labs → skills.sh. Search by task, read the source, then install. Not every result is great — check first! Follow @agentoon.ai for real AI tutorials. #claudecode #aitools #aiagents #remotion #coding
 
 ## 6. QC log
-(see bottom of this file after the render check)
+Render: 2798 frames, 93.27 s, 1080x1920 @30, H.264 + AAC; loudness -15.1 LUFS, peak -1.5 dBFS; narration 163 wpm.
+Checked: all 8 scenes present in one composition; narration plays 0-93 s; robot lip-sync is driven by the narration envelope; scan of 187 frames (every 0.5 s) found no blank frames.
+Weak spots (honest): motion-profile reports 0 bursts >= 8.0 and 8 low-energy stretches (typed terminal text, page scroll, SKILL.md text); the install/search/inspect/why scenes could carry more motion. Terminal text is small on a phone; the Claude Code window was not recorded.
