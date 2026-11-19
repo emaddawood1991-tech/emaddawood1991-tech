@@ -1,0 +1,9 @@
+[hook] What if eleven free Claude skills could help you test a business idea before you spend money launching it?
+[intro] Meet Founder Skill, an open-source toolkit with eleven specialized skills for planning and testing a business. It is free and M I T licensed.
+[board] Start with a virtual board of directors that challenges your idea from three different business perspectives. Each member scores it, and votes.
+[comp] Research competitors, then simulate how one hundred different buyer scenarios might respond to your offer. These buyers are simulated, not real customers.
+[price] Test your pricing and calculate costs, margins, break-even points, and potential profit. In the example, each cup leaves four dollars seventy six, and break-even is one hundred eighty six cups a day.
+[others] The remaining skills help shape your offer, marketing, brand, operations, launch strategy, and final business plan.
+[install] To install them, open the Founder Skill GitHub repository, add its plugin marketplace in Claude Code, then install the Founder Skill plugin. The commands then appear with the founder skill prefix.
+[result] Now you can pressure-test your idea before launch. Just remember: simulated buyers and financial projections aren't proof of real market demand.
+[cta] Save this tutorial and follow Agentoon dot A I for more Claude Code skills!

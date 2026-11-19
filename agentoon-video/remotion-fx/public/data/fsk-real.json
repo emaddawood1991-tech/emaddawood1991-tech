@@ -1,0 +1,1049 @@
+{
+ "repo": "Jakeschincariol/founder-skill",
+ "tagline": "Eleven Claude skills that test a business before you launch it. Free, MIT, no signup, no API key, nothing to connect.",
+ "slash": [
+  "founder-skill:founder-board",
+  "founder-skill:founder-brand",
+  "founder-skill:founder-cfo",
+  "founder-skill:founder-competitors",
+  "founder-skill:founder-consumer",
+  "founder-skill:founder-launch",
+  "founder-skill:founder-marketing",
+  "founder-skill:founder-offer",
+  "founder-skill:founder-ops",
+  "founder-skill:founder-plan",
+  "founder-skill:founder-pricing"
+ ],
+ "commands": [
+  "/plugin marketplace add Jakeschincariol/founder-skill",
+  "/plugin install founder-skill@founder-skill"
+ ],
+ "cfo": {
+  "price": 6.5,
+  "contribution": 4.76,
+  "breakeven": 186,
+  "plan": 383,
+  "margin": 38,
+  "year1": 93926,
+  "startup": 25280,
+  "payback_month": 8,
+  "cash": 34092,
+  "revenue": 563160,
+  "months": [
+   {
+    "m": 1,
+    "perday": 140,
+    "rev": 27300,
+    "profit": -6548,
+    "cum": -31828
+   },
+   {
+    "m": 2,
+    "perday": 170,
+    "rev": 33150,
+    "profit": -2264,
+    "cum": -34092
+   },
+   {
+    "m": 3,
+    "perday": 195,
+    "rev": 38025,
+    "profit": 1306,
+    "cum": -32786
+   },
+   {
+    "m": 4,
+    "perday": 215,
+    "rev": 41925,
+    "profit": 4162,
+    "cum": -28624
+   },
+   {
+    "m": 5,
+    "perday": 235,
+    "rev": 45825,
+    "profit": 7018,
+    "cum": -21606
+   },
+   {
+    "m": 6,
+    "perday": 250,
+    "rev": 48750,
+    "profit": 9160,
+    "cum": -12446
+   },
+   {
+    "m": 7,
+    "perday": 262,
+    "rev": 51090,
+    "profit": 10874,
+    "cum": -1572
+   },
+   {
+    "m": 8,
+    "perday": 272,
+    "rev": 53040,
+    "profit": 12302,
+    "cum": 10729
+   },
+   {
+    "m": 9,
+    "perday": 280,
+    "rev": 54600,
+    "profit": 13444,
+    "cum": 24173
+   },
+   {
+    "m": 10,
+    "perday": 287,
+    "rev": 55965,
+    "profit": 14444,
+    "cum": 38617
+   },
+   {
+    "m": 11,
+    "perday": 290,
+    "rev": 56550,
+    "profit": 14872,
+    "cum": 53489
+   },
+   {
+    "m": 12,
+    "perday": 292,
+    "rev": 56940,
+    "profit": 15158,
+    "cum": 68646
+   }
+  ],
+  "what_if": [
+   [
+    "Base plan",
+    "38%",
+    "186",
+    "$93,926"
+   ],
+   [
+    "Price -10%",
+    "31%",
+    "216",
+    "$37,610"
+   ],
+   [
+    "Volume -20%",
+    "29%",
+    "186",
+    "$11,445"
+   ],
+   [
+    "Unit costs +15%",
+    "34%",
+    "197",
+    "$71,313"
+   ]
+  ]
+ },
+ "personas": [
+  {
+   "id": "P001",
+   "name": "Seth",
+   "age": 33,
+   "segment": "Early-career professional",
+   "income": 72000,
+   "behaviour": "Health-first",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P002",
+   "name": "Felix",
+   "age": 32,
+   "segment": "Early-career professional",
+   "income": 77000,
+   "behaviour": "Health-first",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P003",
+   "name": "Theo",
+   "age": 32,
+   "segment": "Mid-career professional",
+   "income": 89000,
+   "behaviour": "Daily regular",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P004",
+   "name": "Levi",
+   "age": 37,
+   "segment": "Mid-career professional",
+   "income": 100000,
+   "behaviour": "Trend chaser",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P005",
+   "name": "Celine",
+   "age": 34,
+   "segment": "High earner",
+   "income": 151000,
+   "behaviour": "Weekend treat",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P006",
+   "name": "Amara",
+   "age": 36,
+   "segment": "Mid-career professional",
+   "income": 101000,
+   "behaviour": "Deal hunter",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P007",
+   "name": "Idris",
+   "age": 25,
+   "segment": "Mid-career professional",
+   "income": 112000,
+   "behaviour": "Deal hunter",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P008",
+   "name": "Alma",
+   "age": 34,
+   "segment": "Mid-career professional",
+   "income": 98000,
+   "behaviour": "Reads every review",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P009",
+   "name": "Omar",
+   "age": 26,
+   "segment": "Early-career professional",
+   "income": 69000,
+   "behaviour": "Daily regular",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P010",
+   "name": "Eli",
+   "age": 24,
+   "segment": "Early-career professional",
+   "income": 73000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P011",
+   "name": "Beatriz",
+   "age": 34,
+   "segment": "Mid-career professional",
+   "income": 147000,
+   "behaviour": "Deal hunter",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P012",
+   "name": "Chloe",
+   "age": 26,
+   "segment": "Mid-career professional",
+   "income": 117000,
+   "behaviour": "Deal hunter",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P013",
+   "name": "Ben",
+   "age": 25,
+   "segment": "Early-career professional",
+   "income": 59000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P014",
+   "name": "Andre",
+   "age": 24,
+   "segment": "Mid-career professional",
+   "income": 136000,
+   "behaviour": "Trend chaser",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P015",
+   "name": "Sana",
+   "age": 33,
+   "segment": "Mid-career professional",
+   "income": 93000,
+   "behaviour": "Weekend treat",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P016",
+   "name": "Leila",
+   "age": 24,
+   "segment": "Early-career professional",
+   "income": 59000,
+   "behaviour": "Daily regular",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P017",
+   "name": "Jordan",
+   "age": 26,
+   "segment": "Early-career professional",
+   "income": 42000,
+   "behaviour": "Trend chaser",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P018",
+   "name": "Min",
+   "age": 29,
+   "segment": "Mid-career professional",
+   "income": 119000,
+   "behaviour": "Deal hunter",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P019",
+   "name": "Raj",
+   "age": 38,
+   "segment": "Early-career professional",
+   "income": 61000,
+   "behaviour": "Trend chaser",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P020",
+   "name": "Clara",
+   "age": 27,
+   "segment": "Mid-career professional",
+   "income": 136000,
+   "behaviour": "Weekend treat",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P021",
+   "name": "Dana",
+   "age": 32,
+   "segment": "Early-career professional",
+   "income": 68000,
+   "behaviour": "Daily regular",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P022",
+   "name": "Tomas",
+   "age": 27,
+   "segment": "High earner",
+   "income": 195000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P023",
+   "name": "Hugo",
+   "age": 25,
+   "segment": "Mid-career professional",
+   "income": 100000,
+   "behaviour": "Reads every review",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P024",
+   "name": "Ines",
+   "age": 26,
+   "segment": "Early-career professional",
+   "income": 75000,
+   "behaviour": "Health-first",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P025",
+   "name": "Sol",
+   "age": 38,
+   "segment": "Early-career professional",
+   "income": 84000,
+   "behaviour": "Health-first",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P026",
+   "name": "Noor",
+   "age": 25,
+   "segment": "Mid-career professional",
+   "income": 148000,
+   "behaviour": "Deal hunter",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P027",
+   "name": "Luis",
+   "age": 38,
+   "segment": "Mid-career professional",
+   "income": 137000,
+   "behaviour": "Health-first",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P028",
+   "name": "Anya",
+   "age": 29,
+   "segment": "High earner",
+   "income": 151000,
+   "behaviour": "Reads every review",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P029",
+   "name": "Hamza",
+   "age": 28,
+   "segment": "Early-career professional",
+   "income": 61000,
+   "behaviour": "Daily regular",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P030",
+   "name": "Quinn",
+   "age": 37,
+   "segment": "Early-career professional",
+   "income": 40000,
+   "behaviour": "Trend chaser",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P031",
+   "name": "Elle",
+   "age": 24,
+   "segment": "Mid-career professional",
+   "income": 142000,
+   "behaviour": "Health-first",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P032",
+   "name": "Lina",
+   "age": 34,
+   "segment": "High earner",
+   "income": 177000,
+   "behaviour": "Health-first",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P033",
+   "name": "Bilal",
+   "age": 36,
+   "segment": "Early-career professional",
+   "income": 60000,
+   "behaviour": "Daily regular",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P034",
+   "name": "Yara",
+   "age": 36,
+   "segment": "Early-career professional",
+   "income": 70000,
+   "behaviour": "Deal hunter",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P035",
+   "name": "Dev",
+   "age": 38,
+   "segment": "Early-career professional",
+   "income": 84000,
+   "behaviour": "Daily regular",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P036",
+   "name": "Rosa",
+   "age": 34,
+   "segment": "Mid-career professional",
+   "income": 115000,
+   "behaviour": "Weekend treat",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P037",
+   "name": "Ana",
+   "age": 28,
+   "segment": "Early-career professional",
+   "income": 41000,
+   "behaviour": "Trend chaser",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P038",
+   "name": "Nia",
+   "age": 25,
+   "segment": "Early-career professional",
+   "income": 61000,
+   "behaviour": "Weekend treat",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P039",
+   "name": "Kira",
+   "age": 25,
+   "segment": "Mid-career professional",
+   "income": 129000,
+   "behaviour": "Weekend treat",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P040",
+   "name": "Noah",
+   "age": 36,
+   "segment": "High earner",
+   "income": 163000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P041",
+   "name": "Ezra",
+   "age": 26,
+   "segment": "Early-career professional",
+   "income": 68000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P042",
+   "name": "Diego",
+   "age": 34,
+   "segment": "High earner",
+   "income": 202000,
+   "behaviour": "Trend chaser",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P043",
+   "name": "Aisha",
+   "age": 35,
+   "segment": "Early-career professional",
+   "income": 52000,
+   "behaviour": "Health-first",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P044",
+   "name": "Cole",
+   "age": 37,
+   "segment": "Early-career professional",
+   "income": 76000,
+   "behaviour": "Reads every review",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P045",
+   "name": "Adrian",
+   "age": 31,
+   "segment": "Early-career professional",
+   "income": 41000,
+   "behaviour": "Deal hunter",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P046",
+   "name": "Lucia",
+   "age": 38,
+   "segment": "Mid-career professional",
+   "income": 143000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P047",
+   "name": "Jasper",
+   "age": 35,
+   "segment": "High earner",
+   "income": 203000,
+   "behaviour": "Reads every review",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P048",
+   "name": "Esme",
+   "age": 30,
+   "segment": "Early-career professional",
+   "income": 65000,
+   "behaviour": "Trend chaser",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P049",
+   "name": "Kofi",
+   "age": 24,
+   "segment": "Mid-career professional",
+   "income": 89000,
+   "behaviour": "Health-first",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P050",
+   "name": "Zoe",
+   "age": 30,
+   "segment": "Early-career professional",
+   "income": 59000,
+   "behaviour": "Reads every review",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P051",
+   "name": "Mei",
+   "age": 37,
+   "segment": "Mid-career professional",
+   "income": 99000,
+   "behaviour": "Health-first",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P052",
+   "name": "Luca",
+   "age": 35,
+   "segment": "Early-career professional",
+   "income": 72000,
+   "behaviour": "Trend chaser",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P053",
+   "name": "Ruby",
+   "age": 31,
+   "segment": "Mid-career professional",
+   "income": 135000,
+   "behaviour": "Trend chaser",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P054",
+   "name": "Jade",
+   "age": 29,
+   "segment": "Early-career professional",
+   "income": 57000,
+   "behaviour": "Weekend treat",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P055",
+   "name": "Rafael",
+   "age": 31,
+   "segment": "Mid-career professional",
+   "income": 98000,
+   "behaviour": "Deal hunter",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P056",
+   "name": "Hana",
+   "age": 28,
+   "segment": "Early-career professional",
+   "income": 58000,
+   "behaviour": "Trend chaser",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P057",
+   "name": "Nora",
+   "age": 35,
+   "segment": "Early-career professional",
+   "income": 82000,
+   "behaviour": "Trend chaser",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P058",
+   "name": "Tariq",
+   "age": 37,
+   "segment": "Mid-career professional",
+   "income": 89000,
+   "behaviour": "Health-first",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P059",
+   "name": "Sara",
+   "age": 33,
+   "segment": "High earner",
+   "income": 172000,
+   "behaviour": "Weekend treat",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P060",
+   "name": "Selin",
+   "age": 28,
+   "segment": "Early-career professional",
+   "income": 50000,
+   "behaviour": "Daily regular",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P061",
+   "name": "Liam",
+   "age": 27,
+   "segment": "High earner",
+   "income": 193000,
+   "behaviour": "Weekend treat",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P062",
+   "name": "Rohan",
+   "age": 30,
+   "segment": "Early-career professional",
+   "income": 62000,
+   "behaviour": "Health-first",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P063",
+   "name": "Nico",
+   "age": 36,
+   "segment": "Mid-career professional",
+   "income": 90000,
+   "behaviour": "Daily regular",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P064",
+   "name": "Poppy",
+   "age": 33,
+   "segment": "Mid-career professional",
+   "income": 124000,
+   "behaviour": "Reads every review",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P065",
+   "name": "Iris",
+   "age": 24,
+   "segment": "Early-career professional",
+   "income": 74000,
+   "behaviour": "Daily regular",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P066",
+   "name": "Ivy",
+   "age": 29,
+   "segment": "Mid-career professional",
+   "income": 145000,
+   "behaviour": "Daily regular",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P067",
+   "name": "Pablo",
+   "age": 24,
+   "segment": "Mid-career professional",
+   "income": 92000,
+   "behaviour": "Health-first",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P068",
+   "name": "Darius",
+   "age": 26,
+   "segment": "Mid-career professional",
+   "income": 134000,
+   "behaviour": "Health-first",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P069",
+   "name": "Sofia",
+   "age": 35,
+   "segment": "Mid-career professional",
+   "income": 127000,
+   "behaviour": "Reads every review",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P070",
+   "name": "Malik",
+   "age": 33,
+   "segment": "Mid-career professional",
+   "income": 131000,
+   "behaviour": "Weekend treat",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P071",
+   "name": "Zara",
+   "age": 32,
+   "segment": "Mid-career professional",
+   "income": 108000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P072",
+   "name": "Fatima",
+   "age": 26,
+   "segment": "Mid-career professional",
+   "income": 104000,
+   "behaviour": "Trend chaser",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P073",
+   "name": "Oscar",
+   "age": 33,
+   "segment": "Early-career professional",
+   "income": 40000,
+   "behaviour": "Weekend treat",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P074",
+   "name": "Aria",
+   "age": 28,
+   "segment": "Early-career professional",
+   "income": 45000,
+   "behaviour": "Daily regular",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P075",
+   "name": "Victor",
+   "age": 29,
+   "segment": "High earner",
+   "income": 195000,
+   "behaviour": "Health-first",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P076",
+   "name": "Sam",
+   "age": 31,
+   "segment": "Mid-career professional",
+   "income": 95000,
+   "behaviour": "Deal hunter",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P077",
+   "name": "Marco",
+   "age": 35,
+   "segment": "High earner",
+   "income": 184000,
+   "behaviour": "Reads every review",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P078",
+   "name": "Isla",
+   "age": 28,
+   "segment": "High earner",
+   "income": 176000,
+   "behaviour": "Daily regular",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P079",
+   "name": "Wes",
+   "age": 30,
+   "segment": "Early-career professional",
+   "income": 39000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P080",
+   "name": "Ethan",
+   "age": 32,
+   "segment": "Early-career professional",
+   "income": 70000,
+   "behaviour": "Health-first",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P081",
+   "name": "Maya",
+   "age": 29,
+   "segment": "Mid-career professional",
+   "income": 146000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P082",
+   "name": "Mira",
+   "age": 24,
+   "segment": "High earner",
+   "income": 186000,
+   "behaviour": "Health-first",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P083",
+   "name": "Maeve",
+   "age": 32,
+   "segment": "Mid-career professional",
+   "income": 97000,
+   "behaviour": "Weekend treat",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P084",
+   "name": "Yusuf",
+   "age": 37,
+   "segment": "Early-career professional",
+   "income": 78000,
+   "behaviour": "Trend chaser",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P085",
+   "name": "Daniel",
+   "age": 32,
+   "segment": "Mid-career professional",
+   "income": 146000,
+   "behaviour": "Daily regular",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P086",
+   "name": "Mason",
+   "age": 28,
+   "segment": "Early-career professional",
+   "income": 61000,
+   "behaviour": "Loyal to their caf\u00e9",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P087",
+   "name": "Marcus",
+   "age": 26,
+   "segment": "Early-career professional",
+   "income": 42000,
+   "behaviour": "Health-first",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P088",
+   "name": "Emma",
+   "age": 30,
+   "segment": "High earner",
+   "income": 195000,
+   "behaviour": "Weekend treat",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P089",
+   "name": "Finn",
+   "age": 37,
+   "segment": "Early-career professional",
+   "income": 69000,
+   "behaviour": "Reads every review",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P090",
+   "name": "Harper",
+   "age": 30,
+   "segment": "Early-career professional",
+   "income": 49000,
+   "behaviour": "Daily regular",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P091",
+   "name": "Callum",
+   "age": 33,
+   "segment": "Mid-career professional",
+   "income": 126000,
+   "behaviour": "Daily regular",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P092",
+   "name": "Mateo",
+   "age": 28,
+   "segment": "Early-career professional",
+   "income": 76000,
+   "behaviour": "Deal hunter",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P093",
+   "name": "Lena",
+   "age": 28,
+   "segment": "Early-career professional",
+   "income": 76000,
+   "behaviour": "Daily regular",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P094",
+   "name": "Olivia",
+   "age": 25,
+   "segment": "Early-career professional",
+   "income": 43000,
+   "behaviour": "Weekend treat",
+   "objection": "Is it really healthier than coffee?"
+  },
+  {
+   "id": "P095",
+   "name": "Talia",
+   "age": 35,
+   "segment": "High earner",
+   "income": 184000,
+   "behaviour": "Deal hunter",
+   "objection": "I'd try it once, not daily"
+  },
+  {
+   "id": "P096",
+   "name": "Ada",
+   "age": 30,
+   "segment": "Early-career professional",
+   "income": 71000,
+   "behaviour": "Daily regular",
+   "objection": "I need somewhere to sit and work"
+  },
+  {
+   "id": "P097",
+   "name": "Sienna",
+   "age": 33,
+   "segment": "Mid-career professional",
+   "income": 87000,
+   "behaviour": "Daily regular",
+   "objection": "My coffee place is closer"
+  },
+  {
+   "id": "P098",
+   "name": "Elena",
+   "age": 24,
+   "segment": "Early-career professional",
+   "income": 79000,
+   "behaviour": "Daily regular",
+   "objection": "$6.50 is steep for a drink"
+  },
+  {
+   "id": "P099",
+   "name": "Leah",
+   "age": 29,
+   "segment": "Mid-career professional",
+   "income": 99000,
+   "behaviour": "Weekend treat",
+   "objection": "Does matcha actually taste good?"
+  },
+  {
+   "id": "P100",
+   "name": "Julian",
+   "age": 24,
+   "segment": "Mid-career professional",
+   "income": 113000,
+   "behaviour": "Trend chaser",
+   "objection": "Is it really healthier than coffee?"
+  }
+ ],
+ "tests": "Ran 29 tests ... OK",
+ "claude_p_result": "The CFO run is done. `founder/cfo.md` now has the CFO note at the top, and I also wrote `founder/cfo-sources.md`. The full paths are `/tmp/fsk/work/founder/cfo.md` and `/tmp/fsk/work/founder/cfo-sources.md`.\n\n1. **Inputs are the plugin's example** (a matcha caf\u00e9 at $6.50 a cup), not real numbers, so the outputs are illustrative only.\n2. **Margin:** 38% at plan volume, with $4.76 contribution per cup. Year 1 averages only 17% ($93,926 on $563,160) because the ramp starts below plan.\n3. **Line to watch:** volume. A 20% volume cut drops year 1 profit to $11,445, and month 1 (140 cups a day) is below the 186-a-day break-even.\n4. **Cash needed:** about $34,092 before the business pays for itself, earned back in month 8.\n5. **Fixes:** a $7.00 price gives a 42% margin and $137,248 year 1 profit. The board file (`founder/board.md`) doesn't exist, so its conditions weren't checked. An accountant should check the structure and tax before money moves."
+}

@@ -1,0 +1,137 @@
+{
+ "voice": "am_adam",
+ "speed": 0.989,
+ "phrases": [
+  {
+   "id": "hook",
+   "speak": "What if eleven free Claude skills could help you test a business idea before you spend money launching it?",
+   "show": "What if eleven free Claude skills could help you test a business idea before you spend money launching it?",
+   "pad": 0.26
+  },
+  {
+   "id": "intro",
+   "speak": "Meet Founder Skill, an open-source toolkit with eleven specialized skills for planning and testing a business. It is free and M I T licensed.",
+   "show": "Founder Skill: eleven specialized skills. Free, MIT, no signup.",
+   "pad": 0.26
+  },
+  {
+   "id": "board",
+   "speak": "Start with a virtual board of directors that challenges your idea from three different business perspectives. Each member scores it, and votes.",
+   "show": "A virtual board challenges your idea from three perspectives.",
+   "pad": 2.306
+  },
+  {
+   "id": "comp",
+   "speak": "Research competitors, then simulate how one hundred different buyer scenarios might respond to your offer. These buyers are simulated, not real customers.",
+   "show": "Competitors, then 100 SIMULATED buyers.",
+   "pad": 0.926
+  },
+  {
+   "id": "price",
+   "speak": "Test your pricing and calculate costs, margins, break-even points, and potential profit. In the example, each cup leaves four dollars seventy six, and break-even is one hundred eighty six cups a day.",
+   "show": "Pricing, costs, margins, break-even, profit.",
+   "pad": 0.26
+  },
+  {
+   "id": "others",
+   "speak": "The remaining skills help shape your offer, marketing, brand, operations, launch strategy, and final business plan.",
+   "show": "Offer, marketing, brand, operations, launch, business plan.",
+   "pad": 2.324
+  },
+  {
+   "id": "install",
+   "speak": "To install them, open the Founder Skill GitHub repository, add its plugin marketplace in Claude Code, then install the Founder Skill plugin. The commands then appear with the founder skill prefix.",
+   "show": "Add the marketplace in Claude Code. Install the plugin.",
+   "pad": 0.534
+  },
+  {
+   "id": "result",
+   "speak": "Now you can pressure-test your idea before launch. Just remember: simulated buyers and financial projections aren't proof of real market demand.",
+   "show": "Simulated buyers and projections aren't proof of demand.",
+   "pad": 0.26
+  },
+  {
+   "id": "cta",
+   "speak": "Save this tutorial and follow Agentoon dot A I for more Claude Code skills!",
+   "show": "Save this tutorial. Follow @agentoon.ai",
+   "pad": 0.26
+  }
+ ],
+ "total": 83.82,
+ "music": [
+  {
+   "t0": 0,
+   "t1": 5.733333333333333,
+   "mood": "hook"
+  },
+  {
+   "t0": 5.733333333333333,
+   "t1": 35.166666666666664,
+   "mood": "disc"
+  },
+  {
+   "t0": 35.166666666666664,
+   "t1": 69.16666666666667,
+   "mood": "demo"
+  },
+  {
+   "t0": 69.16666666666667,
+   "t1": 83.822,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "type",
+   "t": 57.07,
+   "dur": 2.1,
+   "cps": 24,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 59.87,
+   "dur": 1.6,
+   "cps": 24,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 62.27,
+   "dur": 1.0,
+   "cps": 24,
+   "gain": 0.28
+  },
+  {
+   "name": "type",
+   "t": 15.17,
+   "dur": 1.3,
+   "cps": 20,
+   "gain": 0.22
+  },
+  {
+   "name": "type",
+   "t": 25.17,
+   "dur": 1.3,
+   "cps": 20,
+   "gain": 0.22
+  },
+  {
+   "name": "type",
+   "t": 35.67,
+   "dur": 1.3,
+   "cps": 20,
+   "gain": 0.22
+  },
+  {
+   "name": "tick",
+   "t": 65.87,
+   "gain": 0.3
+  },
+  {
+   "name": "ding",
+   "t": 80.37,
+   "gain": 0.2
+  }
+ ]
+}

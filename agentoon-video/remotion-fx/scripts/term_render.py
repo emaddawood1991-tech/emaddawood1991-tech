@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Replay a real terminal capture (JSONL [t, base64 bytes]) through pyte and render it to an MP4 (frames piped to ffmpeg). Idle gaps longer than --gap seconds are
 shortened to --gap (and the clip is marked as trimmed). Usage: term_render.py <in.jsonl> <out.mp4> [--cols 74 --rows 26 --font 22 --fps 30 --gap 0.7 --hold 1.2]"""
-import sys, json, base64, argparse, subprocess
+import sys, json, base64, argparse, subprocess, re
 import pyte
 from PIL import Image, ImageDraw, ImageFont
 ap = argparse.ArgumentParser(); ap.add_argument("inp"); ap.add_argument("out"); ap.add_argument("--cols", type=int, default=74); ap.add_argument("--rows", type=int, default=26)
@@ -30,7 +30,7 @@ ff = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fm
 i = 0; nf = int(total * a.fps)
 for f in range(nf):
     t = f / a.fps
-    while i < len(comp) and comp[i][0] <= t: stream.feed(base64.b64decode(comp[i][1])); i += 1
+    while i < len(comp) and comp[i][0] <= t: stream.feed(re.sub(rb"\x1b\[[?>=<][0-9;]*u", b"", base64.b64decode(comp[i][1]))); i += 1
     img = Image.new("RGB", (W, H), BG); d = ImageDraw.Draw(img)
     for y in range(a.rows):
         row = screen.buffer[y]; x = 0
