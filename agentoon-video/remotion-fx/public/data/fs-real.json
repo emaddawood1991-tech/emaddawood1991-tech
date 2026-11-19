@@ -1,0 +1,228 @@
+{
+ "checked": "2026-11-19",
+ "total": 1455781,
+ "installs_find_skills": "4.4M",
+ "leaderboard": [
+  {
+   "rank": 1,
+   "skill": "find-skills",
+   "source": "vercel-labs/skills",
+   "installs": "4.4M"
+  },
+  {
+   "rank": 2,
+   "skill": "hyperframes-cli",
+   "source": "heygen-com/hyperframes",
+   "installs": "1.6M"
+  },
+  {
+   "rank": 3,
+   "skill": "agent-browser",
+   "source": "vercel-labs/agent-browser",
+   "installs": "1.6M"
+  },
+  {
+   "rank": 4,
+   "skill": "hyperframes",
+   "source": "heygen-com/hyperframes",
+   "installs": "1.6M"
+  },
+  {
+   "rank": 5,
+   "skill": "grill-me",
+   "source": "mattpocock/skills",
+   "installs": "1.6M"
+  },
+  {
+   "rank": 6,
+   "skill": "design-mobile-apps",
+   "source": "designed-by-ai/skills",
+   "installs": "1.5M"
+  },
+  {
+   "rank": 7,
+   "skill": "media-use",
+   "source": "heygen-com/hyperframes",
+   "installs": "1.5M"
+  },
+  {
+   "rank": 8,
+   "skill": "reddit-automation",
+   "source": "flowkit-labs/skills",
+   "installs": "1.5M"
+  },
+  {
+   "rank": 9,
+   "skill": "hyperframes-registry",
+   "source": "heygen-com/hyperframes",
+   "installs": "1.4M"
+  },
+  {
+   "rank": 10,
+   "skill": "grill-with-docs",
+   "source": "mattpocock/skills",
+   "installs": "1.3M"
+  },
+  {
+   "rank": 15,
+   "skill": "frontend-design",
+   "source": "anthropics/skills",
+   "installs": "1.1M"
+  },
+  {
+   "rank": 16,
+   "skill": "grilling",
+   "source": "mattpocock/skills",
+   "installs": "1.1M"
+  },
+  {
+   "rank": 18,
+   "skill": "prototype",
+   "source": "mattpocock/skills",
+   "installs": "1.1M"
+  },
+  {
+   "rank": 19,
+   "skill": "triage",
+   "source": "mattpocock/skills",
+   "installs": "1.1M"
+  }
+ ],
+ "search": {
+  "remotion": [
+   {
+    "id": "remotion-dev/skills/remotion-best-practices",
+    "source": "remotion-dev/skills",
+    "skill": "remotion-best-practices",
+    "installs": 861108
+   },
+   {
+    "id": "remotion-dev/skills/remotion-render",
+    "source": "remotion-dev/skills",
+    "skill": "remotion-render",
+    "installs": 378521
+   },
+   {
+    "id": "remotion-dev/skills/remotion-create",
+    "source": "remotion-dev/skills",
+    "skill": "remotion-create",
+    "installs": 376038
+   },
+   {
+    "id": "remotion-dev/skills/remotion-captions",
+    "source": "remotion-dev/skills",
+    "skill": "remotion-captions",
+    "installs": 374743
+   }
+  ],
+  "motion graphics": [
+   {
+    "id": "heygen-com/hyperframes/motion-graphics",
+    "source": "heygen-com/hyperframes",
+    "skill": "motion-graphics",
+    "installs": 514556
+   },
+   {
+    "id": "remotion-dev/skills/remotion-render",
+    "source": "remotion-dev/skills",
+    "skill": "remotion-render",
+    "installs": 378521
+   },
+   {
+    "id": "remotion-dev/skills/remotion-create",
+    "source": "remotion-dev/skills",
+    "skill": "remotion-create",
+    "installs": 376038
+   },
+   {
+    "id": "remotion-dev/skills/remotion-markup",
+    "source": "remotion-dev/skills",
+    "skill": "remotion-markup",
+    "installs": 368479
+   }
+  ],
+  "video editing": [
+   {
+    "id": "heygen-com/hyperframes/hyperframes",
+    "source": "heygen-com/hyperframes",
+    "skill": "hyperframes",
+    "installs": 1594547
+   },
+   {
+    "id": "heygen-com/hyperframes/media-use",
+    "source": "heygen-com/hyperframes",
+    "skill": "media-use",
+    "installs": 1502393
+   },
+   {
+    "id": "101-skills/superpowers/ai-video-generation",
+    "source": "101-skills/superpowers",
+    "skill": "ai-video-generation",
+    "installs": 1047672
+   },
+   {
+    "id": "magentosh/superpowers/ai-video-generation",
+    "source": "magentosh/superpowers",
+    "skill": "ai-video-generation",
+    "installs": 950078
+   }
+  ]
+ },
+ "page": {
+  "skill": "remotion-best-practices",
+  "repo": "remotion-dev/skills",
+  "installs": "863.0K",
+  "stars": "7.5K",
+  "audits": [
+   [
+    "Gen Agent Trust Hub",
+    "Pass"
+   ],
+   [
+    "Socket",
+    "Pass"
+   ],
+   [
+    "Snyk",
+    "Fail"
+   ]
+  ],
+  "install_cmd": "npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices"
+ },
+ "skillmd": [
+  "---",
+  "name: remotion-best-practices",
+  "description: Router for all Remotion skills",
+  "version: 4.0.545",
+  "---",
+  "",
+  "## Preserve user changes",
+  "",
+  "Users may make edits in the code outside of the conversation.",
+  "",
+  "If you detect a surprising change made in the meanwhile, don't overwrite it, assume it was intentional or ask for confirmation.",
+  "",
+  "## Creating a video",
+  "",
+  "If the user asks to make, create, or build a new video or composition, load [Create a new Remotion video](./remotion-create/REFERENCE.md), whether or not a Remotion project already exists.",
+  "",
+  "## New project setup",
+  "",
+  "If no Remotion project currently exists, load [Create a new Remotion project](./remotion-create/REFERENCE.md)",
+  "",
+  "## React Markup Best Practices",
+  "",
+  "If you are writing Remotion React Markup, load [Remotion Markup Best Practices](./remotion-markup/REFERENCE.md)",
+  "",
+  "## Maps",
+  "",
+  "For static maps, animated routes and markers, geographic explainers, Mapbox, MapLibre, MapTiler, GeoJSON, or 3D geographic flyovers, load [Remotion Maps](./remotion-maps/REFERENCE.md).",
+  "",
+  "## Multimedia",
+  "",
+  "For achieving multimedia tasks in the browser, such as trimming, cropping videos, or getting metadata from them, load [Remotion Multimedia](./remotion-multimedia/REFERENCE.md)",
+  "",
+  "For video matting, background removal, or placing content behind a subject,",
+  "load [Remotion Markup](./remotion-markup/REFERENCE.md)."
+ ]
+}

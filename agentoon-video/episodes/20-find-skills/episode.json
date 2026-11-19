@@ -1,0 +1,124 @@
+{
+ "voice": "am_michael",
+ "speed": 1.213,
+ "phrases": [
+  {
+   "id": "hook",
+   "speak": "What if one Claude Code skill could help you discover thousands of other A I skills?",
+   "show": "What if one Claude Code skill could help you discover thousands of other AI skills?",
+   "pad": 1.63
+  },
+  {
+   "id": "intro",
+   "speak": "Meet Find Skills, a discovery tool from Vercel Labs that helps A I coding agents find reusable skills. It searches the open directory at skills dot S H.",
+   "show": "Meet Find Skills, from Vercel Labs. It searches the open directory at skills.sh.",
+   "pad": 0.885
+  },
+  {
+   "id": "install",
+   "speak": "Open your terminal and install the Find Skills package from Vercel Labs. One command, and the skill lands in your dot claude skills folder. Review skills before use, because they run with full agent permissions.",
+   "show": "Install Find Skills from Vercel Labs. Review skills before use.",
+   "pad": 0.477
+  },
+  {
+   "id": "search",
+   "speak": "Now search for what you need, from video animation to web development and automation. Try Remotion, then motion graphics, then video editing. Real results, with install counts. Some queries are noisy, so read before you pick.",
+   "show": "Search by task: remotion, motion graphics, video editing.",
+   "pad": 0.346
+  },
+  {
+   "id": "inspect",
+   "speak": "Each result helps you locate a reusable workflow. Check its source and instructions before installing. Here, the skills dot S H page shows the install command and security audits, and the source is the official Remotion repository.",
+   "show": "Check the source and instructions before installing.",
+   "pad": 0.23
+  },
+  {
+   "id": "example",
+   "speak": "For example, you can discover animation skills and use them to improve real video production workflows. These animations come from our own tested Remotion components. The finder only helps you discover.",
+   "show": "Animation skills improve real video workflows. The finder only discovers.",
+   "pad": 0.23
+  },
+  {
+   "id": "why",
+   "speak": "Instead of manually browsing repositories, you can search by task, inspect the options, and install the skills that fit your project. Installing Find Skills does not install every other skill.",
+   "show": "Search by task. Inspect. Install what fits.",
+   "pad": 0.23
+  },
+  {
+   "id": "cta",
+   "speak": "Want more useful Claude Code skills? Save this guide and follow Agentoon dot A I for real A I tutorials!",
+   "show": "Save this guide. Follow @agentoon.ai",
+   "pad": 3.244
+  }
+ ],
+ "total": 93.26,
+ "music": [
+  {
+   "t0": 0,
+   "t1": 6.0,
+   "mood": "hook"
+  },
+  {
+   "t0": 6.0,
+   "t1": 17.0,
+   "mood": "disc"
+  },
+  {
+   "t0": 17.0,
+   "t1": 83.1,
+   "mood": "demo"
+  },
+  {
+   "t0": 83.1,
+   "t1": 93.264,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "type",
+   "t": 11.2,
+   "dur": 1.2,
+   "cps": 7,
+   "gain": 0.28
+  },
+  {
+   "name": "tick",
+   "t": 11.0,
+   "gain": 0.35
+  },
+  {
+   "name": "type",
+   "t": 17.6,
+   "dur": 3.2,
+   "cps": 22,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 30.3,
+   "dur": 1.2,
+   "cps": 22,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 34.9,
+   "dur": 1.5,
+   "cps": 22,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 39.5,
+   "dur": 1.6,
+   "cps": 22,
+   "gain": 0.3
+  },
+  {
+   "name": "ding",
+   "t": 87.5,
+   "gain": 0.2
+  }
+ ]
+}
