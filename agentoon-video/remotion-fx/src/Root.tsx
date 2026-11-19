@@ -1,6 +1,7 @@
 import React from "react";
 import { Composition } from "remotion";
 import { FPS, H, W } from "./fx/theme";
+import { RobotWalkTest, WALK_FRAMES } from "./nine/RobotWalkTest";
 import { FounderSkill, FSK_FRAMES } from "./nine/FounderSkill";
 import { FindSkills, FS_FRAMES } from "./nine/FindSkills";
 import { NinePreview, PREVIEW_FRAMES } from "./nine/Preview";
@@ -20,6 +21,7 @@ export const Root: React.FC = () => (
     <Composition id="TestC" component={TestC} durationInFrames={150} fps={FPS} width={W} height={H} />
     <Composition id="Showcase" component={Showcase} durationInFrames={SHOWCASE_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="RobotTake" component={RobotTake} durationInFrames={170} fps={FPS} width={W} height={H} />
+    <Composition id="RobotWalkTest" component={RobotWalkTest} durationInFrames={WALK_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="FounderSkill" component={FounderSkill} durationInFrames={FSK_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="FindSkills" component={FindSkills} durationInFrames={FS_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="NinePreview" component={NinePreview} durationInFrames={PREVIEW_FRAMES} fps={FPS} width={W} height={H} />

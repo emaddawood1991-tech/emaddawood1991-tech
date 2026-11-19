@@ -1,0 +1,118 @@
+{
+ "voice": "am_fenrir",
+ "speed": 0.93,
+ "phrases": [
+  {
+   "id": "hook",
+   "speak": "I built this with one prompt.",
+   "show": "I BUILT THIS WITH ONE PROMPT!",
+   "pad": 1.853
+  },
+  {
+   "id": "reveal",
+   "speak": "Meet Al Mutarid Mall, my interactive three D shopping mall project in Al Ain, U A E. It is a digital concept, not the real mall.",
+   "show": "Al Mutarid Mall \u00b7 Al Ain \u00b7 UAE",
+   "pad": 0.26
+  },
+  {
+   "id": "walk",
+   "speak": "Walk through it in first person with W A S D, and drag to look around. Pick any venue from the directory and the camera walks you there. Click a sign to open its card. There are thirty two venues to explore: dine in, shops, and entertainment.",
+   "show": "Walk, look, pick a venue, open its card.",
+   "pad": 2.678
+  },
+  {
+   "id": "prompt",
+   "speak": "I started with one idea and described it to Claude Code. From there, the project became an interactive HTML experience. The whole mall lives in a single HTML file.",
+   "show": "One idea, described to Claude Code.",
+   "pad": 2.439
+  },
+  {
+   "id": "tools",
+   "speak": "Under the hood it is HTML, CSS and JavaScript, rendered with the Three dot J S library. Built with Claude Code.",
+   "show": "HTML \u00b7 CSS \u00b7 JavaScript \u00b7 Three.js",
+   "pad": 2.914
+  },
+  {
+   "id": "vercel",
+   "speak": "Then Vercel helped me bring the project online, making the interactive experience accessible through a web browser.",
+   "show": "Online with Vercel.",
+   "pad": 5.049
+  },
+  {
+   "id": "tour",
+   "speak": "A final tour: golden ring lights, a glowing fountain, and signs for every venue.",
+   "show": "Ring lights, fountain, signs.",
+   "pad": 6.084
+  },
+  {
+   "id": "cta",
+   "speak": "From one prompt to an interactive three D world. What would you build next? Follow Agentoon dot A I for more real A I projects!",
+   "show": "What would you build next?",
+   "pad": 0.798
+  }
+ ],
+ "total": 91.14,
+ "music": [
+  {
+   "t0": 0,
+   "t1": 3.5,
+   "mood": "hook"
+  },
+  {
+   "t0": 3.5,
+   "t1": 31.5,
+   "mood": "demo"
+  },
+  {
+   "t0": 31.5,
+   "t1": 70.5,
+   "mood": "disc"
+  },
+  {
+   "t0": 70.5,
+   "t1": 91.137,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "tick",
+   "t": 13.9,
+   "gain": 0.3
+  },
+  {
+   "name": "tick",
+   "t": 22.5,
+   "gain": 0.3
+  },
+  {
+   "name": "tick",
+   "t": 25.5,
+   "gain": 0.25
+  },
+  {
+   "name": "tick",
+   "t": 26.1,
+   "gain": 0.3
+  },
+  {
+   "name": "type",
+   "t": 32.5,
+   "dur": 4.5,
+   "cps": 26,
+   "gain": 0.26
+  },
+  {
+   "name": "type",
+   "t": 47.3,
+   "dur": 1.6,
+   "cps": 20,
+   "gain": 0.22
+  },
+  {
+   "name": "ding",
+   "t": 87.0,
+   "gain": 0.2
+  }
+ ]
+}
