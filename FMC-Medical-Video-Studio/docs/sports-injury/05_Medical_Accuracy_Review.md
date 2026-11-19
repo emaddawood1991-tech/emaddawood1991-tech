@@ -14,7 +14,7 @@ Sources read on 2026-11-19 (via Firecrawl, 1 credit each): AAOS OrthoInfo (sprai
 | No guaranteed outcome | script contains none; Leeds: everyone heals at a different pace | OK |
 
 ## Open items / suggestions
-1. Red-flag caption (suggested, not in your script): NIAMS lists inability to bear weight, joint visibly out of place, extreme swelling/bruising, sudden severe pain as acute-injury signs. Recommend a short on-screen line in stage 1 such as «ألم شديد أو عدم القدرة على تحميل الوزن: راجع الطبيب» — needs your approval.
+1. Red-flag caption — APPROVED by Emad (2026-11-19), added as on-screen subtitle in stage 1 (suggested from NIAMS acute-injury signs): NIAMS lists inability to bear weight, joint visibly out of place, extreme swelling/bruising, sudden severe pain as acute-injury signs. Recommend a short on-screen line in stage 1 such as «ألم شديد أو عدم القدرة على تحميل الوزن: راجع الطبيب» — needs your approval.
 2. Do not name a specific ligament tear (per your brief). Overlay will say «أربطة الكاحل» generically; hamstring overlay shows the posterior thigh muscle group only.
 3. Exercises shown must match the stage: seated ankle mobility (stage 2); light-band strengthening and supported balance (stage 3); jog/change of direction only in stage 4. A physiotherapist must confirm positions, band resistance and range before publication.
 4. «تستخدم» appears without its passive vowel in the clean text (spoken form is «تُستخدم» in ttsText).
