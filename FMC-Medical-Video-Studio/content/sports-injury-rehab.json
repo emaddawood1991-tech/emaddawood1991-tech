@@ -1,0 +1,198 @@
+{
+  "slug": "sports-injury-rehab",
+  "topic": {
+    "ar": "الإصابات الرياضية وطرق التأهيل",
+    "en": "Sports injuries and rehabilitation"
+  },
+  "services": [
+    "علاج الإصابات الرياضية",
+    "العلاج الطبيعي"
+  ],
+  "scenes": [
+    {
+      "id": "opening",
+      "sceneType": "A",
+      "plannedSec": 6.5,
+      "narration": "قد تحدث الإصابة الرياضية في لحظة، لكن العودة الآمنة للنشاط تحتاج إلى تقييم وتأهيل مناسبين.",
+      "ttsText": "قَدْ تَحْدُثُ الْإِصَابَةُ الرِّيَاضِيَّةُ فِي لَحْظَةٍ، لَكِنَّ الْعَوْدَةَ الْآمِنَةَ لِلنَّشَاطِ تَحْتَاجُ إِلَى تَقْيِيمٍ وَتَأْهِيلٍ مُنَاسِبَيْنِ.",
+      "onScreen": {
+        "title": "إصابة رياضية؟"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "push-in",
+        "description": "Athlete running, ankle roll, slow motion, push-in to ankle with soft red-orange pain highlight, then reveal التأهيل الصحيح يبدأ بالتقييم"
+      },
+      "footageQueries": [
+        "athlete running field ankle injury"
+      ],
+      "sfx": []
+    },
+    {
+      "id": "sx_examples",
+      "sceneType": "C",
+      "plannedSec": 10,
+      "narration": "من الإصابات الشائعة: التواء الكاحل، وإصابات العضلات، ومشكلات الركبة. وتختلف خطة العلاج بحسب نوع الإصابة وشدتها.",
+      "ttsText": "مِنَ الْإِصَابَاتِ الشَّائِعَةِ: الْتِوَاءُ الْكَاحِلِ، وَإِصَابَاتُ الْعَضَلَاتِ، وَمُشْكِلَاتُ الرُّكْبَةِ. وَتَخْتَلِفُ خُطَّةُ الْعِلَاجِ بِحَسَبِ نَوْعِ الْإِصَابَةِ وَشِدَّتِهَا.",
+      "onScreen": {
+        "title": "إصابات شائعة"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "split-screen",
+        "description": "Three shots: ankle (ligaments overlay), hamstring (posterior thigh muscles overlay), knee (joint overlay)"
+      },
+      "footageQueries": [
+        "football player ankle injury",
+        "runner hamstring pain",
+        "athlete knee pain"
+      ],
+      "sfx": []
+    },
+    {
+      "id": "sx_assess",
+      "sceneType": "B",
+      "plannedSec": 9,
+      "narration": "تبدأ رحلة التأهيل بتقييم الإصابة، وحماية المنطقة المصابة، والسيطرة على الألم والتورم بحسب الحالة.",
+      "ttsText": "تَبْدَأُ رِحْلَةُ التَّأْهِيلِ بِتَقْيِيمِ الْإِصَابَةِ، وَحِمَايَةِ الْمِنْطَقَةِ الْمُصَابَةِ، وَالسَّيْطَرَةِ عَلَى الْأَلَمِ وَالتَّوَرُّمِ بِحَسَبِ الْحَالَةِ.",
+      "onScreen": {
+        "title": "المرحلة الأولى: تقييم الإصابة"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "medium",
+        "description": "Physiotherapist assesses athlete's ankle: observation, gentle movement assessment, symptom discussion (no forceful manipulation)"
+      },
+      "footageQueries": [
+        "physiotherapist examining ankle athlete"
+      ],
+      "sfx": []
+    },
+    {
+      "id": "sx_motion",
+      "sceneType": "B",
+      "plannedSec": 10,
+      "narration": "بعد ذلك، تستخدم تمارين مناسبة لاستعادة مدى الحركة تدريجيا، دون تحميل المنطقة المصابة فوق قدرتها.",
+      "ttsText": "بَعْدَ ذَلِكَ، تُسْتَخْدَمُ تَمَارِينُ مُنَاسِبَةٌ لِاسْتِعَادَةِ مَدَى الْحَرَكَةِ تَدْرِيجِيًّا، دُونَ تَحْمِيلِ الْمِنْطَقَةِ الْمُصَابَةِ فَوْقَ قُدْرَتِهَا.",
+      "onScreen": {
+        "title": "المرحلة الثانية: استعادة الحركة"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "movement",
+        "camera": "medium",
+        "description": "Controlled gentle ankle mobility with physiotherapist, turquoise direction arrow, small ankle anatomy inset"
+      },
+      "footageQueries": [
+        "ankle mobility exercise physiotherapy"
+      ],
+      "sfx": []
+    },
+    {
+      "id": "sx_strength",
+      "sceneType": "B",
+      "plannedSec": 12,
+      "narration": "ومع تحسن الحالة، ننتقل إلى تقوية العضلات وتدريبات التوازن، لاستعادة الثبات والتحكم في الحركة.",
+      "ttsText": "وَمَعَ تَحَسُّنِ الْحَالَةِ، نَنْتَقِلُ إِلَى تَقْوِيَةِ الْعَضَلَاتِ وَتَدْرِيبَاتِ التَّوَازُنِ، لِاسْتِعَادَةِ الثَّبَاتِ وَالتَّحَكُّمِ فِي الْحَرَكَةِ.",
+      "onScreen": {
+        "title": "المرحلة الثالثة: القوة والتوازن"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "movement",
+        "camera": "medium",
+        "description": "Resistance-band ankle strengthening under supervision, then supported single-leg balance"
+      },
+      "footageQueries": [
+        "resistance band ankle exercise physiotherapy",
+        "balance exercise physiotherapy"
+      ],
+      "sfx": []
+    },
+    {
+      "id": "sx_return",
+      "sceneType": "E",
+      "plannedSec": 7,
+      "narration": "ثم تأتي العودة التدريجية للرياضة، بعد تقييم القوة والحركة والتوازن والقدرة على أداء النشاط بأمان.",
+      "ttsText": "ثُمَّ تَأْتِي الْعَوْدَةُ التَّدْرِيجِيَّةُ لِلرِّيَاضَةِ، بَعْدَ تَقْيِيمِ الْقُوَّةِ وَالْحَرَكَةِ وَالتَّوَازُنِ وَالْقُدْرَةِ عَلَى أَدَاءِ النَّشَاطِ بِأَمَانٍ.",
+      "onScreen": {
+        "title": "العودة التدريجية للرياضة"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "movement",
+        "camera": "tracking",
+        "description": "Same athlete: controlled jogging, controlled direction changes, supervised functional movement; progression graphic"
+      },
+      "footageQueries": [
+        "athlete jogging rehabilitation return to sport"
+      ],
+      "sfx": []
+    },
+    {
+      "id": "closing",
+      "sceneType": "F",
+      "plannedSec": 7,
+      "narration": "في مركز الفيصل الطبي، نهتم بتأهيلك للعودة إلى نشاطك بثقة.",
+      "ttsText": "فِي مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ، نَهْتَمُّ بِتَأْهِيلِكَ لِلْعَوْدَةِ إِلَى نَشَاطِكَ بِثِقَةٍ.",
+      "onScreen": {
+        "title": "مركز الفيصل الطبي",
+        "subtitle": "الرعاية المثالية"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "none",
+        "camera": "dolly",
+        "description": "Clinical environment, physiotherapist with athlete, then original FMC logo reveal"
+      },
+      "footageQueries": [
+        "physiotherapy clinic athlete"
+      ],
+      "sfx": []
+    }
+  ],
+  "instagramCaption": "الإصابات الرياضية وطرق التأهيل: تقييم، ثم استعادة الحركة، ثم القوة والتوازن، ثم عودة تدريجية للنشاط. محتوى توعوي وليس تشخيصا ولا خطة علاج.\n\nمركز الفيصل الطبي — الرعاية المثالية",
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العين",
+    "#الإمارات",
+    "#الإصابات_الرياضية",
+    "#التأهيل",
+    "#العلاج_الطبيعي",
+    "#الرعاية_المثالية",
+    "#FMC",
+    "#AlAin",
+    "#UAE",
+    "#SportsInjury",
+    "#IdealCare"
+  ],
+  "sources": [
+    {
+      "title": "AAOS OrthoInfo — Sprains, Strains, and Other Soft-Tissue Injuries (read via Firecrawl, 2026-11-19)",
+      "url": "https://www.orthoinfo.org/diseases--conditions/sprains-strains-and-other-soft-tissue-injuries/"
+    },
+    {
+      "title": "NIAMS — Sports Injuries (read via Firecrawl, 2026-11-19; last reviewed Sept 2024)",
+      "url": "https://www.niams.nih.gov/health-topics/sports-injuries"
+    },
+    {
+      "title": "Leeds Community Healthcare NHS Trust — Return to activity or sport after injury (read via Firecrawl, 2026-11-19)",
+      "url": "https://leedscommunityhealthcare.nhs.uk/our-services-a-z/musculoskeletal-msk/return-to-activity-or-sport-after-injury/"
+    }
+  ],
+  "timing": {
+    "lead": 6,
+    "tail": 14
+  },
+  "approvals": {
+    "grammarReview": null,
+    "medicalTerminologyReview": null,
+    "medicalAccuracyReview": null,
+    "scriptApproved": null,
+    "pronunciationApproved": null,
+    "approvedHash": null
+  }
+}
