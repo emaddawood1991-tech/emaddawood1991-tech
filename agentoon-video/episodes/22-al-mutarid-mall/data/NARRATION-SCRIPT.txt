@@ -1,5 +1,5 @@
 [hook] I built this with one prompt.
-[reveal] Meet Al Mutarid Mall, my interactive three D shopping mall project in Al Ain, U A E. It is a digital concept, not the real mall.
+[reveal] Meet Al Mu'tarid Mall, my interactive three D shopping mall project in Al Ain, U A E. It is a digital concept, not the real mall.
 [walk] Walk through it in first person with W A S D, and drag to look around. Pick any venue from the directory and the camera walks you there. Click a sign to open its card. There are thirty two venues to explore: dine in, shops, and entertainment.
 [prompt] I started with one idea and described it to Claude Code. From there, the project became an interactive HTML experience. The whole mall lives in a single HTML file.
 [tools] Under the hood it is HTML, CSS and JavaScript, rendered with the Three dot J S library. Built with Claude Code.

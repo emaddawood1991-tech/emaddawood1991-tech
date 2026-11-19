@@ -1,69 +1,69 @@
 {
- "voice": "am_fenrir",
- "speed": 0.93,
- "wpm": 161,
- "total": 91.137,
+ "voice": "am_adam",
+ "speed": 0.853,
+ "wpm": 162,
+ "total": 90.739,
  "phrases": [
   {
    "id": "hook",
    "start": 0.15,
-   "end": 1.677,
+   "end": 1.895,
    "show": "I BUILT THIS WITH ONE PROMPT!",
    "speak": "I built this with one prompt.",
    "map": null
   },
   {
    "id": "reveal",
-   "start": 3.65,
-   "end": 13.257,
-   "show": "Al Mutarid Mall \u00b7 Al Ain \u00b7 UAE",
-   "speak": "Meet Al Mutarid Mall, my interactive three D shopping mall project in Al Ain, U A E. It is a digital concept, not the real mall.",
+   "start": 3.868,
+   "end": 13.184,
+   "show": "Al Mu'tarid Mall \u00b7 Al Ain \u00b7 UAE",
+   "speak": "Meet Al Mootarid Mall, my interactive three D shopping mall project in Al Ain, U A E. It is a digital concept, not the real mall.",
    "map": null
   },
   {
    "id": "walk",
-   "start": 13.637,
-   "end": 28.839,
+   "start": 13.564,
+   "end": 29.127,
    "show": "Walk, look, pick a venue, open its card.",
    "speak": "Walk through it in first person with W A S D, and drag to look around. Pick any venue from the directory and the camera walks you there. Click a sign to open its card. There are thirty two venues to explore: dine in, shops, and entertainment.",
    "map": null
   },
   {
    "id": "prompt",
-   "start": 31.637,
-   "end": 44.078,
+   "start": 31.925,
+   "end": 44.147,
    "show": "One idea, described to Claude Code.",
    "speak": "I started with one idea and described it to Claude Code. From there, the project became an interactive HTML experience. The whole mall lives in a single HTML file.",
    "map": null
   },
   {
    "id": "tools",
-   "start": 46.637,
-   "end": 55.603,
+   "start": 46.706,
+   "end": 55.189,
    "show": "HTML \u00b7 CSS \u00b7 JavaScript \u00b7 Three.js",
    "speak": "Under the hood it is HTML, CSS and JavaScript, rendered with the Three dot J S library. Built with Claude Code.",
    "map": null
   },
   {
    "id": "vercel",
-   "start": 58.637,
-   "end": 65.468,
+   "start": 58.223,
+   "end": 65.092,
    "show": "Online with Vercel.",
    "speak": "Then Vercel helped me bring the project online, making the interactive experience accessible through a web browser.",
    "map": null
   },
   {
    "id": "tour",
-   "start": 70.636,
-   "end": 75.433,
+   "start": 70.261,
+   "end": 75.37,
    "show": "Ring lights, fountain, signs.",
    "speak": "A final tour: golden ring lights, a glowing fountain, and signs for every venue.",
    "map": null
   },
   {
    "id": "cta",
-   "start": 81.637,
-   "end": 90.219,
+   "start": 81.574,
+   "end": 89.821,
    "show": "What would you build next?",
    "speak": "From one prompt to an interactive three D world. What would you build next? Follow Agentoon dot A I for more real A I projects!",
    "map": null
@@ -73,237 +73,237 @@
   {
    "w": "I",
    "s": 0.15,
-   "e": 0.277
+   "e": 0.295
   },
   {
    "w": "BUILT",
-   "s": 0.277,
-   "e": 0.574
+   "s": 0.295,
+   "e": 0.635
   },
   {
    "w": "THIS",
-   "s": 0.574,
-   "e": 0.829
+   "s": 0.635,
+   "e": 0.926
   },
   {
    "w": "WITH",
-   "s": 0.829,
-   "e": 1.083
+   "s": 0.926,
+   "e": 1.216
   },
   {
    "w": "ONE",
-   "s": 1.083,
-   "e": 1.295
+   "s": 1.216,
+   "e": 1.459
   },
   {
    "w": "PROMPT!",
-   "s": 1.295,
-   "e": 1.677
+   "s": 1.459,
+   "e": 1.895
   },
   {
    "w": "Al",
-   "s": 3.65,
-   "e": 4.635
+   "s": 3.868,
+   "e": 4.8
   },
   {
-   "w": "Mutarid",
-   "s": 4.635,
-   "e": 6.852
+   "w": "Mu'tarid",
+   "s": 4.8,
+   "e": 7.129
   },
   {
    "w": "Mall",
-   "s": 6.852,
-   "e": 8.33
+   "s": 7.129,
+   "e": 8.526
   },
   {
    "w": "\u00b7",
-   "s": 8.33,
-   "e": 9.069
+   "s": 8.526,
+   "e": 9.225
   },
   {
    "w": "Al",
-   "s": 9.069,
-   "e": 10.055
+   "s": 9.225,
+   "e": 10.156
   },
   {
    "w": "Ain",
-   "s": 10.055,
-   "e": 11.286
+   "s": 10.156,
+   "e": 11.321
   },
   {
    "w": "\u00b7",
-   "s": 11.286,
-   "e": 12.025
+   "s": 11.321,
+   "e": 12.02
   },
   {
    "w": "UAE",
-   "s": 12.025,
-   "e": 13.257
+   "s": 12.02,
+   "e": 13.184
   },
   {
    "w": "Walk,",
-   "s": 13.637,
-   "e": 15.809
+   "s": 13.564,
+   "e": 15.787
   },
   {
    "w": "look,",
-   "s": 15.809,
-   "e": 17.98
+   "s": 15.787,
+   "e": 18.011
   },
   {
    "w": "pick",
-   "s": 17.98,
-   "e": 19.842
+   "s": 18.011,
+   "e": 19.916
   },
   {
    "w": "a",
-   "s": 19.842,
-   "e": 20.773
+   "s": 19.916,
+   "e": 20.869
   },
   {
    "w": "venue,",
-   "s": 20.773,
-   "e": 23.255
+   "s": 20.869,
+   "e": 23.41
   },
   {
    "w": "open",
-   "s": 23.255,
-   "e": 25.116
+   "s": 23.41,
+   "e": 25.316
   },
   {
    "w": "its",
-   "s": 25.116,
-   "e": 26.667
+   "s": 25.316,
+   "e": 26.904
   },
   {
    "w": "card.",
-   "s": 26.667,
-   "e": 28.839
+   "s": 26.904,
+   "e": 29.127
   },
   {
    "w": "One",
-   "s": 31.637,
-   "e": 33.118
+   "s": 31.925,
+   "e": 33.38
   },
   {
    "w": "idea,",
-   "s": 33.118,
-   "e": 35.192
+   "s": 33.38,
+   "e": 35.417
   },
   {
    "w": "described",
-   "s": 35.192,
-   "e": 38.45
+   "s": 35.417,
+   "e": 38.618
   },
   {
    "w": "to",
-   "s": 38.45,
-   "e": 39.635
+   "s": 38.618,
+   "e": 39.782
   },
   {
    "w": "Claude",
-   "s": 39.635,
-   "e": 42.005
+   "s": 39.782,
+   "e": 42.11
   },
   {
    "w": "Code.",
-   "s": 42.005,
-   "e": 44.078
+   "s": 42.11,
+   "e": 44.147
   },
   {
    "w": "HTML",
-   "s": 46.637,
+   "s": 46.706,
    "e": 47.918
   },
   {
    "w": "\u00b7",
    "s": 47.918,
-   "e": 48.558
+   "e": 48.524
   },
   {
    "w": "CSS",
-   "s": 48.558,
-   "e": 49.626
+   "s": 48.524,
+   "e": 49.534
   },
   {
    "w": "\u00b7",
-   "s": 49.626,
-   "e": 50.266
+   "s": 49.534,
+   "e": 50.14
   },
   {
    "w": "JavaScript",
-   "s": 50.266,
-   "e": 52.828
+   "s": 50.14,
+   "e": 52.563
   },
   {
    "w": "\u00b7",
-   "s": 52.828,
-   "e": 53.468
+   "s": 52.563,
+   "e": 53.169
   },
   {
    "w": "Three.js",
-   "s": 53.468,
-   "e": 55.603
+   "s": 53.169,
+   "e": 55.189
   },
   {
    "w": "Online",
-   "s": 58.637,
-   "e": 61.013
+   "s": 58.223,
+   "e": 60.612
   },
   {
    "w": "with",
-   "s": 61.013,
-   "e": 62.795
+   "s": 60.612,
+   "e": 62.404
   },
   {
    "w": "Vercel.",
-   "s": 62.795,
-   "e": 65.468
+   "s": 62.404,
+   "e": 65.092
   },
   {
    "w": "Ring",
-   "s": 70.636,
-   "e": 71.483
+   "s": 70.261,
+   "e": 71.163
   },
   {
    "w": "lights,",
-   "s": 71.483,
-   "e": 72.752
+   "s": 71.163,
+   "e": 72.515
   },
   {
    "w": "fountain,",
-   "s": 72.752,
-   "e": 74.304
+   "s": 72.515,
+   "e": 74.168
   },
   {
    "w": "signs.",
-   "s": 74.304,
-   "e": 75.433
+   "s": 74.168,
+   "e": 75.37
   },
   {
    "w": "What",
-   "s": 81.637,
-   "e": 83.246
+   "s": 81.574,
+   "e": 83.12
   },
   {
    "w": "would",
-   "s": 83.246,
-   "e": 85.123
+   "s": 83.12,
+   "e": 84.924
   },
   {
    "w": "you",
-   "s": 85.123,
-   "e": 86.464
+   "s": 84.924,
+   "e": 86.213
   },
   {
    "w": "build",
-   "s": 86.464,
-   "e": 88.342
+   "s": 86.213,
+   "e": 88.017
   },
   {
    "w": "next?",
-   "s": 88.342,
-   "e": 90.219
+   "s": 88.017,
+   "e": 89.821
   }
  ]
 }

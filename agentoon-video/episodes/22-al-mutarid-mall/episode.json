@@ -1,6 +1,6 @@
 {
- "voice": "am_fenrir",
- "speed": 0.93,
+ "voice": "am_adam",
+ "speed": 0.989,
  "phrases": [
   {
    "id": "hook",
@@ -10,8 +10,8 @@
   },
   {
    "id": "reveal",
-   "speak": "Meet Al Mutarid Mall, my interactive three D shopping mall project in Al Ain, U A E. It is a digital concept, not the real mall.",
-   "show": "Al Mutarid Mall \u00b7 Al Ain \u00b7 UAE",
+   "speak": "Meet Al Mootarid Mall, my interactive three D shopping mall project in Al Ain, U A E. It is a digital concept, not the real mall.",
+   "show": "Al Mu'tarid Mall \u00b7 Al Ain \u00b7 UAE",
    "pad": 0.26
   },
   {

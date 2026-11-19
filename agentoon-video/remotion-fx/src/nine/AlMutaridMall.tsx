@@ -11,7 +11,7 @@ import TL from "../../public/data/mall-timeline.json";
 type Scene = { id: string; start: number; len: number };
 const SC = TL.scenes as Scene[]; const S = (id: string) => SC.find((s) => s.id === id)!;
 const LIP = TL.lip as { fps: number; a: number[] }; export const MALL_FRAMES = TL.frames;
-const AR_NAME = "مول المطرد"; const EN_NAME = "AL MUTARID MALL"; const LOC = "AL AIN · UAE";
+const AR_NAME = "المعترض مول"; const EN_NAME = "AL MU'TARID MALL"; const LOC = "AL AIN · UAE";
 const G = { gold: "#E0A84A", gold2: "#F5D58A", ink: "#0B0705", cream: "#FFF3DC", lime: "#C8F031", cyan: "#35F2FF", amber: "#FFB23E" };
 const mono = '"DejaVu Sans Mono", ui-monospace, Menlo, monospace'; const sans = '"DejaVu Sans", Inter, "Helvetica Neue", Arial, sans-serif';
 const foot = (n: string) => staticFile(`ep22/mall/${n}.mp4`);
