@@ -45,4 +45,6 @@ New voice: Kokoro `am_adam` at speed 0.99 (previous episodes used `am_michael` /
 See `data/NARRATION-SCRIPT.txt`.
 
 ## 8. QC log
-(see below)
+Render: 2515 frames, 83.83 s, 1080x1920 @30, H.264+AAC; -15.1 LUFS, peak -1.5 dBFS; narration 158 wpm.
+Checked: all 11 skill names appear (intro chips + slash list; verified against a real Claude Code session); repo URL on screen; real install commands run; scan of 168 frames (every 0.5 s) found no blank frames; narration covers the whole timeline; simulated buyers are labelled; no buy rates or vote results are shown.
+Weak spots (honest): the motion-profile tool reports low energy (mean 0.8, 1 burst): the pixel characters, counters and bars move, but the movement is small and many scenes hold a fixed layout; small terminal/README text is hard to read on a phone; no listening test of the voice was possible; reference footage and a styled GitHub page were unavailable.
