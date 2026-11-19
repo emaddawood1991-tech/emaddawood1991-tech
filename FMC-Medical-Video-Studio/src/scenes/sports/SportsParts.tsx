@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, OffthreadVideo, Sequence, staticFile, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame} from 'remotion';
 import {ss, win} from '../../components/FMCMedicalHighlight';
 import {FONT_AR, FONT_DISPLAY} from '../../styles/theme';
 
@@ -65,10 +65,20 @@ const Card: React.FC<{from: number; to: number; x?: number; y?: number; label: s
     </div>
   );
 };
+const BlenderInset: React.FC<{from: number; to: number; name: 'ankle' | 'hamstring' | 'knee'; label: string}> = ({from, to, name, label}) => {
+  const f = useCurrentFrame();
+  const k = Math.min(59, Math.max(0, Math.floor(((f - from) / 2.2) % 120)));
+  const idx = (k < 60 ? k : 119 - k) + 1;
+  return (
+    <Card from={from} to={to} label={label}>
+      <foreignObject x="0" y="0" width="200" height="200"><Img src={staticFile(`overlays/${name}/f_${String(idx).padStart(4, '0')}.png`)} style={{width: 200, height: 200}} /></foreignObject>
+    </Card>
+  );
+};
 const BONE = '#EADFC8', LIG = '#F28C28', MUS = '#C9694F';
 
 /** Simplified (schematic, not patient-specific) anatomy insets. Lateral ankle: fibula, tibia, talus, calcaneus + the outer-ankle ligament group. */
-export const AnkleInset: React.FC<{from: number; to: number}> = ({from, to}) => (
+export const AnkleInsetSvg: React.FC<{from: number; to: number}> = ({from, to}) => (
   <Card from={from} to={to} label="أربطة الكاحل">
     <rect x="86" y="8" width="26" height="92" rx="12" fill={BONE} />
     <rect x="52" y="8" width="22" height="84" rx="11" fill="#D8CCB0" />
@@ -81,7 +91,7 @@ export const AnkleInset: React.FC<{from: number; to: number}> = ({from, to}) => 
     <circle cx="66" cy="106" r="22" fill="none" stroke="#F2622D" strokeWidth="2.5" strokeDasharray="5 5" />
   </Card>
 );
-export const HamstringInset: React.FC<{from: number; to: number}> = ({from, to}) => (
+export const HamstringInsetSvg: React.FC<{from: number; to: number}> = ({from, to}) => (
   <Card from={from} to={to} label="عضلات الفخذ الخلفية">
     <rect x="86" y="4" width="28" height="40" rx="10" fill={BONE} />
     <path d="M70 40 Q64 100 78 168 L96 168 L100 40Z" fill={MUS} opacity={0.95} />
@@ -91,7 +101,7 @@ export const HamstringInset: React.FC<{from: number; to: number}> = ({from, to})
     <ellipse cx="100" cy="104" rx="40" ry="34" fill="none" stroke="#F2622D" strokeWidth="2.5" strokeDasharray="5 5" />
   </Card>
 );
-export const KneeInset: React.FC<{from: number; to: number}> = ({from, to}) => (
+export const KneeInsetSvg: React.FC<{from: number; to: number}> = ({from, to}) => (
   <Card from={from} to={to} label="مفصل الركبة">
     <path d="M74 6 L126 6 L134 66 Q100 88 66 66Z" fill={BONE} />
     <path d="M62 92 Q100 82 138 92 L128 196 L72 196Z" fill="#D8CCB0" />
@@ -124,3 +134,7 @@ export const Progression: React.FC<{from: number; to: number; y?: number}> = ({f
     </div>
   );
 };
+
+export const AnkleInset: React.FC<{from: number; to: number}> = (p) => <BlenderInset {...p} name="ankle" label="أربطة الكاحل" />;
+export const HamstringInset: React.FC<{from: number; to: number}> = (p) => <BlenderInset {...p} name="hamstring" label="عضلات الفخذ الخلفية" />;
+export const KneeInset: React.FC<{from: number; to: number}> = (p) => <BlenderInset {...p} name="knee" label="مفصل الركبة" />;
