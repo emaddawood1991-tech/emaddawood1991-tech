@@ -192,8 +192,11 @@
     "grammarReview": null,
     "medicalTerminologyReview": null,
     "medicalAccuracyReview": null,
-    "scriptApproved": null,
+    "scriptApproved": {
+      "by": "Emad (chat 2026-11-19: supplied narration in brief, said 'make the video' and 'do how you was doing before'; grammar/medical/pronunciation reviews still pending)",
+      "date": "2026-11-19T08:42:56.696Z"
+    },
     "pronunciationApproved": null,
-    "approvedHash": null
+    "approvedHash": "d6f2a3b656ae744f299695a3928de6da9f6a8adebc87c42ce1237a5e180f0306"
   }
 }
