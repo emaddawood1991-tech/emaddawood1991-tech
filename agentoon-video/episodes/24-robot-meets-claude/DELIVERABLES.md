@@ -1,6 +1,6 @@
 # Episode 24 — My Robot Meets Claude Code — PREVIEW package (not published)
 
-Output: `agentoon-video/remotion-fx/out/ROBOT-MEETS-CLAUDE-PREVIEW-v3.mp4` (1080x1920, 30 fps, 90.9 s), composition `RobotMeetsClaude`.
+Output: `agentoon-video/remotion-fx/out/ROBOT-MEETS-CLAUDE-PREVIEW-v4.mp4` (1080x1920, 30 fps, 90.9 s), composition `RobotMeetsClaude`.
 1. Source verification: `data/OFFICIAL-SOURCES.md`.
 2. Voice samples: `audio/voice-sample-agentoon-10s.mp3` (Kokoro `am_michael`), `audio/voice-sample-claude-10s.mp3` (Kokoro `am_adam`). Free local voices; measured, not heard by me.
 3. Characters walk/gesture test: `out/RMC-CHARACTERS-WALK-GESTURE-TEST.mp4` (first 14 s: robot walks in, Claude walks in and points/presents).
