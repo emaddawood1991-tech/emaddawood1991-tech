@@ -3,6 +3,7 @@ import { Composition } from "remotion";
 import { FPS, H, W } from "./fx/theme";
 import { AlMutaridMall, MALL_FRAMES } from "./nine/AlMutaridMall";
 import { RobotWalkTest, WALK_FRAMES } from "./nine/RobotWalkTest";
+import { Gta6Parents, GTA_FRAMES, Gta6RobotTest, ROBOT_TEST_FRAMES } from "./nine/Gta6Parents";
 import { FounderSkill, FSK_FRAMES } from "./nine/FounderSkill";
 import { FindSkills, FS_FRAMES } from "./nine/FindSkills";
 import { NinePreview, PREVIEW_FRAMES } from "./nine/Preview";
@@ -23,6 +24,8 @@ export const Root: React.FC = () => (
     <Composition id="Showcase" component={Showcase} durationInFrames={SHOWCASE_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="RobotTake" component={RobotTake} durationInFrames={170} fps={FPS} width={W} height={H} />
     <Composition id="AlMutaridMall" component={AlMutaridMall} durationInFrames={MALL_FRAMES} fps={FPS} width={W} height={H} />
+    <Composition id="Gta6Parents" component={Gta6Parents} durationInFrames={GTA_FRAMES} fps={FPS} width={W} height={H} />
+    <Composition id="Gta6RobotTest" component={Gta6RobotTest} durationInFrames={ROBOT_TEST_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="RobotWalkTest" component={RobotWalkTest} durationInFrames={WALK_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="FounderSkill" component={FounderSkill} durationInFrames={FSK_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="FindSkills" component={FindSkills} durationInFrames={FS_FRAMES} fps={FPS} width={W} height={H} />
