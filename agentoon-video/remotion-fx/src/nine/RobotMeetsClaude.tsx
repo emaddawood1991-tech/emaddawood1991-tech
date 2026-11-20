@@ -42,7 +42,7 @@ const RobotLayer: React.FC = () => {
 
 /* ================= Claude (Blender sprites + 2D face) ================= */
 const PXU = (CLIPS as any).pxu as number; const CS = 1.15; const SPR_W = (CLIPS as any).w * CS, SPR_H = (CLIPS as any).h * CS;
-const STAND_X = 770; const WALK = (CLIPS as any).clips.walk; const WALK_N = WALK?.n ?? 36; const LEGL = ((CLIPS as any).legL ?? 1.16) * PXU * CS;
+const STAND_X = 700; const WALK = (CLIPS as any).clips.walk; const WALK_N = WALK?.n ?? 36; const LEGL = ((CLIPS as any).legL ?? 1.16) * PXU * CS;
 const walkV = (i: number) => { const th = 0.5 * Math.sin((2 * Math.PI * i) / WALK_N); return LEGL * Math.cos(th) * 0.5 * ((2 * Math.PI) / WALK_N) * Math.abs(Math.cos((2 * Math.PI * i) / WALK_N)); };
 const walkFrames = 72; const walkDist = (() => { let d = 0; for (let k = 0; k < walkFrames; k++) d += walkV(k % WALK_N); return d; })();
 type Seg = { a: number; b: number; clip: string; walkDir?: -1 };
@@ -110,7 +110,7 @@ const Monitor: React.FC<{ children: React.ReactNode; dim?: number; label?: strin
   <div style={{ position: "absolute", left: 60, top: 330, width: 960, height: 640, borderRadius: 34, background: "linear-gradient(160deg,#2B2622,#14110F)", boxShadow: "0 30px 60px rgba(20,20,19,.35)", zIndex: 30, transform: `scale(${scale})`, transformOrigin: "50% 100%" }}>
     <div style={{ position: "absolute", left: 22, top: 22, width: 916, height: 596, borderRadius: 18, overflow: "hidden", background: "#000" }}>{children}<div style={{ position: "absolute", inset: 0, background: `rgba(20,16,12,${dim})`, pointerEvents: "none" }} /></div>
     {label ? <div style={{ position: "absolute", left: 30, bottom: -46, fontFamily: sans, fontWeight: 700, fontSize: 22, color: C.soft }}>{label}</div> : null}</div>);
-const Shot: React.FC<{ name: string; z0?: number; z1?: number; dur: number; ox?: string; oy?: string }> = ({ name, z0 = 1, z1 = 1.08, dur, ox = "50%", oy = "30%" }) => { const f = useCurrentFrame(); const t = clamp(f / dur); return <Img src={shot(name)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 0%", transform: `scale(${z0 + (z1 - z0) * t})`, transformOrigin: `${ox} ${oy}` }} />; };
+const Shot: React.FC<{ name: string; z0?: number; z1?: number; dur: number; ox?: string; oy?: string }> = ({ name, z0 = 1, z1 = 1.08, dur, ox = "50%", oy = "30%" }) => { const f = useCurrentFrame(); const t = clamp(f / dur); return <Img src={shot(name)} style={{ width: "100%", height: "100%", objectFit: "fill", transform: `scale(${z0 + (z1 - z0) * t})`, transformOrigin: `${ox} ${oy}` }} />; };
 const Tag: React.FC<{ text: string; x: number; y: number; at: number; bg?: string; fg?: string; size?: number; z?: number; maxW?: number }> = ({ text, x, y, at, bg = C.coral, fg = "#fff", size = 30, z = 80, maxW }) => {
   const f = useCurrentFrame(); const { fps } = useVideoConfig(); const s = spring({ frame: f - at, fps, config: POP }); return <div style={{ position: "absolute", left: x, top: y, maxWidth: maxW, transform: `scale(${s})`, transformOrigin: "left center", opacity: clamp(s * 2), background: bg, color: fg, fontFamily: sans, fontWeight: 800, fontSize: size, padding: "8px 18px", borderRadius: 12, boxShadow: "0 10px 24px rgba(20,20,19,.3)", zIndex: z }}>{text}</div>; };
 const Card: React.FC<{ x: number; y: number; w: number; h?: number; at: number; out?: number; children: React.ReactNode; z?: number; accent?: string; fromX?: number }> = ({ x, y, w, h, at: a, out, children, z = 70, accent = C.coral, fromX = 120 }) => {
@@ -127,7 +127,7 @@ const Caps: React.FC = () => {
 
 /* ================= scene contents (in the monitor / floating) ================= */
 const BeforeAfter: React.FC<{ f: number; s: number; e: number }> = ({ f, s, e }) => { const t = clamp((f - s) / (e - s)); const k = t * t * (3 - 2 * t) * 100;
-  return (<div style={{ position: "absolute", inset: 0 }}><div style={{ position: "absolute", inset: 0 }}><Shot name="before-d.png" dur={600} /></div>
+  return (<div style={{ position: "absolute", inset: 0 }}><div style={{ position: "absolute", inset: 0 }}><Shot name="before-d.png" dur={600} z0={1.0} z1={1.04} /></div>
     <div style={{ position: "absolute", inset: 0, clipPath: `inset(0 ${100 - k}% 0 0)` }}><Shot name="after-d.png" dur={600} /></div>
     <div style={{ position: "absolute", left: `${k}%`, top: 0, bottom: 0, width: 6, background: C.coral, boxShadow: "0 0 18px rgba(217,119,87,.8)", opacity: t > 0 && t < 1 ? 1 : 0 }} />
     <div style={{ position: "absolute", left: 20, top: 16, background: "rgba(20,16,12,.85)", color: "#fff", fontFamily: sans, fontWeight: 800, fontSize: 26, padding: "4px 14px", borderRadius: 8 }}>BEFORE</div>
@@ -136,9 +136,9 @@ const TestTerm: React.FC<{ f: number; s: number }> = ({ f, s }) => {
   const lines = REAL.tests as string[]; const per = 14; const pass = lines.filter((l) => l.startsWith("PASS")).length, fail = lines.filter((l) => l.startsWith("FAIL")).length;
   const shown = Math.min(lines.length, Math.max(0, Math.floor((f - s) / per) + 1)); const np = lines.slice(0, shown).filter((l) => l.startsWith("PASS")).length, nf = lines.slice(0, shown).filter((l) => l.startsWith("FAIL")).length;
   return (<div style={{ position: "absolute", inset: 0, background: "#0B0E14", fontFamily: mono, padding: "16px 20px" }}>
-    <div style={{ color: "#7EE787", fontSize: 21, marginBottom: 6 }}>$ python test_site.py</div>
-    {lines.slice(0, shown).map((l, i) => <div key={i} style={{ fontSize: 17.5, lineHeight: 1.36, color: l.startsWith("PASS") ? "#9BE9A8" : l.startsWith("FAIL") ? "#FF7B72" : "#C9D1D9", fontWeight: l.startsWith("FAIL") ? 700 : 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l}</div>)}
-    <div style={{ position: "absolute", right: 18, bottom: 14, display: "flex", gap: 12, fontFamily: sans, fontWeight: 900 }}>
+    <div style={{ color: "#7EE787", fontSize: 22, marginBottom: 6, paddingTop: 52 }}>$ python test_site.py</div>
+    {lines.slice(0, shown).map((l, i) => <div key={i} style={{ fontSize: 20.5, lineHeight: 1.3, color: l.startsWith("PASS") ? "#9BE9A8" : l.startsWith("FAIL") ? "#FF7B72" : "#C9D1D9", fontWeight: l.startsWith("FAIL") ? 700 : 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l}</div>)}
+    <div style={{ position: "absolute", right: 18, top: 12, display: "flex", gap: 12, fontFamily: sans, fontWeight: 900 }}>
       <div style={{ background: "#1F6F3B", color: "#fff", borderRadius: 12, padding: "6px 16px", fontSize: 30 }}>{np}/{pass} PASS</div><div style={{ background: "#B3261E", color: "#fff", borderRadius: 12, padding: "6px 16px", fontSize: 30 }}>{nf}/{fail} FAIL</div></div></div>); };
 const RepoPanel: React.FC<{ f: number }> = ({ f }) => (<div style={{ position: "absolute", inset: 0, background: "#0D1117", fontFamily: sans, color: "#E6EDF3", padding: "26px 34px" }}>
   <div style={{ fontSize: 30, color: "#9DA7B3" }}>github.com / <b style={{ color: "#58A6FF" }}>anthropics</b> / <b style={{ color: "#58A6FF" }}>skills</b></div>
@@ -155,7 +155,7 @@ export const RobotMeetsClaude: React.FC = () => {
   const fd = cue("l05", "frontend-design"); void fd;
   const scene = f < S.what ? "A" : f < S.design ? "B" : f < S.test ? "C" : f < S.inst ? "D" : f < S.fin ? "E" : "F";
   // the monitor screen content
-  let screen: React.ReactNode = <Shot name="before-d.png" dur={400} />; let label = "Basic sample site (written by Agentoon for this video)";
+  let screen: React.ReactNode = <Shot name="before-d.png" dur={300} z0={1.55} z1={1.85} ox="0%" oy="0%" />; let label = "Basic sample site (written by Agentoon for this video)";
   if (showRepo) { screen = <RepoPanel f={f} />; label = "anthropics/skills"; }
   else if (showDocs) { screen = <div style={{ position: "absolute", inset: 0, background: C.paper }}><Img src={shot("docs-skills.png")} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "0 0", transform: `scale(${1 + 0.06 * clamp((f - S.what) / 300)})`, transformOrigin: "30% 30%" }} /></div>; label = "code.claude.com/docs/en/skills"; }
   else if (f >= S.design - 80 && f < S.test - 20) {
@@ -179,8 +179,7 @@ export const RobotMeetsClaude: React.FC = () => {
     <Wall /><Monitor label={label} dim={dim}>{screen}</Monitor><Desk />
     {/* problem annotations */}
     {f < S.arrive + 120 && (<><Tag text="Default fonts" x={80} y={300} at={30} bg={C.ink} size={26} /><Tag text="No layout" x={420} y={300} at={52} bg={C.ink} size={26} /><Tag text="Plain buttons" x={720} y={300} at={74} bg={C.ink} size={26} /></>)}
-    {/* floating repo card between characters */}
-    {on(f, S.arrive + 40, S.what + 40) && <Card x={130} y={1000} w={820} h={0} at={S.arrive + 40} out={S.what + 40} fromX={0}><div style={{ fontWeight: 900, fontSize: 40 }}>github.com/anthropics/skills</div></Card>}
+    {on(f, S.arrive + 55, S.what + 30) && <Tag text="Official repo: anthropics/skills" x={80} y={300} at={S.arrive + 55} bg={C.ink} size={30} z={92} />}
     {/* what are skills: folders + SKILL.md cards + connections */}
     {on(f, L("l04").sf + 30, L("l05").sf + 4) && (<>
       <Folder name="frontend-design" x={40} y={560} at={L("l04").sf + 34} hot={f > cue("l04", "designing")} /><Folder name="webapp-testing" x={40} y={700} at={L("l04").sf + 44} hot={f > cue("l04", "testing")} /><Folder name="skill-creator" x={40} y={840} at={L("l04").sf + 54} hot={f > cue("l04", "creating")} />
