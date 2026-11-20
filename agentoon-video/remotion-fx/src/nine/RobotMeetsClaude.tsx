@@ -61,7 +61,7 @@ const buildClaude = (): Seg[] => {
     let a = Math.max(t.a, cursor); if (a >= t.b) continue; const dur = t.b - a;
     if (!t.talk) { fillTalk(a, t.b, "idle"); cursor = t.b; continue; }
     // long speech: talk loops with gestures at 35% and 75%
-    const kinds = ["point_L", "present_R", "present_L", "point_L"]; const marks = dur > 150 ? [0.32, 0.7] : dur > 90 ? [0.5] : [];
+    const kinds = ["point_L", "present_R", "point_L", "present_R"]; const marks = dur > 150 ? [0.32, 0.7] : dur > 90 ? [0.5] : [];
     let c = a; for (const m of marks) { const ga = a + Math.round(dur * m); if (ga - c > 10) { fillTalk(c, ga, "talk"); } c = Math.max(c, ga); c = gesture(c, kinds[g++ % kinds.length]); }
     if (L("l15").sf === t.a) { segs.length; }
     fillTalk(c, t.b, "talk"); cursor = Math.max(c, t.b);
