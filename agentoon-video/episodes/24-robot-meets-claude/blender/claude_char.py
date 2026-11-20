@@ -90,8 +90,8 @@ def pose_talk(i, n):
     p["arms"]["R"] = (0.5 + 0.55 * a, 0.5 + 0.35 * a, 0.15, 0.15, 0.12 * a, 0.5); p["arms"]["L"] = (-0.5 - 0.55 * b, -0.5 - 0.35 * b, 0.15, 0.15, -0.12 * b, 0.5); p["yaw"] = 0.06 * math.sin(ph); return p
 def pose_gesture(kind, side, i, n):
     p = base_pose(); u = i / (n - 1); e = env(u); sgn = 1 if side == "R" else -1; other = "L" if side == "R" else "R"; wob = 0.04 * math.sin(u * 14) * e
-    if kind == "point": p["arms"][side] = (sgn * (RA + (2.10 - RA) * e + wob), sgn * (RE - 0.1 * e), 0.0, 1.0, 0.0, 0.7)
-    elif kind == "present": p["arms"][side] = (sgn * (RA + (1.45 - RA) * e + wob), sgn * (RE + 0.5 * e), 0.0, 0.0, sgn * 0.35 * e, 0.8)
+    if kind == "point": p["arms"][side] = (sgn * (RA + (2.80 - RA) * e + wob), sgn * (RE - 0.1 * e), 0.0, 1.0, 0.0, 0.7)
+    elif kind == "present": p["arms"][side] = (sgn * (RA + (1.60 - RA) * e + wob), sgn * (RE + 0.5 * e), 0.0, 0.0, sgn * 0.35 * e, 0.8)
     elif kind == "both":
         for sd, sg in (("L", -1), ("R", 1)): p["arms"][sd] = (sg * (RA + (1.6 - RA) * e + wob), sg * (RE + 0.5 * e), 0.0, 0.0, sg * 0.3 * e, 0.8)
         p["rootz"] = 0.02 * e

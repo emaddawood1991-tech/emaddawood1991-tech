@@ -41,8 +41,8 @@ const RobotLayer: React.FC = () => {
 };
 
 /* ================= Claude (Blender sprites + 2D face) ================= */
-const PXU = (CLIPS as any).pxu as number; const CS = 1.15; const SPR_W = (CLIPS as any).w * CS, SPR_H = (CLIPS as any).h * CS;
-const STAND_X = 700; const WALK = (CLIPS as any).clips.walk; const WALK_N = WALK?.n ?? 36; const LEGL = ((CLIPS as any).legL ?? 1.16) * PXU * CS;
+const PXU = (CLIPS as any).pxu as number; const CS = 1.05; const SPR_W = (CLIPS as any).w * CS, SPR_H = (CLIPS as any).h * CS;
+const STAND_X = 735; const WALK = (CLIPS as any).clips.walk; const WALK_N = WALK?.n ?? 36; const LEGL = ((CLIPS as any).legL ?? 1.16) * PXU * CS;
 const walkV = (i: number) => { const th = 0.5 * Math.sin((2 * Math.PI * i) / WALK_N); return LEGL * Math.cos(th) * 0.5 * ((2 * Math.PI) / WALK_N) * Math.abs(Math.cos((2 * Math.PI * i) / WALK_N)); };
 const walkFrames = 72; const walkDist = (() => { let d = 0; for (let k = 0; k < walkFrames; k++) d += walkV(k % WALK_N); return d; })();
 type Seg = { a: number; b: number; clip: string; walkDir?: -1 };
@@ -133,7 +133,7 @@ const BeforeAfter: React.FC<{ f: number; s: number; e: number }> = ({ f, s, e })
     <div style={{ position: "absolute", left: 20, top: 16, background: "rgba(20,16,12,.85)", color: "#fff", fontFamily: sans, fontWeight: 800, fontSize: 26, padding: "4px 14px", borderRadius: 8 }}>BEFORE</div>
     <div style={{ position: "absolute", right: 20, top: 16, background: C.coral, color: "#fff", fontFamily: sans, fontWeight: 800, fontSize: 26, padding: "4px 14px", borderRadius: 8, opacity: k > 55 ? 1 : 0 }}>AFTER · frontend-design</div></div>); };
 const TestTerm: React.FC<{ f: number; s: number }> = ({ f, s }) => {
-  const lines = REAL.tests as string[]; const per = 14; const pass = lines.filter((l) => l.startsWith("PASS")).length, fail = lines.filter((l) => l.startsWith("FAIL")).length;
+  const lines = REAL.tests as string[]; const per = 12; const pass = lines.filter((l) => l.startsWith("PASS")).length, fail = lines.filter((l) => l.startsWith("FAIL")).length;
   const shown = Math.min(lines.length, Math.max(0, Math.floor((f - s) / per) + 1)); const np = lines.slice(0, shown).filter((l) => l.startsWith("PASS")).length, nf = lines.slice(0, shown).filter((l) => l.startsWith("FAIL")).length;
   return (<div style={{ position: "absolute", inset: 0, background: "#0B0E14", fontFamily: mono, padding: "16px 20px" }}>
     <div style={{ color: "#7EE787", fontSize: 22, marginBottom: 6, paddingTop: 52 }}>$ python test_site.py</div>
@@ -146,6 +146,14 @@ const RepoPanel: React.FC<{ f: number }> = ({ f }) => (<div style={{ position: "
   <div style={{ marginTop: 22, border: "1px solid #30363D", borderRadius: 12, overflow: "hidden" }}>{["skills", "spec", "template", "README.md", "THIRD_PARTY_NOTICES.md"].map((n, i) => <div key={n} style={{ padding: "11px 18px", fontSize: 28, borderTop: i ? "1px solid #21262D" : "none", background: n === "skills" && f % 90 > 40 ? "#161B22" : "transparent" }}>{i < 3 ? "📁 " : "📄 "}{n}</div>)}</div>
   <div style={{ marginTop: 14, fontSize: 19, color: "#8B949E" }}>Rendered from a real clone of the repository (not a screenshot of the GitHub page).</div></div>);
 const Folder: React.FC<{ name: string; x: number; y: number; at: number; hot?: boolean }> = ({ name, x, y, at: a, hot }) => (<Card x={x} y={y} w={300} h={128} at={a} accent={hot ? C.coral : C.soft} z={72}><div style={{ display: "flex", gap: 14, alignItems: "center" }}><div style={{ fontSize: 56 }}>📁</div><div><div style={{ fontWeight: 900, fontSize: 30 }}>{name}</div><div style={{ fontFamily: mono, fontSize: 19, color: C.coralD }}>└ SKILL.md</div></div></div></Card>);
+
+const Slam: React.FC<{ text: string; at: number; dur?: number; y?: number; color?: string; fg?: string; size?: number }> = ({ text, at: a, dur = 40, y = 520, color = C.coral, fg = "#fff", size = 92 }) => {
+  const f = useCurrentFrame(); const { fps } = useVideoConfig(); if (f < a || f > a + dur) return null;
+  const sp = spring({ frame: f - a, fps, config: { damping: 10, stiffness: 230, mass: 0.7 } }); const o = clamp((a + dur - f) / 8);
+  return <div style={{ position: "absolute", left: 0, right: 0, top: y, textAlign: "center", zIndex: 88, opacity: o, transform: `scale(${0.5 + 0.5 * sp}) rotate(${(1 - sp) * -6 - 2}deg)` }}>
+    <span style={{ display: "inline-block", background: color, color: fg, fontFamily: sans, fontWeight: 900, fontSize: size, padding: "6px 34px", borderRadius: 20, boxShadow: "0 18px 40px rgba(20,20,19,.45)", letterSpacing: 1 }}>{text}</span></div>; };
+const SkillMd: React.FC<{ k: "frontend-design" | "webapp-testing" | "skill-creator"; x: number; y: number; at: number }> = ({ k, x, y, at: a }) => { const fm = (REAL.frontmatter as any)[k]; return (
+  <Card x={x} y={y} w={340} h={118} at={a} accent={C.coral} z={74} fromX={-80}><div style={{ fontFamily: mono, fontSize: 17, color: C.coralD }}>SKILL.md · frontmatter</div><div style={{ fontWeight: 900, fontSize: 26 }}>name: {fm.name}</div><div style={{ fontSize: 17.5, lineHeight: 1.18, color: C.soft }}>{fm.description.slice(0, 74)}…</div></Card>); };
 
 /* ================= main ================= */
 export const RobotMeetsClaude: React.FC = () => {
@@ -165,7 +173,8 @@ export const RobotMeetsClaude: React.FC = () => {
       {["Skill(frontend-design:frontend-design)", "Bash(…)", "Read(index.html)", "Write(index.html) · 7.8 KB"].map((t, i) => <div key={t} style={{ opacity: clamp((f - (S.design - 70) - i * 24) / 8) }}>● {t}</div>)}
       <div style={{ opacity: clamp((f - (S.design + 40)) / 10), color: "#9BE9A8", marginTop: 8 }}>✓ done in 42.5 s</div></div>) : <BeforeAfter f={f} s={L("l05").sf + at(6.4)} e={L("l05").sf + at(9.4)} />;
     label = evLog ? "Claude Code · real run of the skill" : "Before → after (real screenshots of the page)"; }
-  else if (f >= S.test - 20 && f < S.inst - 10) { screen = <TestTerm f={f} s={L("l08").sf + at(1.2)} />; label = "Playwright test · real output"; }
+  else if (f >= S.test - 20 && f < L("l08").sf + at(4.5)) { screen = <Sequence from={S.test - 20} layout="none"><OffthreadVideo src={staticFile("ep24/site-interaction.mp4")} muted playbackRate={1.2} style={{ width: "100%", height: "100%", objectFit: "fill" }} /></Sequence>; label = "Real browser test: Playwright clicks through the redesigned page"; }
+  else if (f >= L("l08").sf + at(4.5) && f < S.inst - 10) { screen = <TestTerm f={f} s={L("l08").sf + at(4.5)} />; label = "Playwright test · real output"; }
   else if (f >= S.inst - 10 && f < S.fin - 20) {
     const t0 = L("l11").sf; screen = (<div style={{ position: "absolute", inset: 0, background: "#0B0E14" }}>
       {on(f, t0, t0 + 120) && <Sequence from={t0} durationInFrames={130} layout="none"><OffthreadVideo src={termf("01-marketplace.mp4")} muted playbackRate={1.2} style={{ width: 916, display: "block" }} /></Sequence>}
@@ -174,9 +183,13 @@ export const RobotMeetsClaude: React.FC = () => {
     label = "Real terminal · CLI form of the same commands"; }
   else if (f >= S.fin - 20) { screen = <Shot name="after-d.png" dur={500} z0={1.0} z1={1.07} />; label = "Redesigned and tested sample site"; }
   const dim = showRepo ? 0 : 0;
+  const BP = [0, S.arrive, S.what, S.design, S.test, S.inst, S.fin, S.end, RMC_FRAMES]; const bi = BP.findIndex((b, i) => f >= b && f < BP[i + 1]); const frac = (f - BP[bi]) / (BP[bi + 1] - BP[bi]);
+  const ORIG = ["30% 40%", "70% 45%", "40% 35%", "50% 55%", "35% 45%", "60% 40%", "50% 30%", "50% 50%"]; const camS = 1 + 0.06 * frac;
+  const POPS = [0, S.arrive + 55, S.what + 30, S.design - 80, L("l05").sf + at(5.6), S.test - 20, L("l08").sf + at(4.5), S.inst - 10, S.fin - 20]; const ps = [...POPS].filter((v) => f >= v).pop() ?? 0;
+  const popK = ps === 0 ? 1 : spring({ frame: f - ps, fps, config: { damping: 14, stiffness: 120, mass: 0.8 } });
   return (<AbsoluteFill style={{ background: C.wall1 }}>
     <Audio src={staticFile("audio/rmc-mix.wav")} />
-    <Wall /><Monitor label={label} dim={dim}>{screen}</Monitor><Desk />
+    <div style={{ position: "absolute", inset: 0, transform: `scale(${camS})`, transformOrigin: ORIG[bi] }}><Wall /><Monitor label={label} dim={dim}><div style={{ position: "absolute", inset: 0, transform: `scale(${0.9 + 0.1 * popK})`, opacity: Math.min(1, popK * 1.6) }}>{screen}</div></Monitor><Desk /></div>
     {/* problem annotations */}
     {f < S.arrive + 120 && (<><Tag text="Default fonts" x={80} y={300} at={30} bg={C.ink} size={26} /><Tag text="No layout" x={420} y={300} at={52} bg={C.ink} size={26} /><Tag text="Plain buttons" x={720} y={300} at={74} bg={C.ink} size={26} /></>)}
     {on(f, S.arrive + 55, S.what + 30) && <Tag text="Official repo: anthropics/skills" x={80} y={300} at={S.arrive + 55} bg={C.ink} size={30} z={92} />}
@@ -187,6 +200,10 @@ export const RobotMeetsClaude: React.FC = () => {
       <Card x={700} y={560} w={330} h={110} at={cue("l04", "designing")} accent={C.coral}><b style={{ fontSize: 30 }}>Designing websites</b></Card>
       <Card x={700} y={700} w={330} h={110} at={cue("l04", "testing")} accent={C.coral}><b style={{ fontSize: 30 }}>Testing apps</b></Card>
       <Card x={700} y={840} w={330} h={110} at={cue("l04", "creating")} accent={C.coral}><b style={{ fontSize: 30 }}>New workflows</b></Card></>)}
+    {on(f, L("l04").sf + 30, L("l05").sf + 4) && (<><SkillMd k="frontend-design" x={350} y={560} at={L("l04").sf + 40} /><SkillMd k="webapp-testing" x={350} y={700} at={L("l04").sf + 50} /><SkillMd k="skill-creator" x={350} y={840} at={L("l04").sf + 60} /></>)}
+    <Slam text="AGENT SKILLS" at={cue("l02", "agent")} y={560} /><Slam text="SKILL.md" at={cue("l04", "instructions")} y={430} dur={34} color={C.ink} />
+    <Slam text="frontend-design" at={cue("l05", "frontend-design")} y={520} size={80} /><Slam text="webapp-testing" at={cue("l08", "webapp-testing")} y={520} size={80} />
+    <Slam text="9 PASS · 4 FAIL" at={cue("l08", "9")} y={470} size={84} color={C.ink} /><Slam text="/plugin install" at={cue("l11", "install")} y={520} size={80} color={C.ink} /><Slam text="skill-creator" at={cue("l13", "create")} y={470} size={80} />
     {/* design: bug fix diff */}
     {on(f, L("l05").sf + at(8.8), L("l06").sf) && <Card x={90} y={720} w={900} at={L("l05").sf + at(8.8)} accent={C.teal} z={78} fromX={0}>
       <div style={{ fontFamily: sans, fontWeight: 900, fontSize: 28, color: C.coralD }}>Bug found and fixed in the same pass (real code)</div>
