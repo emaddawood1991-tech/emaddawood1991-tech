@@ -1,0 +1,16 @@
+[   0.1s] AGENTOON: Claude! I built a website, but the design looks terrible. And I don't even know if everything works!
+[   5.8s] CLAUDE CODE: Hey, don't worry! Anthropic has Agent Skills that can help with exactly that.
+[  10.7s] AGENTOON: Skills? What do they actually do?
+[  12.8s] CLAUDE CODE: They're reusable instructions and tools that teach me how to handle specific tasks, like designing websites, testing apps, and creating new workflows.
+[  22.6s] CLAUDE CODE: For your design problem, we can use the frontend-design skill. I ran it on your page. New fonts, colors and layout. It even fixed a bug: your order buttons updated an element that doesn't exist.
+[  35.6s] AGENTOON: Wait... that looks so much better!
+[  37.5s] AGENTOON: But how do I know the website actually works?
+[  40.3s] CLAUDE CODE: That's where webapp-testing helps. We can check interactions and find problems before you publish. I ran 13 checks. 9 passed. 4 failed: the email box accepts broken addresses like just an @ sign.
+[  54.0s] CLAUDE CODE: Skills don't make a site perfect, but they help me catch problems early.
+[  58.9s] AGENTOON: Okay, I need these skills! How do I install them?
+[  62.2s] CLAUDE CODE: Open Claude Code, add Anthropic's official skill marketplace, then install the example-skills plugin.
+[  69.2s] CLAUDE CODE: That's it. frontend-design, webapp-testing and skill-creator are now ready to use.
+[  75.1s] AGENTOON: So instead of explaining everything from scratch, I can use the right skill for the job?
+[  80.6s] CLAUDE CODE: Exactly. And you can create your own reusable skills too!
+[  84.8s] AGENTOON: Now that's useful!
+[  86.1s] CLAUDE CODE: Try the official Anthropic skills and see what you can build.

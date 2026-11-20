@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { Robot2, pose2, Gest2 } from "../fx/RobotRig2";
+import { Robot2, pose2, Gest2, Walk, walkDistance } from "../fx/RobotRig2";
 import { clamp } from "../fx/math";
 import TL from "../../public/data/rmc-timeline.json";
 import REAL from "../../public/data/rmc-real.json";
@@ -32,12 +32,13 @@ const ROBOT_G: Gest2[] = [
   { type: "explain", from: L("l04").sf + 20, to: L("l04").sf + 140 }, { type: "present", from: L("l08").sf + 40, to: L("l08").sf + 120, hand: "L" }, { type: "explain", from: L("l11").sf + 10, to: L("l11").sf + 120 },
   { type: "present", from: L("l15").sf + 5, to: L("l15").sf + 80, hand: "R" }, { type: "invite", from: L("l15").sf + 85, to: L("l15").sf + 112 },
 ];
+const RWALK: Walk = { from: 2, to: 64, ramp: 10, stepsPerSec: 2.1 }; const RWD = walkDistance(RWALK.to, RWALK) * RK;
 const RobotLayer: React.FC = () => {
-  const f = useCurrentFrame(); const speaking = LINES.filter((l) => l.who === "A").map((l) => [l.sf, l.ef + 4] as [number, number]);
-  const p = pose2(f, { lip: LIP.A, speaking, gestures: ROBOT_G, seed: 3 });
+  const f = useCurrentFrame(); const rx = RX - RWD + walkDistance(Math.min(f, RWALK.to), RWALK) * RK; const speaking = LINES.filter((l) => l.who === "A").map((l) => [l.sf, l.ef + 4] as [number, number]);
+  const p = pose2(f, { lip: LIP.A, speaking, gestures: ROBOT_G, walks: [RWALK], seed: 3 });
   return (<>
-    <div style={{ position: "absolute", left: RX - 30, top: FLOORY - 60, width: RW + 60, height: 100, borderRadius: "50%", background: "radial-gradient(ellipse at center, rgba(20,20,19,.28) 0%, rgba(20,20,19,0) 70%)", zIndex: 58 }} />
-    <div style={{ position: "absolute", left: RX, top: FLOORY - RW * 1.4 * (272 / 280), zIndex: 60 }}><Robot2 pose={p} width={RW} shadow={false} /></div></>);
+    <div style={{ position: "absolute", left: rx - 30, top: FLOORY - 60, width: RW + 60, height: 100, borderRadius: "50%", background: "radial-gradient(ellipse at center, rgba(20,20,19,.28) 0%, rgba(20,20,19,0) 70%)", zIndex: 58 }} />
+    <div style={{ position: "absolute", left: rx, top: FLOORY - RW * 1.4 * (272 / 280), zIndex: 60 }}><Robot2 pose={p} width={RW} shadow={false} /></div></>);
 };
 
 /* ================= Claude (Blender sprites + 2D face) ================= */
@@ -155,6 +156,8 @@ const Slam: React.FC<{ text: string; at: number; dur?: number; y?: number; color
 const SkillMd: React.FC<{ k: "frontend-design" | "webapp-testing" | "skill-creator"; x: number; y: number; at: number }> = ({ k, x, y, at: a }) => { const fm = (REAL.frontmatter as any)[k]; return (
   <Card x={x} y={y} w={340} h={118} at={a} accent={C.coral} z={74} fromX={-80}><div style={{ fontFamily: mono, fontSize: 17, color: C.coralD }}>SKILL.md · frontmatter</div><div style={{ fontWeight: 900, fontSize: 26 }}>name: {fm.name}</div><div style={{ fontSize: 17.5, lineHeight: 1.18, color: C.soft }}>{fm.description.slice(0, 74)}…</div></Card>); };
 
+const Wipe: React.FC<{ at: number }> = ({ at: a }) => { const f = useCurrentFrame(); const k = (f - a + 9) / 18; if (k < 0 || k > 1) return null; const x = k < 0.5 ? -1080 + 1080 * (k / 0.5) ** 2 : 1080 * (((k - 0.5) / 0.5) ** 2);
+  return <div style={{ position: "absolute", left: x, top: 0, width: 1080, height: 1920, zIndex: 97, background: `linear-gradient(90deg, ${C.coral} 0%, ${C.coralD} 100%)`, display: "flex", alignItems: "center", justifyContent: "center" }}><div style={{ fontFamily: sans, fontWeight: 900, fontSize: 120, color: "#fff", opacity: 0.9 }}>✻</div></div>; };
 /* ================= main ================= */
 export const RobotMeetsClaude: React.FC = () => {
   const f = useCurrentFrame(); const { fps } = useVideoConfig();
@@ -229,6 +232,6 @@ export const RobotMeetsClaude: React.FC = () => {
         <div style={{ marginTop: 18, background: C.teal, color: C.ink, fontWeight: 900, fontSize: 48, padding: "8px 28px", borderRadius: 14, display: "inline-block" }}>FOLLOW @AGENTOON.AI</div>
         <div style={{ color: "#C9C3B8", fontWeight: 700, fontSize: 24, marginTop: 10 }}>Real AI Tools • Skills • Automation</div></div></div>}
     <Tag text="Original Agentoon.ai production · not an official Anthropic ad · fan-style Claude character" x={28} y={1760} at={10} bg="rgba(20,16,12,.8)" fg="#E8E2D6" size={21} z={96} />
-    <RobotLayer /><ClaudeLayer /><Caps />
+    <RobotLayer /><ClaudeLayer />{[S.what, S.design, S.test, S.inst, S.fin, S.end].map((b) => <Wipe key={b} at={b} />)}<Caps />
   </AbsoluteFill>);
 };
