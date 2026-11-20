@@ -58,12 +58,13 @@ const Credit: React.FC<{ at?: number }> = ({ at = 14 }) => <Tag text="Footage: R
 /** slab that flies in from depth (parallax card) with a restrained neon outline */
 const Slab: React.FC<{ x: number; y: number; w: number; h: number; at: number; children: React.ReactNode; accent?: string; fromX?: number; tilt?: number; z?: number; out?: number }> = ({ x, y, w, h, at, children, accent = C.amber, fromX = 160, tilt = -16, z = 50, out }) => {
   const f = useCurrentFrame(); const { fps } = useVideoConfig(); const s = spring({ frame: f - at, fps, config: SOFT }); const o = out !== undefined ? clamp((out - f) / 10) : 1;
-  const drift = Math.sin((f + x) / 38) * 3;
-  return <div style={{ position: "absolute", left: x, top: y + drift, width: w, height: h, transform: `perspective(1400px) translateX(${(1 - s) * fromX}px) translateZ(${(1 - s) * -380}px) rotateY(${(1 - s) * tilt}deg) scale(${0.96 + 0.04 * o})`, opacity: clamp(s * 1.6) * o, zIndex: z, borderRadius: 24, background: "linear-gradient(160deg, rgba(22,37,74,.96), rgba(10,17,36,.96))", boxShadow: `0 0 0 2px ${accent}, 0 0 26px ${accent}55, 0 24px 50px rgba(0,0,0,.5)`, padding: "18px 26px", fontFamily: sans, color: C.white, display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>{children}</div>;
+  const drift = Math.sin((f + x) / 30) * 6;
+  return <div style={{ position: "absolute", left: x, top: y + drift, width: w, height: h, transform: `perspective(1400px) translateX(${(1 - s) * fromX}px) translateZ(${(1 - s) * -380}px) rotateY(${(1 - s) * tilt + Math.sin((f + x) / 40) * 2.4}deg) rotateX(${Math.cos((f + y) / 52) * 1.2}deg) scale(${0.96 + 0.04 * o})`, opacity: clamp(s * 1.6) * o, zIndex: z, borderRadius: 24, background: "linear-gradient(160deg, rgba(22,37,74,.96), rgba(10,17,36,.96))", boxShadow: `0 0 0 2px ${accent}, 0 0 26px ${accent}55, 0 24px 50px rgba(0,0,0,.5)`, padding: "18px 26px", fontFamily: sans, color: C.white, display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>{children}</div>;
 };
 const WarnIcon: React.FC<{ size?: number; color?: string }> = ({ size = 56, color = C.amber }) => (<svg width={size} height={size} viewBox="0 0 64 64"><path d="M32 6 L60 56 H4 Z" fill="none" stroke={color} strokeWidth="5" strokeLinejoin="round" /><rect x="29" y="22" width="6" height="19" rx="3" fill={color} /><circle cx="32" cy="48" r="3.6" fill={color} /></svg>);
 const Esrb: React.FC<{ h?: number }> = ({ h = 190 }) => <Img src={staticFile("ep23/esrb_m.svg")} style={{ height: h, display: "block" }} />;
 const Pegi: React.FC<{ s?: number }> = ({ s = 150 }) => (<div style={{ width: s, height: s, borderRadius: s * 0.1, background: "#fff", border: `${s * 0.045}px solid #111`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: sans, fontWeight: 900, fontSize: s * 0.62, color: "#111", letterSpacing: -2 }}>18</div>);
+const Push: React.FC<{ len: number; to?: number; children: React.ReactNode }> = ({ len, to = 0.05, children }) => { const f = useCurrentFrame(); return <AbsoluteFill style={{ transform: `scale(${1 + to * (f / len)}) translateY(${-14 * (f / len)}px)`, transformOrigin: "50% 35%" }}>{children}</AbsoluteFill>; };
 const Vignette: React.FC<{ a?: number }> = ({ a = 0.55 }) => <AbsoluteFill style={{ background: `radial-gradient(120% 90% at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,${a}) 100%)`, zIndex: 30 }} />;
 const Window: React.FC<{ x: number; y: number; w: number; h: number; at?: number; children: React.ReactNode }> = ({ x, y, w, h, at = 0, children }) => {
   const f = useCurrentFrame(); const { fps } = useVideoConfig(); const s = spring({ frame: f - at, fps, config: SOFT });
@@ -72,7 +73,7 @@ const Window: React.FC<{ x: number; y: number; w: number; h: number; at?: number
 const BG: React.FC<{ light?: boolean }> = ({ light }) => {
   const f = useCurrentFrame();
   return <AbsoluteFill style={{ background: light ? "linear-gradient(180deg,#F2F5FC 0%,#DCE4F5 62%,#C9D3EA 100%)" : `radial-gradient(90% 60% at 70% 20%, ${C.navy2} 0%, ${C.navy} 45%, ${C.ink} 100%)` }}>
-    {!light ? [0, 1, 2, 3, 4, 5].map((i) => <div key={i} style={{ position: "absolute", left: ((i * 197 + f * (0.25 + i * 0.06)) % 1300) - 120, top: 260 + i * 240, width: 150 + i * 30, height: 150 + i * 30, borderRadius: 30, border: `2px solid rgba(255,178,36,.12)`, transform: `rotate(${12 + i * 9 + f * 0.05}deg)`, opacity: 0.55 }} />) : null}
+    {!light ? [0, 1, 2, 3, 4, 5].map((i) => <div key={i} style={{ position: "absolute", left: ((i * 197 + f * (0.9 + i * 0.22)) % 1300) - 120, top: 260 + i * 240, width: 150 + i * 30, height: 150 + i * 30, borderRadius: 30, border: `2px solid rgba(255,178,36,.12)`, transform: `rotate(${12 + i * 9 + f * 0.16}deg)`, opacity: 0.55 }} />) : null}
   </AbsoluteFill>;
 };
 
@@ -130,9 +131,9 @@ const Warning: React.FC = () => {
     <BG />
     <div style={{ position: "absolute", inset: 0, opacity: 1 - tr, transform: `scale(${1 + 0.25 * tr})`, filter: `brightness(${1 - 0.5 * tr})` }}><Clip name="street" dur={130} rate={0.5} z0={1.0} z1={1.1} /></div>
     <Window x={60} y={330} w={960} h={520} at={4}>
-      <Sequence from={0} durationInFrames={120} layout="none"><Clip name="street" dur={115} rate={0.5} z0={1.0} z1={1.16} p0={45} p1={55} w={960} h={520} fadeOut={8} /></Sequence>
-      <Sequence from={112} durationInFrames={130} layout="none"><Clip name="bike" dur={72} rate={0.6} z0={1.02} z1={1.2} p0={48} p1={50} w={960} h={520} fadeIn={8} fadeOut={8} /></Sequence>
-      <Sequence from={236} durationInFrames={70} layout="none"><Clip name="nstreet" dur={54} rate={0.5} z0={1.02} z1={1.18} p0={50} p1={50} w={960} h={520} fadeIn={8} /></Sequence>
+      <Sequence from={0} durationInFrames={122} layout="none"><Clip name="street" dur={114} rate={0.5} z0={1.0} z1={1.16} p0={45} p1={55} w={960} h={520} fadeOut={8} /></Sequence>
+      <Sequence from={114} durationInFrames={128} layout="none"><Clip name="bike" dur={120} rate={0.6} z0={1.02} z1={1.2} p0={48} p1={50} w={960} h={520} fadeIn={8} fadeOut={8} /></Sequence>
+      <Sequence from={234} durationInFrames={70} layout="none"><Clip name="nstreet" dur={62} rate={0.43} z0={1.02} z1={1.18} p0={50} p1={50} w={960} h={520} fadeIn={8} /></Sequence>
     </Window>
     <div style={{ position: "absolute", left: 436, top: 960, width: 604, zIndex: 60, fontFamily: sans, fontWeight: 900, fontSize: 52, lineHeight: 1.1, color: C.white, opacity: clamp((f - 14) / 10) * clamp((cards[1][2] - 4 - f) / 10), transform: `translateY(${(1 - clamp((f - 14) / 10)) * 24}px)` }}>IMPRESSIVE GRAPHICS<div style={{ color: C.amber }}>≠ SUITABLE FOR CHILDREN</div></div>
     <Tag text="NOT SUITABLE FOR CHILDREN" x={60} y={868} at={cue("warning", "suitable") - 4} bg={C.red} fg="#fff" size={34} />
@@ -153,12 +154,13 @@ const Themes: React.FC = () => {
   const chips: [string, string, number][] = [["DRUGS & ALCOHOL", "Use of Drugs and Alcohol", cue("themes", "drug") - 4], ["MATURE HUMOR", "Mature Humor", cue("themes", "humor") - 4], ["CRIME THEMES", "Themes involving crime", cue("themes", "crime") - 4]];
   const rate = spring({ frame: f - rated, fps, config: SOFT });
   return (<AbsoluteFill style={{ background: C.ink }}>
-    <BG />
+    <Push len={517} to={0.04}><BG />
     <Window x={60} y={330} w={960} h={430} at={2}>
-      <Sequence from={0} durationInFrames={110} layout="none"><Clip name="yacht" dur={57} rate={0.6} z0={1.0} z1={1.18} w={960} h={430} fadeOut={8} /></Sequence>
-      <Sequence from={102} durationInFrames={80} layout="none"><Clip name="duo" dur={30} rate={0.4} z0={1.0} z1={1.15} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
-      <Sequence from={174} durationInFrames={110} layout="none"><Clip name="beach" dur={60} rate={0.55} z0={1.0} z1={1.18} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
-      <Sequence from={276} durationInFrames={240} layout="none"><Clip name="nstreet" dur={54} rate={0.4} z0={1.0} z1={1.2} w={960} h={430} fadeIn={8} /></Sequence>
+      <Sequence from={0} durationInFrames={103} layout="none"><Clip name="yacht" dur={95} rate={0.6} z0={1.0} z1={1.18} w={960} h={430} fadeOut={8} /></Sequence>
+      <Sequence from={95} durationInFrames={83} layout="none"><Clip name="duo" dur={75} rate={0.4} z0={1.0} z1={1.15} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
+      <Sequence from={170} durationInFrames={117} layout="none"><Clip name="beach" dur={109} rate={0.55} z0={1.0} z1={1.18} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
+      <Sequence from={279} durationInFrames={230} layout="none"><Clip name="road" dur={220} rate={0.6} z0={1.0} z1={1.2} p0={35} p1={62} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
+      <Sequence from={501} durationInFrames={30} layout="none"><Clip name="nstreet" dur={67} rate={0.4} z0={1.0} z1={1.1} w={960} h={430} fadeIn={8} /></Sequence>
     </Window>
     {chips.map(([t, s, at], i) => (<Slab key={t} x={60 + i * 322} y={800} w={308} h={150} at={Math.max(6, at)} fromX={120} tilt={-14} out={imp + 10}>
       <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1.05 }}>{t}</div><div style={{ fontSize: 19, color: C.soft, marginTop: 6 }}>{s}</div></Slab>))}
@@ -175,7 +177,7 @@ const Themes: React.FC = () => {
         <div style={{ textAlign: "center" }}><Esrb h={170} /><div style={{ fontSize: 26, fontWeight: 900, marginTop: 8 }}>NORTH AMERICA</div><div style={{ fontSize: 22, color: C.soft }}>ESRB M · Mature 17+</div></div>
         <div style={{ textAlign: "center" }}><Pegi s={150} /><div style={{ fontSize: 26, fontWeight: 900, marginTop: 8 }}>EUROPE</div><div style={{ fontSize: 22, color: C.soft }}>PEGI 18</div></div>
         <div style={{ width: 300, fontSize: 32, fontWeight: 900, lineHeight: 1.15, opacity: clamp(rate * 2) }}>RATINGS VARY BY COUNTRY.<div style={{ color: C.amber }}>CHECK YOURS.</div></div></div></Slab>
-    <Caps id="themes" /><Credit /><RobotLayer id="themes" start={50} gests={themeG} />
+    </Push><Caps id="themes" /><Credit /><RobotLayer id="themes" start={50} gests={themeG} />
   </AbsoluteFill>);
 };
 
@@ -189,19 +191,19 @@ const Why: React.FC = () => {
   const pur = cue("why", "purchases") - 8; const pg = spring({ frame: f - 4, fps, config: SOFT }); const rp = spring({ frame: f - 30, fps, config: SOFT }); const pu = spring({ frame: f - pur, fps, config: POP });
   const glow = 0.5 + 0.5 * Math.sin(f / 9);
   return (<AbsoluteFill style={{ background: "#E8EDF8" }}>
-    <BG light />
+    <Push len={358}><BG light />
     <div style={{ position: "absolute", left: 0, right: 0, top: 1560, height: 360, background: "linear-gradient(180deg,#B7C3DE,#8E9CBD)" }} />
     {/* controller on pedestal */}
     <div style={{ position: "absolute", left: 80, top: 640, transform: `translateY(${(1 - pg) * 80}px)`, opacity: clamp(pg * 2), zIndex: 40 }}>
       <div style={{ fontFamily: sans, fontWeight: 900, fontSize: 32, lineHeight: 1.05, color: C.navy, marginBottom: 6, width: 380 }}>GRAPHICS +<br />OPEN WORLD</div>
-      <div style={{ filter: "drop-shadow(0 26px 22px rgba(10,20,50,.35))", transform: `rotate(${Math.sin(f / 30) * 2}deg)` }}><Controller s={0.95} /></div>
+      <div style={{ filter: "drop-shadow(0 26px 22px rgba(10,20,50,.35))", transform: `rotate(${Math.sin(f / 22) * 5}deg) translateY(${Math.sin(f / 16) * 8}px)` }}><Controller s={0.95} /></div>
       <div style={{ width: 330, height: 26, borderRadius: "50%", background: "rgba(14,23,48,.28)", margin: "-8px 20px 0" }} /></div>
     {/* rating panel */}
     <Slab x={520} y={340} w={520} h={560} at={30} accent={C.amber} fromX={200} tilt={-12}>
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}><Esrb h={150} /><div><div style={{ fontSize: 30, fontWeight: 900 }}>AGE RATING</div><div style={{ fontSize: 24, color: C.soft }}>ESRB M · 17+</div><div style={{ fontSize: 24, color: C.soft }}>PEGI 18</div></div></div>
       <div style={{ fontSize: 21, color: C.mint, fontWeight: 800, marginTop: 16, letterSpacing: 1 }}>CONTENT DESCRIPTORS</div>
       <div style={{ fontSize: 24, lineHeight: 1.32, marginTop: 4 }}>Intense Violence · Nudity · Strong Sexual Content · Strong Language · Drugs and Alcohol · Mature Humor · Blood and Gore</div></Slab>
-    <div style={{ position: "absolute", left: 520, top: 936, transform: `scale(${pu})`, transformOrigin: "left center", opacity: clamp(pu * 2), zIndex: 70, background: C.amber, color: C.ink, fontFamily: sans, fontWeight: 900, fontSize: 36, padding: "12px 24px", borderRadius: 12, boxShadow: `0 0 ${12 + glow * 22}px ${C.amber}aa` }}>IN-GAME PURCHASES (OPTIONAL)</div>
+    <div style={{ position: "absolute", left: 520, top: 936, transform: `scale(${pu})`, transformOrigin: "left center", opacity: clamp(pu * 2), zIndex: 70, background: C.amber, color: C.ink, fontFamily: sans, fontWeight: 900, fontSize: 36, padding: "12px 24px", borderRadius: 12, boxShadow: `0 0 ${12 + glow * 22}px ${C.amber}aa` }}>IN-GAME PURCHASES (OPTIONAL)</div></Push>
     <Caps id="why" /><RobotLayer id="why" segs={whySeg} start={-60} gests={whyG} rim={false} shadow glow={false} />
   </AbsoluteFill>);
 };
@@ -214,7 +216,7 @@ const Steps: React.FC = () => {
   const steps: [string, string, string, number][] = [["1", "CHECK THE AGE RATING", "ESRB M 17+ · PEGI 18 · check your country", cue("steps", "check") - 6], ["2", "REVIEW THE CONTENT", "Read the official content warnings", cue("steps", "review") - 6], ["3", "SET PARENTAL CONTROLS", "Manage access and purchases", cue("steps", "parental") - 6]];
   const fam = cue("steps", "playstation") - 6;
   return (<AbsoluteFill style={{ background: C.ink }}>
-    <BG />
+    <Push len={434}><BG />
     {steps.map(([n, t, sub, at], i) => (<Slab key={n} x={60} y={330 + i * 250} w={960} h={226} at={Math.max(6, at)} accent={i === 2 ? C.mint : C.amber} fromX={260} tilt={-20}>
       <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
         <div style={{ width: 120, height: 120, borderRadius: 60, background: i === 2 ? C.mint : C.amber, color: C.ink, fontWeight: 900, fontSize: 84, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: `0 0 ${14 + 10 * Math.sin(f / 10)}px ${i === 2 ? C.mint : C.amber}88` }}>{n}</div>
@@ -222,7 +224,7 @@ const Steps: React.FC = () => {
     <Slab x={430} y={1100} w={610} h={440} at={fam} accent={C.mint} fromX={200} tilt={-16} z={65}>
       <div style={{ fontSize: 24, fontWeight: 800, color: C.mint, letterSpacing: 2 }}>PLAYSTATION FAMILY APP</div>
       {["Age limits", "Play time", "Spending limits"].map((t, i) => <div key={t} style={{ fontSize: 50, fontWeight: 900, marginTop: 8, opacity: clamp((f - fam - 8 - i * 10) / 8) }}>{"✓ "}{t}</div>)}
-      <div style={{ fontSize: 21, color: C.soft, marginTop: 12 }}>Default monthly spending limit for a child: 0 · Source: playstation.com support</div></Slab>
+      <div style={{ fontSize: 21, color: C.soft, marginTop: 12 }}>Default monthly spending limit for a child: 0 · Source: playstation.com support</div></Slab></Push>
     <Caps id="steps" /><RobotLayer id="steps" start={20} gests={stepG} />
   </AbsoluteFill>);
 };
@@ -234,13 +236,13 @@ const closeG: Gest2[] = [{ type: "both", from: cS + 80, to: cS + 180 }, { type: 
 const Close: React.FC = () => {
   const f = useCurrentFrame(); const { fps } = useVideoConfig(); const bl = Math.min(75, Math.max(1, f - 8 + 1)); const fo = spring({ frame: f - cue("close", "another") + 6, fps, config: POP });
   return (<AbsoluteFill style={{ background: "#000" }}>
-    <Clip name="endcard" dur={279} z0={1.0} z1={1.18} p0={40} p1={55} />
+    <Clip name="skyline" dur={279} rate={0.47} z0={1.0} z1={1.16} p0={50} p1={50} />
     <Vignette a={0.65} /><AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(5,8,18,.55) 0%, rgba(5,8,18,.15) 45%, rgba(5,8,18,.7) 100%)", zIndex: 31 }} />
     <div style={{ position: "absolute", left: 0, top: 320, width: 1080, height: 760, zIndex: 70, opacity: clamp((f - 6) / 6) }}><Img src={staticFile(`ep23/bl/f_${String(bl).padStart(4, "0")}.png`)} style={{ width: 1080, height: 760 }} /></div>
     <div style={{ position: "absolute", left: 0, right: 0, top: 1062, textAlign: "center", zIndex: 70, opacity: clamp(fo * 2), transform: `scale(${0.8 + 0.2 * fo})`, fontFamily: sans }}>
       <span style={{ background: C.amber, color: C.ink, fontWeight: 900, fontSize: 56, padding: "10px 32px", borderRadius: 14, boxShadow: "0 12px 30px rgba(0,0,0,.5)" }}>FOLLOW @AGENTOON.AI</span></div>
     <div style={{ position: "absolute", left: 0, right: 0, top: 1700, textAlign: "center", zIndex: 70, fontFamily: sans, fontWeight: 700, fontSize: 26, color: C.soft, opacity: clamp(fo * 2) }}>Real AI Tools • Skills • Automation</div>
-    <Caps id="close" /><Tag text="GTA VI © Rockstar Games · footage: official media kit" x={36} y={1752} at={14} bg="rgba(7,11,24,.8)" fg={C.soft} size={20} z={95} />
+    <Caps id="close" /><Tag text="GTA VI © Rockstar Games · footage: official media kit" x={300} y={1770} at={14} bg="rgba(7,11,24,.8)" fg={C.soft} size={20} z={95} />
     <RobotLayer id="close" segs={closeSeg} start={140} gests={closeG} />
   </AbsoluteFill>);
 };
