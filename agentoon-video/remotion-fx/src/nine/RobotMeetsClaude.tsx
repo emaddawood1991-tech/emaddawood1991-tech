@@ -42,7 +42,7 @@ const RobotLayer: React.FC = () => {
 
 /* ================= Claude (Blender sprites + 2D face) ================= */
 const PXU = (CLIPS as any).pxu as number; const CS = 1.15; const SPR_W = (CLIPS as any).w * CS, SPR_H = (CLIPS as any).h * CS;
-const STAND_X = 770; const WALK = (CLIPS as any).clips.walk; const WALK_N = WALK?.n ?? 36; const LEGL = 1.0 * PXU * CS;
+const STAND_X = 770; const WALK = (CLIPS as any).clips.walk; const WALK_N = WALK?.n ?? 36; const LEGL = ((CLIPS as any).legL ?? 1.16) * PXU * CS;
 const walkV = (i: number) => { const th = 0.5 * Math.sin((2 * Math.PI * i) / WALK_N); return LEGL * Math.cos(th) * 0.5 * ((2 * Math.PI) / WALK_N) * Math.abs(Math.cos((2 * Math.PI * i) / WALK_N)); };
 const walkFrames = 72; const walkDist = (() => { let d = 0; for (let k = 0; k < walkFrames; k++) d += walkV(k % WALK_N); return d; })();
 type Seg = { a: number; b: number; clip: string; walkDir?: -1 };
@@ -78,17 +78,24 @@ const env = (lip: { fps: number; a: number[] }, f: number) => { const t = (f / 3
 const ClaudeLayer: React.FC<{ glow?: boolean }> = ({ glow = true }) => {
   const f = useCurrentFrame(); const { seg, i, anchors } = claudeAt(f); const x = claudeX(f);
   const name = `${seg.clip}_${String(i).padStart(3, "0")}.png`; const a = anchors?.[i] ?? [450, 380, 0]; const talking = LINES.some((l) => l.who === "C" && f >= l.sf - 2 && f <= l.ef + 4);
-  const e = talking ? env(LIP.C, f) : 0; const blinkP = (f + 17) % 96; const blink = blinkP < 4 ? Math.abs(blinkP - 2) / 2 : 1;
+  const e = talking ? env(LIP.C, f) : 0; const mo = talking ? Math.min(1, e * 1.1) : 0.12; const browUp = talking ? 0.5 + 0.5 * e : 0.35; const blinkP = (f + 17) % 96; const blink = blinkP < 4 ? Math.abs(blinkP - 2) / 2 : 1;
   const px = PXU * CS; const sx = (u: number) => u * px; const faceX = a[0] * CS, faceY = a[1] * CS;
   const speakingIdx = LINES.find((l) => f >= l.sf && f <= l.ef); const lookAtRobot = !!speakingIdx && speakingIdx.who === "A";
   const gaze = lookAtRobot ? -0.05 : 0.0;
-  return (<div style={{ position: "absolute", left: x - SPR_W / 2, top: FLOORY + 40 - SPR_H * 0.995, width: SPR_W, height: SPR_H, zIndex: 61, filter: glow ? "drop-shadow(0 0 14px rgba(217,119,87,.45))" : undefined }}>
+  return (<div style={{ position: "absolute", left: x - SPR_W / 2, top: FLOORY + 40 - SPR_H * 0.995, width: SPR_W, height: SPR_H, zIndex: 61, filter: glow ? "drop-shadow(0 0 18px rgba(255,120,30,.55))" : undefined }}>
     <Img src={staticFile(`ep24/claude/${name}`)} style={{ width: SPR_W, height: SPR_H, display: "block" }} />
     <svg width={SPR_W} height={SPR_H} style={{ position: "absolute", left: 0, top: 0, overflow: "visible" }}>
       <g transform={`translate(${faceX},${faceY}) rotate(${(a[2] * 180) / Math.PI})`}>
-        {[-0.22, 0.22].map((ex) => <ellipse key={ex} cx={sx(ex + gaze)} cy={sx(-0.06)} rx={sx(0.058)} ry={sx(0.092) * blink + 0.5} fill={C.ink} />)}
-        {[-0.22, 0.22].map((ex) => <circle key={"h" + ex} cx={sx(ex + gaze) + sx(0.02)} cy={sx(-0.1)} r={sx(0.018)} fill="#fff" opacity={blink > 0.5 ? 0.9 : 0} />)}
-        {talking && e > 0.12 ? <ellipse cx={0} cy={sx(0.2)} rx={sx(0.095 + 0.05 * e)} ry={sx(0.02 + 0.1 * e)} fill={C.ink} /> : <path d={`M ${sx(-0.12)} ${sx(0.17)} Q 0 ${sx(0.27)} ${sx(0.12)} ${sx(0.17)}`} fill="none" stroke={C.ink} strokeWidth={sx(0.03)} strokeLinecap="round" />}
+        {[-0.235, 0.235].map((ex, k) => { const eyeY = sx(-0.06); const cxp = sx(ex); const rr = sx(0.175);
+          return (<g key={ex}>
+            <ellipse cx={cxp} cy={eyeY} rx={rr} ry={sx(0.215) * (0.12 + 0.88 * blink)} fill="#fff" stroke="#2A1408" strokeWidth={sx(0.028)} />
+            <g opacity={blink > 0.35 ? 1 : 0}><circle cx={cxp + sx(gaze * 1.6)} cy={eyeY + sx(0.02)} r={sx(0.108)} fill="#8A3F12" /><circle cx={cxp + sx(gaze * 1.6)} cy={eyeY + sx(0.02)} r={sx(0.068)} fill="#140804" />
+              <circle cx={cxp + sx(gaze * 1.6) + sx(0.035)} cy={eyeY - sx(0.03)} r={sx(0.03)} fill="#fff" /></g>
+            <path d={`M ${cxp - sx(0.19)} ${sx(-0.3) + (k ? 0 : sx(0.03)) - sx(0.03 * browUp)} Q ${cxp} ${sx(-0.4) - sx(0.05 * browUp)} ${cxp + sx(0.19)} ${sx(-0.3) + (k ? sx(0.03) : 0) - sx(0.03 * browUp)}`} fill="none" stroke="#2A1408" strokeWidth={sx(0.045)} strokeLinecap="round" /></g>); })}
+        {(() => { const open = 0.1 + 0.34 * mo; const w = 0.26; const topY = sx(0.18); const botY = topY + sx(open);
+          return (<g><clipPath id="mclip"><path d={`M ${sx(-w)} ${topY} Q 0 ${topY + sx(0.06)} ${sx(w)} ${topY} Q ${sx(w * 0.9)} ${botY + sx(0.06)} 0 ${botY + sx(0.05)} Q ${sx(-w * 0.9)} ${botY + sx(0.06)} ${sx(-w)} ${topY} Z`} /></clipPath>
+            <path d={`M ${sx(-w)} ${topY} Q 0 ${topY + sx(0.06)} ${sx(w)} ${topY} Q ${sx(w * 0.9)} ${botY + sx(0.06)} 0 ${botY + sx(0.05)} Q ${sx(-w * 0.9)} ${botY + sx(0.06)} ${sx(-w)} ${topY} Z`} fill="#4A0F10" stroke="#2A1408" strokeWidth={sx(0.03)} strokeLinejoin="round" />
+            <g clipPath="url(#mclip)"><rect x={sx(-w)} y={topY} width={sx(2 * w)} height={sx(0.07)} fill="#fff" /><ellipse cx={0} cy={botY + sx(0.02)} rx={sx(0.17)} ry={sx(0.09) + sx(0.1) * mo} fill="#F08A8A" /></g></g>); })()}
       </g></svg></div>);
 };
 
