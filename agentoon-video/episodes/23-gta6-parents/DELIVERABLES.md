@@ -1,6 +1,6 @@
 # Episode 23 — GTA 6: Parents need to know — PREVIEW package (not published)
 
-Output: `agentoon-video/remotion-fx/out/GTA6-PARENTS-PREVIEW-v4.mp4` (1080x1920, 30 fps, 82.2 s). Composition `Gta6Parents` (`src/nine/Gta6Parents.tsx`). Engines that actually ran: **Remotion** (composition, robot, motion graphics) and **Blender 5.3 (bpy, Cycles CPU)** for the 3D end title (`blender/title3d.py`, 75 frames).
+Output: `agentoon-video/remotion-fx/out/GTA6-PARENTS-PREVIEW-v6.mp4` (1080x1920, 30 fps, 82.2 s). Composition `Gta6Parents` (`src/nine/Gta6Parents.tsx`). Engines that actually ran: **Remotion** (composition, robot, motion graphics) and **Blender 5.3 (bpy, Cycles CPU)** for the 3D end title (`blender/title3d.py`, 75 frames).
 
 1. **Sources and footage inventory** → `data/OFFICIAL-SOURCES.md` (facts verified live on 2026-11-20; footage windows reviewed frame by frame; reuse status and MUST RECORD list).
 2. **Voice sample** → `audio/voice-sample-10s.mp3` (Kokoro `am_adam`, American male, 162 wpm, high-pass 95 Hz, +2.5 dB presence, mild compression; mix −15.0 LUFS, peak −3.9 dBFS). I cannot hear audio, only measure it.
@@ -13,5 +13,5 @@ Output: `agentoon-video/remotion-fx/out/GTA6-PARENTS-PREVIEW-v4.mp4` (1080x1920,
 ## QC log (honest)
 * Facts: release date Nov 19, 2026; PS5 and Xbox Series X|S; ESRB M 17+ descriptors verbatim; PEGI 18 (Europe) — all from Rockstar/PlayStation/ESRB pages read on 2026-11-20. **UAE rating not shown** (only unverified social posts claim 21+).
 * No explicit imagery: shots chosen from frame-by-frame contact sheets (no weapons, kissing, nudity, explosions, suggestive dancing); windows re-checked after render. No claim that games cause behaviour.
-* Render: 82.2 s, 2466 frames; blackdetect clean on the earlier version; motion profile mean energy 3.3, alive 52%. **Weak spots:** long calm stretches in the studio and steps scenes (small robot/card motion only); footage reuse licence for a brand account is unconfirmed (see sources); real PlayStation/Xbox parental-control screens and real store-page screenshots were not accessible, so those panels are rebuilt from verbatim text and the real ESRB badge and labelled as such; voice not auditioned by me.
+* Render: 82.2 s, 2466 frames; blackdetect clean on v6 (0 black spans), footage windows re-checked frame by frame on v6; motion profile mean energy 3.3, alive 52%. **Weak spots:** long calm stretches in the studio and steps scenes (small robot/card motion only); footage reuse licence for a brand account is unconfirmed (see sources); real PlayStation/Xbox parental-control screens and real store-page screenshots were not accessible, so those panels are rebuilt from verbatim text and the real ESRB badge and labelled as such; voice not auditioned by me.
 * Not published. Waiting for your approval.
