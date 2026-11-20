@@ -192,7 +192,7 @@ export const RobotMeetsClaude: React.FC = () => {
   const popK = ps === 0 ? 1 : spring({ frame: f - ps, fps, config: { damping: 14, stiffness: 120, mass: 0.8 } });
   return (<AbsoluteFill style={{ background: C.wall1 }}>
     <Audio src={staticFile("audio/rmc-mix.wav")} />
-    <div style={{ position: "absolute", inset: 0, transform: `scale(${camS})`, transformOrigin: ORIG[bi] }}><Wall /><Monitor label={label} dim={dim}><div style={{ position: "absolute", inset: 0, transform: `scale(${0.9 + 0.1 * popK})`, opacity: Math.min(1, popK * 1.6) }}>{screen}</div></Monitor><Desk /></div>
+    <div style={{ position: "absolute", inset: 0, transform: `scale(${camS})`, transformOrigin: ORIG[bi] }}><Wall /><Monitor label={label} dim={dim}><div style={{ position: "absolute", inset: 0, transform: `scale(${0.9 + 0.1 * popK})`, opacity: 0.55 + 0.45 * Math.min(1, popK * 1.6) }}>{screen}</div></Monitor><Desk /></div>
     {/* problem annotations */}
     {f < S.arrive + 120 && (<><Tag text="Default fonts" x={80} y={300} at={30} bg={C.ink} size={26} /><Tag text="No layout" x={420} y={300} at={52} bg={C.ink} size={26} /><Tag text="Plain buttons" x={720} y={300} at={74} bg={C.ink} size={26} /></>)}
     {on(f, S.arrive + 55, S.what + 30) && <Tag text="Official repo: anthropics/skills" x={80} y={300} at={S.arrive + 55} bg={C.ink} size={30} z={92} />}
