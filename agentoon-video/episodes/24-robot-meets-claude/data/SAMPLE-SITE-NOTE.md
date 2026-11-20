@@ -1,0 +1,1 @@
+The sample website (`site-before/index.html`) was written by Agentoon for this video: a deliberately basic page, not a real product. It contains ONE real bug on purpose (the order buttons update an element id `cart-total` that does not exist; the page has `cart-count`). This is disclosed in the video. Nothing about the outcome of the skills runs was scripted.

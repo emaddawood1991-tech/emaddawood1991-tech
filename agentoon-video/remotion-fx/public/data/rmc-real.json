@@ -1,0 +1,90 @@
+{
+ "top": [
+  ".claude-plugin",
+  ".git",
+  ".gitignore",
+  "README.md",
+  "THIRD_PARTY_NOTICES.md",
+  "skills",
+  "spec",
+  "template"
+ ],
+ "skills": [
+  "academy-guide",
+  "algorithmic-art",
+  "brand-guidelines",
+  "canvas-design",
+  "claude-api",
+  "discernment-nudge",
+  "doc-coauthoring",
+  "docx",
+  "frontend-design",
+  "internal-comms",
+  "mcp-builder",
+  "pdf",
+  "pptx",
+  "skill-creator",
+  "slack-gif-creator",
+  "theme-factory",
+  "web-artifacts-builder",
+  "webapp-testing",
+  "xlsx"
+ ],
+ "commit": "e4bb5d9 2026-11-16",
+ "frontmatter": {
+  "frontend-design": {
+   "name": "frontend-design",
+   "description": "Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one. Helps with aesthetic direction, typography, and making choices that",
+   "files": [
+    "LICENSE.txt",
+    "SKILL.md"
+   ]
+  },
+  "webapp-testing": {
+   "name": "webapp-testing",
+   "description": "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser scre",
+   "files": [
+    "LICENSE.txt",
+    "SKILL.md",
+    "examples",
+    "scripts"
+   ]
+  },
+  "skill-creator": {
+   "name": "skill-creator",
+   "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing sk",
+   "files": [
+    "LICENSE.txt",
+    "SKILL.md",
+    "agents",
+    "assets",
+    "eval-viewer",
+    "references",
+    "scripts"
+   ]
+  }
+ },
+ "diff": {
+  "before": "document.getElementById(\"add-roll\").onclick = addItem;",
+  "after": [
+   "<p class=\"tally\">Items in your order: <span id=\"cart-count\" aria-live=\"polite\">0</span></p>",
+   "document.getElementById(\"cart-count\").textContent = count;"
+  ]
+ },
+ "tests": [
+  "PASS - initial count is 0 0",
+  "PASS - add-croissant -> count 1 got 1",
+  "PASS - add-sourdough -> count 2 got 2",
+  "PASS - add-roll -> count 3 got 3",
+  "PASS - extra click -> count 4 got 4",
+  "PASS - invalid '' rejected 'Please enter a valid email.'",
+  "PASS - invalid 'notanemail' rejected 'Please enter a valid email.'",
+  "PASS - invalid 'foo.com' rejected 'Please enter a valid email.'",
+  "PASS - valid test@example.com accepted 'Thanks for subscribing!'",
+  "FAIL - malformed '@' rejected 'Thanks for subscribing!'",
+  "FAIL - malformed 'a@' rejected 'Thanks for subscribing!'",
+  "FAIL - malformed '@b' rejected 'Thanks for subscribing!'",
+  "FAIL - malformed 'a b@c' rejected 'Thanks for subscribing!'",
+  "CONSOLE: none"
+ ]
+}

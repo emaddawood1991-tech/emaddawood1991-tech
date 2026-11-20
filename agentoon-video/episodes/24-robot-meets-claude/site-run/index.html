@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maple Street Bakery</title>
+<style>
+  :root {
+    --flour: #E6ECEF;
+    --ink: #241B2F;
+    --maple: #B5301C;
+    --crust: #E3A02B;
+    --paper: #FFFFFF;
+    --display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--flour);
+    color: var(--ink);
+    font: 1.0625rem/1.6 var(--body);
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--maple); outline-offset: 3px; }
+
+  .wrap { width: min(100% - 2rem, 62rem); margin-inline: auto; }
+
+  /* top bar */
+  header.bar { padding-block: 1.25rem; }
+  header.bar .wrap { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .brand { font: 700 1.25rem var(--display); text-decoration: none; }
+  nav { display: flex; gap: 1.5rem; }
+  nav a { text-decoration: none; font-weight: 600; padding-block: .25rem; border-bottom: 2px solid transparent; }
+  nav a:hover { border-color: var(--maple); }
+
+  /* hero */
+  .hero { padding-block: clamp(2.5rem, 8vw, 6rem) clamp(3rem, 8vw, 5.5rem); }
+  .hero h1 {
+    margin: 0;
+    font: 900 clamp(4rem, 17vw, 12rem)/.85 var(--display);
+    letter-spacing: -.045em;
+    color: var(--maple);
+    animation: rise .9s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .hero h1 span { display: block; color: var(--ink); font-size: .32em; letter-spacing: -.02em; margin-top: .35em; }
+  .hero-row { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; margin-top: 2rem; }
+  .hero p { margin: 0; max-width: 34ch; font-size: 1.25rem; }
+  .status {
+    display: inline-flex; align-items: center; gap: .6rem;
+    background: var(--ink); color: var(--paper);
+    padding: .55rem 1rem; border-radius: 99px; font-weight: 600; font-size: .95rem;
+  }
+  .status::before { content: ""; width: .65rem; height: .65rem; border-radius: 50%; background: var(--crust); }
+  .status.open::before { background: #7FD08A; }
+  @keyframes rise { from { opacity: 0; transform: translateY(1.5rem) rotate(-1deg); } to { opacity: 1; transform: none; } }
+
+  /* sections */
+  section { padding-block: clamp(2.5rem, 6vw, 4.5rem); scroll-margin-top: 1rem; }
+  h2 { margin: 0 0 1.5rem; font: 800 clamp(2rem, 5vw, 3rem)/1.05 var(--display); letter-spacing: -.02em; }
+
+  .band { background: var(--ink); color: var(--paper); }
+  .band :focus-visible { outline-color: var(--crust); }
+
+  /* menu ledger */
+  #menu ul { list-style: none; margin: 0; padding: 0; max-width: 40rem; }
+  #menu li { display: flex; align-items: baseline; gap: .75rem; padding-block: .9rem; font: 600 1.5rem var(--display); }
+  #menu li::after { content: ""; order: 1; flex: 1; border-bottom: 2px dotted currentColor; opacity: .4; transform: translateY(-.25em); }
+  #menu li .price { order: 2; font-variant-numeric: tabular-nums; color: var(--crust); }
+
+  /* order */
+  .order-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
+  .order-grid button {
+    font: 700 1.1rem var(--display);
+    text-align: left;
+    padding: 1.25rem;
+    background: var(--paper);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 5px 5px 0 var(--ink);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .order-grid button small { display: block; font: 500 .9rem var(--body); opacity: .7; margin-top: .2rem; }
+  .order-grid button:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
+  .order-grid button:active { transform: translate(4px,4px); box-shadow: 1px 1px 0 var(--ink); }
+  .tally { margin-top: 2rem; font-size: 1.25rem; }
+  .tally span { display: inline-block; min-width: 2ch; font: 900 2.5rem/1 var(--display); color: var(--maple); vertical-align: -.1em; }
+
+  /* newsletter */
+  #news form { display: flex; flex-wrap: wrap; gap: .75rem; max-width: 34rem; }
+  #news input {
+    flex: 1 1 14rem; font: inherit; padding: .85rem 1rem;
+    border: 2px solid var(--ink); border-radius: 6px; background: var(--paper); color: var(--ink);
+  }
+  #news form button {
+    font: 700 1rem var(--body); padding: .85rem 1.5rem; cursor: pointer;
+    background: var(--maple); color: var(--paper); border: 2px solid var(--maple); border-radius: 6px;
+  }
+  #news form button:hover { background: var(--ink); border-color: var(--ink); }
+  #news-msg { min-height: 1.6em; margin: 1rem 0 0; font-weight: 600; }
+
+  footer { padding-block: 2rem 3rem; font-size: .95rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .hero h1 { animation: none; }
+    .order-grid button { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">Maple Street Bakery</a>
+    <nav aria-label="Main">
+      <a href="#menu">Menu</a>
+      <a href="#order">Order</a>
+      <a href="#news">Newsletter</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <h1>Bread by 7.<span>Maple Street Bakery</span></h1>
+      <div class="hero-row">
+        <p>We bake bread every morning. Open 7am to 3pm, Tuesday to Sunday.</p>
+        <span class="status" id="status" role="status">Open Tuesday to Sunday, 7am to 3pm</span>
+      </div>
+    </div>
+  </div>
+
+  <section id="menu" class="band">
+    <div class="wrap">
+      <h2>Menu</h2>
+      <ul>
+        <li>Croissant <span class="price">$3.50</span></li>
+        <li>Sourdough loaf <span class="price">$7.00</span></li>
+        <li>Cinnamon roll <span class="price">$4.25</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="order">
+    <div class="wrap">
+      <h2>Order</h2>
+      <div class="order-grid">
+        <button type="button" id="add-croissant">Add croissant<small>$3.50</small></button>
+        <button type="button" id="add-sourdough">Add sourdough<small>$7.00</small></button>
+        <button type="button" id="add-roll">Add cinnamon roll<small>$4.25</small></button>
+      </div>
+      <p class="tally">Items in your order: <span id="cart-count" aria-live="polite">0</span></p>
+    </div>
+  </section>
+
+  <section id="news" class="band">
+    <div class="wrap">
+      <h2>Newsletter</h2>
+      <form id="news-form" novalidate>
+        <input type="text" id="email" placeholder="your email" aria-label="Your email" autocomplete="email">
+        <button type="submit">Subscribe</button>
+      </form>
+      <p id="news-msg" role="status"></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Maple Street Bakery. Open 7am to 3pm, Tuesday to Sunday.</div>
+</footer>
+
+<script>
+var count = 0;
+function addItem() {
+  count = count + 1;
+  document.getElementById("cart-count").textContent = count;
+}
+document.getElementById("add-croissant").onclick = addItem;
+document.getElementById("add-sourdough").onclick = addItem;
+document.getElementById("add-roll").onclick = addItem;
+document.getElementById("news-form").onsubmit = function (e) {
+  e.preventDefault();
+  var v = document.getElementById("email").value;
+  var msg = document.getElementById("news-msg");
+  if (v.indexOf("@") === -1) { msg.textContent = "Please enter a valid email."; }
+  else { msg.textContent = "Thanks for subscribing!"; }
+};
+
+// Live open/closed status (Tue-Sun, 7am-3pm, visitor's local time)
+(function () {
+  var now = new Date(), d = now.getDay(), h = now.getHours();
+  var el = document.getElementById("status");
+  var open = d !== 1 && h >= 7 && h < 15;
+  el.textContent = open ? "Open now until 3pm" : "Closed now. Open Tuesday to Sunday, 7am to 3pm";
+  if (open) el.className = "status open";
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1738 @@
+{
+ "total": 90.852,
+ "lines": [
+  {
+   "id": "l01",
+   "who": "A",
+   "scene": "problem",
+   "show": "Claude! I built a website, but the design looks terrible. And I don't even know if everything works!",
+   "start": 0.15,
+   "end": 5.615
+  },
+  {
+   "id": "l02",
+   "who": "C",
+   "scene": "arrive",
+   "show": "Hey, don't worry! Anthropic has Agent Skills that can help with exactly that.",
+   "start": 5.835,
+   "end": 10.507
+  },
+  {
+   "id": "l03",
+   "who": "A",
+   "scene": "what",
+   "show": "Skills? What do they actually do?",
+   "start": 10.727,
+   "end": 12.551
+  },
+  {
+   "id": "l04",
+   "who": "C",
+   "scene": "what",
+   "show": "They're reusable instructions and tools that teach me how to handle specific tasks, like designing websites, testing apps, and creating new workflows.",
+   "start": 12.771,
+   "end": 22.354
+  },
+  {
+   "id": "l05",
+   "who": "C",
+   "scene": "design",
+   "show": "For your design problem, we can use the frontend-design skill. I ran it on your page. New fonts, colors and layout. It even fixed a bug: your order buttons updated an element that doesn't exist.",
+   "start": 22.574,
+   "end": 34.604
+  },
+  {
+   "id": "l06",
+   "who": "A",
+   "scene": "design",
+   "show": "Wait... that looks so much better!",
+   "start": 35.624,
+   "end": 37.235
+  },
+  {
+   "id": "l07",
+   "who": "A",
+   "scene": "testing",
+   "show": "But how do I know the website actually works?",
+   "start": 37.455,
+   "end": 40.059
+  },
+  {
+   "id": "l08",
+   "who": "C",
+   "scene": "testing",
+   "show": "That's where webapp-testing helps. We can check interactions and find problems before you publish. I ran 13 checks. 9 passed. 4 failed: the email box accepts broken addresses like just an @ sign.",
+   "start": 40.279,
+   "end": 53.761
+  },
+  {
+   "id": "l09",
+   "who": "C",
+   "scene": "testing",
+   "show": "Skills don't make a site perfect, but they help me catch problems early.",
+   "start": 53.981,
+   "end": 58.136
+  },
+  {
+   "id": "l10",
+   "who": "A",
+   "scene": "install",
+   "show": "Okay, I need these skills! How do I install them?",
+   "start": 58.856,
+   "end": 61.96
+  },
+  {
+   "id": "l11",
+   "who": "C",
+   "scene": "install",
+   "show": "Open Claude Code, add Anthropic's official skill marketplace, then install the example-skills plugin.",
+   "start": 62.18,
+   "end": 68.826
+  },
+  {
+   "id": "l11b",
+   "who": "C",
+   "scene": "install",
+   "show": "That's it. frontend-design, webapp-testing and skill-creator are now ready to use.",
+   "start": 69.246,
+   "end": 74.34
+  },
+  {
+   "id": "l12",
+   "who": "A",
+   "scene": "final",
+   "show": "So instead of explaining everything from scratch, I can use the right skill for the job?",
+   "start": 75.06,
+   "end": 80.409
+  },
+  {
+   "id": "l13",
+   "who": "C",
+   "scene": "final",
+   "show": "Exactly. And you can create your own reusable skills too!",
+   "start": 80.629,
+   "end": 83.899
+  },
+  {
+   "id": "l14",
+   "who": "A",
+   "scene": "end",
+   "show": "Now that's useful!",
+   "start": 84.819,
+   "end": 85.927
+  },
+  {
+   "id": "l15",
+   "who": "C",
+   "scene": "end",
+   "show": "Try the official Anthropic skills and see what you can build.",
+   "start": 86.147,
+   "end": 89.832
+  }
+ ],
+ "words": [
+  {
+   "w": "Claude!",
+   "who": "A",
+   "line": "l01",
+   "s": 0.15,
+   "e": 0.563
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l01",
+   "s": 0.563,
+   "e": 0.701
+  },
+  {
+   "w": "built",
+   "who": "A",
+   "line": "l01",
+   "s": 0.701,
+   "e": 1.023
+  },
+  {
+   "w": "a",
+   "who": "A",
+   "line": "l01",
+   "s": 1.023,
+   "e": 1.16
+  },
+  {
+   "w": "website,",
+   "who": "A",
+   "line": "l01",
+   "s": 1.16,
+   "e": 1.62
+  },
+  {
+   "w": "but",
+   "who": "A",
+   "line": "l01",
+   "s": 1.62,
+   "e": 1.849
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l01",
+   "s": 1.849,
+   "e": 2.079
+  },
+  {
+   "w": "design",
+   "who": "A",
+   "line": "l01",
+   "s": 2.079,
+   "e": 2.446
+  },
+  {
+   "w": "looks",
+   "who": "A",
+   "line": "l01",
+   "s": 2.446,
+   "e": 2.768
+  },
+  {
+   "w": "terrible.",
+   "who": "A",
+   "line": "l01",
+   "s": 2.768,
+   "e": 3.273
+  },
+  {
+   "w": "And",
+   "who": "A",
+   "line": "l01",
+   "s": 3.273,
+   "e": 3.502
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l01",
+   "s": 3.502,
+   "e": 3.64
+  },
+  {
+   "w": "don't",
+   "who": "A",
+   "line": "l01",
+   "s": 3.64,
+   "e": 3.962
+  },
+  {
+   "w": "even",
+   "who": "A",
+   "line": "l01",
+   "s": 3.962,
+   "e": 4.237
+  },
+  {
+   "w": "know",
+   "who": "A",
+   "line": "l01",
+   "s": 4.237,
+   "e": 4.513
+  },
+  {
+   "w": "if",
+   "who": "A",
+   "line": "l01",
+   "s": 4.513,
+   "e": 4.697
+  },
+  {
+   "w": "everything",
+   "who": "A",
+   "line": "l01",
+   "s": 4.697,
+   "e": 5.248
+  },
+  {
+   "w": "works!",
+   "who": "A",
+   "line": "l01",
+   "s": 5.248,
+   "e": 5.615
+  },
+  {
+   "w": "Hey,",
+   "who": "C",
+   "line": "l02",
+   "s": 5.835,
+   "e": 6.143
+  },
+  {
+   "w": "don't",
+   "who": "C",
+   "line": "l02",
+   "s": 6.143,
+   "e": 6.502
+  },
+  {
+   "w": "worry!",
+   "who": "C",
+   "line": "l02",
+   "s": 6.502,
+   "e": 6.913
+  },
+  {
+   "w": "Anthropic",
+   "who": "C",
+   "line": "l02",
+   "s": 6.913,
+   "e": 7.478
+  },
+  {
+   "w": "has",
+   "who": "C",
+   "line": "l02",
+   "s": 7.478,
+   "e": 7.735
+  },
+  {
+   "w": "Agent",
+   "who": "C",
+   "line": "l02",
+   "s": 7.735,
+   "e": 8.094
+  },
+  {
+   "w": "Skills",
+   "who": "C",
+   "line": "l02",
+   "s": 8.094,
+   "e": 8.505
+  },
+  {
+   "w": "that",
+   "who": "C",
+   "line": "l02",
+   "s": 8.505,
+   "e": 8.813
+  },
+  {
+   "w": "can",
+   "who": "C",
+   "line": "l02",
+   "s": 8.813,
+   "e": 9.069
+  },
+  {
+   "w": "help",
+   "who": "C",
+   "line": "l02",
+   "s": 9.069,
+   "e": 9.378
+  },
+  {
+   "w": "with",
+   "who": "C",
+   "line": "l02",
+   "s": 9.378,
+   "e": 9.686
+  },
+  {
+   "w": "exactly",
+   "who": "C",
+   "line": "l02",
+   "s": 9.686,
+   "e": 10.148
+  },
+  {
+   "w": "that.",
+   "who": "C",
+   "line": "l02",
+   "s": 10.148,
+   "e": 10.507
+  },
+  {
+   "w": "Skills?",
+   "who": "A",
+   "line": "l03",
+   "s": 10.727,
+   "e": 11.137
+  },
+  {
+   "w": "What",
+   "who": "A",
+   "line": "l03",
+   "s": 11.137,
+   "e": 11.411
+  },
+  {
+   "w": "do",
+   "who": "A",
+   "line": "l03",
+   "s": 11.411,
+   "e": 11.593
+  },
+  {
+   "w": "they",
+   "who": "A",
+   "line": "l03",
+   "s": 11.593,
+   "e": 11.867
+  },
+  {
+   "w": "actually",
+   "who": "A",
+   "line": "l03",
+   "s": 11.867,
+   "e": 12.323
+  },
+  {
+   "w": "do?",
+   "who": "A",
+   "line": "l03",
+   "s": 12.323,
+   "e": 12.551
+  },
+  {
+   "w": "They're",
+   "who": "C",
+   "line": "l04",
+   "s": 12.771,
+   "e": 13.27
+  },
+  {
+   "w": "reusable",
+   "who": "C",
+   "line": "l04",
+   "s": 13.27,
+   "e": 13.823
+  },
+  {
+   "w": "instructions",
+   "who": "C",
+   "line": "l04",
+   "s": 13.823,
+   "e": 14.599
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l04",
+   "s": 14.599,
+   "e": 14.876
+  },
+  {
+   "w": "tools",
+   "who": "C",
+   "line": "l04",
+   "s": 14.876,
+   "e": 15.264
+  },
+  {
+   "w": "that",
+   "who": "C",
+   "line": "l04",
+   "s": 15.264,
+   "e": 15.596
+  },
+  {
+   "w": "teach",
+   "who": "C",
+   "line": "l04",
+   "s": 15.596,
+   "e": 15.984
+  },
+  {
+   "w": "me",
+   "who": "C",
+   "line": "l04",
+   "s": 15.984,
+   "e": 16.205
+  },
+  {
+   "w": "how",
+   "who": "C",
+   "line": "l04",
+   "s": 16.205,
+   "e": 16.482
+  },
+  {
+   "w": "to",
+   "who": "C",
+   "line": "l04",
+   "s": 16.482,
+   "e": 16.704
+  },
+  {
+   "w": "handle",
+   "who": "C",
+   "line": "l04",
+   "s": 16.704,
+   "e": 17.147
+  },
+  {
+   "w": "specific",
+   "who": "C",
+   "line": "l04",
+   "s": 17.147,
+   "e": 17.701
+  },
+  {
+   "w": "tasks,",
+   "who": "C",
+   "line": "l04",
+   "s": 17.701,
+   "e": 18.144
+  },
+  {
+   "w": "like",
+   "who": "C",
+   "line": "l04",
+   "s": 18.144,
+   "e": 18.476
+  },
+  {
+   "w": "designing",
+   "who": "C",
+   "line": "l04",
+   "s": 18.476,
+   "e": 19.086
+  },
+  {
+   "w": "websites,",
+   "who": "C",
+   "line": "l04",
+   "s": 19.086,
+   "e": 19.695
+  },
+  {
+   "w": "testing",
+   "who": "C",
+   "line": "l04",
+   "s": 19.695,
+   "e": 20.194
+  },
+  {
+   "w": "apps,",
+   "who": "C",
+   "line": "l04",
+   "s": 20.194,
+   "e": 20.581
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l04",
+   "s": 20.581,
+   "e": 20.858
+  },
+  {
+   "w": "creating",
+   "who": "C",
+   "line": "l04",
+   "s": 20.858,
+   "e": 21.412
+  },
+  {
+   "w": "new",
+   "who": "C",
+   "line": "l04",
+   "s": 21.412,
+   "e": 21.689
+  },
+  {
+   "w": "workflows.",
+   "who": "C",
+   "line": "l04",
+   "s": 21.689,
+   "e": 22.354
+  },
+  {
+   "w": "For",
+   "who": "C",
+   "line": "l05",
+   "s": 22.574,
+   "e": 22.836
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l05",
+   "s": 22.836,
+   "e": 23.149
+  },
+  {
+   "w": "design",
+   "who": "C",
+   "line": "l05",
+   "s": 23.149,
+   "e": 23.568
+  },
+  {
+   "w": "problem,",
+   "who": "C",
+   "line": "l05",
+   "s": 23.568,
+   "e": 24.091
+  },
+  {
+   "w": "we",
+   "who": "C",
+   "line": "l05",
+   "s": 24.091,
+   "e": 24.3
+  },
+  {
+   "w": "can",
+   "who": "C",
+   "line": "l05",
+   "s": 24.3,
+   "e": 24.562
+  },
+  {
+   "w": "use",
+   "who": "C",
+   "line": "l05",
+   "s": 24.562,
+   "e": 24.823
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l05",
+   "s": 24.823,
+   "e": 25.085
+  },
+  {
+   "w": "frontend-design",
+   "who": "C",
+   "line": "l05",
+   "s": 25.085,
+   "e": 25.974
+  },
+  {
+   "w": "skill.",
+   "who": "C",
+   "line": "l05",
+   "s": 25.974,
+   "e": 26.392
+  },
+  {
+   "w": "I",
+   "who": "C",
+   "line": "l05",
+   "s": 26.392,
+   "e": 26.549
+  },
+  {
+   "w": "ran",
+   "who": "C",
+   "line": "l05",
+   "s": 26.549,
+   "e": 26.811
+  },
+  {
+   "w": "it",
+   "who": "C",
+   "line": "l05",
+   "s": 26.811,
+   "e": 27.02
+  },
+  {
+   "w": "on",
+   "who": "C",
+   "line": "l05",
+   "s": 27.02,
+   "e": 27.229
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l05",
+   "s": 27.229,
+   "e": 27.543
+  },
+  {
+   "w": "page.",
+   "who": "C",
+   "line": "l05",
+   "s": 27.543,
+   "e": 27.909
+  },
+  {
+   "w": "New",
+   "who": "C",
+   "line": "l05",
+   "s": 27.909,
+   "e": 28.171
+  },
+  {
+   "w": "fonts,",
+   "who": "C",
+   "line": "l05",
+   "s": 28.171,
+   "e": 28.589
+  },
+  {
+   "w": "colors",
+   "who": "C",
+   "line": "l05",
+   "s": 28.589,
+   "e": 29.007
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l05",
+   "s": 29.007,
+   "e": 29.269
+  },
+  {
+   "w": "layout.",
+   "who": "C",
+   "line": "l05",
+   "s": 29.269,
+   "e": 29.74
+  },
+  {
+   "w": "It",
+   "who": "C",
+   "line": "l05",
+   "s": 29.74,
+   "e": 29.949
+  },
+  {
+   "w": "even",
+   "who": "C",
+   "line": "l05",
+   "s": 29.949,
+   "e": 30.263
+  },
+  {
+   "w": "fixed",
+   "who": "C",
+   "line": "l05",
+   "s": 30.263,
+   "e": 30.629
+  },
+  {
+   "w": "a",
+   "who": "C",
+   "line": "l05",
+   "s": 30.629,
+   "e": 30.786
+  },
+  {
+   "w": "bug:",
+   "who": "C",
+   "line": "l05",
+   "s": 30.786,
+   "e": 31.1
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l05",
+   "s": 31.1,
+   "e": 31.413
+  },
+  {
+   "w": "order",
+   "who": "C",
+   "line": "l05",
+   "s": 31.413,
+   "e": 31.78
+  },
+  {
+   "w": "buttons",
+   "who": "C",
+   "line": "l05",
+   "s": 31.78,
+   "e": 32.25
+  },
+  {
+   "w": "updated",
+   "who": "C",
+   "line": "l05",
+   "s": 32.25,
+   "e": 32.721
+  },
+  {
+   "w": "an",
+   "who": "C",
+   "line": "l05",
+   "s": 32.721,
+   "e": 32.93
+  },
+  {
+   "w": "element",
+   "who": "C",
+   "line": "l05",
+   "s": 32.93,
+   "e": 33.401
+  },
+  {
+   "w": "that",
+   "who": "C",
+   "line": "l05",
+   "s": 33.401,
+   "e": 33.715
+  },
+  {
+   "w": "doesn't",
+   "who": "C",
+   "line": "l05",
+   "s": 33.715,
+   "e": 34.186
+  },
+  {
+   "w": "exist.",
+   "who": "C",
+   "line": "l05",
+   "s": 34.186,
+   "e": 34.604
+  },
+  {
+   "w": "Wait...",
+   "who": "A",
+   "line": "l06",
+   "s": 35.624,
+   "e": 35.978
+  },
+  {
+   "w": "that",
+   "who": "A",
+   "line": "l06",
+   "s": 35.978,
+   "e": 36.213
+  },
+  {
+   "w": "looks",
+   "who": "A",
+   "line": "l06",
+   "s": 36.213,
+   "e": 36.488
+  },
+  {
+   "w": "so",
+   "who": "A",
+   "line": "l06",
+   "s": 36.488,
+   "e": 36.646
+  },
+  {
+   "w": "much",
+   "who": "A",
+   "line": "l06",
+   "s": 36.646,
+   "e": 36.881
+  },
+  {
+   "w": "better!",
+   "who": "A",
+   "line": "l06",
+   "s": 36.881,
+   "e": 37.235
+  },
+  {
+   "w": "But",
+   "who": "A",
+   "line": "l07",
+   "s": 37.455,
+   "e": 37.692
+  },
+  {
+   "w": "how",
+   "who": "A",
+   "line": "l07",
+   "s": 37.692,
+   "e": 37.928
+  },
+  {
+   "w": "do",
+   "who": "A",
+   "line": "l07",
+   "s": 37.928,
+   "e": 38.118
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l07",
+   "s": 38.118,
+   "e": 38.26
+  },
+  {
+   "w": "know",
+   "who": "A",
+   "line": "l07",
+   "s": 38.26,
+   "e": 38.544
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l07",
+   "s": 38.544,
+   "e": 38.781
+  },
+  {
+   "w": "website",
+   "who": "A",
+   "line": "l07",
+   "s": 38.781,
+   "e": 39.207
+  },
+  {
+   "w": "actually",
+   "who": "A",
+   "line": "l07",
+   "s": 39.207,
+   "e": 39.68
+  },
+  {
+   "w": "works?",
+   "who": "A",
+   "line": "l07",
+   "s": 39.68,
+   "e": 40.059
+  },
+  {
+   "w": "That's",
+   "who": "C",
+   "line": "l08",
+   "s": 40.279,
+   "e": 40.75
+  },
+  {
+   "w": "where",
+   "who": "C",
+   "line": "l08",
+   "s": 40.75,
+   "e": 41.162
+  },
+  {
+   "w": "webapp-testing",
+   "who": "C",
+   "line": "l08",
+   "s": 41.162,
+   "e": 42.104
+  },
+  {
+   "w": "helps.",
+   "who": "C",
+   "line": "l08",
+   "s": 42.104,
+   "e": 42.575
+  },
+  {
+   "w": "We",
+   "who": "C",
+   "line": "l08",
+   "s": 42.575,
+   "e": 42.811
+  },
+  {
+   "w": "can",
+   "who": "C",
+   "line": "l08",
+   "s": 42.811,
+   "e": 43.105
+  },
+  {
+   "w": "check",
+   "who": "C",
+   "line": "l08",
+   "s": 43.105,
+   "e": 43.517
+  },
+  {
+   "w": "interactions",
+   "who": "C",
+   "line": "l08",
+   "s": 43.517,
+   "e": 44.341
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l08",
+   "s": 44.341,
+   "e": 44.636
+  },
+  {
+   "w": "find",
+   "who": "C",
+   "line": "l08",
+   "s": 44.636,
+   "e": 44.989
+  },
+  {
+   "w": "problems",
+   "who": "C",
+   "line": "l08",
+   "s": 44.989,
+   "e": 45.578
+  },
+  {
+   "w": "before",
+   "who": "C",
+   "line": "l08",
+   "s": 45.578,
+   "e": 46.049
+  },
+  {
+   "w": "you",
+   "who": "C",
+   "line": "l08",
+   "s": 46.049,
+   "e": 46.343
+  },
+  {
+   "w": "publish.",
+   "who": "C",
+   "line": "l08",
+   "s": 46.343,
+   "e": 46.932
+  },
+  {
+   "w": "I",
+   "who": "C",
+   "line": "l08",
+   "s": 46.932,
+   "e": 47.108
+  },
+  {
+   "w": "ran",
+   "who": "C",
+   "line": "l08",
+   "s": 47.108,
+   "e": 47.403
+  },
+  {
+   "w": "13",
+   "who": "C",
+   "line": "l08",
+   "s": 47.403,
+   "e": 47.638
+  },
+  {
+   "w": "checks.",
+   "who": "C",
+   "line": "l08",
+   "s": 47.638,
+   "e": 48.168
+  },
+  {
+   "w": "9",
+   "who": "C",
+   "line": "l08",
+   "s": 48.168,
+   "e": 48.345
+  },
+  {
+   "w": "passed.",
+   "who": "C",
+   "line": "l08",
+   "s": 48.345,
+   "e": 48.875
+  },
+  {
+   "w": "4",
+   "who": "C",
+   "line": "l08",
+   "s": 48.875,
+   "e": 49.051
+  },
+  {
+   "w": "failed:",
+   "who": "C",
+   "line": "l08",
+   "s": 49.051,
+   "e": 49.581
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l08",
+   "s": 49.581,
+   "e": 49.875
+  },
+  {
+   "w": "email",
+   "who": "C",
+   "line": "l08",
+   "s": 49.875,
+   "e": 50.287
+  },
+  {
+   "w": "box",
+   "who": "C",
+   "line": "l08",
+   "s": 50.287,
+   "e": 50.582
+  },
+  {
+   "w": "accepts",
+   "who": "C",
+   "line": "l08",
+   "s": 50.582,
+   "e": 51.112
+  },
+  {
+   "w": "broken",
+   "who": "C",
+   "line": "l08",
+   "s": 51.112,
+   "e": 51.583
+  },
+  {
+   "w": "addresses",
+   "who": "C",
+   "line": "l08",
+   "s": 51.583,
+   "e": 52.23
+  },
+  {
+   "w": "like",
+   "who": "C",
+   "line": "l08",
+   "s": 52.23,
+   "e": 52.584
+  },
+  {
+   "w": "just",
+   "who": "C",
+   "line": "l08",
+   "s": 52.584,
+   "e": 52.937
+  },
+  {
+   "w": "an",
+   "who": "C",
+   "line": "l08",
+   "s": 52.937,
+   "e": 53.172
+  },
+  {
+   "w": "@",
+   "who": "C",
+   "line": "l08",
+   "s": 53.172,
+   "e": 53.349
+  },
+  {
+   "w": "sign.",
+   "who": "C",
+   "line": "l08",
+   "s": 53.349,
+   "e": 53.761
+  },
+  {
+   "w": "Skills",
+   "who": "C",
+   "line": "l09",
+   "s": 53.981,
+   "e": 54.368
+  },
+  {
+   "w": "don't",
+   "who": "C",
+   "line": "l09",
+   "s": 54.368,
+   "e": 54.706
+  },
+  {
+   "w": "make",
+   "who": "C",
+   "line": "l09",
+   "s": 54.706,
+   "e": 54.996
+  },
+  {
+   "w": "a",
+   "who": "C",
+   "line": "l09",
+   "s": 54.996,
+   "e": 55.141
+  },
+  {
+   "w": "site",
+   "who": "C",
+   "line": "l09",
+   "s": 55.141,
+   "e": 55.43
+  },
+  {
+   "w": "perfect,",
+   "who": "C",
+   "line": "l09",
+   "s": 55.43,
+   "e": 55.914
+  },
+  {
+   "w": "but",
+   "who": "C",
+   "line": "l09",
+   "s": 55.914,
+   "e": 56.155
+  },
+  {
+   "w": "they",
+   "who": "C",
+   "line": "l09",
+   "s": 56.155,
+   "e": 56.445
+  },
+  {
+   "w": "help",
+   "who": "C",
+   "line": "l09",
+   "s": 56.445,
+   "e": 56.735
+  },
+  {
+   "w": "me",
+   "who": "C",
+   "line": "l09",
+   "s": 56.735,
+   "e": 56.928
+  },
+  {
+   "w": "catch",
+   "who": "C",
+   "line": "l09",
+   "s": 56.928,
+   "e": 57.266
+  },
+  {
+   "w": "problems",
+   "who": "C",
+   "line": "l09",
+   "s": 57.266,
+   "e": 57.749
+  },
+  {
+   "w": "early.",
+   "who": "C",
+   "line": "l09",
+   "s": 57.749,
+   "e": 58.136
+  },
+  {
+   "w": "Okay,",
+   "who": "A",
+   "line": "l10",
+   "s": 58.856,
+   "e": 59.218
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l10",
+   "s": 59.218,
+   "e": 59.373
+  },
+  {
+   "w": "need",
+   "who": "A",
+   "line": "l10",
+   "s": 59.373,
+   "e": 59.684
+  },
+  {
+   "w": "these",
+   "who": "A",
+   "line": "l10",
+   "s": 59.684,
+   "e": 60.046
+  },
+  {
+   "w": "skills!",
+   "who": "A",
+   "line": "l10",
+   "s": 60.046,
+   "e": 60.511
+  },
+  {
+   "w": "How",
+   "who": "A",
+   "line": "l10",
+   "s": 60.511,
+   "e": 60.77
+  },
+  {
+   "w": "do",
+   "who": "A",
+   "line": "l10",
+   "s": 60.77,
+   "e": 60.977
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l10",
+   "s": 60.977,
+   "e": 61.132
+  },
+  {
+   "w": "install",
+   "who": "A",
+   "line": "l10",
+   "s": 61.132,
+   "e": 61.598
+  },
+  {
+   "w": "them?",
+   "who": "A",
+   "line": "l10",
+   "s": 61.598,
+   "e": 61.96
+  },
+  {
+   "w": "Open",
+   "who": "C",
+   "line": "l11",
+   "s": 62.18,
+   "e": 62.527
+  },
+  {
+   "w": "Claude",
+   "who": "C",
+   "line": "l11",
+   "s": 62.527,
+   "e": 62.989
+  },
+  {
+   "w": "Code,",
+   "who": "C",
+   "line": "l11",
+   "s": 62.989,
+   "e": 63.394
+  },
+  {
+   "w": "add",
+   "who": "C",
+   "line": "l11",
+   "s": 63.394,
+   "e": 63.683
+  },
+  {
+   "w": "Anthropic's",
+   "who": "C",
+   "line": "l11",
+   "s": 63.683,
+   "e": 64.434
+  },
+  {
+   "w": "official",
+   "who": "C",
+   "line": "l11",
+   "s": 64.434,
+   "e": 65.012
+  },
+  {
+   "w": "skill",
+   "who": "C",
+   "line": "l11",
+   "s": 65.012,
+   "e": 65.416
+  },
+  {
+   "w": "marketplace,",
+   "who": "C",
+   "line": "l11",
+   "s": 65.416,
+   "e": 66.225
+  },
+  {
+   "w": "then",
+   "who": "C",
+   "line": "l11",
+   "s": 66.225,
+   "e": 66.572
+  },
+  {
+   "w": "install",
+   "who": "C",
+   "line": "l11",
+   "s": 66.572,
+   "e": 67.092
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l11",
+   "s": 67.092,
+   "e": 67.381
+  },
+  {
+   "w": "example-skills",
+   "who": "C",
+   "line": "l11",
+   "s": 67.381,
+   "e": 68.306
+  },
+  {
+   "w": "plugin.",
+   "who": "C",
+   "line": "l11",
+   "s": 68.306,
+   "e": 68.826
+  },
+  {
+   "w": "That's",
+   "who": "C",
+   "line": "l11b",
+   "s": 69.246,
+   "e": 69.68
+  },
+  {
+   "w": "it.",
+   "who": "C",
+   "line": "l11b",
+   "s": 69.68,
+   "e": 69.95
+  },
+  {
+   "w": "frontend-design,",
+   "who": "C",
+   "line": "l11b",
+   "s": 69.95,
+   "e": 70.926
+  },
+  {
+   "w": "webapp-testing",
+   "who": "C",
+   "line": "l11b",
+   "s": 70.926,
+   "e": 71.793
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l11b",
+   "s": 71.793,
+   "e": 72.064
+  },
+  {
+   "w": "skill-creator",
+   "who": "C",
+   "line": "l11b",
+   "s": 72.064,
+   "e": 72.877
+  },
+  {
+   "w": "are",
+   "who": "C",
+   "line": "l11b",
+   "s": 72.877,
+   "e": 73.148
+  },
+  {
+   "w": "now",
+   "who": "C",
+   "line": "l11b",
+   "s": 73.148,
+   "e": 73.419
+  },
+  {
+   "w": "ready",
+   "who": "C",
+   "line": "l11b",
+   "s": 73.419,
+   "e": 73.798
+  },
+  {
+   "w": "to",
+   "who": "C",
+   "line": "l11b",
+   "s": 73.798,
+   "e": 74.015
+  },
+  {
+   "w": "use.",
+   "who": "C",
+   "line": "l11b",
+   "s": 74.015,
+   "e": 74.34
+  },
+  {
+   "w": "So",
+   "who": "A",
+   "line": "l12",
+   "s": 75.06,
+   "e": 75.264
+  },
+  {
+   "w": "instead",
+   "who": "A",
+   "line": "l12",
+   "s": 75.264,
+   "e": 75.722
+  },
+  {
+   "w": "of",
+   "who": "A",
+   "line": "l12",
+   "s": 75.722,
+   "e": 75.926
+  },
+  {
+   "w": "explaining",
+   "who": "A",
+   "line": "l12",
+   "s": 75.926,
+   "e": 76.537
+  },
+  {
+   "w": "everything",
+   "who": "A",
+   "line": "l12",
+   "s": 76.537,
+   "e": 77.149
+  },
+  {
+   "w": "from",
+   "who": "A",
+   "line": "l12",
+   "s": 77.149,
+   "e": 77.454
+  },
+  {
+   "w": "scratch,",
+   "who": "A",
+   "line": "l12",
+   "s": 77.454,
+   "e": 77.964
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l12",
+   "s": 77.964,
+   "e": 78.117
+  },
+  {
+   "w": "can",
+   "who": "A",
+   "line": "l12",
+   "s": 78.117,
+   "e": 78.371
+  },
+  {
+   "w": "use",
+   "who": "A",
+   "line": "l12",
+   "s": 78.371,
+   "e": 78.626
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l12",
+   "s": 78.626,
+   "e": 78.881
+  },
+  {
+   "w": "right",
+   "who": "A",
+   "line": "l12",
+   "s": 78.881,
+   "e": 79.237
+  },
+  {
+   "w": "skill",
+   "who": "A",
+   "line": "l12",
+   "s": 79.237,
+   "e": 79.594
+  },
+  {
+   "w": "for",
+   "who": "A",
+   "line": "l12",
+   "s": 79.594,
+   "e": 79.849
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l12",
+   "s": 79.849,
+   "e": 80.103
+  },
+  {
+   "w": "job?",
+   "who": "A",
+   "line": "l12",
+   "s": 80.103,
+   "e": 80.409
+  },
+  {
+   "w": "Exactly.",
+   "who": "C",
+   "line": "l13",
+   "s": 80.629,
+   "e": 81.11
+  },
+  {
+   "w": "And",
+   "who": "C",
+   "line": "l13",
+   "s": 81.11,
+   "e": 81.35
+  },
+  {
+   "w": "you",
+   "who": "C",
+   "line": "l13",
+   "s": 81.35,
+   "e": 81.591
+  },
+  {
+   "w": "can",
+   "who": "C",
+   "line": "l13",
+   "s": 81.591,
+   "e": 81.831
+  },
+  {
+   "w": "create",
+   "who": "C",
+   "line": "l13",
+   "s": 81.831,
+   "e": 82.216
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l13",
+   "s": 82.216,
+   "e": 82.504
+  },
+  {
+   "w": "own",
+   "who": "C",
+   "line": "l13",
+   "s": 82.504,
+   "e": 82.745
+  },
+  {
+   "w": "reusable",
+   "who": "C",
+   "line": "l13",
+   "s": 82.745,
+   "e": 83.226
+  },
+  {
+   "w": "skills",
+   "who": "C",
+   "line": "l13",
+   "s": 83.226,
+   "e": 83.61
+  },
+  {
+   "w": "too!",
+   "who": "C",
+   "line": "l13",
+   "s": 83.61,
+   "e": 83.899
+  },
+  {
+   "w": "Now",
+   "who": "A",
+   "line": "l14",
+   "s": 84.819,
+   "e": 85.071
+  },
+  {
+   "w": "that's",
+   "who": "A",
+   "line": "l14",
+   "s": 85.071,
+   "e": 85.474
+  },
+  {
+   "w": "useful!",
+   "who": "A",
+   "line": "l14",
+   "s": 85.474,
+   "e": 85.927
+  },
+  {
+   "w": "Try",
+   "who": "C",
+   "line": "l15",
+   "s": 86.147,
+   "e": 86.399
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l15",
+   "s": 86.399,
+   "e": 86.652
+  },
+  {
+   "w": "official",
+   "who": "C",
+   "line": "l15",
+   "s": 86.652,
+   "e": 87.157
+  },
+  {
+   "w": "Anthropic",
+   "who": "C",
+   "line": "l15",
+   "s": 87.157,
+   "e": 87.712
+  },
+  {
+   "w": "skills",
+   "who": "C",
+   "line": "l15",
+   "s": 87.712,
+   "e": 88.116
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l15",
+   "s": 88.116,
+   "e": 88.368
+  },
+  {
+   "w": "see",
+   "who": "C",
+   "line": "l15",
+   "s": 88.368,
+   "e": 88.62
+  },
+  {
+   "w": "what",
+   "who": "C",
+   "line": "l15",
+   "s": 88.62,
+   "e": 88.923
+  },
+  {
+   "w": "you",
+   "who": "C",
+   "line": "l15",
+   "s": 88.923,
+   "e": 89.176
+  },
+  {
+   "w": "can",
+   "who": "C",
+   "line": "l15",
+   "s": 89.176,
+   "e": 89.428
+  },
+  {
+   "w": "build.",
+   "who": "C",
+   "line": "l15",
+   "s": 89.428,
+   "e": 89.832
+  }
+ ]
+}
