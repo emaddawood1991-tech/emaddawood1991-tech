@@ -106,7 +106,7 @@ const Visual: React.FC = () => {
   return (<AbsoluteFill style={{ background: "#000" }}>
     <Sequence from={0} durationInFrames={140} layout="none"><Clip name="road" dur={132} z0={1.0} z1={1.3} p0={30} p1={62} /></Sequence>
     <Sequence from={131} durationInFrames={110} layout="none"><Clip name="boat" dur={104} from={14} z0={1.08} z1={1.32} p0={55} p1={35} fadeIn={9} /></Sequence>
-    <Sequence from={232} durationInFrames={66} layout="none"><Clip name="yacht" dur={57} rate={0.74} z0={1.04} z1={1.22} p0={50} p1={42} fadeIn={9} /></Sequence>
+    <Sequence from={232} durationInFrames={66} layout="none"><Clip name="yacht" dur={57} rate={0.63} z0={1.04} z1={1.22} p0={50} p1={42} fadeIn={9} /></Sequence>
     <Sequence from={290} durationInFrames={68} layout="none"><Clip name="beach" dur={60} z0={1.0} z1={1.2} p0={45} p1={55} fadeIn={8} /></Sequence>
     <Sequence from={350} durationInFrames={57} layout="none"><Clip name="bike" dur={57} z0={1.08} z1={1.3} p0={45} p1={50} fadeIn={8} /></Sequence>
     <Vignette /><AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(5,8,18,.0) 40%, rgba(5,8,18,.5) 100%)", zIndex: 31 }} />
@@ -156,7 +156,7 @@ const Themes: React.FC = () => {
   return (<AbsoluteFill style={{ background: C.ink }}>
     <Push len={517} to={0.04}><BG />
     <Window x={60} y={330} w={960} h={430} at={2}>
-      <Sequence from={0} durationInFrames={103} layout="none"><Clip name="yacht" dur={95} rate={0.44} z0={1.0} z1={1.18} w={960} h={430} /></Sequence>
+      <Sequence from={0} durationInFrames={103} layout="none"><Clip name="yacht" dur={95} rate={0.38} z0={1.0} z1={1.18} w={960} h={430} /></Sequence>
       <Sequence from={95} durationInFrames={65} layout="none"><Clip name="duo" dur={57} rate={0.35} z0={1.0} z1={1.15} w={960} h={430} fadeIn={8} /></Sequence>
       <Sequence from={144} durationInFrames={117} layout="none"><Clip name="beach" dur={109} rate={0.55} z0={1.0} z1={1.18} w={960} h={430} fadeIn={8} /></Sequence>
       <Sequence from={253} durationInFrames={230} layout="none"><Clip name="road" dur={220} rate={0.6} z0={1.0} z1={1.2} p0={35} p1={62} w={960} h={430} fadeIn={8} /></Sequence>
