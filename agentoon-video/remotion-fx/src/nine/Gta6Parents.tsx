@@ -84,7 +84,7 @@ const Hook: React.FC = () => {
   const f = useCurrentFrame(); const { fps } = useVideoConfig();
   const a = spring({ frame: f - 4, fps, config: SLAM }); const b = spring({ frame: f - 14, fps, config: SLAM }); const c = spring({ frame: f - 70, fps, config: POP });
   return (<AbsoluteFill style={{ background: "#000" }}>
-    <Sequence from={0} durationInFrames={106} layout="none"><Clip name="car" dur={98} z0={1.0} z1={1.38} p0={38} p1={56} fadeOut={8} /></Sequence>
+    <Sequence from={0} durationInFrames={106} layout="none"><Clip name="car" dur={98} z0={1.0} z1={1.38} p0={38} p1={56} /></Sequence>
     <Sequence from={98} durationInFrames={80} layout="none"><Clip name="title" dur={78} z0={1.0} z1={1.3} p0={35} p1={55} fadeIn={8} /></Sequence>
     <Vignette a={0.6} /><AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(5,8,18,.15) 20%, rgba(5,8,18,.55) 100%)", zIndex: 31 }} />
     <div style={{ position: "absolute", left: 0, right: 0, top: 360, textAlign: "center", zIndex: 70, fontFamily: sans }}>
@@ -104,10 +104,10 @@ const visG: Gest2[] = [{ type: "present", from: vS + 160, to: vS + 260, hand: "R
 const Visual: React.FC = () => {
   const ray = cue("visual", "ray-traced") - 6;
   return (<AbsoluteFill style={{ background: "#000" }}>
-    <Sequence from={0} durationInFrames={140} layout="none"><Clip name="road" dur={132} z0={1.0} z1={1.3} p0={30} p1={62} fadeOut={9} /></Sequence>
-    <Sequence from={131} durationInFrames={110} layout="none"><Clip name="boat" dur={104} from={14} z0={1.08} z1={1.32} p0={55} p1={35} fadeIn={9} fadeOut={9} /></Sequence>
-    <Sequence from={232} durationInFrames={66} layout="none"><Clip name="yacht" dur={57} rate={0.74} z0={1.04} z1={1.22} p0={50} p1={42} fadeIn={9} fadeOut={8} /></Sequence>
-    <Sequence from={290} durationInFrames={68} layout="none"><Clip name="beach" dur={60} z0={1.0} z1={1.2} p0={45} p1={55} fadeIn={8} fadeOut={8} /></Sequence>
+    <Sequence from={0} durationInFrames={140} layout="none"><Clip name="road" dur={132} z0={1.0} z1={1.3} p0={30} p1={62} /></Sequence>
+    <Sequence from={131} durationInFrames={110} layout="none"><Clip name="boat" dur={104} from={14} z0={1.08} z1={1.32} p0={55} p1={35} fadeIn={9} /></Sequence>
+    <Sequence from={232} durationInFrames={66} layout="none"><Clip name="yacht" dur={57} rate={0.74} z0={1.04} z1={1.22} p0={50} p1={42} fadeIn={9} /></Sequence>
+    <Sequence from={290} durationInFrames={68} layout="none"><Clip name="beach" dur={60} z0={1.0} z1={1.2} p0={45} p1={55} fadeIn={8} /></Sequence>
     <Sequence from={350} durationInFrames={57} layout="none"><Clip name="bike" dur={57} z0={1.08} z1={1.3} p0={45} p1={50} fadeIn={8} /></Sequence>
     <Vignette /><AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(5,8,18,.0) 40%, rgba(5,8,18,.5) 100%)", zIndex: 31 }} />
     <Tag text="REAL ROCKSTAR FOOTAGE" x={36} y={330} at={10} />
@@ -131,9 +131,9 @@ const Warning: React.FC = () => {
     <BG />
     <div style={{ position: "absolute", inset: 0, opacity: 1 - tr, transform: `scale(${1 + 0.25 * tr})`, filter: `brightness(${1 - 0.5 * tr})` }}><Clip name="street" dur={130} rate={0.5} z0={1.0} z1={1.1} /></div>
     <Window x={60} y={330} w={960} h={520} at={4}>
-      <Sequence from={0} durationInFrames={122} layout="none"><Clip name="street" dur={114} rate={0.5} z0={1.0} z1={1.16} p0={45} p1={55} w={960} h={520} fadeOut={8} /></Sequence>
-      <Sequence from={114} durationInFrames={128} layout="none"><Clip name="bike" dur={120} rate={0.5} z0={1.02} z1={1.2} p0={48} p1={50} w={960} h={520} fadeIn={8} fadeOut={8} /></Sequence>
-      <Sequence from={234} durationInFrames={70} layout="none"><Clip name="nstreet" dur={62} rate={0.43} z0={1.02} z1={1.18} p0={50} p1={50} w={960} h={520} fadeIn={8} /></Sequence>
+      <Sequence from={0} durationInFrames={122} layout="none"><Clip name="street" dur={114} rate={0.5} z0={1.0} z1={1.16} p0={45} p1={55} w={960} h={520} /></Sequence>
+      <Sequence from={114} durationInFrames={128} layout="none"><Clip name="bike" dur={120} rate={0.5} z0={1.02} z1={1.2} p0={48} p1={50} w={960} h={520} fadeIn={8} /></Sequence>
+      <Sequence from={234} durationInFrames={70} layout="none"><Clip name="nstreet" dur={62} rate={0.29} z0={1.02} z1={1.18} p0={50} p1={50} w={960} h={520} fadeIn={8} /></Sequence>
     </Window>
     <div style={{ position: "absolute", left: 436, top: 960, width: 604, zIndex: 60, fontFamily: sans, fontWeight: 900, fontSize: 52, lineHeight: 1.1, color: C.white, opacity: clamp((f - 14) / 10) * clamp((cards[1][2] - 4 - f) / 10), transform: `translateY(${(1 - clamp((f - 14) / 10)) * 24}px)` }}>IMPRESSIVE GRAPHICS<div style={{ color: C.amber }}>≠ SUITABLE FOR CHILDREN</div></div>
     <Tag text="NOT SUITABLE FOR CHILDREN" x={60} y={868} at={cue("warning", "suitable") - 4} bg={C.red} fg="#fff" size={34} />
@@ -156,11 +156,11 @@ const Themes: React.FC = () => {
   return (<AbsoluteFill style={{ background: C.ink }}>
     <Push len={517} to={0.04}><BG />
     <Window x={60} y={330} w={960} h={430} at={2}>
-      <Sequence from={0} durationInFrames={103} layout="none"><Clip name="yacht" dur={95} rate={0.44} z0={1.0} z1={1.18} w={960} h={430} fadeOut={8} /></Sequence>
-      <Sequence from={95} durationInFrames={65} layout="none"><Clip name="duo" dur={57} rate={0.35} z0={1.0} z1={1.15} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
-      <Sequence from={144} durationInFrames={117} layout="none"><Clip name="beach" dur={109} rate={0.55} z0={1.0} z1={1.18} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
+      <Sequence from={0} durationInFrames={103} layout="none"><Clip name="yacht" dur={95} rate={0.44} z0={1.0} z1={1.18} w={960} h={430} /></Sequence>
+      <Sequence from={95} durationInFrames={65} layout="none"><Clip name="duo" dur={57} rate={0.35} z0={1.0} z1={1.15} w={960} h={430} fadeIn={8} /></Sequence>
+      <Sequence from={144} durationInFrames={117} layout="none"><Clip name="beach" dur={109} rate={0.55} z0={1.0} z1={1.18} w={960} h={430} fadeIn={8} /></Sequence>
       <Sequence from={253} durationInFrames={230} layout="none"><Clip name="road" dur={220} rate={0.6} z0={1.0} z1={1.2} p0={35} p1={62} w={960} h={430} fadeIn={8} /></Sequence>
-      <Sequence from={468} durationInFrames={50} layout="none"><Clip name="nstreet" dur={67} rate={0.4} z0={1.0} z1={1.1} w={960} h={430} fadeIn={8} /></Sequence>
+      <Sequence from={468} durationInFrames={50} layout="none"><Clip name="nstreet" dur={67} rate={0.27} z0={1.0} z1={1.1} w={960} h={430} fadeIn={8} /></Sequence>
     </Window>
     {chips.map(([t, s, at], i) => (<Slab key={t} x={60 + i * 322} y={800} w={308} h={150} at={Math.max(6, at)} fromX={120} tilt={-14} out={imp + 10}>
       <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1.05 }}>{t}</div><div style={{ fontSize: 19, color: C.soft, marginTop: 6 }}>{s}</div></Slab>))}
