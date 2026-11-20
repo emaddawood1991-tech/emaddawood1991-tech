@@ -157,10 +157,10 @@ const Themes: React.FC = () => {
     <Push len={517} to={0.04}><BG />
     <Window x={60} y={330} w={960} h={430} at={2}>
       <Sequence from={0} durationInFrames={103} layout="none"><Clip name="yacht" dur={95} rate={0.6} z0={1.0} z1={1.18} w={960} h={430} fadeOut={8} /></Sequence>
-      <Sequence from={95} durationInFrames={83} layout="none"><Clip name="duo" dur={75} rate={0.4} z0={1.0} z1={1.15} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
-      <Sequence from={170} durationInFrames={117} layout="none"><Clip name="beach" dur={109} rate={0.55} z0={1.0} z1={1.18} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
-      <Sequence from={279} durationInFrames={230} layout="none"><Clip name="road" dur={220} rate={0.6} z0={1.0} z1={1.2} p0={35} p1={62} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
-      <Sequence from={501} durationInFrames={30} layout="none"><Clip name="nstreet" dur={67} rate={0.4} z0={1.0} z1={1.1} w={960} h={430} fadeIn={8} /></Sequence>
+      <Sequence from={95} durationInFrames={65} layout="none"><Clip name="duo" dur={57} rate={0.35} z0={1.0} z1={1.15} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
+      <Sequence from={144} durationInFrames={117} layout="none"><Clip name="beach" dur={109} rate={0.55} z0={1.0} z1={1.18} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
+      <Sequence from={253} durationInFrames={230} layout="none"><Clip name="road" dur={220} rate={0.6} z0={1.0} z1={1.2} p0={35} p1={62} w={960} h={430} fadeIn={8} fadeOut={8} /></Sequence>
+      <Sequence from={475} durationInFrames={50} layout="none"><Clip name="nstreet" dur={67} rate={0.4} z0={1.0} z1={1.1} w={960} h={430} fadeIn={8} /></Sequence>
     </Window>
     {chips.map(([t, s, at], i) => (<Slab key={t} x={60 + i * 322} y={800} w={308} h={150} at={Math.max(6, at)} fromX={120} tilt={-14} out={imp + 10}>
       <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1.05 }}>{t}</div><div style={{ fontSize: 19, color: C.soft, marginTop: 6 }}>{s}</div></Slab>))}
@@ -238,6 +238,7 @@ const Close: React.FC = () => {
   return (<AbsoluteFill style={{ background: "#000" }}>
     <Clip name="skyline" dur={279} rate={0.47} z0={1.0} z1={1.16} p0={50} p1={50} />
     <Vignette a={0.65} /><AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(5,8,18,.55) 0%, rgba(5,8,18,.15) 45%, rgba(5,8,18,.7) 100%)", zIndex: 31 }} />
+    <div style={{ position: "absolute", left: 40, top: 360, width: 1000, height: 680, borderRadius: 40, background: "rgba(5,8,18,.55)", boxShadow: "0 0 0 2px rgba(255,178,36,.45)", zIndex: 66, opacity: clamp((f - 4) / 8) }} />
     <div style={{ position: "absolute", left: 0, top: 320, width: 1080, height: 760, zIndex: 70, opacity: clamp((f - 6) / 6) }}><Img src={staticFile(`ep23/bl/f_${String(bl).padStart(4, "0")}.png`)} style={{ width: 1080, height: 760 }} /></div>
     <div style={{ position: "absolute", left: 0, right: 0, top: 1062, textAlign: "center", zIndex: 70, opacity: clamp(fo * 2), transform: `scale(${0.8 + 0.2 * fo})`, fontFamily: sans }}>
       <span style={{ background: C.amber, color: C.ink, fontWeight: 900, fontSize: 56, padding: "10px 32px", borderRadius: 14, boxShadow: "0 12px 30px rgba(0,0,0,.5)" }}>FOLLOW @AGENTOON.AI</span></div>

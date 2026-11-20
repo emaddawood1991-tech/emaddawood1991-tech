@@ -15,7 +15,7 @@ def mat(name, col, metal, rough, emit=0):
     b.inputs["Base Color"].default_value = col; b.inputs["Metallic"].default_value = metal; b.inputs["Roughness"].default_value = rough
     if emit: b.inputs["Emission Color"].default_value = col; b.inputs["Emission Strength"].default_value = emit
     return m
-gold = mat("gold", (0.95, 0.72, 0.28, 1), 1.0, 0.22); white = mat("white", (0.96, 0.96, 0.98, 1), 0.2, 0.3); red = mat("red", (1.0, 0.18, 0.2, 1), 0.0, 0.35, emit=1.6)
+gold = mat("gold", (1.0, 0.78, 0.30, 1), 0.85, 0.25, emit=0.9); white = mat("white", (0.98, 0.98, 1.0, 1), 0.1, 0.35, emit=0.85); red = mat("red", (1.0, 0.18, 0.2, 1), 0.0, 0.35, emit=1.6)
 def text(s, y, size, m, ext=0.14):
     c = bpy.data.curves.new("t", "FONT"); c.body = s; c.font = font; c.size = size; c.extrude = ext; c.bevel_depth = 0.012; c.bevel_resolution = 3
     c.align_x = "CENTER"; c.align_y = "CENTER"; o = bpy.data.objects.new("t", c); sc.collection.objects.link(o); o.location = (0, 0, y); o.rotation_euler = (math.pi / 2, 0, 0); o.data.materials.append(m); return o
@@ -36,11 +36,11 @@ cam_d = bpy.data.cameras.new("c"); cam_d.lens = 50; cam = bpy.data.objects.new("
 cam.location = (-0.9, -9.5, 0.2); cam.rotation_euler = (math.pi / 2, 0, -0.09); cam.keyframe_insert("location", frame=1); cam.keyframe_insert("rotation_euler", frame=1)
 cam.location = (0.9, -7.9, 0.1); cam.rotation_euler = (math.pi / 2, 0, 0.09); cam.keyframe_insert("location", frame=frames); cam.keyframe_insert("rotation_euler", frame=frames)
 # lights
-for loc, e, col in [((3, -6, 5), 900, (1, 0.95, 0.85)), ((-5, -5, 1), 500, (0.7, 0.8, 1)), ((0, 4, 3), 400, (1, 0.5, 0.4))]:
+for loc, e, col in [((3, -6, 5), 2400, (1, 0.95, 0.85)), ((-5, -5, 1), 1400, (0.8, 0.88, 1)), ((0, 4, 3), 700, (1, 0.6, 0.5)), ((0, -8, -2), 900, (1, 0.9, 0.8))]:
     l = bpy.data.lights.new("l", "AREA"); l.energy = e; l.size = 5; l.color = col; lo = bpy.data.objects.new("l", l); lo.location = loc; sc.collection.objects.link(lo)
     d = lo.location.copy(); lo.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
 # world: dark studio reflections
-w = bpy.data.worlds.new("w"); w.use_nodes = True; w.node_tree.nodes["Background"].inputs[0].default_value = (0.02, 0.02, 0.03, 1); w.node_tree.nodes["Background"].inputs[1].default_value = 0.6; sc.world = w
+w = bpy.data.worlds.new("w"); w.use_nodes = True; w.node_tree.nodes["Background"].inputs[0].default_value = (0.02, 0.02, 0.03, 1); w.node_tree.nodes["Background"].inputs[1].default_value = 1.4; sc.world = w
 os.makedirs(out, exist_ok=True); sc.render.filepath = out + "/f_"
 if "--still" in sys.argv:
     sc.frame_set(frames); sc.render.filepath = out + "/still.png"; bpy.ops.render.render(write_still=True)
