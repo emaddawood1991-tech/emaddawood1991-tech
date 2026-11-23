@@ -459,6 +459,29 @@ export function makeSchedule(db, ops) {
     return { added, skipped_existing: times.length - added };
   }
 
-  return { board, createAppointments, updateAppointment, cancelAppointment, arrive, appointmentHistory, createBlocks, removeBlock, listWaiting, addWaiting, updateWaiting,
+  /** Moves the duplicate's future bookings and waiting-list entries onto the record that is kept, so the link is not blocked by hand-work.
+   *  A booking that would overlap one the kept record already has is left where it is and reported. Every move is written to the appointment history. */
+  function movePatientBookings(user, fromId, toId) {
+    need(user, 'patients.link.propose');
+    if (!fromId || !toId || fromId === toId) bad({ to_patient_id: 'Choose two different patient records.' });
+    if (!one('SELECT 1 x FROM patients WHERE id=?', fromId) || !one('SELECT 1 x FROM patients WHERE id=?', toId)) throw new HttpError(404, 'NOT_FOUND', 'Patient record not found.');
+    ops.refuseIfLinked?.(toId); // the destination must be the record that is kept
+    return tx(db, () => {
+      const moved = [], skipped = [];
+      for (const a of q("SELECT * FROM appointments WHERE patient_id=? AND status='SCHEDULED' ORDER BY scheduled_at", fromId)) {
+        const end = a.ends_at || plusMin(a.scheduled_at, a.duration_minutes || 30);
+        const row = a.row_id ? one('SELECT * FROM schedule_rows WHERE id=?', a.row_id) : null;
+        const clash = conflictsFor({ patientId: toId, clinicianId: a.clinician_id, row, start: a.scheduled_at, end, excludeId: a.id }).find((c) => c.type === 'PATIENT');
+        if (clash) { skipped.push({ ref: a.ref, reason: clash.message }); continue; }
+        run('UPDATE appointments SET patient_id=? WHERE id=?', toId, a.id);
+        history(a.id, user, 'PATIENT_MOVED', { from_patient: fromId, to_patient: toId });
+        moved.push(a.ref);
+      }
+      const waiting = Number(run("UPDATE waiting_list SET patient_id=? WHERE patient_id=? AND status='WAITING'", toId, fromId).changes);
+      audit(user, 'patient.bookings.move', 'patient', toId, { from: fromId, to: toId, moved, skipped: skipped.map((s) => s.ref), waiting_moved: waiting });
+      return { moved, skipped, waiting_moved: waiting };
+    });
+  }
+  return { movePatientBookings, board, createAppointments, updateAppointment, cancelAppointment, arrive, appointmentHistory, createBlocks, removeBlock, listWaiting, addWaiting, updateWaiting,
     listCancellations, listTasks, addTask, updateTask, reorderRows, removeRow, removeColumn, setup, syncStaff, addColumns, checkConfig, canOverride };
 }

@@ -58,6 +58,27 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   await adm.click('[data-testid=dup-active] button:has-text("Undo link")'); ok(await typeSlow(adm, '#du-reason', 'Two different people with the same phone'), 'the undo reason box keeps focus while typing');
   await adm.click('.modal button:has-text("Undo link")'); await adm.waitForSelector('.toast:has-text("Done")');
   await adm.waitForSelector('[data-testid=dup-active] tr', { state: 'detached' }); ok(true, 'the link is undone and the records are independent again');
+  // 6. booked appointments on the duplicate block the link; one click moves them; the Reports page counts people
+  const mk2 = await rec.evaluate(async () => {
+    const H = { 'content-type': 'application/json', 'x-requested-with': 'fmc' };
+    const cfg = await (await fetch('/api/config')).json(); const dep = cfg.departments.find((d) => d.name === 'Physiotherapy').id;
+    const post = async (u, body) => (await fetch(u, { method: 'POST', headers: H, body: JSON.stringify(body) })).json();
+    const C = await post('/api/patients', { name: 'Booked Person Two', phone: '0506660202', dob: '1988-08-08', sex: 'M' });
+    const D = await post('/api/patients', { name: 'Booked Persn Two', phone: '0506660202', dob: '1988-08-08', sex: 'M', confirm_duplicate: true });
+    await post('/api/appointments', { patient_id: D.id, department_id: dep, scheduled_at: new Date(Date.now() + 5 * 864e5).toISOString() });
+    return { c: C.mrn, d: D.mrn };
+  });
+  await sup.reload(); await go(sup, 'Duplicates'); await sup.waitForSelector('[data-testid=dup-candidates] tr:has-text("' + mk2.d + '")');
+  await sup.click('[data-testid=dup-candidates] tr:has-text("' + mk2.d + '") button:has-text("Link as duplicates")'); await sup.waitForSelector('[data-testid=dup-propose]');
+  await sup.locator('[data-testid=dup-propose] input[type=radio]').first().check(); await typeSlow(sup, '#dp-reason', 'Same person, same phone and same date of birth');
+  await sup.click('[data-testid=dup-propose] button:has-text("Propose link")'); await sup.waitForSelector('[data-testid=dup-blocked]');
+  ok(/booked appointment/.test(await sup.locator('[data-testid=dup-blocked]').textContent()), 'booked appointments on the duplicate block the link and are listed');
+  await sup.screenshot({ path: `${out}/d4-blocked.png` });
+  await sup.click('[data-testid=dup-move]'); await sup.waitForSelector('[data-testid=dup-moved]'); ok(/Moved appointments: 1/.test(await sup.locator('[data-testid=dup-moved]').textContent()), 'one click moves the bookings to the record that is kept');
+  ok(await sup.locator('[data-testid=dup-blocked]').count() === 0, 'the block disappears once the work is moved');
+  await sup.click('[data-testid=dup-propose] button:has-text("Propose link")'); await sup.waitForSelector('.toast:has-text("Link proposed")'); ok(true, 'the link can then be proposed');
+  await adm.reload(); await go(adm, 'Duplicates'); await adm.waitForSelector('[data-testid=dup-pending] tr'); await adm.click('[data-testid^=approve-]'); await adm.click('.modal button:has-text("Approve")'); await adm.waitForSelector('.toast:has-text("approved")');
+  await go(adm, 'Reports'); await adm.waitForSelector('.kpis'); const kp = await adm.locator('.kpis').textContent(); ok(/People/.test(kp) && /Visits/.test(kp), 'Reports shows a People count next to Visits');
   ok(errors.length === 0, `no browser errors${errors.length ? ': ' + errors[0] : ''}`);
   await b.close();
 })();

@@ -395,6 +395,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   });
   // Register (or select) a patient and check them into a department queue in one atomic step.
   app.patch('/api/patients/:id', guard('patients.write'), (req, res) => res.json(reg.updatePatient(req.user, Number(req.params.id), req.body || {})));
+  app.post('/api/patients/:id/move-bookings', guard('patients.link.propose'), (req, res) => res.json(sched.movePatientBookings(req.user, Number(req.params.id), Number(req.body?.to_patient_id))));
   app.get('/api/patients/:id/changes', guard('patients.write'), (req, res) => res.json(reg.changesOf(req.user, Number(req.params.id))));
   app.post('/api/registrations', guard('patients.write'), (req, res) => {
     const r = reg.register(req.user, req.body || {});
@@ -534,9 +535,11 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     const sc = deptScope(user); const num = (x) => (x === undefined || x === '' ? null : Number(x));
     const [dep, svc, cli, room] = [num(f.department_id), num(f.service_id), num(f.clinician_id), num(f.room_id)];
     const term = String(f.patient || '').trim().toLowerCase();
+    const famCache = new Map();
+    const familyText = (pid) => { if (!famCache.has(pid)) famCache.set(pid, (ops.familyIds ? ops.familyIds(pid) : [pid]).map((id) => one('SELECT name,mrn FROM patients WHERE id=?', id)).map((x) => `${x?.name} ${x?.mrn}`).join(' ').toLowerCase()); return famCache.get(pid); };
     const visits = q('SELECT v.*, p.mrn, p.name patient_name FROM visits v JOIN patients p ON p.id=v.patient_id ORDER BY v.arrived_at DESC').filter((v) => {
       if (!inRange(v.arrived_at) || (sc != null && !ops.visitVisible(user, v.id))) return false;
-      if (term && !`${v.patient_name} ${v.mrn}`.toLowerCase().includes(term)) return false;
+      if (term && !familyText(v.patient_id).includes(term)) return false; // a linked duplicate and its surviving record are one person
       if (dep != null && !one('SELECT 1 x FROM queue_entries WHERE visit_id=? AND department_id=? UNION SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.visit_id=? AND sv.department_id=?', v.id, dep, v.id, dep)) return false;
       if (svc != null && !one('SELECT 1 x FROM treatment_sessions WHERE visit_id=? AND service_id=?', v.id, svc)) return false;
       if (cli != null && !one('SELECT 1 x FROM treatment_sessions WHERE visit_id=? AND clinician_id=?', v.id, cli)) return false;
@@ -548,6 +551,8 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       .filter((x) => ids.has(x.visit_id) && (svc == null || x.service_id === svc) && (cli == null || x.clinician_id === cli) && (room == null || x.room_id === room) && (dep == null || x.department_id === dep));
     return { tz, visits, ids, sessions, inRange, room, dep };
   }
+  /** EMR number of the record that stands for this person (the surviving record when a duplicate was linked). */
+  const personMrn = (pid, own) => { const s = ops.survivorOf ? ops.survivorOf(pid) : pid; return s === pid ? own : one('SELECT mrn FROM patients WHERE id=?', s)?.mrn ?? own; };
   function reportData(user, f = {}) {
     ops.sweepTimers();
     const { tz, visits, ids, sessions, inRange, room } = reportScope(user, f);
@@ -571,7 +576,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     const maint = q("SELECT * FROM room_status_history WHERE to_status IN ('MAINTENANCE','OUT_OF_SERVICE')").filter((h) => inRange(h.ts));
     return {
       from: f.from, to: f.to, timezone: tz, filters: Object.fromEntries(Object.entries(f).filter(([, v]) => v)),
-      visits: visits.length, checked_out: visits.filter((v) => v.status === 'CHECKED_OUT').length,
+      visits: visits.length, people: new Set(visits.map((v) => (ops.survivorOf ? ops.survivorOf(v.patient_id) : v.patient_id))).size, checked_out: visits.filter((v) => v.status === 'CHECKED_OUT').length,
       avg_wait_minutes: avg(before),
       waiting: { before_room_avg_min: avg(before), in_room_avg_min: avg(inRoom), total_avg_min: avg(total), visit_total_avg_min: avg(visitLen), samples: { before: before.length, in_room: inRoom.length, total: total.length, visit: visitLen.length } },
       treatment: {
@@ -583,7 +588,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
       sessions: sessions.length,
       by_service: Object.values(bySvc).map((b) => ({ ...b, minutes: r1(b.minutes), avg_minutes: r1(b.minutes / b.sessions), planned_avg_minutes: b.planned_minutes ? r1(b.planned_minutes / b.sessions) : null })),
       by_room: Object.values(byRoom).map((b) => ({ ...b, occupied_minutes: r1(b.occupied_minutes) })),
-      visit_rows: timings.slice(0, 200).map(({ v, t }) => ({ visit_id: v.id, patient_id: v.patient_id, mrn: v.mrn, patient: v.patient_name, status: v.status, arrival_at: t.arrival_at, room_entry_at: t.room_entry_at, treatment_start_at: t.treatment_start_at, last_treatment_end_at: t.last_treatment_end_at, room_exit_at: t.room_exit_at, departed_at: t.departed_at,
+      visit_rows: timings.slice(0, 200).map(({ v, t }) => ({ visit_id: v.id, patient_id: v.patient_id, mrn: v.mrn, person_mrn: personMrn(v.patient_id, v.mrn), patient: v.patient_name, status: v.status, arrival_at: t.arrival_at, room_entry_at: t.room_entry_at, treatment_start_at: t.treatment_start_at, last_treatment_end_at: t.last_treatment_end_at, room_exit_at: t.room_exit_at, departed_at: t.departed_at,
         waiting_before_room_min: t.room_entry_at ? r1(min(Date.parse(t.room_entry_at) - Date.parse(t.arrival_at))) : null, waiting_in_room_min: t.room_entry_at && t.treatment_start_at ? r1(min(Date.parse(t.treatment_start_at) - Date.parse(t.room_entry_at))) : null,
         total_waiting_min: t.treatment_start_at ? r1(min(Date.parse(t.treatment_start_at) - Date.parse(t.arrival_at))) : null, total_visit_min: t.total_visit_ms != null ? r1(min(t.total_visit_ms)) : null })),
       transfers: ev.length,
@@ -602,9 +607,9 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
     if (sessions.length > maxRows) throw new HttpError(413, 'EXPORT_TOO_LARGE', `This export has ${sessions.length} rows; the limit is ${maxRows}. Narrow the dates or filters.`);
     audit(req.user, 'reports.export', 'report', null, { rows: sessions.length, filters: Object.keys(req.query), department_scope: deptScope(req.user) });
     ops.logAccess(req.user, sessions.map((x) => x.patient_id), 'EXPORT', { dedupe: false, detail: { rows: sessions.length } }); // every patient in the file is recorded
-    const head = 'session_id,mrn,service,clinician,room,status,planned_minutes,started_at,scheduled_end_at,timer_elapsed_at,clinical_end_at,confirmed_at,completion_kind,active_minutes,arrival_at,room_entry_at,waiting_before_room_min,waiting_in_room_min,total_waiting_min';
+    const head = 'session_id,mrn,service,clinician,room,status,planned_minutes,started_at,scheduled_end_at,timer_elapsed_at,clinical_end_at,confirmed_at,completion_kind,active_minutes,arrival_at,room_entry_at,waiting_before_room_min,waiting_in_room_min,total_waiting_min,person_mrn';
     const lines = sessions.map((x) => { const { v, t } = tv.get(x.visit_id); const end = x.ended_at_corrected || x.ended_at;
-      return [x.id, v.mrn, x.service, x.clinician, x.room, x.status, x.planned_minutes, x.started_at, x.scheduled_end_at, x.timer_elapsed_at, end, x.confirmed_at, x.completion_kind, Math.round((ops.sumMs(ops.sessionIntervals(x)) / 60000) * 10) / 10, t.arrival_at, t.room_entry_at, min(t.arrival_at, t.room_entry_at), min(t.room_entry_at, x.started_at), min(t.arrival_at, x.started_at)].map(esc).join(','); });
+      return [x.id, v.mrn, x.service, x.clinician, x.room, x.status, x.planned_minutes, x.started_at, x.scheduled_end_at, x.timer_elapsed_at, end, x.confirmed_at, x.completion_kind, Math.round((ops.sumMs(ops.sessionIntervals(x)) / 60000) * 10) / 10, t.arrival_at, t.room_entry_at, min(t.arrival_at, t.room_entry_at), min(t.room_entry_at, x.started_at), min(t.arrival_at, x.started_at), personMrn(v.patient_id, v.mrn)].map(esc).join(','); });
     const stamp = new Date(nowMs()).toISOString();
     res.set('Content-Disposition', `attachment; filename="fmc-sessions-${stamp.slice(0, 10)}-${req.user.username}.csv"`);
     res.type('text/csv').send([head, ...lines, `# CONFIDENTIAL FMC patient data - exported by ${req.user.username} on ${stamp} - ${sessions.length} rows`].join('\n'));

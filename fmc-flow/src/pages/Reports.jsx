@@ -29,7 +29,7 @@ export default function Reports({ staff = [] }) {
         <div className="row" style={{ marginTop: 10 }}><button className="btn" onClick={() => setApplied(f)}>{t('apply')}</button><button className="btn ghost" onClick={exportCsv}>{t('export')}</button></div>
       </div>
       {!d ? <p className="muted">{t('loading')}</p> : <>
-        <div className="kpis">{[[t('visits'), d.visits], [t('sessions'), d.sessions], [t('repWaitBefore'), mins(d.waiting.before_room_avg_min)], [t('repWaitIn'), mins(d.waiting.in_room_avg_min)], [t('repWaitTotal'), mins(d.waiting.total_avg_min)],
+        <div className="kpis">{[[t('visits'), d.visits], [t('repPeople'), d.people], [t('sessions'), d.sessions], [t('repWaitBefore'), mins(d.waiting.before_room_avg_min)], [t('repWaitIn'), mins(d.waiting.in_room_avg_min)], [t('repWaitTotal'), mins(d.waiting.total_avg_min)],
           [t('repPlanned'), d.treatment.planned_avg_min ?? '—'], [t('repActual'), d.treatment.actual_confirmed_avg_min ?? '—'], [t('repFull'), d.treatment.full], [t('repOverruns'), `${d.treatment.overruns}${d.treatment.overrun_avg_min ? ` (+${d.treatment.overrun_avg_min})` : ''}`], [t('repEarly'), `${d.treatment.early}${d.treatment.early_avg_min ? ` (−${d.treatment.early_avg_min})` : ''}`],
           [t('repAuto'), d.treatment.auto_closed_unverified], [t('repOcc'), mins(d.room_occupancy_avg_min)], [t('repVisit'), mins(d.waiting.visit_total_avg_min)], [t('transfers'), d.transfers], [t('corrections'), `${d.corrections.approved}/${d.corrections.total}`], [t('maintEvents'), d.maintenance_events]]
           .map(([l, v]) => <div key={l} className="card kpi"><b style={{ fontSize: 22 }}>{v}</b><span>{l}</span></div>)}</div>
@@ -39,7 +39,7 @@ export default function Reports({ staff = [] }) {
         </div>
         <div className="card"><h2>{t('visits')}</h2><div className="tbl"><table>
           <thead><tr><th>{t('patient')}</th><th>{t('arrivalAt')}</th><th>{t('waitBefore')}</th><th>{t('waitInRoom')}</th><th>{t('waitTotal')}</th><th>{t('treatmentStart')}</th><th>{t('roomExit')}</th><th>{t('totalVisit')}</th></tr></thead>
-          <tbody>{d.visit_rows.map((v) => <tr key={v.visit_id}><td>{v.patient}<div className="small muted">{v.mrn}</div></td><td>{fmt(v.arrival_at, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</td><td>{mins(v.waiting_before_room_min)}</td><td>{mins(v.waiting_in_room_min)}</td><td>{mins(v.total_waiting_min)}</td><td>{v.treatment_start_at ? fmt(v.treatment_start_at, { hour: '2-digit', minute: '2-digit' }) : '—'}</td><td>{v.room_exit_at ? fmt(v.room_exit_at, { hour: '2-digit', minute: '2-digit' }) : '—'}</td><td>{mins(v.total_visit_min)}</td></tr>)}</tbody></table></div></div>
+          <tbody>{d.visit_rows.map((v) => <tr key={v.visit_id}><td>{v.patient}<div className="small muted">{v.mrn}{v.person_mrn && v.person_mrn !== v.mrn ? ` → ${v.person_mrn}` : ''}</div></td><td>{fmt(v.arrival_at, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</td><td>{mins(v.waiting_before_room_min)}</td><td>{mins(v.waiting_in_room_min)}</td><td>{mins(v.total_waiting_min)}</td><td>{v.treatment_start_at ? fmt(v.treatment_start_at, { hour: '2-digit', minute: '2-digit' }) : '—'}</td><td>{v.room_exit_at ? fmt(v.room_exit_at, { hour: '2-digit', minute: '2-digit' }) : '—'}</td><td>{mins(v.total_visit_min)}</td></tr>)}</tbody></table></div></div>
       </>}
     </>
   );

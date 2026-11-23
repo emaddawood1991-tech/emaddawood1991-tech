@@ -54,7 +54,12 @@ function ManagerView({ user }) {
     setErr('');
     const dup = m.survivor === String(m.a.id) ? m.b : m.a;
     try { await api.post('/patients/links', { duplicate_id: dup.id, survivor_id: Number(m.survivor), reason: m.reason, acknowledge_conflicts: m.ack }); toast(t('dupProposed')); setM(null); reload(); }
-    catch (e) { if (e.code === 'DEMOGRAPHIC_CONFLICT') setM({ ...m, conflicts: e.details?.conflicts || ['dob'] }); else setErr(e.details?.fields?.reason || e.details?.fields?.survivor_id || e.details?.fields?.duplicate_id || e.message); }
+    catch (e) { if (e.code === 'DEMOGRAPHIC_CONFLICT') setM({ ...m, conflicts: e.details?.conflicts || ['dob'] }); else if (e.code === 'OPEN_ACTIVITY') setM({ ...m, blocked: e.details?.open || {}, moved: null }); else setErr(e.details?.fields?.reason || e.details?.fields?.survivor_id || e.details?.fields?.duplicate_id || e.message); }
+  };
+  const moveBookings = async () => {
+    const dup = m.survivor === String(m.a.id) ? m.b : m.a;
+    try { const r = await api.post(`/patients/${dup.id}/move-bookings`, { to_patient_id: Number(m.survivor) }); toast(t('dupMovedToast')); const left = { ...m.blocked, appointments: r.skipped.length, waiting_list: 0 }; setM({ ...m, moved: r, blocked: Object.values(left).some((n) => n > 0) ? left : null }); }
+    catch (e) { toast(e.message, true); }
   };
   const act = async (fn, ok) => { const r = await run(fn, ok); if (r) { setM(null); reload(); } };
   const rows = d?.links || []; const pending = rows.filter((x) => x.status === 'PROPOSED'); const active = rows.filter((x) => x.status === 'ACTIVE'); const past = rows.filter((x) => ['REJECTED', 'UNDONE'].includes(x.status));
@@ -81,6 +86,10 @@ function ManagerView({ user }) {
         {[m.a, m.b].map((p) => <label key={p.id} className="chk" style={{ alignItems: 'flex-start' }}><input type="radio" name="surv" checked={m.survivor === String(p.id)} onChange={() => setM({ ...m, survivor: String(p.id) })} /><span><b>{t('dupKeep')}</b><Side p={p} /></span></label>)}
         <div className="field"><label htmlFor="dp-reason">{t('dupReasonLabel')}</label><input id="dp-reason" value={m.reason} onChange={(e) => setM({ ...m, reason: e.target.value })} /></div>
         {m.conflicts && <div className="banner warn" role="alert">{t('dupConflictText')}<label className="chk"><input type="checkbox" checked={m.ack} onChange={(e) => setM({ ...m, ack: e.target.checked })} />{t('dupConflictAck')}</label></div>}
+        {m.blocked && <div className="banner warn" role="alert" data-testid="dup-blocked">{t('dupBlocked')}
+          <ul className="small" style={{ margin: '6px 0' }}>{[['open_visits', 'dupBVisits'], ['queue_entries', 'dupBQueue'], ['running_sessions', 'dupBSessions'], ['appointments', 'dupBAppts'], ['waiting_list', 'dupBWaiting']].filter(([k]) => m.blocked[k] > 0).map(([k, l]) => <li key={k}>{m.blocked[k]} {t(l)}</li>)}</ul>
+          {(m.blocked.appointments > 0 || m.blocked.waiting_list > 0) && !m.blocked.open_visits && !m.blocked.queue_entries && !m.blocked.running_sessions && <button className="btn sm" data-testid="dup-move" onClick={moveBookings}>{t('dupMoveBookings')}</button>}</div>}
+        {m.moved && <div className="banner" role="status" data-testid="dup-moved">{t('dupMovedText')} {m.moved.moved.length}{m.moved.waiting_moved ? ` + ${m.moved.waiting_moved} ${t('dupBWaiting')}` : ''}.{m.moved.skipped.length > 0 && <ul className="small" style={{ margin: '4px 0' }}>{m.moved.skipped.map((s) => <li key={s.ref}>{s.ref}: {s.reason}</li>)}</ul>}</div>}
         {err && <div className="field-err" role="alert">{err}</div>}
         <button className="btn" disabled={m.reason.trim().length < 15 || (m.conflicts && !m.ack)} onClick={propose}>{t('dupPropose')}</button></div></Modal>}
       {m?.k === 'approve' && <Modal title={t('approve')} onClose={() => setM(null)} wide><div className="stack">{pair(m.l)}<p className="small">{m.l.reason}</p>
