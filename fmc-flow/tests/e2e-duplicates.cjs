@@ -78,7 +78,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   ok(await sup.locator('[data-testid=dup-blocked]').count() === 0, 'the block disappears once the work is moved');
   await sup.click('[data-testid=dup-propose] button:has-text("Propose link")'); await sup.waitForSelector('.toast:has-text("Link proposed")'); ok(true, 'the link can then be proposed');
   await adm.reload(); await go(adm, 'Duplicates'); await adm.waitForSelector('[data-testid=dup-pending] tr'); await adm.click('[data-testid^=approve-]'); await adm.click('.modal button:has-text("Approve")'); await adm.waitForSelector('.toast:has-text("approved")');
-  await go(adm, 'Reports'); await adm.waitForSelector('.kpis'); const kp = await adm.locator('.kpis').textContent(); ok(/People/.test(kp) && /Visits/.test(kp), 'Reports shows a People count next to Visits');
+  await go(adm, 'Reports'); await adm.waitForSelector('.kpis'); const kp = await adm.locator('.kpis').first().textContent(); ok(/People/.test(kp) && /Visits/.test(kp), 'Reports shows a People count next to Visits');
   ok(errors.length === 0, `no browser errors${errors.length ? ': ' + errors[0] : ''}`);
   await b.close();
 })();

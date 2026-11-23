@@ -76,7 +76,7 @@ const ok = (c, m) => { console.log(c ? 'ok  -' : 'FAIL:', m); if (!c) process.ex
   // 7) Arabic + mobile layout
   await page.click('button:has-text("العربية")'); await page.click('button:has-text("مريض جديد")'); await page.waitForSelector('.modal'); await page.screenshot({ path: `${out}/r4-arabic-form.png` });
   ok(await page.evaluate(() => document.documentElement.dir) === 'rtl' && /الاسم الكامل \(بالعربية\)/.test(await page.locator('.modal').textContent()), 'Arabic labels and RTL layout');
-  const M = await mk(390, 800); await login(M.page, 'reception'); await M.page.click('.nav a:has-text("Visits")'); await M.page.click('button:has-text("New patient")'); await M.page.waitForSelector('.modal');
+  const M = await mk(390, 800); await login(M.page, 'reception'); await M.page.click('[data-testid=menu-toggle]'); /* phone: the menu is collapsed behind a button (S18) */ await M.page.click('.nav a:has-text("Visits")'); await M.page.click('button:has-text("New patient")'); await M.page.waitForSelector('.modal');
   const overflow = await M.page.evaluate(() => ({ doc: document.documentElement.scrollWidth - innerWidth, modal: (() => { const m = document.querySelector('.modal'); return m.scrollWidth - m.clientWidth; })() }));
   ok(overflow.doc <= 1 && overflow.modal <= 1, `mobile 390px: no horizontal overflow (${JSON.stringify(overflow)})`); await M.page.screenshot({ path: `${out}/r5-mobile.png` });
 
