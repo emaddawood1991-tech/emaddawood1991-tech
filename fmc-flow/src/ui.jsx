@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from './i18n.jsx';
@@ -33,10 +33,31 @@ export function useAction() {
 
 export function Modal({ title, onClose, children, wide }) {
   const { t } = useI18n();
+  const box = useRef(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+  // Accessibility: Escape closes, focus moves into the dialog, Tab stays inside, focus returns to the opener.
+  useEffect(() => {
+    const opener = document.activeElement;
+    const sel = 'button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+    const first = box.current && box.current.querySelector('input:not([disabled]),select:not([disabled]),textarea:not([disabled])');
+    (first || (box.current && box.current.querySelector(sel)) || box.current)?.focus?.();
+    const onKey = (e) => {
+      if (e.key === 'Escape') { e.stopPropagation(); closeRef.current(); return; }
+      if (e.key !== 'Tab' || !box.current) return;
+      const els = [...box.current.querySelectorAll(sel)].filter((x) => x.offsetParent !== null);
+      if (!els.length) return;
+      const a = els[0], z = els[els.length - 1];
+      if (e.shiftKey && (document.activeElement === a || !box.current.contains(document.activeElement))) { e.preventDefault(); z.focus(); }
+      else if (!e.shiftKey && (document.activeElement === z || !box.current.contains(document.activeElement))) { e.preventDefault(); a.focus(); }
+    };
+    document.addEventListener('keydown', onKey, true);
+    return () => { document.removeEventListener('keydown', onKey, true); if (opener && opener.focus && document.contains(opener)) opener.focus(); };
+  }, []);
   // Portal: a fixed overlay inside a backdrop-filter card would be positioned and clipped by that card.
   return createPortal(
     <div className="overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose()} role="dialog" aria-modal="true" aria-label={title}>
-      <motion.div className={`glass modal ${wide ? 'wide' : ''}`} initial={{ opacity: 0, scale: .96, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }}>
+      <motion.div ref={box} tabIndex={-1} className={`glass modal ${wide ? 'wide' : ''}`} initial={{ opacity: 0, scale: .96, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }}>
         <div className="row" style={{ justifyContent: 'space-between', marginBottom: 12 }}>
           <h2 style={{ margin: 0 }}>{title}</h2>
           <button className="btn ghost sm" onClick={onClose} aria-label={t('close')}>✕</button>

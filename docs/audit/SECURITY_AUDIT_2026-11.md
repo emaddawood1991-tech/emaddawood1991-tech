@@ -129,6 +129,11 @@ Implements `docs/DUPLICATE_PATIENT_MERGE_DESIGN.md` with the recommended default
 - **Pilot overview** (`docs/pilot/README.md`): ground rules (synthetic data only, separate trial instance), preparation, half-day schedule, how to sort feedback (A/B/C), go/stop criteria, and reset.
 - No application behaviour changed. Rollback: tag `checkpoint/pre-security-s15-476ac01`.
 
+## Stage S16 (implemented): dialog keyboard accessibility
+- Every dialog (`Modal` in `src/ui.jsx`, used by all forms) now: closes on **Escape**, moves focus into the dialog when it opens, keeps **Tab / Shift+Tab inside** it, and **returns focus** to the button that opened it. Backdrop click and the close button work as before.
+- Test: `tests/e2e-modal.cjs` (9 checks). No server or database change.
+- Rollback: tag `checkpoint/pre-s16-6354ec2`.
+
 ## Still open (later stages)
 MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · e-mail/SMS self-service recovery (needs written approval for an external service).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.
