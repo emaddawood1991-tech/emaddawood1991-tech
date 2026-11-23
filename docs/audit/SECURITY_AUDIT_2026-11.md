@@ -134,6 +134,13 @@ Implements `docs/DUPLICATE_PATIENT_MERGE_DESIGN.md` with the recommended default
 - Test: `tests/e2e-modal.cjs` (9 checks). No server or database change.
 - Rollback: tag `checkpoint/pre-s16-6354ec2`.
 
+## Stage S17 (implemented): performance at two years of data
+- **Measured first.** `npm run load:test` (`fmc-flow/scripts/load-test.mjs`) fills a throw-away database with synthetic history (10,000 patients, 60,000 visits, 60,000 sessions) and times the daily endpoints against budgets.
+- **Finding (Medium, operations):** the reports page scanned whole tables once per visit (no index on `visit_id`), so cost grew with the square of the history — 4.8 s at 8,000 visits and minutes at 60,000 — and the date filter built a new date formatter on every call.
+- **Fixes (no behaviour or data change):** 11 additive indexes (`visits`, `occupancy`, `treatment_sessions`, `queue_entries`, `session_pauses`, `corrections`, `appointments`); formatter built once; the report's visit, session, room-use, event and correction queries now narrow by date range in SQL (exact local-date test unchanged).
+- **Result at 60,000 visits:** search 3–7 ms, queue 2 ms, open visits ~35 ms, 30-day report ~340 ms (was ~900 ms at one seventh of the size), two-year report ~7.8 s (was not finishing). The two-year report is still linear in history; if clinics need it faster, pre-aggregated daily totals are the next step.
+- Test: `tests/perf.test.js` fails if a per-visit lookup stops using an index. Rollback: tag `checkpoint/pre-s17-20bf601`.
+
 ## Still open (later stages)
 MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · e-mail/SMS self-service recovery (needs written approval for an external service).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.

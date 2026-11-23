@@ -261,6 +261,18 @@ CREATE TABLE IF NOT EXISTS duplicate_flags (
   flagged_by INTEGER NOT NULL, ts TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'OPEN' CHECK (status IN ('OPEN','DISMISSED','LINKED')), handled_by INTEGER, handled_at TEXT
 );
 CREATE TRIGGER IF NOT EXISTS duplicate_flags_no_delete BEFORE DELETE ON duplicate_flags BEGIN SELECT RAISE(ABORT,'duplicate_flags is append-only'); END;
+-- Lookups by visit / patient / session ran as full table scans (the report was O(n^2)). Indexes only; no data or behaviour change.
+CREATE INDEX IF NOT EXISTS visits_patient ON visits(patient_id, arrived_at);
+CREATE INDEX IF NOT EXISTS visits_arrived ON visits(arrived_at);
+CREATE INDEX IF NOT EXISTS occupancy_visit ON occupancy(visit_id);
+CREATE INDEX IF NOT EXISTS sessions_visit ON treatment_sessions(visit_id);
+CREATE INDEX IF NOT EXISTS sessions_patient ON treatment_sessions(patient_id, started_at);
+CREATE INDEX IF NOT EXISTS queue_visit ON queue_entries(visit_id);
+CREATE INDEX IF NOT EXISTS queue_dept_status ON queue_entries(department_id, status);
+CREATE INDEX IF NOT EXISTS pauses_session ON session_pauses(session_id);
+CREATE INDEX IF NOT EXISTS corrections_visit ON corrections(visit_id);
+CREATE INDEX IF NOT EXISTS appointments_when ON appointments(scheduled_at);
+CREATE INDEX IF NOT EXISTS appointments_patient ON appointments(patient_id);
 CREATE INDEX IF NOT EXISTS patients_phone ON patients(phone);
 CREATE INDEX IF NOT EXISTS patients_dob ON patients(dob);
 CREATE TABLE IF NOT EXISTS login_attempts (key TEXT PRIMARY KEY, n INTEGER NOT NULL, t INTEGER NOT NULL, blocked INTEGER NOT NULL DEFAULT 0);

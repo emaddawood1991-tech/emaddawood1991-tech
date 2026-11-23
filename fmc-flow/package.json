@@ -32,6 +32,7 @@
     "backup:drill": "node --disable-warning=ExperimentalWarning server/backup.js drill",
     "audit:fingerprint": "node --disable-warning=ExperimentalWarning server/backup.js fingerprint",
     "audit:verify": "node --disable-warning=ExperimentalWarning server/backup.js verify-fingerprint",
+    "load:test": "node --disable-warning=ExperimentalWarning scripts/load-test.mjs",
     "readiness": "node --disable-warning=ExperimentalWarning server/readiness-cli.js",
     "admin:create": "node --disable-warning=ExperimentalWarning server/create-admin.js",
     "tune:hash": "node --disable-warning=ExperimentalWarning server/tune-hash.js",

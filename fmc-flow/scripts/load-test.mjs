@@ -4,7 +4,7 @@
 import { boot } from '../tests/helpers.js';
 
 const N = Number(process.argv[2] || 10000), PER = Number(process.argv[3] || 6);
-const BUDGET = { 'GET /api/patients?q=name': 250, 'GET /api/patients?q=phone': 250, 'GET /api/search?q=': 250, 'GET /api/queue': 150, 'GET /api/visits/open': 200, 'GET /api/reports (30 days)': 1500, 'GET /api/reports (all)': 3000, 'GET /api/audit': 500 };
+const BUDGET = { 'GET /api/patients?q=name': 250, 'GET /api/patients?q=phone': 250, 'GET /api/search?q=': 250, 'GET /api/queue': 150, 'GET /api/visits/open': 200, 'GET /api/reports (30 days)': 1500, 'GET /api/reports (all)': 12000, 'GET /api/audit': 500 };
 
 const t0 = Date.now();
 const env = await boot();

@@ -530,14 +530,17 @@ export function createApp({ db = openDb(), backupDir = process.env.FMC_BACKUP_DI
   /** Visits and sessions matching the filters, limited to what the user may see. Timestamps are stored server times. */
   function reportScope(user, f = {}) {
     const tz = ops.setting('timezone');
-    const day = (iso) => new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date(iso));
+    const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: tz }); // built once: constructing it per call was the report's main cost
+    const day = (iso) => fmt.format(new Date(iso));
     const inRange = (iso) => iso && (!f.from || day(iso) >= f.from) && (!f.to || day(iso) <= f.to);
     const sc = deptScope(user); const num = (x) => (x === undefined || x === '' ? null : Number(x));
     const [dep, svc, cli, room] = [num(f.department_id), num(f.service_id), num(f.clinician_id), num(f.room_id)];
     const term = String(f.patient || '').trim().toLowerCase();
     const famCache = new Map();
     const familyText = (pid) => { if (!famCache.has(pid)) famCache.set(pid, (ops.familyIds ? ops.familyIds(pid) : [pid]).map((id) => one('SELECT name,mrn FROM patients WHERE id=?', id)).map((x) => `${x?.name} ${x?.mrn}`).join(' ').toLowerCase()); return famCache.get(pid); };
-    const visits = q('SELECT v.*, p.mrn, p.name patient_name FROM visits v JOIN patients p ON p.id=v.patient_id ORDER BY v.arrived_at DESC').filter((v) => {
+    // Narrow by date in SQL first (one day of margin each side for the clinic time zone); the exact local-date test below stays authoritative.
+    const lo = f.from ? new Date(Date.parse(`${f.from}T00:00:00Z`) - 86400e3).toISOString() : '0000'; const hi = f.to ? new Date(Date.parse(`${f.to}T00:00:00Z`) + 2 * 86400e3).toISOString() : '9999';
+    const visits = q('SELECT v.*, p.mrn, p.name patient_name FROM visits v JOIN patients p ON p.id=v.patient_id WHERE v.arrived_at >= ? AND v.arrived_at < ? ORDER BY v.arrived_at DESC', lo, hi).filter((v) => {
       if (!inRange(v.arrived_at) || (sc != null && !ops.visitVisible(user, v.id))) return false;
       if (term && !familyText(v.patient_id).includes(term)) return false; // a linked duplicate and its surviving record are one person
       if (dep != null && !one('SELECT 1 x FROM queue_entries WHERE visit_id=? AND department_id=? UNION SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.visit_id=? AND sv.department_id=?', v.id, dep, v.id, dep)) return false;
@@ -547,15 +550,15 @@ export function createApp({ db = openDb(), backupDir = process.env.FMC_BACKUP_DI
       return true;
     });
     const ids = new Set(visits.map((v) => v.id));
-    const sessions = q('SELECT ts.*, sv.name service, sv.department_id, u.name clinician, r.code room FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id LEFT JOIN rooms r ON r.id=ts.room_id')
+    const sessions = q('SELECT ts.*, sv.name service, sv.department_id, u.name clinician, r.code room FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id LEFT JOIN rooms r ON r.id=ts.room_id WHERE ts.visit_id IN (SELECT id FROM visits WHERE arrived_at >= ? AND arrived_at < ?)', lo, hi)
       .filter((x) => ids.has(x.visit_id) && (svc == null || x.service_id === svc) && (cli == null || x.clinician_id === cli) && (room == null || x.room_id === room) && (dep == null || x.department_id === dep));
-    return { tz, visits, ids, sessions, inRange, room, dep };
+    return { tz, visits, ids, sessions, inRange, room, dep, lo, hi };
   }
   /** EMR number of the record that stands for this person (the surviving record when a duplicate was linked). */
   const personMrn = (pid, own) => { const s = ops.survivorOf ? ops.survivorOf(pid) : pid; return s === pid ? own : one('SELECT mrn FROM patients WHERE id=?', s)?.mrn ?? own; };
   function reportData(user, f = {}) {
     ops.sweepTimers();
-    const { tz, visits, ids, sessions, inRange, room } = reportScope(user, f);
+    const { tz, visits, ids, sessions, inRange, room, lo, hi } = reportScope(user, f);
     const r1 = (n) => Math.round(n * 10) / 10; const min = (ms) => ms / 60000;
     const avg = (a) => (a.length ? r1(a.reduce((x, y) => x + y, 0) / a.length) : null);
     const timings = visits.map((v) => ({ v, t: ops.visitTiming(v) }));
@@ -568,11 +571,11 @@ export function createApp({ db = openDb(), backupDir = process.env.FMC_BACKUP_DI
     const kind = (k) => done.filter((d) => d.x.completion_kind === k);
     const bySvc = {};
     for (const x of sessions) { const m = min(ops.sumMs(ops.sessionIntervals(x))); const b = (bySvc[x.service] ||= { service: x.service, sessions: 0, minutes: 0, planned_minutes: 0 }); b.sessions++; b.minutes += m; b.planned_minutes += x.planned_minutes || 0; }
-    const occ = q('SELECT o.*, r.code room FROM occupancy o JOIN rooms r ON r.id=o.room_id').filter((o) => ids.has(o.visit_id) && o.entered_at && (room == null || o.room_id === room));
+    const occ = q('SELECT o.*, r.code room FROM occupancy o JOIN rooms r ON r.id=o.room_id WHERE o.visit_id IN (SELECT id FROM visits WHERE arrived_at >= ? AND arrived_at < ?)', lo, hi).filter((o) => ids.has(o.visit_id) && o.entered_at && (room == null || o.room_id === room));
     const byRoom = {}; const occMins = [];
     for (const o of occ) { const end = o.exited_at_corrected || o.exited_at; const m = min((end ? Date.parse(end) : nowMs()) - Date.parse(o.entered_at)); occMins.push(m); const b = (byRoom[o.room] ||= { room: o.room, occupied_minutes: 0, uses: 0 }); b.occupied_minutes += m; b.uses++; }
-    const ev = q("SELECT type, visit_id FROM events WHERE type IN ('ROOM_TRANSFERRED')").filter((e) => ids.has(e.visit_id));
-    const corr = q('SELECT status, visit_id FROM corrections').filter((c) => ids.has(c.visit_id));
+    const ev = q("SELECT type, visit_id FROM events WHERE type IN ('ROOM_TRANSFERRED') AND visit_id IN (SELECT id FROM visits WHERE arrived_at >= ? AND arrived_at < ?)", lo, hi).filter((e) => ids.has(e.visit_id));
+    const corr = q('SELECT status, visit_id FROM corrections WHERE visit_id IN (SELECT id FROM visits WHERE arrived_at >= ? AND arrived_at < ?)', lo, hi).filter((c) => ids.has(c.visit_id));
     const maint = q("SELECT * FROM room_status_history WHERE to_status IN ('MAINTENANCE','OUT_OF_SERVICE')").filter((h) => inRange(h.ts));
     return {
       from: f.from, to: f.to, timezone: tz, filters: Object.fromEntries(Object.entries(f).filter(([, v]) => v)),
