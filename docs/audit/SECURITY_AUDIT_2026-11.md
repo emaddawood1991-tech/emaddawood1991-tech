@@ -152,6 +152,13 @@ Implements `docs/DUPLICATE_PATIENT_MERGE_DESIGN.md` with the recommended default
 - **Audit:** each print is recorded (`schedule.print`: who, date, number of appointments) through `POST /api/schedule/print` (permission `schedule.view`; invalid date refused). Route count is now 133 (129 guarded, 4 public). What happens to the paper afterwards is outside the system — handle and dispose of it under clinic policy (**Requires Legal-Compliance Confirmation** for retention/disposal rules).
 - Test: `tests/e2e-print.cjs` (11 checks, including print-media emulation). Rollback: tag `checkpoint/pre-s19-*` (the commit before this stage).
 
+## Stage S20 (implemented): report trends and appointment outcomes
+- **Reports** now shows, for the chosen period and filters: an **Appointments** card (booked, arrived, not arrived, cancelled, upcoming, arrival rate, cancellation rate, queue no-shows) and two charts — **visits per day** and **average wait before the room per day** — as accessible inline SVG (labelled for screen readers, with the same numbers in a table, English/Arabic, right-to-left).
+- **Definitions are stated on the page.** The application never sets an appointment to "no-show" (no-shows are recorded on the queue entry), so "not arrived" means: booked time has passed, not cancelled, no arrival recorded; arrival rate = arrived ÷ (arrived + not arrived).
+- **Scope:** all new figures use the same department scope and filters as the rest of the report; a supervisor limited to one department sees only that department's appointments (tested).
+- **Hardening found on the way (Low):** a check-in request without a patient id returned a server error (500); it now returns a clear 400/404. Test added.
+- Tests: `tests/trends.test.js` (3), `tests/e2e-trends.cjs` (8). Rollback: tag `checkpoint/pre-s20-a995da4`.
+
 ## Still open (later stages)
 MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · e-mail/SMS self-service recovery (needs written approval for an external service).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.

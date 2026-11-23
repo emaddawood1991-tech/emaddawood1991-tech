@@ -558,13 +558,13 @@ export function createApp({ db = openDb(), backupDir = process.env.FMC_BACKUP_DI
     const ids = new Set(visits.map((v) => v.id));
     const sessions = q('SELECT ts.*, sv.name service, sv.department_id, u.name clinician, r.code room FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id JOIN users u ON u.id=ts.clinician_id LEFT JOIN rooms r ON r.id=ts.room_id WHERE ts.visit_id IN (SELECT id FROM visits WHERE arrived_at >= ? AND arrived_at < ?)', lo, hi)
       .filter((x) => ids.has(x.visit_id) && (svc == null || x.service_id === svc) && (cli == null || x.clinician_id === cli) && (room == null || x.room_id === room) && (dep == null || x.department_id === dep));
-    return { tz, visits, ids, sessions, inRange, room, dep, lo, hi };
+    return { tz, visits, ids, sessions, inRange, room, dep, cli, lo, hi, day, sc };
   }
   /** EMR number of the record that stands for this person (the surviving record when a duplicate was linked). */
   const personMrn = (pid, own) => { const s = ops.survivorOf ? ops.survivorOf(pid) : pid; return s === pid ? own : one('SELECT mrn FROM patients WHERE id=?', s)?.mrn ?? own; };
   function reportData(user, f = {}) {
     ops.sweepTimers();
-    const { tz, visits, ids, sessions, inRange, room, lo, hi } = reportScope(user, f);
+    const { tz, visits, ids, sessions, inRange, room, dep, cli, lo, hi, day, sc } = reportScope(user, f);
     const r1 = (n) => Math.round(n * 10) / 10; const min = (ms) => ms / 60000;
     const avg = (a) => (a.length ? r1(a.reduce((x, y) => x + y, 0) / a.length) : null);
     const timings = visits.map((v) => ({ v, t: ops.visitTiming(v) }));
@@ -581,8 +581,20 @@ export function createApp({ db = openDb(), backupDir = process.env.FMC_BACKUP_DI
     const byRoom = {}; const occMins = [];
     for (const o of occ) { const end = o.exited_at_corrected || o.exited_at; const m = min((end ? Date.parse(end) : nowMs()) - Date.parse(o.entered_at)); occMins.push(m); const b = (byRoom[o.room] ||= { room: o.room, occupied_minutes: 0, uses: 0 }); b.occupied_minutes += m; b.uses++; }
     const ev = q("SELECT type, visit_id FROM events WHERE type IN ('ROOM_TRANSFERRED') AND visit_id IN (SELECT id FROM visits WHERE arrived_at >= ? AND arrived_at < ?)", lo, hi).filter((e) => ids.has(e.visit_id));
+    const ev2 = q("SELECT type, visit_id FROM events WHERE type = 'QUEUE_NO_SHOW' AND visit_id IN (SELECT id FROM visits WHERE arrived_at >= ? AND arrived_at < ?)", lo, hi).filter((e) => ids.has(e.visit_id));
     const corr = q('SELECT status, visit_id FROM corrections WHERE visit_id IN (SELECT id FROM visits WHERE arrived_at >= ? AND arrived_at < ?)', lo, hi).filter((c) => ids.has(c.visit_id));
     const maint = q("SELECT * FROM room_status_history WHERE to_status IN ('MAINTENANCE','OUT_OF_SERVICE')").filter((h) => inRange(h.ts));
+    // Trends: visits and average wait per local day (capped at a year), and appointment outcomes for the same period and scope.
+    const dayMap = new Map();
+    for (const { v, t } of timings) { const d = day(v.arrived_at); const b = dayMap.get(d) || { date: d, visits: 0, waits: [] }; b.visits++; if (t.room_entry_at) b.waits.push(min(Date.parse(t.room_entry_at) - Date.parse(t.arrival_at))); dayMap.set(d, b); }
+    const daily = [...dayMap.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-366).map((b) => ({ date: b.date, visits: b.visits, avg_wait_min: avg(b.waits) }));
+    const apRows = q('SELECT status, scheduled_at, department_id, clinician_id FROM appointments WHERE scheduled_at >= ? AND scheduled_at < ?', lo, hi)
+      .filter((a) => inRange(a.scheduled_at) && (sc == null || sc.includes(a.department_id)) && (dep == null || a.department_id === dep) && (cli == null || a.clinician_id === cli));
+    const nowIso = new Date(nowMs()).toISOString();
+    const arrived = apRows.filter((a) => a.status === 'ARRIVED').length, cancelled = apRows.filter((a) => a.status === 'CANCELLED').length;
+    const notArrived = apRows.filter((a) => a.status === 'SCHEDULED' && a.scheduled_at < nowIso).length; // booked time has passed, not cancelled, no arrival recorded
+    const apptStats = { total: apRows.length, arrived, cancelled, not_arrived: notArrived, upcoming: apRows.filter((a) => a.status === 'SCHEDULED' && a.scheduled_at >= nowIso).length,
+      arrival_rate_pct: arrived + notArrived ? r1((arrived / (arrived + notArrived)) * 100) : null, cancel_rate_pct: apRows.length ? r1((cancelled / apRows.length) * 100) : null, queue_no_shows: ev2.filter((e) => e.type === 'QUEUE_NO_SHOW').length };
     return {
       from: f.from, to: f.to, timezone: tz, filters: Object.fromEntries(Object.entries(f).filter(([, v]) => v)),
       visits: visits.length, people: new Set(visits.map((v) => (ops.survivorOf ? ops.survivorOf(v.patient_id) : v.patient_id))).size, checked_out: visits.filter((v) => v.status === 'CHECKED_OUT').length,
@@ -600,6 +612,8 @@ export function createApp({ db = openDb(), backupDir = process.env.FMC_BACKUP_DI
       visit_rows: timings.slice(0, 200).map(({ v, t }) => ({ visit_id: v.id, patient_id: v.patient_id, mrn: v.mrn, person_mrn: personMrn(v.patient_id, v.mrn), patient: v.patient_name, status: v.status, arrival_at: t.arrival_at, room_entry_at: t.room_entry_at, treatment_start_at: t.treatment_start_at, last_treatment_end_at: t.last_treatment_end_at, room_exit_at: t.room_exit_at, departed_at: t.departed_at,
         waiting_before_room_min: t.room_entry_at ? r1(min(Date.parse(t.room_entry_at) - Date.parse(t.arrival_at))) : null, waiting_in_room_min: t.room_entry_at && t.treatment_start_at ? r1(min(Date.parse(t.treatment_start_at) - Date.parse(t.room_entry_at))) : null,
         total_waiting_min: t.treatment_start_at ? r1(min(Date.parse(t.treatment_start_at) - Date.parse(t.arrival_at))) : null, total_visit_min: t.total_visit_ms != null ? r1(min(t.total_visit_ms)) : null })),
+      daily,
+      appointments: apptStats,
       transfers: ev.length,
       corrections: { total: corr.length, pending: corr.filter((c) => c.status === 'PENDING').length, approved: corr.filter((c) => c.status === 'APPROVED').length, rejected: corr.filter((c) => c.status === 'REJECTED').length },
       maintenance_events: maint.length,

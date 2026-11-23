@@ -387,6 +387,7 @@ export function makeOps(db) {
   let refuseHook = () => {}; const setLinkGuard = (f) => { refuseHook = f; }; const ops_refuse = (id) => refuseHook(id); // set by the links module: a linked duplicate cannot be checked in
   function checkIn(user, { patientId, appointmentId, departmentId, serviceId, clinicianId }) {
     need(user, 'visit.manage');
+    if (!Number.isInteger(Number(patientId)) || Number(patientId) < 1) fail(400, 'VALIDATION', 'A patient is required.');
     return tx(db, () => {
       const p = one('SELECT * FROM patients WHERE id=?', patientId) || fail(404, 'PATIENT_NOT_FOUND');
       ops_refuse(patientId);
