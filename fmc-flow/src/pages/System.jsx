@@ -20,7 +20,7 @@ export default function System({ user }) {
         {h.data.recent_errors.length === 0 ? <p className="muted">{t('noData')}</p> : h.data.recent_errors.map((e, i) => <p key={i} className="small">{fmtDT(e.ts)} · {e.source} · {e.code} · {e.message}</p>)}
       </div>}
       <div className="card"><h2>{t('audit')}</h2><div className="tbl"><table>
-        <thead><tr><th>Time</th><th>{t('by')}</th><th>Action</th><th>Entity</th></tr></thead>
+        <thead><tr><th>{t('time')}</th><th>{t('by')}</th><th>{t('actionCol')}</th><th>{t('entityCol')}</th></tr></thead>
         <tbody>{(a.data || []).map((r) => <tr key={r.id}><td>{fmtDT(r.ts)}</td><td>{r.actor || '—'}</td><td>{r.action}</td><td className="small muted">{r.entity} {r.entity_id}</td></tr>)}</tbody></table></div></div>
     </>
   );

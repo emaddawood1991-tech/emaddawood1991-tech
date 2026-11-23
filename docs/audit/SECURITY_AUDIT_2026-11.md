@@ -116,6 +116,12 @@ Implements `docs/DUPLICATE_PATIENT_MERGE_DESIGN.md` with the recommended default
 - **Fresh full audit** (`docs/audit/FULL_AUDIT_2026-11-23.md`): 132 routes (128 guarded, 4 public), 28 permissions, 0 dependency vulnerabilities, no secrets, no open Critical/High/Medium finding; the remaining items are decisions and inputs listed in the runbook.
 - No application behaviour changed. Tests: `golive.test.js` (1). Rollback: tag `checkpoint/pre-security-s13-7fecf15`.
 
+## Stage S14 (implemented): usability polish
+- **Usability sweep** (`tests/e2e-sweep.cjs`): opens **every screen and every settings tab** as five roles (administrator, clinic manager, reception, physiotherapist, orthopedic doctor) in **English and Arabic (right-to-left)** — 188 screens — and fails on: a script error; a text field that loses focus or drops letters while typed into **one character at a time** (176 fields); text cut off inside its box; the page scrolling sideways; a button or field with no name for a screen reader; a translation key showing instead of text; Arabic that is not right-to-left or whose menu is on the wrong side; and **English words left in Arabic** (headings, table headers, buttons, labels, chips, placeholders). The earlier typing bug (fields losing focus after each letter) can no longer come back anywhere without failing this test.
+- **Fixed from the sweep:** the System page's audit table headers (Time / Action / Entity) and the Settings "Code" labels were English in Arabic; they are translated. Nothing else needed changing: the earlier work (typing fix, translation-key test, screen-by-screen i18n) already covered the rest.
+- The sweep deliberately ignores the language switch (it names the other language by design) and lowercase tokens (usernames, record types are data, not interface text).
+- No application behaviour or data changed. Rollback: tag `checkpoint/pre-security-s14-0a503e3`.
+
 ## Still open (later stages)
 MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · e-mail/SMS self-service recovery (needs written approval for an external service).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.
