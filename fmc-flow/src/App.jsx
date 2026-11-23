@@ -66,6 +66,7 @@ export default function App() {
   const [user, setUser] = useState(undefined);
   const [page, setPage] = useState(() => { try { return location.hash.slice(2) || 'dashboard'; } catch { return 'dashboard'; } });
   const [staffTick, setStaffTick] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false); // phone/tablet: the menu is collapsed behind a button so each page opens with its content
   const { run } = useAction();
   useEffect(() => { api.get('/me').then((r) => { window.__tz = r.timezone; setUser(r.user); }).catch((e) => setUser(e.status === 401 ? null : undefined)); }, []);
   useEffect(() => { const on = () => setPage(location.hash.slice(2) || 'dashboard'); window.addEventListener('hashchange', on); return () => window.removeEventListener('hashchange', on); }, []);
@@ -77,13 +78,13 @@ export default function App() {
   const mine = staff.data?.find((s) => s.id === user.id);
   const allowed = PAGES.filter(([, , roles]) => roles.includes(user.role));
   const [, Page] = allowed.find(([k]) => k === page) || allowed[0];
-  const go = (k) => { setPage(k); try { location.hash = `/${k}`; } catch { /* hash unavailable in sandboxed frames; state already updated */ } };
+  const go = (k) => { setMenuOpen(false); try { window.scrollTo(0, 0); } catch { /* not scrollable */ } setPage(k); try { location.hash = `/${k}`; } catch { /* hash unavailable in sandboxed frames; state already updated */ } };
   const signOut = async () => { await run(() => api.post('/logout')); setUser(null); };
   return (
     <div className="shell">
-      <aside className="glass side">
-        <div className="brand"><img src={logo} alt="" /><div><b>{t('appName')}</b><small>{t('tagline')}</small></div></div>
-        <nav className="nav" aria-label="Main">
+      <aside className={`glass side ${menuOpen ? 'open' : 'collapsed'}`}>
+        <div className="brand"><img src={logo} alt="" /><div><b>{t('appName')}</b><small>{t('tagline')}</small></div><button className="btn ghost sm menu-btn" data-testid="menu-toggle" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? '✕' : '☰'} {t('menu')}</button></div>
+        <nav className="nav" id="main-nav" aria-label="Main">
           {allowed.map(([k]) => <a key={k} className={(page || 'dashboard') === k ? 'on' : ''} onClick={() => go(k)} role="link" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && go(k)}><Icon n={k} />{t(k)}</a>)}
         </nav>
         <div className="foot">
