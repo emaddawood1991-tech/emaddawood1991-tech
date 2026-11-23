@@ -122,6 +122,13 @@ Implements `docs/DUPLICATE_PATIENT_MERGE_DESIGN.md` with the recommended default
 - The sweep deliberately ignores the language switch (it names the other language by design) and lowercase tokens (usernames, record types are data, not interface text).
 - No application behaviour or data changed. Rollback: tag `checkpoint/pre-security-s14-0a503e3`.
 
+## Stage S15 (implemented): pilot rehearsal pack
+- **Printable guides**: one A4 page per role (reception, clinician, clinic manager, administrator) in **English and Arabic (right-to-left)**, plus a feedback sheet in both languages — `docs/pilot/guides/*.html` and `docs/pilot/pdf/*.pdf`, generated from one source (`fmc-flow/pilot/content.json`, `npm run pilot:pack`). `tests/e2e-pilot-pack.cjs` prints every page and **fails if any page does not fit on one sheet**, has the wrong text direction, or lacks the trial username.
+- **Trial-day script** (`docs/pilot/TRIAL_DAY_SCRIPT.md` and `_AR.md`): 16 steps, who does what, and the result to expect — covering sign-in, registration, queue, booking and conflicts, treatment with the timer, documentation YELLOW→ORANGE, automatic stop, no-show, corrections, patient edits, duplicate linking, password recovery, emergency access and the audit check.
+- **The script is executable.** `tests/trialday.test.js` runs the same steps through the API and checks every "expected result" (14 checks), so the printed script cannot drift from the application.
+- **Pilot overview** (`docs/pilot/README.md`): ground rules (synthetic data only, separate trial instance), preparation, half-day schedule, how to sort feedback (A/B/C), go/stop criteria, and reset.
+- No application behaviour changed. Rollback: tag `checkpoint/pre-security-s15-476ac01`.
+
 ## Still open (later stages)
 MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · e-mail/SMS self-service recovery (needs written approval for an external service).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.

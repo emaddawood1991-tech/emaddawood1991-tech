@@ -1,0 +1,164 @@
+{
+  "brand": { "en": "Al Faisal Medical Center · Ideal Care", "ar": "مركز الفيصل الطبي · الرعاية المثالية" },
+  "footer": { "en": "Training material — synthetic data only. Never enter real patient data in the trial system.", "ar": "مادة تدريبية — بيانات تجريبية فقط. لا تُدخل بيانات مرضى حقيقية في النظام التجريبي." },
+  "labels": {
+    "en": { "who": "Who this is for", "signin": "Sign in", "day": "Your day", "do": "Do", "dont": "Don’t", "wrong": "If something goes wrong", "ask": "Trial questions? Ask the trial lead.", "user": "Trial username", "pw": "Password (given by the trial lead)" },
+    "ar": { "who": "لمن هذا الدليل", "signin": "تسجيل الدخول", "day": "يومك", "do": "افعل", "dont": "لا تفعل", "wrong": "إذا حدث خطأ", "ask": "لديك سؤال؟ اسأل مسؤول التجربة.", "user": "اسم المستخدم التجريبي", "pw": "كلمة المرور (يعطيك إياها مسؤول التجربة)" }
+  },
+  "roles": {
+    "reception": {
+      "user": "reception",
+      "en": {
+        "title": "Reception guide", "who": "Front-desk staff: register patients, check them in, book appointments, manage the queue.",
+        "signin": "Open the trial address, type your username and password. If asked, choose a new password (10+ characters). Turn on two-step verification in My Account if the trial lead asks you to.",
+        "steps": [
+          "Visits → type 3+ letters, an EMR number or a phone number. Pick the patient, or press ＋ New patient (name, phone, date of birth).",
+          "Choose the department (and service if known) → Check in. The patient gets a queue number.",
+          "Queue: watch waiting times. Use Priority (with a reason) only for a real reason; the clinician calls the next patient.",
+          "Patient leaves before being called? Queue → No-show, or Cancel with a short reason. Nothing is deleted.",
+          "Daily Schedule: + Add appointment → patient, department, date and time. Red conflicts mean the slot is taken. Booked patients: Arrived → check-in.",
+          "Typo in a name or phone? Visits → select the patient → Edit details. The EMR number never changes.",
+          "Two records for one person? Duplicates → Report a suspected duplicate (both EMR numbers + why). A manager reviews it.",
+          "After treatment ends: Visits → Check out."
+        ],
+        "do": ["Search before creating a new patient.", "Give the patient their queue number.", "Write a clear reason for priority, cancel or edit.", "Sign out when you leave the desk."],
+        "dont": ["Don’t share your password or sign in for someone else.", "Don’t type real patient data in the trial.", "Don’t book on a patient marked “linked” — use the record it points to."],
+        "wrong": ["Locked out or forgot your password: press “Forgot password?” on the sign-in page, then phone the trial lead.", "A screen looks wrong or a button does nothing: note the screen and time on the feedback sheet."]
+      },
+      "ar": {
+        "title": "دليل الاستقبال", "who": "موظفو مكتب الاستقبال: تسجيل المرضى، تسجيل الوصول، حجز المواعيد، إدارة الطابور.",
+        "signin": "افتح عنوان التجربة، اكتب اسم المستخدم وكلمة المرور. إذا طُلب منك اختر كلمة مرور جديدة (10 أحرف فأكثر). فعّل التحقق بخطوتين في «حسابي» إذا طلب منك مسؤول التجربة ذلك.",
+        "steps": [
+          "الزيارات ← اكتب 3 أحرف أو رقم السجل الطبي أو رقم الهاتف. اختر المريض أو اضغط ＋ مريض جديد (الاسم، الهاتف، تاريخ الميلاد).",
+          "اختر القسم (والخدمة إن عُرفت) ← تسجيل الوصول. يحصل المريض على رقم في الطابور.",
+          "الطابور: راقب أوقات الانتظار. استخدم الأولوية (مع ذكر السبب) لسبب حقيقي فقط؛ والمعالج هو من ينادي المريض التالي.",
+          "غادر المريض قبل ندائه؟ الطابور ← لم يحضر، أو إلغاء مع سبب قصير. لا يُحذف شيء.",
+          "الجدول اليومي: + إضافة موعد ← المريض والقسم والتاريخ والوقت. التعارض الأحمر يعني أن الوقت محجوز. للمرضى المحجوزين: «وصل» ← تسجيل الوصول.",
+          "خطأ في اسم أو هاتف؟ الزيارات ← اختر المريض ← تعديل البيانات. رقم السجل الطبي لا يتغير أبدًا.",
+          "سجلان لشخص واحد؟ السجلات المكررة ← الإبلاغ عن اشتباه تكرار (رقما السجلين والسبب). يراجعه المدير.",
+          "بعد انتهاء العلاج: الزيارات ← تسجيل الخروج."
+        ],
+        "do": ["ابحث قبل إنشاء مريض جديد.", "أعطِ المريض رقمه في الطابور.", "اكتب سببًا واضحًا للأولوية أو الإلغاء أو التعديل.", "سجّل الخروج عند مغادرة المكتب."],
+        "dont": ["لا تشارك كلمة مرورك ولا تدخل باسم غيرك.", "لا تكتب بيانات مرضى حقيقية في التجربة.", "لا تحجز على سجل مُشار إليه بأنه «مرتبط» — استخدم السجل المحال إليه."],
+        "wrong": ["نسيت كلمة المرور أو أُغلق حسابك: اضغط «نسيت كلمة المرور؟» في صفحة الدخول ثم اتصل بمسؤول التجربة.", "شاشة تبدو خاطئة أو زر لا يعمل: دوّن الشاشة والوقت في ورقة الملاحظات."]
+      }
+    },
+    "clinician": {
+      "user": "pt.one",
+      "en": {
+        "title": "Clinician guide", "who": "Physiotherapists, doctors and other treating staff: call patients, run and document treatment.",
+        "signin": "Sign in with your username and password. You see your own department’s patients only. Turn on two-step verification in My Account if asked.",
+        "steps": [
+          "Set My status (bottom left) to Available.",
+          "Queue → Call next. The patient is called; reception or you assign a room (and bed if the room has beds).",
+          "Rooms or Visits → Assign room → Enter room when the patient arrives.",
+          "Visits → Start treatment → choose the service you are authorized for. Set the planned minutes if different. The timer starts.",
+          "Sessions → Documentation: fill the four required fields — complaint, diagnosis, procedure code, progress note. The session turns from YELLOW to ORANGE when all four are saved.",
+          "At the planned time the system stops the treatment and checks the patient out by itself (unverified until you confirm). Pause or Complete early with the buttons if needed.",
+          "Forgot to complete? Corrections → request a correction with a reason; a manager approves. The original time is kept.",
+          "Real emergency, patient in another department? My Account → Emergency access (only if the administrator turned it on)."
+        ],
+        "do": ["Document while the details are fresh.", "Pause when the patient leaves the bed.", "Use only services you are authorized for.", "Use emergency access only for a real emergency."],
+        "dont": ["Don’t treat under another person’s sign-in.", "Don’t leave a session running when the patient has gone.", "Don’t paste real patient data into the trial."],
+        "wrong": ["“Not authorized for this service”: ask the administrator to add it to your account.", "A session ended too early or late: Corrections.", "Locked out: “Forgot password?” then phone the trial lead."]
+      },
+      "ar": {
+        "title": "دليل المعالج / الطبيب", "who": "أخصائيو العلاج الطبيعي والأطباء وبقية الكادر المعالج: نداء المرضى وإجراء العلاج وتوثيقه.",
+        "signin": "سجّل الدخول باسم المستخدم وكلمة المرور. ترى مرضى قسمك فقط. فعّل التحقق بخطوتين في «حسابي» إذا طُلب منك.",
+        "steps": [
+          "اضبط «حالتي» (أسفل اليسار) على «متاح».",
+          "الطابور ← نداء التالي. يُنادى المريض، ثم تُحدَّد الغرفة (والسرير إن وُجد) من الاستقبال أو منك.",
+          "الغرف أو الزيارات ← تحديد غرفة ← دخول الغرفة عند وصول المريض.",
+          "الزيارات ← بدء العلاج ← اختر الخدمة المصرّح لك بها. عدّل الدقائق المخططة إن لزم. يبدأ المؤقت.",
+          "الجلسات ← التوثيق: املأ الحقول الأربعة المطلوبة — الشكوى والتشخيص ورمز الإجراء وملاحظة التقدم. تتحول الجلسة من الأصفر إلى البرتقالي عند حفظ الأربعة.",
+          "عند الوقت المخطط يوقف النظام العلاج ويسجّل خروج المريض تلقائيًا (غير مؤكَّد حتى تؤكده). يمكنك الإيقاف المؤقت أو الإنهاء المبكر بالأزرار.",
+          "نسيت الإنهاء؟ التصحيحات ← اطلب تصحيحًا مع السبب؛ يوافق عليه المدير. يبقى الوقت الأصلي محفوظًا.",
+          "حالة طوارئ حقيقية لمريض في قسم آخر؟ حسابي ← الوصول الطارئ (إذا فعّله المسؤول)."
+        ],
+        "do": ["وثّق والتفاصيل حاضرة في ذهنك.", "أوقف مؤقتًا عند مغادرة المريض السرير.", "استخدم الخدمات المصرّح لك بها فقط.", "استخدم الوصول الطارئ لحالة طارئة حقيقية فقط."],
+        "dont": ["لا تعالج بحساب شخص آخر.", "لا تترك جلسة تعمل بعد مغادرة المريض.", "لا تلصق بيانات مرضى حقيقية في التجربة."],
+        "wrong": ["«غير مصرّح بهذه الخدمة»: اطلب من المسؤول إضافتها إلى حسابك.", "انتهت جلسة مبكرًا أو متأخرًا: التصحيحات.", "أُغلق حسابك: «نسيت كلمة المرور؟» ثم اتصل بمسؤول التجربة."]
+      }
+    },
+    "manager": {
+      "user": "super",
+      "en": {
+        "title": "Clinic manager guide", "who": "Clinic managers: run the floor, approve corrections, review reports, review duplicate records, set breaks and blocks.",
+        "signin": "Sign in. Two-step verification is required for managers: scan the code with an authenticator app and keep the ten recovery codes safe.",
+        "steps": [
+          "Dashboard / Queue / Rooms: see waiting, in treatment, rooms free, staff available. Room status: Cleaning, Maintenance (reason needed).",
+          "Corrections: open each request, read the reason and the original time, Approve or Reject with a note. You cannot approve your own.",
+          "Daily Schedule: add Blocks (break, leave, meeting). Booking over a block needs an override reason — only managers allowed to override can do it.",
+          "Reports: choose dates and filters. People = each person once; Visits and Sessions count what happened. Export CSV is limited and watermarked.",
+          "Duplicates: review pairs, choose the record to keep, write why → Propose. A different manager or the administrator must approve.",
+          "Queue: set Priority with a reason; cancel or no-show with a reason.",
+          "Emergency access uses: the administrator reviews them; you may be asked what happened."
+        ],
+        "do": ["Check the original time before approving a correction.", "Review a duplicate pair’s date of birth and sex carefully.", "Keep your recovery codes in a safe place."],
+        "dont": ["Don’t approve a link you proposed — it will be refused.", "Don’t use overrides to hide mistakes; every one is audited.", "Don’t export data you don’t need."],
+        "wrong": ["Lost your phone: ask the administrator to reset your two-step verification.", "Something in a report looks wrong: note the filters and time on the feedback sheet."]
+      },
+      "ar": {
+        "title": "دليل مدير العيادة", "who": "مديرو العيادة: إدارة الأرضية، الموافقة على التصحيحات، مراجعة التقارير والسجلات المكررة، ضبط الاستراحات والحجب.",
+        "signin": "سجّل الدخول. التحقق بخطوتين إلزامي للمديرين: امسح الرمز بتطبيق المصادقة واحتفظ برموز الاسترداد العشرة في مكان آمن.",
+        "steps": [
+          "لوحة التحكم / الطابور / الغرف: شاهد المنتظرين وقيد العلاج والغرف المتاحة والكادر المتاح. حالة الغرفة: تنظيف أو صيانة (السبب مطلوب).",
+          "التصحيحات: افتح كل طلب واقرأ السبب والوقت الأصلي ثم وافق أو ارفض مع ملاحظة. لا يمكنك الموافقة على طلبك.",
+          "الجدول اليومي: أضف حجبًا (استراحة، إجازة، اجتماع). الحجز فوق حجب يحتاج سبب تجاوز — لا يفعله إلا المديرون المصرّح لهم.",
+          "التقارير: اختر التواريخ والمرشحات. «الأشخاص» يعدّ كل شخص مرة واحدة؛ والزيارات والجلسات تعدّ ما حدث. تصدير CSV محدود وعليه علامة مائية.",
+          "السجلات المكررة: راجع الأزواج، اختر السجل الذي يبقى، اكتب السبب ← اقتراح. يجب أن يوافق مدير آخر أو المسؤول.",
+          "الطابور: حدّد الأولوية مع السبب؛ الإلغاء أو عدم الحضور مع السبب.",
+          "حالات الوصول الطارئ: يراجعها المسؤول؛ قد يُسأل المدير عمّا حدث."
+        ],
+        "do": ["تحقق من الوقت الأصلي قبل الموافقة على تصحيح.", "راجع تاريخ الميلاد والجنس في الأزواج المكررة بعناية.", "احتفظ برموز الاسترداد في مكان آمن."],
+        "dont": ["لا توافق على ربط اقترحته أنت — سيُرفض.", "لا تستخدم التجاوز لإخفاء الأخطاء؛ كل تجاوز مسجَّل.", "لا تصدّر بيانات لا تحتاجها."],
+        "wrong": ["فقدت هاتفك: اطلب من المسؤول إعادة ضبط التحقق بخطوتين.", "شيء في التقرير يبدو خاطئًا: دوّن المرشحات والوقت في ورقة الملاحظات."]
+      }
+    },
+    "administrator": {
+      "user": "admin",
+      "en": {
+        "title": "Administrator guide", "who": "System administrators: accounts, settings, security, backups. Administrator status does not allow treating patients.",
+        "signin": "Sign in. Two-step verification is required. Keep the ten recovery codes safe and separate.",
+        "steps": [
+          "Settings → Staff: add each person with a Role template, department and (separately) authorized services. Give a temporary password; they must change it.",
+          "Settings → Services / Rooms / Appointment categories / Procedure codes: check against the clinic. Add the approved procedure codes (none are shipped).",
+          "Settings → Security & Access → Accounts: reset a password, end sessions, reset two-step, rename a username.",
+          "Recovery & Emergency: answer sign-in help requests (verify the person yourself first). Review every emergency-access use with a note.",
+          "Alerts: read and acknowledge. Audit History: filter the log; Verify now checks it was not altered.",
+          "Duplicates: approve links proposed by managers; Undo with a reason if wrong.",
+          "Production readiness: every line should be OK before real data. Security Settings: passwords, idle minutes, limits.",
+          "Backups: npm run backup:run and backup:drill on the server; restore only into a new file."
+        ],
+        "do": ["Create accounts through role templates.", "Verify identity before any reset.", "Review emergency-access uses within 24 hours.", "Deactivate leavers — never delete."],
+        "dont": ["Don’t share the administrator account.", "Don’t switch off two-step verification.", "Don’t use the trial system for real patient data."],
+        "wrong": ["No administrator can sign in: on the server, npm run mfa:reset -- <username>.", "Readiness shows a failing line: open Docs → Go-live runbook, section 4."]
+      },
+      "ar": {
+        "title": "دليل مسؤول النظام", "who": "مسؤولو النظام: الحسابات والإعدادات والأمان والنسخ الاحتياطي. صفة المسؤول لا تتيح علاج المرضى.",
+        "signin": "سجّل الدخول. التحقق بخطوتين إلزامي. احتفظ برموز الاسترداد العشرة في مكان آمن ومنفصل.",
+        "steps": [
+          "الإعدادات ← الموظفون: أضف كل شخص بقالب دور وقسم و(بشكل منفصل) الخدمات المصرّح بها. أعطه كلمة مرور مؤقتة؛ عليه تغييرها.",
+          "الإعدادات ← الخدمات / الغرف / فئات المواعيد / رموز الإجراءات: طابقها مع العيادة. أضف رموز الإجراءات المعتمدة (لا يأتي النظام بأي رمز).",
+          "الإعدادات ← الأمان والوصول ← الحسابات: إعادة ضبط كلمة المرور، إنهاء الجلسات، إعادة ضبط التحقق بخطوتين، تغيير اسم المستخدم.",
+          "الاستعادة والطوارئ: أجب عن طلبات مساعدة الدخول (تحقق من هوية الشخص بنفسك أولًا). راجع كل استخدام للوصول الطارئ مع ملاحظة.",
+          "التنبيهات: اقرأها وأقرّ بها. سجل التدقيق: رشّح السجل؛ «تحقق الآن» يفحص أنه لم يُعدَّل.",
+          "السجلات المكررة: وافق على الروابط التي يقترحها المديرون؛ تراجع عنها بسبب إن كانت خاطئة.",
+          "الجاهزية للتشغيل: يجب أن يكون كل بند سليمًا قبل البيانات الحقيقية. إعدادات الأمان: كلمات المرور ودقائق الخمول والحدود.",
+          "النسخ الاحتياطي: npm run backup:run و backup:drill على الخادم؛ الاستعادة في ملف جديد فقط."
+        ],
+        "do": ["أنشئ الحسابات عبر قوالب الأدوار.", "تحقق من الهوية قبل أي إعادة ضبط.", "راجع استخدامات الوصول الطارئ خلال 24 ساعة.", "عطّل حسابات من غادروا — لا تحذف أبدًا."],
+        "dont": ["لا تشارك حساب المسؤول.", "لا تُوقف التحقق بخطوتين.", "لا تستخدم النظام التجريبي لبيانات مرضى حقيقية."],
+        "wrong": ["لا يستطيع أي مسؤول الدخول: على الخادم npm run mfa:reset -- <اسم المستخدم>.", "بند فاشل في الجاهزية: افتح دليل التشغيل الفعلي، القسم 4."]
+      }
+    }
+  },
+  "feedback": {
+    "en": { "title": "Trial feedback sheet", "sub": "One sheet per person per day. Be honest — we want to find problems now.", "name": "Name (optional)", "role": "Role", "date": "Date", "rate": "How was it?", "easy": "Easy", "ok": "OK", "hard": "Hard", "na": "Not done",
+      "tasks": ["Sign in / change password", "Register or find a patient", "Check in and the queue", "Book an appointment", "Rooms and starting treatment", "Documentation (4 fields)", "Check out", "Correction request / approval", "Report or review a duplicate", "Forgot password / recovery", "Switching to Arabic"],
+      "free1": "Anything that confused you or took too long (screen, what you tried, what you expected):", "free2": "Anything that was wrong, missing or unsafe:", "free3": "What worked well:", "daily": "Would you use this every day?", "yes": "Yes", "maybe": "With changes", "no": "No", "sev": "Mark each problem: A = blocks my work, B = slows me down, C = small annoyance." },
+    "ar": { "title": "ورقة ملاحظات التجربة", "sub": "ورقة واحدة لكل شخص في اليوم. كن صريحًا — نريد اكتشاف المشكلات الآن.", "name": "الاسم (اختياري)", "role": "الدور", "date": "التاريخ", "rate": "كيف كانت؟", "easy": "سهلة", "ok": "مقبولة", "hard": "صعبة", "na": "لم تُنفَّذ",
+      "tasks": ["تسجيل الدخول / تغيير كلمة المرور", "تسجيل مريض أو البحث عنه", "تسجيل الوصول والطابور", "حجز موعد", "الغرف وبدء العلاج", "التوثيق (4 حقول)", "تسجيل الخروج", "طلب التصحيح / الموافقة عليه", "الإبلاغ عن سجل مكرر أو مراجعته", "نسيان كلمة المرور / الاستعادة", "التبديل إلى العربية"],
+      "free1": "أي شيء أربكك أو استغرق وقتًا طويلًا (الشاشة، ما جرّبته، ما توقعته):", "free2": "أي شيء خاطئ أو ناقص أو غير آمن:", "free3": "ما الذي نجح جيدًا:", "daily": "هل تستخدمه يوميًا؟", "yes": "نعم", "maybe": "مع تعديلات", "no": "لا", "sev": "صنّف كل مشكلة: أ = توقف عملي، ب = يبطئني، ج = إزعاج بسيط." }
+  }
+}

@@ -34,6 +34,7 @@
     "audit:verify": "node --disable-warning=ExperimentalWarning server/backup.js verify-fingerprint",
     "readiness": "node --disable-warning=ExperimentalWarning server/readiness-cli.js",
     "admin:create": "node --disable-warning=ExperimentalWarning server/create-admin.js",
-    "tune:hash": "node --disable-warning=ExperimentalWarning server/tune-hash.js"
+    "tune:hash": "node --disable-warning=ExperimentalWarning server/tune-hash.js",
+    "pilot:pack": "node scripts/build-pilot-pack.mjs"
   }
 }

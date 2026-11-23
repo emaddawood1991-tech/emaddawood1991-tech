@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Administrator guide</title><style>
+@page { size: A4; margin: 11mm 12mm; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 9.7pt/1.34 'Noto Naskh Arabic','Segoe UI',Tahoma,Arial,sans-serif; color: #17284b; }
+.brand { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #2e55b2; padding-bottom: 4px; margin-bottom: 7px; font-weight: 700; color: #2e55b2; font-size: 10pt; }
+.brand small { font-weight: 400; color: #5a6b8c; }
+h1 { margin: 2px 0 2px; font-size: 17pt; color: #12235a; }
+.who { margin: 0 0 6px; color: #3d4f78; }
+.box { border: 1px solid #c8d3ea; border-radius: 6px; padding: 5px 8px; margin: 5px 0; background: #f6f8fd; }
+.box b { color: #12235a; }
+.sign { display: flex; gap: 14px; margin-top: 4px; font-size: 9pt; }
+.sign span { flex: 1; border-bottom: 1px dotted #7d8db3; min-height: 14px; }
+h2 { margin: 7px 0 2px; font-size: 11pt; color: #2e55b2; }
+ol { margin: 2px 0 0; padding-inline-start: 18px; } li { margin: 1.6px 0; }
+.cols { display: flex; gap: 8px; } .cols > div { flex: 1; }
+.do { border-color: #bfe3cc; background: #f3faf6; } .dont { border-color: #f0c9c9; background: #fdf5f5; } .wrong { border-color: #f1dfb0; background: #fffaf0; }
+ul { margin: 2px 0 0; padding-inline-start: 16px; } ul li { margin: 1px 0; }
+.foot { margin-top: 7px; font-size: 8.2pt; color: #5a6b8c; border-top: 1px solid #d8e0f0; padding-top: 3px; display: flex; justify-content: space-between; }
+table { width: 100%; border-collapse: collapse; margin-top: 4px; } th, td { border: 1px solid #c8d3ea; padding: 3px 6px; font-size: 9pt; text-align: start; } th { background: #eef2fb; }
+td.c { text-align: center; width: 15%; } .lines { border: 1px solid #c8d3ea; border-radius: 6px; min-height: 52px; margin: 2px 0 6px; }
+.chk { display: inline-block; width: 11px; height: 11px; border: 1px solid #556; margin: 0 3px; vertical-align: -1px; }
+</style></head><body><div class="brand"><span>Al Faisal Medical Center · Ideal Care</span><small>FMC Patient Flow · Pilot</small></div><h1>Administrator guide</h1><p class="who">System administrators: accounts, settings, security, backups. Administrator status does not allow treating patients.</p>
+<div class="box"><b>Sign in.</b> Sign in. Two-step verification is required. Keep the ten recovery codes safe and separate.<div class="sign"><span>Trial username: <b>admin</b></span><span>Password (given by the trial lead):</span></div></div>
+<h2>Your day</h2><ol><li>Settings → Staff: add each person with a Role template, department and (separately) authorized services. Give a temporary password; they must change it.</li><li>Settings → Services / Rooms / Appointment categories / Procedure codes: check against the clinic. Add the approved procedure codes (none are shipped).</li><li>Settings → Security &amp; Access → Accounts: reset a password, end sessions, reset two-step, rename a username.</li><li>Recovery &amp; Emergency: answer sign-in help requests (verify the person yourself first). Review every emergency-access use with a note.</li><li>Alerts: read and acknowledge. Audit History: filter the log; Verify now checks it was not altered.</li><li>Duplicates: approve links proposed by managers; Undo with a reason if wrong.</li><li>Production readiness: every line should be OK before real data. Security Settings: passwords, idle minutes, limits.</li><li>Backups: npm run backup:run and backup:drill on the server; restore only into a new file.</li></ol>
+<div class="cols"><div class="box do"><b>Do</b><ul><li>Create accounts through role templates.</li><li>Verify identity before any reset.</li><li>Review emergency-access uses within 24 hours.</li><li>Deactivate leavers — never delete.</li></ul></div><div class="box dont"><b>Don’t</b><ul><li>Don’t share the administrator account.</li><li>Don’t switch off two-step verification.</li><li>Don’t use the trial system for real patient data.</li></ul></div></div>
+<div class="box wrong"><b>If something goes wrong</b><ul><li>No administrator can sign in: on the server, npm run mfa:reset -- &lt;username&gt;.</li><li>Readiness shows a failing line: open Docs → Go-live runbook, section 4.</li></ul></div><div class="foot"><span>Training material — synthetic data only. Never enter real patient data in the trial system.</span><span>Trial questions? Ask the trial lead.</span></div></body></html>

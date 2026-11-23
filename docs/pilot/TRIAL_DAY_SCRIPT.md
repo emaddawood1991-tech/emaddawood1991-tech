@@ -1,0 +1,25 @@
+# Trial day script — what to do and what you should see
+
+Run on the **trial system with synthetic patients only**. One person reads the step aloud; the person named does it; everyone ticks ✔ when the **expected result** happened, or writes the step number and what happened on the feedback sheet.
+(An automated rehearsal of this exact script runs in the test suite, so every expected result below is known to be true on the current version.)
+
+| # | Who | Do | Expected result | ✔ |
+|---|---|---|---|---|
+| 0 | Administrator | Settings → Procedure codes → add code `TRIAL01` (Physiotherapy, 5 min). Security & Access → Recovery & Emergency → switch **Enable emergency access** on. Security Settings → idle sign-out minutes = 30 → Save. | The code is listed and active; the switch stays on; “Saved”. Production readiness tab opens and lists the checks. | ☐ |
+| 1 | Reception | Visits → ＋ New patient: *Trial Patient One*, phone 0501234567, date of birth 1990-01-01 → choose **Physiotherapy** → Check in. | A queue number such as P-1 is shown; the patient appears in Queue (clinician can see it). | ☐ |
+| 2 | Reception | Daily Schedule → ＋ Add appointment for *Trial Patient Two*, tomorrow 10:00, with PT One. Then try to book a *third* patient at the same time with the same clinician. | The first booking appears in the grid. The second is **refused with a clear conflict message** (clinician already booked). | ☐ |
+| 3 | Clinician (PT One) | Set My status = Available. Queue → **Call next**. | *Trial Patient One* is called (status Called). | ☐ |
+| 4 | Clinician | Rooms/Visits → Assign room **PT-01** → Enter room → **Start treatment** → service *PT Treatment*, planned **5** minutes. | Treatment starts; Sessions shows a 5-minute countdown for this patient. | ☐ |
+| 5 | Clinician | Sessions → Documentation. Look first, then save complaint + diagnosis only, then all four fields (complaint, diagnosis, procedure code `TRIAL01`, progress note). | Before saving: **YELLOW, 0 of 4**. After two fields: still yellow. After all four: **ORANGE**. | ☐ |
+| 6 | Everyone | Wait for the 5 minutes to pass (watch the clock). Do nothing. | At the planned time the treatment **stops by itself** and is marked as completed automatically and **unverified** (no overtime is counted). | ☐ |
+| 7 | Reception | Register *Trial Walkaway* in Physiotherapy, then Queue → **No-show**. | The patient leaves the queue; nothing is deleted; the timeline shows the no-show. | ☐ |
+| 8 | Clinician → Manager | Clinician: Corrections → request a correction of the treatment end time, with a reason. Try approving it yourself. Then the Manager approves. | A reason is required. The clinician **cannot** approve. After the manager approves, the corrected time is used and the **original time is still shown**. | ☐ |
+| 9 | Reception | Visits → select *Trial Patient One* → Edit details → change the phone to 0501234568. Then try to change the EMR number. Administrator: open Change history. | The phone changes; the EMR number cannot be edited; the history shows the old and the new phone. | ☐ |
+| 10 | Reception → Manager → Administrator | Create a second record *Trial Patient Won* with phone 0501234568 and the same date of birth. Reception: Duplicates → report the pair. Manager: Duplicates → link, keep *Trial Patient One*, write a reason → Propose; try to approve it yourself. Administrator approves. Reception searches the duplicate’s EMR number. | The pair is listed. The proposer **cannot approve** their own link. After approval, the search shows *Trial Patient One* “also known as” the duplicate’s number; the duplicate cannot be checked in. | ☐ |
+| 11 | Anyone | Switch to Arabic (button bottom left). Open Queue, Daily Schedule and My Account. Switch back. | Text is Arabic and reads right-to-left, the menu is on the right, nothing is cut off. | ☐ |
+| 12 | Reception | Sign out → “Forgot password?” → enter `reception`. Administrator: Security & Access → Recovery & Emergency → reset with a temporary password. Reception signs in. | The page gives the same neutral answer. After the reset, sign-in works only with the temporary password and **forces a new password**. | ☐ |
+| 13 | Orthopedic doctor | Try to open *Trial Patient One* (physiotherapy). Then My Account → Emergency access: EMR number + a reason of 15+ characters → open timeline. Administrator: Security & Access → Alerts, then Recovery & Emergency → Review. | Before: not allowed. After: **read-only** view of that patient only; the doctor cannot edit. A critical alert appears; the administrator can review and record the outcome. | ☐ |
+| 14 | Administrator | Security & Access → Audit History → **Verify now**; open Production readiness. | “Audit log verified”. Readiness lists each check as ready / to do / failing. | ☐ |
+| 15 | Everyone | Fill in the feedback sheet (one per person). | Sheets collected. | ☐ |
+
+**Rule for the day:** if something blocks you for more than two minutes, write the step number and the screen on the feedback sheet and move on. Do not work around it silently.
