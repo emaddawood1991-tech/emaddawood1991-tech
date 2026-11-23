@@ -175,6 +175,7 @@ export function makeSchedule(db, ops) {
   function resolve(user, b, cur = null) {
     const patientId = Number(b.patient_id ?? cur?.patient_id);
     const patient = one('SELECT id,mrn,name FROM patients WHERE id=?', patientId) || bad({ patient_id: 'Choose a patient (search by EMR number, name or phone).' });
+    ops.refuseIfLinked?.(patientId); // a record linked as a duplicate cannot take new bookings
     const row = rowOf(b.row_id ?? cur?.row_id ?? null);
     const departmentId = Number(b.department_id ?? cur?.department_id ?? row?.department_id ?? 0);
     const dep = one('SELECT id,active FROM departments WHERE id=?', departmentId); if (!dep) bad({ department_id: 'Choose a department.' });
@@ -340,6 +341,7 @@ export function makeSchedule(db, ops) {
     const dep = one('SELECT id FROM departments WHERE id=? AND active=1', b.department_id) || bad({ department_id: 'Choose a department.' }); needDept(user, dep.id);
     if (b.preferred_date) validDate(b.preferred_date, 'preferred_date'); if (b.preferred_time) validTime(b.preferred_time, 'preferred_time');
     const cs = b.contact_status || 'NOT_CONTACTED'; if (!CONTACT.includes(cs)) bad({ contact_status: 'Unknown contact status.' });
+    ops.refuseIfLinked?.(Number(b.patient_id));
     const id = Number(run('INSERT INTO waiting_list(patient_id,department_id,clinician_id,preferred_date,preferred_time,contact_status,notes,created_by,created_at) VALUES (?,?,?,?,?,?,?,?,?)',
       b.patient_id, dep.id, b.clinician_id || null, b.preferred_date || null, b.preferred_time || null, cs, String(b.notes || '').slice(0, 500), user.id, now()).lastInsertRowid);
     audit(user, 'schedule.waiting.add', 'waiting', id, {});

@@ -1,6 +1,6 @@
 # Duplicate patient records — design proposal (for approval, nothing implemented)
 
-Status: **proposal.** No code exists for this. It needs your written approval before any build, because it changes how clinical history is linked.
+Status: **implemented in stage S11 (23 Nov 2026) with the recommended defaults** — linking (not merging); administrator and clinic manager propose, a different one approves; reception can flag; the duplicate's EMR number stays valid. What differs from this proposal is listed in `docs/audit/SECURITY_AUDIT_2026-11.md` (Stage S11).
 
 ## 1. The problem
 Two patient records for one person (different EMR numbers) split visits, sessions, documentation and appointments. Today a duplicate is only *warned about* when a record is created or edited (same phone, or same name and date of birth) and can be confirmed as "different people". Nothing joins two records that were already created.

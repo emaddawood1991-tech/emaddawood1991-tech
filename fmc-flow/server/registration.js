@@ -160,6 +160,7 @@ export function makeRegistration(db, ops) {
     });
   }
 
+  const IN = 'IN (SELECT value FROM json_each(?))';
   function search(user, term) {
     need(user, 'patients.read');
     const raw = String(term ?? '').trim();
@@ -168,14 +169,26 @@ export function makeRegistration(db, ops) {
     const digits = raw.replace(/[٠-٩]/g, (c) => ARABIC_INDIC[c]).replace(/\D/g, '').replace(/^0+/, ''); // national numbers start with 0; stored numbers are +CC…
     audit(user, 'patients.search', 'patient', null, { q_len: raw.length, scoped: sc != null });
     if (raw.length < 3) return []; // at least 3 characters: no directory dumps
-    const found = q(`SELECT p.*, (SELECT id FROM visits v WHERE v.patient_id=p.id AND v.status='OPEN') open_visit_id FROM patients p
-      WHERE (p.name LIKE ? ESCAPE '\\' OR p.name_ar LIKE ? ESCAPE '\\' OR p.mrn LIKE ? ESCAPE '\\' OR CAST(p.id AS TEXT)=?
-        OR (? <> '' AND length(?) >= 4 AND REPLACE(COALESCE(p.phone,''),'+','') LIKE ?))
-        AND (? IS NULL OR EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id=p.id AND a.department_id IN (SELECT value FROM json_each(?)))
-          OR EXISTS (SELECT 1 FROM queue_entries qe JOIN visits vv ON vv.id=qe.visit_id WHERE vv.patient_id=p.id AND qe.department_id IN (SELECT value FROM json_each(?)))
-          OR EXISTS (SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.patient_id=p.id AND sv.department_id IN (SELECT value FROM json_each(?)))
-          OR EXISTS (SELECT 1 FROM waiting_list w WHERE w.patient_id=p.id AND w.department_id IN (SELECT value FROM json_each(?))))
-      ORDER BY p.name LIMIT 30`, like, like, like, raw, digits, digits, `%${digits}%`, sc, sc, sc, sc, sc);
+    const OPEN = "(SELECT id FROM visits v WHERE v.patient_id=p.id AND v.status='OPEN') open_visit_id";
+    const base = q(`SELECT p.*, ${OPEN} FROM patients p
+      WHERE p.name LIKE ? ESCAPE '\\' OR p.name_ar LIKE ? ESCAPE '\\' OR p.mrn LIKE ? ESCAPE '\\' OR CAST(p.id AS TEXT)=?
+        OR (? <> '' AND length(?) >= 4 AND REPLACE(COALESCE(p.phone,''),'+','') LIKE ?)
+      ORDER BY p.name LIMIT 200`, like, like, like, raw, digits, digits, `%${digits}%`);
+    // a record linked as a duplicate stands for the surviving record; its department scope is the whole family's
+    const mrnOf = (id) => one('SELECT mrn FROM patients WHERE id=?', id)?.mrn;
+    const seen = new Set(); const resolved = [];
+    for (const r of base) {
+      const sid = ops.survivorOf ? ops.survivorOf(r.id) : r.id; if (seen.has(sid)) continue; seen.add(sid);
+      const row = sid === r.id ? r : one(`SELECT p.*, ${OPEN} FROM patients p WHERE p.id=?`, sid);
+      const fam = ops.familyIds ? ops.familyIds(sid) : [sid];
+      resolved.push({ row: { ...row, also_known_as: fam.slice(1).map(mrnOf), matched_via: sid === r.id ? null : r.mrn }, fam });
+    }
+    const inScope = ({ fam }) => !!one(`SELECT 1 x WHERE EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id IN (SELECT value FROM json_each(?)) AND a.department_id ${IN})
+          OR EXISTS (SELECT 1 FROM queue_entries qe JOIN visits vv ON vv.id=qe.visit_id WHERE vv.patient_id IN (SELECT value FROM json_each(?)) AND qe.department_id ${IN})
+          OR EXISTS (SELECT 1 FROM treatment_sessions ts JOIN services sv ON sv.id=ts.service_id WHERE ts.patient_id IN (SELECT value FROM json_each(?)) AND sv.department_id ${IN})
+          OR EXISTS (SELECT 1 FROM waiting_list w WHERE w.patient_id IN (SELECT value FROM json_each(?)) AND w.department_id ${IN})`,
+      JSON.stringify(fam), sc, JSON.stringify(fam), sc, JSON.stringify(fam), sc, JSON.stringify(fam), sc);
+    const found = (sc == null ? resolved : resolved.filter(inScope)).slice(0, 30).map((x) => x.row);
     ops.logAccess(user, found.map((p) => p.id), 'SEARCH'); // who was shown which patients
     return found;
   }

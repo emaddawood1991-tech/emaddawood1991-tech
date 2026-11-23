@@ -16,12 +16,16 @@ export function makeRecovery({ db, ops, privacy, mfa, accounts, HttpError }) {
   /** Read access to a visit through an active grant for its patient (used by the timeline and documentation readers only). */
   function grantFor(user, visitId) {
     if (!enabled()) return null;
-    return one(`SELECT g.* FROM break_glass_grants g JOIN visits v ON v.patient_id=g.patient_id
-      WHERE g.user_id=? AND v.id=? AND g.ended_at IS NULL AND g.expires_at>? ORDER BY g.id DESC LIMIT 1`, user.id, visitId, now()) || null;
+    const v = one('SELECT patient_id FROM visits WHERE id=?', visitId); if (!v) return null;
+    for (const g of q('SELECT * FROM break_glass_grants WHERE user_id=? AND ended_at IS NULL AND expires_at>? ORDER BY id DESC', user.id, now())) {
+      const fam = ops.familyIds ? ops.familyIds(g.patient_id) : [g.patient_id]; // linked duplicate records are one person
+      if (fam.includes(v.patient_id)) return g;
+    }
+    return null;
   }
 
   function visitsOf(patientId) {
-    return q('SELECT id,arrived_at,status FROM visits WHERE patient_id=? ORDER BY id DESC LIMIT 20', patientId).map((v) => ({ ...v,
+    return q('SELECT id,arrived_at,status FROM visits WHERE patient_id IN (SELECT value FROM json_each(?)) ORDER BY id DESC LIMIT 20', JSON.stringify(ops.familyIds ? ops.familyIds(patientId) : [patientId])).map((v) => ({ ...v,
       sessions: q('SELECT s.id,s.status,sv.name service FROM treatment_sessions s JOIN services sv ON sv.id=s.service_id WHERE s.visit_id=? ORDER BY s.id', v.id) }));
   }
 

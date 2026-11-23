@@ -384,10 +384,12 @@ export function makeOps(db) {
   }
 
   // ---------- visits & queue ----------
+  let refuseHook = () => {}; const setLinkGuard = (f) => { refuseHook = f; }; const ops_refuse = (id) => refuseHook(id); // set by the links module: a linked duplicate cannot be checked in
   function checkIn(user, { patientId, appointmentId, departmentId, serviceId, clinicianId }) {
     need(user, 'visit.manage');
     return tx(db, () => {
       const p = one('SELECT * FROM patients WHERE id=?', patientId) || fail(404, 'PATIENT_NOT_FOUND');
+      ops_refuse(patientId);
       let appt = appointmentId ? one('SELECT * FROM appointments WHERE id=?', appointmentId) : null;
       if (appointmentId && !appt) fail(404, 'APPOINTMENT_NOT_FOUND');
       if (appt && appt.patient_id !== p.id) fail(400, 'APPOINTMENT_MISMATCH');
@@ -776,7 +778,7 @@ export function makeOps(db) {
     q, one, run, setting, audit, event, need, now, fail,
     sessionIntervals, unionMs, sumMs, visitDurations, sessionView, roomState, visitVisible, needVisible,
     assignRoom, enterRoom, exitRoom, transferRoom, setRoomStatus,
-    setGrantFinder, cancelQueueEntry, checkIn, checkOut, callNext, setPriority, queueList,
+    setGrantFinder, setLinkGuard, cancelQueueEntry, checkIn, checkOut, callNext, setPriority, queueList,
     logAccess, sweepTimers, visitTiming, timerOf, treatmentOptions, visitDepartments, startSession, pauseSession, resumeSession, completeSession, activeSessions, authorizedFor,
     getDocumentation, saveDocumentation, scheduleList, visitScheduleStatus,
     timeline, requestCorrection, decideCorrection, locLabel,

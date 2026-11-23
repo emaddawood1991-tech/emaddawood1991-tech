@@ -157,3 +157,19 @@ export function PatientEditModal({ patient, config, onClose, onSaved }) {
       {hist && (hist.length === 0 ? <p className="muted small">{t('noChanges')}</p> : <div className="tbl"><table data-testid="patient-history"><tbody>{hist.map((h) => <tr key={h.id}><td className="small">{fmtDT(h.ts)} · {h.actor}</td><td className="small">{Object.entries(h.changes).map(([k, v]) => `${k}: ${v.from ?? '—'} → ${v.to ?? '—'}`).join('; ')}</td></tr>)}</tbody></table></div>)}
     </div></Modal>);
 }
+
+/** One person's visits across the surviving record and every linked duplicate, labelled with the EMR number each was created under. */
+export function PatientHistoryModal({ patient, onClose }) {
+  const { t, fmtDT } = useI18n(); const [h, setH] = useState(null); const [err, setErr] = useState('');
+  useMemo(() => { api.get(`/patients/${patient.id}/history`).then(setH).catch((e) => setErr(e.message)); }, [patient.id]);
+  return (
+    <Modal title={t('patientHistory')} onClose={onClose} wide><div className="stack" data-testid="patient-history-modal">
+      {err && <div className="field-err" role="alert">{err}</div>}
+      {!h && !err && <p className="muted">{t('loading')}</p>}
+      {h && <>
+        <p><b>{h.patient.mrn}</b> · {h.patient.name}</p>
+        {h.also_known_as.length > 0 && <div className="banner" data-testid="aka-banner">{t('akaLabel')}: {h.also_known_as.join(', ')}</div>}
+        {h.visits.length === 0 ? <p className="muted small">—</p> : <div className="tbl"><table><thead><tr><th>{t('dupWhen')}</th><th>EMR</th><th>{t('department')}</th><th>{t('status')}</th></tr></thead>
+          <tbody>{h.visits.map((v) => <tr key={v.id}><td className="small">{fmtDT(v.arrived_at)}</td><td className="small">{v.mrn}{v.from_linked_record ? ` · ${t('dupLinkedRecord')}` : ''}</td><td className="small">{v.departments.join(', ') || '—'}</td><td className="small">{v.status}</td></tr>)}</tbody></table></div>}</>}
+    </div></Modal>);
+}

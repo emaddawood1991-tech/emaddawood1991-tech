@@ -14,6 +14,7 @@ import { can, deptScope, deptJson } from './perms.js';
 import { applyTemplate, effectiveTemplate } from './roles.js';
 import { readiness } from './readiness.js';
 import { makeRecovery } from './recovery.js';
+import { makeLinks } from './links.js';
 
 export { hashPassword };
 const DUMMY_HASH = hashPassword(randomBytes(12).toString('hex')); // verified against when the username does not exist, so timing does not reveal valid usernames
@@ -409,6 +410,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   });
   app.post('/api/appointments', guard('patients.write'), (req, res) => {
     const { patient_id, department_id, service_id = null, clinician_id = null, scheduled_at } = req.body;
+    ops.refuseIfLinked?.(patient_id);
     if (!patient_id || !department_id || Number.isNaN(Date.parse(scheduled_at))) throw new HttpError(400, 'INVALID');
     const id = tx(db, () => {
       const n = one('SELECT COALESCE(MAX(id),0)+1 n FROM appointments').n;
@@ -423,6 +425,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.post('/api/visits/checkin', guard(), (req, res) => res.status(201).json(ops.checkIn(req.user, req.body)));
   app.post('/api/visits/:id/checkout', guard(), (req, res) => res.json(ops.checkOut(req.user, Number(req.params.id))));
   accounts.register(app, { guard, cookieOf, setSessionCookie, clearSessionCookie });
+  const links = makeLinks({ db, ops, HttpError }); ops.setLinkGuard(links.refuseIfLinked); ops.refuseIfLinked = links.refuseIfLinked; ops.familyIds = links.familyIds; ops.survivorOf = links.survivorOf; links.register(app, { guard });
   const recovery = makeRecovery({ db, ops, privacy, mfa, accounts, HttpError }); ops.setGrantFinder(recovery.grantFor); recovery.register(app, { guard });
   privacy.register(app, { guard });
   const searchLimit = privacy.limiter('search', 'rate_search_per_min', 60e3, 60); const exportLimit = privacy.limiter('export', 'rate_export_per_hour', 3600e3, 10);
@@ -505,7 +508,7 @@ export function createApp({ db = openDb(), backupDir = new URL('../data/backups/
   app.get('/api/search', guard('patients.read'), (req, res, next) => searchLimit(req, res, next), (req, res) => {
     const f = Object.fromEntries(Object.entries(req.query).map(([k, v]) => [k, String(v)])), s = deptScope(req.user), w = [], a = [];
     if (f.patient) { w.push('(p.name LIKE ? OR p.name_ar LIKE ? OR CAST(p.id AS TEXT)=?)'); a.push(`%${f.patient}%`, `%${f.patient}%`, f.patient); }
-    if (f.mrn) { w.push('p.mrn LIKE ?'); a.push(`%${f.mrn}%`); }
+    if (f.mrn) { w.push("(p.mrn LIKE ? OR p.id IN (SELECT l.duplicate_id FROM patient_links l JOIN patients s ON s.id=l.survivor_id WHERE l.status='ACTIVE' AND s.mrn LIKE ?) OR p.id IN (SELECT l.survivor_id FROM patient_links l JOIN patients d ON d.id=l.duplicate_id WHERE l.status='ACTIVE' AND d.mrn LIKE ?))"); a.push(`%${f.mrn}%`, `%${f.mrn}%`, `%${f.mrn}%`); }
     if (f.appointment) { w.push('EXISTS (SELECT 1 FROM appointments x WHERE x.id=v.appointment_id AND x.ref LIKE ?)'); a.push(`%${f.appointment}%`); }
     if (f.department_id) { w.push('(EXISTS (SELECT 1 FROM queue_entries x WHERE x.visit_id=v.id AND x.department_id=?))'); a.push(f.department_id); }
     if (f.service_id) { w.push('EXISTS (SELECT 1 FROM treatment_sessions x WHERE x.visit_id=v.id AND x.service_id=?)'); a.push(f.service_id); }

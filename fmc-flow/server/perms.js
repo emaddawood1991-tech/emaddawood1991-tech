@@ -25,6 +25,10 @@ export const PERMS = {
   'schedule.view': ALL,
   'schedule.manage': ['admin', 'supervisor', 'reception'],
   'schedule.block': ['admin', 'supervisor'],
+  'patients.link.propose': ['admin', 'supervisor'], // link a duplicate record to the one that is kept
+  'patients.link.approve': ['admin', 'supervisor'], // never the person who proposed it
+  'patients.link.undo': ['admin'],
+  'patients.link.flag': ['admin', 'supervisor', 'reception'], // report a suspected duplicate; cannot link
   'breakglass.use': ['supervisor', 'clinician'], // read-only emergency access outside the person's department; off until an administrator enables it
   'breakglass.review': ['admin'],
 };

@@ -13,6 +13,7 @@ import DailySchedule from './pages/DailySchedule.jsx';
 import Account, { ForcedPasswordChange } from './pages/Account.jsx';
 import { ForcedMfaSetup, MfaChallenge } from './pages/Mfa.jsx';
 import Corrections from './pages/Corrections.jsx';
+import Duplicates from './pages/Duplicates.jsx';
 import Search from './pages/Search.jsx';
 import Reports from './pages/Reports.jsx';
 import Settings from './pages/Settings.jsx';
@@ -21,7 +22,7 @@ import System from './pages/System.jsx';
 const ALL = ['admin', 'supervisor', 'reception', 'clinician'];
 const PAGES = [
   ['dashboard', Dashboard, ALL], ['visits', Visits, ALL], ['queue', Queue, ALL], ['dailyschedule', DailySchedule, ALL], ['rooms', Rooms, ALL], ['sessions', Sessions, ['admin', 'supervisor', 'clinician']], ['treatmentboard', TreatmentBoard, ALL],
-  ['corrections', Corrections, ALL], ['account', Account, ALL], ['search', Search, ALL], ['reports', Reports, ['admin', 'supervisor']], ['settings', Settings, ['admin']], ['system', System, ['admin', 'supervisor']],
+  ['corrections', Corrections, ALL], ['duplicates', Duplicates, ['admin', 'supervisor', 'reception']], ['account', Account, ALL], ['search', Search, ALL], ['reports', Reports, ['admin', 'supervisor']], ['settings', Settings, ['admin']], ['system', System, ['admin', 'supervisor']],
 ];
 
 function Login({ onDone }) {

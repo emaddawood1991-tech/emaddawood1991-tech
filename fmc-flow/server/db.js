@@ -247,6 +247,22 @@ CREATE TABLE IF NOT EXISTS break_glass_grants (
 );
 CREATE TRIGGER IF NOT EXISTS breakglass_no_delete BEFORE DELETE ON break_glass_grants BEGIN SELECT RAISE(ABORT,'break_glass_grants is append-only'); END;
 
+CREATE TABLE IF NOT EXISTS patient_links (
+  id INTEGER PRIMARY KEY, duplicate_id INTEGER NOT NULL REFERENCES patients(id), survivor_id INTEGER NOT NULL REFERENCES patients(id),
+  status TEXT NOT NULL CHECK (status IN ('PROPOSED','ACTIVE','REJECTED','UNDONE')), reason TEXT NOT NULL,
+  proposed_by INTEGER NOT NULL, proposed_at TEXT NOT NULL, approved_by INTEGER, approved_at TEXT, decision_note TEXT,
+  conflicts TEXT NOT NULL DEFAULT '[]', undone_by INTEGER, undone_at TEXT, undo_reason TEXT, CHECK (duplicate_id <> survivor_id)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS patient_links_one_per_duplicate ON patient_links(duplicate_id) WHERE status IN ('PROPOSED','ACTIVE');
+CREATE INDEX IF NOT EXISTS patient_links_survivor ON patient_links(survivor_id, status);
+CREATE TRIGGER IF NOT EXISTS patient_links_no_delete BEFORE DELETE ON patient_links BEGIN SELECT RAISE(ABORT,'patient_links is append-only'); END;
+CREATE TABLE IF NOT EXISTS duplicate_flags (
+  id INTEGER PRIMARY KEY, patient_a INTEGER NOT NULL REFERENCES patients(id), patient_b INTEGER NOT NULL REFERENCES patients(id), reason TEXT NOT NULL,
+  flagged_by INTEGER NOT NULL, ts TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'OPEN' CHECK (status IN ('OPEN','DISMISSED','LINKED')), handled_by INTEGER, handled_at TEXT
+);
+CREATE TRIGGER IF NOT EXISTS duplicate_flags_no_delete BEFORE DELETE ON duplicate_flags BEGIN SELECT RAISE(ABORT,'duplicate_flags is append-only'); END;
+CREATE INDEX IF NOT EXISTS patients_phone ON patients(phone);
+CREATE INDEX IF NOT EXISTS patients_dob ON patients(dob);
 CREATE TABLE IF NOT EXISTS login_attempts (key TEXT PRIMARY KEY, n INTEGER NOT NULL, t INTEGER NOT NULL, blocked INTEGER NOT NULL DEFAULT 0);
 CREATE TABLE IF NOT EXISTS user_departments (
   user_id INTEGER NOT NULL REFERENCES users(id), department_id INTEGER NOT NULL REFERENCES departments(id), PRIMARY KEY (user_id, department_id)
