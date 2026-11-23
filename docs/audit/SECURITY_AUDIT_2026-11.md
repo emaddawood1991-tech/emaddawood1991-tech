@@ -141,6 +141,11 @@ Implements `docs/DUPLICATE_PATIENT_MERGE_DESIGN.md` with the recommended default
 - **Result at 60,000 visits:** search 3–7 ms, queue 2 ms, open visits ~35 ms, 30-day report ~340 ms (was ~900 ms at one seventh of the size), two-year report ~7.8 s (was not finishing). The two-year report is still linear in history; if clinics need it faster, pre-aggregated daily totals are the next step.
 - Test: `tests/perf.test.js` fails if a per-visit lookup stops using an index. Rollback: tag `checkpoint/pre-s17-20bf601`.
 
+## Stage S18 (implemented): phone and tablet layout
+- Measured first (`tests/e2e-responsive.cjs`: 68 screens, 3 roles, 820 px and 390 px). No page scrolled sideways, but on phones the full menu filled the first screen of every page, so content started below the fold, and on tablets a grid-stretch left a large empty gap under the header.
+- Fix: below 860 px the menu is behind a **Menu** button (collapsed by default, closes after a page is chosen, returns to the top of the page, `aria-expanded`/`aria-controls`, works right-to-left); rows align to the top. Desktop layout unchanged.
+- Test fails if the menu starts open on a small screen, stays open after a choice, content starts more than 200 px down, anything sticks out past the screen edge or a screen scrolls sideways. Rollback: tag `checkpoint/pre-s18-0659681`.
+
 ## Still open (later stages)
 MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · e-mail/SMS self-service recovery (needs written approval for an external service).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.
