@@ -38,7 +38,7 @@ const backupEvery = Number(process.env.FMC_BACKUP_EVERY_HOURS || 0);
 if (backupEvery > 0) {
   if (!/^[0-9a-f]{64}$/i.test(process.env.FMC_BACKUP_KEY || '')) console.warn('BACKUP: FMC_BACKUP_EVERY_HOURS is set but FMC_BACKUP_KEY is missing; scheduled backups are disabled.');
   else {
-    const job = () => { try { const r = runScheduled({ dir: new URL('../data/backups/', import.meta.url).pathname }); console.log('Scheduled backup written', r.backup.split('/').pop(), r.drill ? '(restore drill passed)' : ''); } catch (e) { console.error('scheduled backup failed:', e.message); } };
+    const job = () => { try { const r = runScheduled({ dir: process.env.FMC_BACKUP_DIR || new URL('../data/backups/', import.meta.url).pathname }); console.log('Scheduled backup written', r.backup.split('/').pop(), r.drill ? '(restore drill passed)' : ''); } catch (e) { console.error('scheduled backup failed:', e.message); } };
     setInterval(job, backupEvery * 3600e3).unref(); setTimeout(job, 60e3).unref();
   }
 }

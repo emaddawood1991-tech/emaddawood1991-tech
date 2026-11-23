@@ -14,7 +14,7 @@ const keyOf = (hex = process.env.FMC_BACKUP_KEY) => {
   return Buffer.from(hex, 'hex');
 };
 
-export function backup({ dbPath = DB_PATH, dir = new URL('../data/backups/', import.meta.url).pathname, key, retainDays = Number(process.env.FMC_BACKUP_RETAIN_DAYS || 0) } = {}) {
+export function backup({ dbPath = DB_PATH, dir = process.env.FMC_BACKUP_DIR || new URL('../data/backups/', import.meta.url).pathname, key, retainDays = Number(process.env.FMC_BACKUP_RETAIN_DAYS || 0) } = {}) {
   const log = openDb(dbPath);
   try {
     const k = keyOf(key);
@@ -50,7 +50,7 @@ export function restore(file, outPath, key) {
 }
 
 /** Restore drill: decrypts the newest (or a given) backup into a temporary file, checks it, compares it with the live audit fingerprint rules, deletes it and records the result. Never touches the live database. */
-export function drill({ dbPath = DB_PATH, dir = new URL('../data/backups/', import.meta.url).pathname, key, file } = {}) {
+export function drill({ dbPath = DB_PATH, dir = process.env.FMC_BACKUP_DIR || new URL('../data/backups/', import.meta.url).pathname, key, file } = {}) {
   const log = openDb(dbPath);
   const tmp = join(tmpdir(), `fmc-drill-${randomBytes(6).toString('hex')}.db`);
   const note = (ok, text) => log.prepare('INSERT INTO backup_log(ts,file,bytes,ok,note) VALUES (?,?,?,?,?)').run(new Date().toISOString(), file ? file.split('/').pop() : null, 0, ok ? 1 : 0, `DRILL ${text}`.slice(0, 200));
@@ -106,6 +106,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   else if (cmd === 'drill') console.log('Restore drill passed:', JSON.stringify(drill({ file: a })));
   else if (cmd === 'fingerprint') console.log(toLine(recordFingerprint()));
   else if (cmd === 'verify-fingerprint') { const r = verifyFingerprints(a, { all: b === '--all' }); console.log(JSON.stringify(r)); if (r.some((x) => !x.ok)) process.exit(2); }
-  else if (cmd === 'run') console.log('Scheduled run:', JSON.stringify(runScheduled({ dir: new URL('../data/backups/', import.meta.url).pathname })));
+  else if (cmd === 'run') console.log('Scheduled run:', JSON.stringify(runScheduled({ dir: process.env.FMC_BACKUP_DIR || new URL('../data/backups/', import.meta.url).pathname })));
   else console.log('Backup written:', backup());
 }

@@ -77,7 +77,7 @@ function checkStaff(b, creating, one) {
   if (Object.keys(f).length) throw new HttpError(400, 'VALIDATION', 'Please correct the highlighted fields.', { fields: f });
 }
 
-export function createApp({ db = openDb(), backupDir = new URL('../data/backups/', import.meta.url).pathname, staticDir, mfaKey = randomBytes(32) } = {}) { // mfaKey: 32 bytes from FMC_MFA_KEY (index.js); a random per-process key only for tests
+export function createApp({ db = openDb(), backupDir = process.env.FMC_BACKUP_DIR || new URL('../data/backups/', import.meta.url).pathname, staticDir, mfaKey = randomBytes(32) } = {}) { // mfaKey: 32 bytes from FMC_MFA_KEY (index.js); a random per-process key only for tests
   const ops = makeOps(db);
   const { q, one, run, audit, fail } = ops;
   const reg = makeRegistration(db, ops);
