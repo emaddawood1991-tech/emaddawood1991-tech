@@ -434,6 +434,12 @@ export function createApp({ db = openDb(), backupDir = process.env.FMC_BACKUP_DI
   // ---- Daily Schedule ----
   const nid = (v) => Number(v);
   app.get('/api/schedule/board', guard('schedule.view'), (req, res) => res.json(sched.board(req.user, req.query)));
+  // A printed day sheet carries patient names: record who printed which day and how many appointments (the paper itself is outside the system).
+  app.post('/api/schedule/print', guard('schedule.view'), (req, res) => {
+    const date = String(req.body?.date || ''); if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return res.status(400).json({ error: 'VALIDATION', message: 'A valid date is required.' });
+    const count = Math.max(0, Math.min(100000, Number(req.body?.count) || 0));
+    audit(req.user, 'schedule.print', 'schedule', null, { date, appointments: count }); res.json({ ok: true });
+  });
   app.post('/api/schedule/appointments', guard('schedule.manage'), (req, res) => res.status(201).json(sched.createAppointments(req.user, req.body || {})));
   app.patch('/api/schedule/appointments/:id', guard('schedule.manage'), (req, res) => res.json(sched.updateAppointment(req.user, nid(req.params.id), req.body || {})));
   app.post('/api/schedule/appointments/:id/cancel', guard('schedule.manage'), (req, res) => res.json(sched.cancelAppointment(req.user, nid(req.params.id), req.body || {})));

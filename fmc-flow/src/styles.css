@@ -150,3 +150,14 @@ input[aria-invalid='true'], select[aria-invalid='true'] { border-color: var(--ba
 .sch-colchip{display:inline-flex;gap:3px;align-items:center;padding:2px 4px;border:1px solid rgba(46,85,178,.2);border-radius:8px;margin:2px}
 @media (max-width:900px){.sch thead th,.sch .sch-staff,.sch-cell{min-width:120px}.sch-toolbar select,.sch-toolbar input{max-width:150px}}
 .sch-toolbar input[type=search]{min-width:260px;max-width:none;flex:1 1 260px}
+
+/* Printable day sheet (S19): the app is hidden when printing and only the sheet is shown. */
+.print-root { display: none; }
+@media print {
+  body.printing-sheet #root, body:has(.print-root) #root { display: none !important; }
+  .print-root { display: block !important; position: static; color: #000; background: #fff; font: 12pt/1.35 system-ui, sans-serif; padding: 0; }
+  .print-root h1 { font-size: 16pt; margin: 0 0 4px; } .print-root h2 { font-size: 12pt; margin: 14px 0 4px; }
+  .print-root table { width: 100%; border-collapse: collapse; } .print-root th, .print-root td { border: 1px solid #444; padding: 4px 6px; text-align: start; font-size: 10.5pt; }
+  .print-root th { background: #eee; } .print-block { break-inside: avoid; } .print-foot { margin-top: 16px; font-size: 9pt; color: #333; }
+  body { background: #fff !important; }
+}

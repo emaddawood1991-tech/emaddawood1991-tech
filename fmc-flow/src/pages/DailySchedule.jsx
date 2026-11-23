@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { api, usePoll } from '../api.js';
 import { useI18n } from '../i18n.jsx';
 import { Empty, useToast } from '../ui.jsx';
@@ -50,6 +51,25 @@ function Group({ g, board, q, onSlot, onOpen, onBlock, canBook }) {
     </div>);
 }
 
+/** Printable day sheet: only what the screen already shows this user (the server scopes the board). Rendered into <body>; print CSS hides the app and prints just this. */
+function PrintSheet({ board, day, user }) {
+  const { t, loc, fmt } = useI18n();
+  const byTime = (a, b) => String(a.start_local).localeCompare(String(b.start_local));
+  const sections = board.groups.flatMap((g) => g.rows.map((r) => ({ key: `${g.id}-${r.id}`, title: `${loc(g)} · ${loc(r, 'staff_name') || loc(r, 'label') || r.label || ''}`, list: [...(r.appointments || [])].sort(byTime) }))).filter((x) => x.list.length);
+  if (board.unplaced.length) sections.push({ key: 'unplaced', title: t('dsUnplaced'), list: [...board.unplaced].sort(byTime) });
+  return createPortal(
+    <section className="print-root" data-testid="print-sheet" dir={document.documentElement.dir}>
+      <h1>{t('appName')} — {t('dsPrTitle')}</h1>
+      <p><b>{day}</b></p>
+      {sections.length === 0 && <p>{t('dsPrNone')}</p>}
+      {sections.map((x) => (
+        <div key={x.key} className="print-block"><h2>{x.title}</h2>
+          <table><thead><tr><th>{t('dsPrTime')}</th><th>{t('dsPrPatient')}</th><th>{t('dsPrEmr')}</th><th>{t('dsPrCategory')}</th><th>{t('dsPrStatus')}</th></tr></thead>
+            <tbody>{x.list.map((a) => <tr key={a.id}><td>{a.start_local}–{a.end_local}</td><td>{loc(a, 'patient_name') || a.patient_name}</td><td>{a.mrn}</td><td>{a.category ? loc(a, 'category') : ''}</td><td>{t(`dsStatus_${a.status}`)}</td></tr>)}</tbody></table>
+        </div>))}
+      <p className="print-foot">{t('dsPrBy')} {loc(user)} · {fmt(new Date().toISOString(), { dateStyle: 'medium', timeStyle: 'short' })}<br />{t('dsPrNote')}</p>
+    </section>, document.body);
+}
 function Lists({ board, config, staff, onBook, canManage, version }) {
   const { t, loc, fmt } = useI18n(); const toast = useToast();
   const [tab, setTab] = useState('WAITING'); const [add, setAdd] = useState(false);
@@ -84,6 +104,7 @@ function Lists({ board, config, staff, onBook, canManage, version }) {
 export default function DailySchedule({ user, staff }) {
   const { t, loc } = useI18n();
   const [date, setDate] = useState(null); const [f, setF] = useState({ department_id: '', clinician_id: '', category_id: '', q: '' });
+  const [printing, setPrinting] = useState(false); const toast = useToast();
   const [modal, setModal] = useState(null); const [layout, setLayout] = useState(false); const [version, setVersion] = useState(0);
   const cfgP = usePoll('/config', 30000);
   const qs = `date=${date || ''}&department_id=${f.department_id}&clinician_id=${f.clinician_id}&category_id=${f.category_id}&include_hidden=${layout ? 1 : 0}`;
@@ -95,6 +116,8 @@ export default function DailySchedule({ user, staff }) {
   const day = date || board.date; const me = board.me;
   const reload = () => { boardP.reload(); setVersion((v) => v + 1); };
   const noGroups = board.groups.length === 0;
+  const apptCount = board.groups.flatMap((g) => g.rows).reduce((n, r) => n + (r.appointments || []).length, 0) + board.unplaced.length;
+  const printSheet = async () => { try { await api.post('/schedule/print', { date: day, count: apptCount }); } catch { toast(t('dsPrFail'), true); return; } setPrinting(true); const done = () => setPrinting(false); window.addEventListener('afterprint', done, { once: true }); setTimeout(() => { window.print(); }, 50); setTimeout(done, 120000); }; // stays mounted until the browser reports printing is over (some browsers print asynchronously)
   const clinicians = staff.filter((s) => s.active && s.role === 'clinician' && (!f.department_id || String(s.department_id) === String(f.department_id)));
   const openSlot = (row, col) => setModal({ k: 'appt', mode: 'add', prefill: { row_id: row.id, department_id: row.department_id ?? row.group?.department_id, clinician_id: row.user_id, time: col.time, date: day } });
   const slotFor = (row, col, g) => openSlot({ ...row, group: g }, col);
@@ -119,6 +142,7 @@ export default function DailySchedule({ user, staff }) {
           {me.can_block && <button className="btn ghost" disabled={noGroups} onClick={() => setModal({ k: 'block' })}>{t('dsBlock')}</button>}
           {me.can_configure && <button className="btn ghost" onClick={() => setLayout(true)}>{t('dsLayout')}</button>}
           <span className="sp" />
+          <button className="btn ghost" data-testid="print-day" onClick={printSheet}>🖨 {t('dsPrint')}</button>
           <span className="sch-legend">{board.categories.filter((c) => c.active).map((c) => <span key={c.id} className="sch-cat" style={{ background: c.color }}>{loc(c)}{c.default_minutes ? ` · ${c.default_minutes}` : ''}</span>)}</span>
         </div>
       </div>
@@ -133,6 +157,7 @@ export default function DailySchedule({ user, staff }) {
       {modal?.k === 'block' && <BlockModal board={board} config={config} onClose={() => setModal(null)} onDone={reload} />}
       {modal?.k === 'blockdetails' && <BlockDetailsModal block={modal.b} onClose={() => setModal(null)} onDone={reload} />}
       {modal?.k === 'setup' && <SetupModal onClose={() => setModal(null)} onDone={reload} />}
+      {printing && <PrintSheet board={board} day={day} user={user} />}
       {layout && <LayoutModal board={board} config={config} onClose={() => setLayout(false)} onChanged={async () => { await boardP.reload(); }} />}
     </>
   );

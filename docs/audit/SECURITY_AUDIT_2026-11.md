@@ -146,6 +146,12 @@ Implements `docs/DUPLICATE_PATIENT_MERGE_DESIGN.md` with the recommended default
 - Fix: below 860 px the menu is behind a **Menu** button (collapsed by default, closes after a page is chosen, returns to the top of the page, `aria-expanded`/`aria-controls`, works right-to-left); rows align to the top. Desktop layout unchanged.
 - Test fails if the menu starts open on a small screen, stays open after a choice, content starts more than 200 px down, anything sticks out past the screen edge or a screen scrolls sideways. Rollback: tag `checkpoint/pre-s18-0659681`.
 
+## Stage S19 (implemented): printable Daily Schedule day sheet
+- **Print day sheet** button on the Daily Schedule: A4 page with the clinic name, date, one table per clinician/room (time, patient, EMR number, type, status), who printed it and when, and a confidentiality note. Works in English and Arabic (right-to-left).
+- **Data minimisation:** the sheet is built only from the board the server already scoped for this user (same people, same departments), and it leaves out phone numbers. It exists only while printing and is never visible on screen.
+- **Audit:** each print is recorded (`schedule.print`: who, date, number of appointments) through `POST /api/schedule/print` (permission `schedule.view`; invalid date refused). Route count is now 133 (129 guarded, 4 public). What happens to the paper afterwards is outside the system — handle and dispose of it under clinic policy (**Requires Legal-Compliance Confirmation** for retention/disposal rules).
+- Test: `tests/e2e-print.cjs` (11 checks, including print-media emulation). Rollback: tag `checkpoint/pre-s19-*` (the commit before this stage).
+
 ## Still open (later stages)
 MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · e-mail/SMS self-service recovery (needs written approval for an external service).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.
