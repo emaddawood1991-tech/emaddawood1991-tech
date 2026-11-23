@@ -159,6 +159,11 @@ Implements `docs/DUPLICATE_PATIENT_MERGE_DESIGN.md` with the recommended default
 - **Hardening found on the way (Low):** a check-in request without a patient id returned a server error (500); it now returns a clear 400/404. Test added.
 - Tests: `tests/trends.test.js` (3), `tests/e2e-trends.cjs` (8). Rollback: tag `checkpoint/pre-s20-a995da4`.
 
+## Stage S21 (implemented): generated API reference
+- `docs/API.md` lists every route (133: 129 signed-in, 4 public) with the permission and the roles that hold it, plus the conventions (required request header, error shape, status codes). It is **generated from the running router and the permission table** (`npm run docs:api`), so it cannot describe something the code does not do.
+- `tests/apidoc.test.js` fails if the file is stale, if more or fewer than the four known routes are public, or if a route uses a permission granted to no role. Adding a route without regenerating the document now fails the build.
+- Found while writing it: the Daily Schedule print endpoint (S19) returned a flat error body instead of the standard `{ error: { code, message } }`; fixed. Rollback: tag `checkpoint/pre-s21-fb37d3a`.
+
 ## Still open (later stages)
 MFA is available but not required by default (enable per role) · self-service account recovery (administrator-assisted reset exists) · default demo password in the demo build · hosting, TLS termination and volume encryption are the operator's to provide (S6 supplies the checks) · e-mail/SMS self-service recovery (needs written approval for an external service).
 Rollback for S1: tag `checkpoint/pre-security-s1-81000b9`.
