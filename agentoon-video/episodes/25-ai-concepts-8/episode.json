@@ -1,0 +1,185 @@
+{
+ "voice": "am_adam",
+ "speed": 1.04,
+ "phrases": [
+  {
+   "id": "hook",
+   "speak": "Everyone talks about A I. But do you actually understand how it works? Here are eight concepts in ninety seconds.",
+   "show": "Everyone talks about AI. But do you actually understand how it works? Here are eight concepts in ninety seconds."
+  },
+  {
+   "id": "llm",
+   "speak": "An L L M is a large language model, trained to recognize patterns in language and generate responses. It predicts text, one token at a time.",
+   "show": "An LLM is a large language model trained to recognize patterns in language and generate responses. It predicts text, one token at a time."
+  },
+  {
+   "id": "api",
+   "speak": "An A P I lets applications communicate with services. It's how your website can send a request to an A I model, and receive an answer.",
+   "show": "An API lets applications communicate with services. It's how your website can send a request to an AI model and receive an answer."
+  },
+  {
+   "id": "tokens",
+   "speak": "A I models process text in pieces called tokens. A token can be a word, part of a word, or punctuation. Tokens affect context limits, usage, and often A P I costs.",
+   "show": "AI models process text in pieces called tokens. A token can be a word, part of a word, or punctuation. Tokens affect context limits, usage, and often API costs."
+  },
+  {
+   "id": "ft",
+   "speak": "Fine-tuning continues training an existing model on selected examples, helping it perform particular tasks or follow specific patterns. It changes the model itself.",
+   "show": "Fine-tuning continues training an existing model on selected examples, helping it perform particular tasks or follow specific patterns. It changes the model itself."
+  },
+  {
+   "id": "rag",
+   "speak": "R A G lets an A I system retrieve relevant information from external sources before generating its answer. The model isn't retrained. It reads fresh passages, then answers.",
+   "show": "RAG lets an AI system retrieve relevant information from external sources before generating its answer. The model isn't retrained. It reads fresh passages, then answers."
+  },
+  {
+   "id": "emb",
+   "speak": "Embeddings turn information into numerical vectors, helping systems compare meaning and find similar content. Similar meanings land close together.",
+   "show": "Embeddings turn information into numerical vectors, helping systems compare meaning and find similar content. Similar meanings land close together."
+  },
+  {
+   "id": "dev",
+   "speak": "A I developers build A I-powered applications. A I engineers may also design, evaluate, deploy, and maintain the systems behind them. In practice, these roles overlap.",
+   "show": "AI developers build AI-powered applications. AI engineers may also design, evaluate, deploy, and maintain the systems behind them. In practice, these roles overlap."
+  },
+  {
+   "id": "all",
+   "speak": "Put them together: an app uses an A P I, sends tokens to an L L M, retrieves useful knowledge with R A G, and uses embeddings to find it. Fine-tuning is the optional path that adapts the model.",
+   "show": "Put them together: an app uses an API, sends tokens to an LLM, retrieves useful knowledge with RAG, and uses embeddings to find it. Fine-tuning is the optional path that adapts the model."
+  },
+  {
+   "id": "cta",
+   "speak": "Which A I concept should I explain next? Follow Agentoon dot A I, and save this guide!",
+   "show": "Which AI concept should I explain next? Follow Agentoon.ai and save this guide!"
+  }
+ ],
+ "total": 93.04,
+ "music": [
+  {
+   "t0": 0,
+   "t1": 6.4,
+   "mood": "hook"
+  },
+  {
+   "t0": 6.4,
+   "t1": 44.5,
+   "mood": "disc"
+  },
+  {
+   "t0": 44.5,
+   "t1": 74.7,
+   "mood": "demo"
+  },
+  {
+   "t0": 74.7,
+   "t1": 93.04,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "whoosh",
+   "t": 0.05,
+   "gain": 0.18
+  },
+  {
+   "name": "pop",
+   "t": 6.32,
+   "gain": 0.35
+  },
+  {
+   "name": "pop",
+   "t": 15.73,
+   "gain": 0.35
+  },
+  {
+   "name": "pop",
+   "t": 23.51,
+   "gain": 0.35
+  },
+  {
+   "name": "pop",
+   "t": 34.22,
+   "gain": 0.35
+  },
+  {
+   "name": "pop",
+   "t": 44.4,
+   "gain": 0.35
+  },
+  {
+   "name": "pop",
+   "t": 55.1,
+   "gain": 0.35
+  },
+  {
+   "name": "pop",
+   "t": 64.07,
+   "gain": 0.35
+  },
+  {
+   "name": "pop",
+   "t": 74.69,
+   "gain": 0.35
+  },
+  {
+   "name": "type",
+   "t": 9.44,
+   "gain": 0.2,
+   "dur": 2.0,
+   "cps": 11
+  },
+  {
+   "name": "type",
+   "t": 17.85,
+   "gain": 0.2,
+   "dur": 1.5,
+   "cps": 10
+  },
+  {
+   "name": "tick",
+   "t": 26.63,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "t": 26.93,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "t": 27.23,
+   "gain": 0.4
+  },
+  {
+   "name": "ding",
+   "t": 40.84,
+   "gain": 0.3
+  },
+  {
+   "name": "ding",
+   "t": 52.02,
+   "gain": 0.3
+  },
+  {
+   "name": "sparkle",
+   "t": 59.42,
+   "gain": 0.25
+  },
+  {
+   "name": "tick",
+   "t": 67.19,
+   "gain": 0.4
+  },
+  {
+   "name": "ding",
+   "t": 85.31,
+   "gain": 0.3
+  },
+  {
+   "name": "sparkle",
+   "t": 90.6,
+   "gain": 0.3
+  }
+ ]
+}

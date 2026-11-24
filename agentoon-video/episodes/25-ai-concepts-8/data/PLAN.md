@@ -1,0 +1,4 @@
+# Episode 25: 8 AI Concepts in 90 Seconds (PREVIEW)
+Engine: Remotion (`remotion-fx/src/nine/AiConcepts.tsx`, comp `AiConcepts`, 1080x1920, 30 fps, ~93 s). Hero technique: control-room HUD + progressive diagrams; carrier: the robot (walks between sides every scene); transitions: blur-slide stage swap with per-scene accent colour.
+Palette: near-black + cyan/green/orange accents. Voice: Kokoro `am_adam` (PROVISIONAL, pending approval of the 10 s sample).
+Scenes: hook (ring of 8 + title) / LLM (L-L-M expand + 3D-projected network, prompt->response) / API (website-API-service, packets, request/response) / Tokens (REAL o200k_base split) / Fine-tuning (examples -> base model -> adapted model, not retrieval) / RAG (question->search->passages->LLM->grounded answer) / Embeddings (3D vector map, ILLUSTRATIVE) / Dev vs Engineer (split + overlap) / Everything connects (architecture, fine-tuning optional) / CTA (8 tiles + follow).
