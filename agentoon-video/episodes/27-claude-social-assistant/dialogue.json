@@ -1,0 +1,157 @@
+{
+ "voices": {
+  "A": {
+   "name": "Agentoon",
+   "voice": "am_adam",
+   "speed": 1.02
+  },
+  "C": {
+   "name": "Claude",
+   "voice": "am_michael",
+   "speed": 0.94
+  }
+ },
+ "gap": 0.28,
+ "lines": [
+  {
+   "id": "l01",
+   "who": "A",
+   "scene": "hook",
+   "speak": "Morning, Claude! Please tell me you've got some content ideas for today.",
+   "show": "Morning, Claude! Please tell me you've got some content ideas for today.",
+   "speed": 1.02
+  },
+  {
+   "id": "l02",
+   "who": "C",
+   "scene": "hook",
+   "speak": "Today? I've prepared a whole month!",
+   "show": "Today? I've prepared a whole month!",
+   "pad": 0.5
+  },
+  {
+   "id": "l03",
+   "who": "A",
+   "scene": "problem",
+   "speak": "Wait, a whole month? Researching, writing, editing and scheduling usually takes me forever!",
+   "show": "Wait, a whole month? Researching, writing, editing and scheduling usually takes me forever!",
+   "speed": 1.02
+  },
+  {
+   "id": "l04",
+   "who": "C",
+   "scene": "problem",
+   "speak": "That's exactly the workflow we can automate.",
+   "show": "That's exactly the workflow we can automate."
+  },
+  {
+   "id": "l05",
+   "who": "A",
+   "scene": "research",
+   "speak": "But where do you get the ideas?",
+   "show": "But where do you get the ideas?",
+   "speed": 1.02
+  },
+  {
+   "id": "l06",
+   "who": "C",
+   "scene": "research",
+   "speak": "From the sources and research tools you connect. I can organize relevant topics and turn them into a content plan.",
+   "show": "From the sources and research tools you connect. I can organize relevant topics and turn them into a content plan.",
+   "pad": 0.25
+  },
+  {
+   "id": "l07",
+   "who": "C",
+   "scene": "calendar",
+   "speak": "Next, I prepare scripts, captions and a content calendar. Connected production tools can help create the actual media.",
+   "show": "Next, I prepare scripts, captions and a content calendar. Connected production tools can help create the actual media."
+  },
+  {
+   "id": "l08",
+   "who": "A",
+   "scene": "calendar",
+   "speak": "All organized in one place?",
+   "show": "All organized in one place?",
+   "speed": 1.02
+  },
+  {
+   "id": "l09",
+   "who": "C",
+   "scene": "calendar",
+   "speak": "Exactly!",
+   "show": "Exactly!"
+  },
+  {
+   "id": "l10",
+   "who": "A",
+   "scene": "connectors",
+   "speak": "How do you connect everything together?",
+   "show": "How do you connect everything together?",
+   "speed": 1.02
+  },
+  {
+   "id": "l11",
+   "who": "C",
+   "scene": "connectors",
+   "speak": "With the right connectors, skills and automation workflows. They give me access to the tools you've authorized.",
+   "show": "With the right connectors, skills and automation workflows. They give me access to the tools you've authorized.",
+   "pad": 0.25
+  },
+  {
+   "id": "l12",
+   "who": "A",
+   "scene": "analytics",
+   "speak": "And can you check how my videos are performing?",
+   "show": "And can you check how my videos are performing?",
+   "speed": 1.02
+  },
+  {
+   "id": "l13",
+   "who": "C",
+   "scene": "analytics",
+   "speak": "If you connect the appropriate analytics tools, I can help review views, engagement and which topics perform best.",
+   "show": "If you connect the appropriate analytics tools, I can help review views, engagement and which topics perform best.",
+   "pad": 0.25
+  },
+  {
+   "id": "l14",
+   "who": "A",
+   "scene": "approval",
+   "speak": "So you don't need me anymore?",
+   "show": "So you don't need me anymore?",
+   "pad": 0.6,
+   "speed": 1.02
+  },
+  {
+   "id": "l15",
+   "who": "C",
+   "scene": "approval",
+   "speak": "Of course I do! You're the creator. You approve the content, and I help with the repetitive work.",
+   "show": "Of course I do! You're the creator. You approve the content, and I help with the repetitive work."
+  },
+  {
+   "id": "l16",
+   "who": "A",
+   "scene": "closing",
+   "speak": "Less repetitive work. More time to create. I like that!",
+   "show": "Less repetitive work. More time to create. I like that!",
+   "speed": 1.02
+  },
+  {
+   "id": "l17",
+   "who": "C",
+   "scene": "closing",
+   "speak": "Now, what should we create next?",
+   "show": "Now, what should we create next?"
+  },
+  {
+   "id": "l18",
+   "who": "A",
+   "scene": "closing",
+   "speak": "Save this video if you want to build your own AI content assistant.",
+   "show": "Save this video if you want to build your own AI content assistant.",
+   "speed": 1.02
+  }
+ ]
+}
