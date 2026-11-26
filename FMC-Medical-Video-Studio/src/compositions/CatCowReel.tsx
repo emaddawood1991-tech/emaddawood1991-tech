@@ -41,7 +41,7 @@ export const CatCowReel: React.FC<VideoProps> = (props) => {
       <StatCard from={st.from + 14} to={end(st) - 4} value={32.9} top={top + 90} />
       {/* 3 discs: Power Touch -> disc cross-section */}
       <Stage cam="close" from={dc.from} to={end(dc)} ty={190}><PowerTouch cam="close" from={dc.from + 10} to={end(dc) - 4} start={dc.from} lumbarOnly /></Stage>
-      <DiscCross x={170} y={top + 70} w={740} from={dc.from + sec(1.4)} to={end(dc) - 4} load={load(dc.from)} />
+      <DiscCross x={120} y={top + 90} w={620} from={dc.from + sec(1.4)} to={end(dc) - 4} load={load(dc.from)} />
       {/* 4 science: discs respond to loading, posture, daily activity */}
       <Stage cam="side" from={sc.from} to={end(sc)} ty={120}><PowerTouch cam="side" from={sc.from + 6} to={end(sc) - 4} start={sc.from} /></Stage>
       <DiscCross x={250} y={top + 60} w={580} from={sc.from + 8} to={end(sc) - 4} load={load(sc.from)} labels={false} />

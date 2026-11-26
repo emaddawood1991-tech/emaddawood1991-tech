@@ -18,7 +18,7 @@ export const Stage: React.FC<{cam: Cam; from: number; to: number; scale?: number
   const o = Math.min(ss(clamp((f - from) / fade)), 1 - ss(clamp((f - (to - fade)) / fade)));
   if (f < from - 1 || f > to + 1) return null;
   return (
-    <AbsoluteFill style={{opacity: o}}>
+    <AbsoluteFill style={{opacity: o, background: 'linear-gradient(180deg, #0b2036 0%, #0e2b47 100%)'}}>
       <AbsoluteFill style={{transform: `translate(${tx}px, ${ty}px) scale(${scale})`, transformOrigin: origin}}>
         <Loop durationInFrames={Math.round(LOOP / RATE)}>
           <OffthreadVideo src={staticFile(`catcow/${cam}.mp4`)} muted playbackRate={RATE} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
