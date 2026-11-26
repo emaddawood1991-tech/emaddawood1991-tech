@@ -135,6 +135,19 @@ export const Progression: React.FC<{from: number; to: number; y?: number}> = ({f
   );
 };
 
-export const AnkleInset: React.FC<{from: number; to: number}> = (p) => <BlenderInset {...p} name="ankle" label="أربطة الكاحل" />;
-export const HamstringInset: React.FC<{from: number; to: number}> = (p) => <BlenderInset {...p} name="hamstring" label="عضلات الفخذ الخلفية" />;
-export const KneeInset: React.FC<{from: number; to: number}> = (p) => <BlenderInset {...p} name="knee" label="مفصل الركبة" />;
+/** Insets designed in Figma (vector illustration + Arabic label, exported PNG), shown with a gentle float. */
+const FigmaInset: React.FC<{from: number; to: number; name: 'ankle' | 'hamstring' | 'knee'}> = ({from, to, name}) => {
+  const f = useCurrentFrame();
+  const o = win(f, from, to, 14, 14);
+  if (o <= 0.001) return null;
+  const k = ss(clamp((f - from) / 18));
+  const bob = Math.sin((f - from) / 22) * 4;
+  return (
+    <div style={{position: 'absolute', left: 64, top: 450 + (1 - k) * 16 + bob, width: 380, opacity: o, filter: 'drop-shadow(0 12px 26px rgba(0,0,0,0.38))'}}>
+      <Img src={staticFile(`overlays/figma/${name}.png`)} style={{width: 380, height: 'auto', display: 'block'}} />
+    </div>
+  );
+};
+export const AnkleInset: React.FC<{from: number; to: number}> = (p) => <FigmaInset {...p} name="ankle" />;
+export const HamstringInset: React.FC<{from: number; to: number}> = (p) => <FigmaInset {...p} name="hamstring" />;
+export const KneeInset: React.FC<{from: number; to: number}> = (p) => <FigmaInset {...p} name="knee" />;
