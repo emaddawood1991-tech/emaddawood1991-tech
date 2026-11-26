@@ -13,3 +13,6 @@ assets/audio/_cache/
 # HyperFrames adapter
 v7/hyperframes-adapter/node_modules/
 v7/hyperframes-adapter/.hyperframes/
+
+# generated Blender render sequences (reproducible: v7/blender/catcow.py)
+assets/catcow/*/*.png
