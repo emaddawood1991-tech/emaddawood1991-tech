@@ -1,0 +1,776 @@
+{
+ "voice": "am_adam",
+ "speed": 1.182,
+ "wpm": 161,
+ "total": 67.898,
+ "phrases": [
+  {
+   "id": "hook",
+   "start": 0.15,
+   "end": 4.822,
+   "show": "Unlock five powerful Windows tools with one shortcut. Hold the Windows key and press R.",
+   "speak": "Unlock five powerful Windows tools with one shortcut. Hold the Windows key, and press R.",
+   "map": null
+  },
+  {
+   "id": "c41",
+   "start": 6.442,
+   "end": 16.423,
+   "show": "Number 41. taskschd.msc opens Task Scheduler. See which automated tasks run, when they start, and what actions they perform. Great for spotting what launches at startup.",
+   "speak": "Number forty-one. Task Schedule dot M S C opens Task Scheduler. See which automated tasks run, when they start, and what actions they perform. Great for spotting what launches at startup.",
+   "map": null
+  },
+  {
+   "id": "c42",
+   "start": 18.043,
+   "end": 26.453,
+   "show": "Number 42. shrpubw opens the Shared Folder Wizard, helping you configure network folder sharing and control who can access your files.",
+   "speak": "Number forty-two. S H R P U W opens the Shared Folder Wizard, helping you configure network folder sharing and control who can access your files.",
+   "map": null
+  },
+  {
+   "id": "c43",
+   "start": 28.073,
+   "end": 38.782,
+   "show": "Number 43. SystemPropertiesRemote opens remote access settings. Review Remote Assistance and, on supported editions, Remote Desktop options, without changing your security configuration.",
+   "speak": "Number forty-three. System Properties Remote opens remote access settings. Review Remote Assistance and, on supported editions, Remote Desktop options, without changing your security configuration.",
+   "map": null
+  },
+  {
+   "id": "c44",
+   "start": 40.401,
+   "end": 48.958,
+   "show": "Number 44. This command opens Sign-in options. Review your PIN, Windows Hello, fingerprint and facial recognition settings, depending on your device.",
+   "speak": "Number forty-four. This command opens Sign-in options. Review your PIN, Windows Hello, fingerprint and facial recognition settings, depending on your device.",
+   "map": null
+  },
+  {
+   "id": "c45",
+   "start": 50.578,
+   "end": 59.369,
+   "show": "Number 45. This command opens Windows Update History. Check installed security patches, update names and installation dates when troubleshooting your computer.",
+   "speak": "Number forty-five. This command opens Windows Update History. Check installed security patches, update names and installation dates when troubleshooting your computer.",
+   "map": null
+  },
+  {
+   "id": "close",
+   "start": 60.989,
+   "end": 67.778,
+   "show": "Five powerful tools. One keyboard shortcut. Save these commands and follow Agentoon.ai for more Windows tips.",
+   "speak": "Five powerful tools. One keyboard shortcut. Save these commands, and follow Agentoon dot A I for more Windows tips.",
+   "map": null
+  }
+ ],
+ "words": [
+  {
+   "w": "Unlock",
+   "s": 0.15,
+   "e": 0.513
+  },
+  {
+   "w": "five",
+   "s": 0.513,
+   "e": 0.785
+  },
+  {
+   "w": "powerful",
+   "s": 0.785,
+   "e": 1.239
+  },
+  {
+   "w": "Windows",
+   "s": 1.239,
+   "e": 1.647
+  },
+  {
+   "w": "tools",
+   "s": 1.647,
+   "e": 1.964
+  },
+  {
+   "w": "with",
+   "s": 1.964,
+   "e": 2.237
+  },
+  {
+   "w": "one",
+   "s": 2.237,
+   "e": 2.463
+  },
+  {
+   "w": "shortcut.",
+   "s": 2.463,
+   "e": 2.962
+  },
+  {
+   "w": "Hold",
+   "s": 2.962,
+   "e": 3.234
+  },
+  {
+   "w": "the",
+   "s": 3.234,
+   "e": 3.461
+  },
+  {
+   "w": "Windows",
+   "s": 3.461,
+   "e": 3.869
+  },
+  {
+   "w": "key",
+   "s": 3.869,
+   "e": 4.096
+  },
+  {
+   "w": "and",
+   "s": 4.096,
+   "e": 4.323
+  },
+  {
+   "w": "press",
+   "s": 4.323,
+   "e": 4.641
+  },
+  {
+   "w": "R.",
+   "s": 4.641,
+   "e": 4.822
+  },
+  {
+   "w": "Number",
+   "s": 6.442,
+   "e": 6.849
+  },
+  {
+   "w": "41.",
+   "s": 6.849,
+   "e": 7.104
+  },
+  {
+   "w": "taskschd.msc",
+   "s": 7.104,
+   "e": 7.817
+  },
+  {
+   "w": "opens",
+   "s": 7.817,
+   "e": 8.173
+  },
+  {
+   "w": "Task",
+   "s": 8.173,
+   "e": 8.479
+  },
+  {
+   "w": "Scheduler.",
+   "s": 8.479,
+   "e": 9.09
+  },
+  {
+   "w": "See",
+   "s": 9.09,
+   "e": 9.345
+  },
+  {
+   "w": "which",
+   "s": 9.345,
+   "e": 9.701
+  },
+  {
+   "w": "automated",
+   "s": 9.701,
+   "e": 10.261
+  },
+  {
+   "w": "tasks",
+   "s": 10.261,
+   "e": 10.618
+  },
+  {
+   "w": "run,",
+   "s": 10.618,
+   "e": 10.923
+  },
+  {
+   "w": "when",
+   "s": 10.923,
+   "e": 11.229
+  },
+  {
+   "w": "they",
+   "s": 11.229,
+   "e": 11.534
+  },
+  {
+   "w": "start,",
+   "s": 11.534,
+   "e": 11.942
+  },
+  {
+   "w": "and",
+   "s": 11.942,
+   "e": 12.196
+  },
+  {
+   "w": "what",
+   "s": 12.196,
+   "e": 12.502
+  },
+  {
+   "w": "actions",
+   "s": 12.502,
+   "e": 12.96
+  },
+  {
+   "w": "they",
+   "s": 12.96,
+   "e": 13.266
+  },
+  {
+   "w": "perform.",
+   "s": 13.266,
+   "e": 13.775
+  },
+  {
+   "w": "Great",
+   "s": 13.775,
+   "e": 14.131
+  },
+  {
+   "w": "for",
+   "s": 14.131,
+   "e": 14.386
+  },
+  {
+   "w": "spotting",
+   "s": 14.386,
+   "e": 14.895
+  },
+  {
+   "w": "what",
+   "s": 14.895,
+   "e": 15.201
+  },
+  {
+   "w": "launches",
+   "s": 15.201,
+   "e": 15.71
+  },
+  {
+   "w": "at",
+   "s": 15.71,
+   "e": 15.914
+  },
+  {
+   "w": "startup.",
+   "s": 15.914,
+   "e": 16.423
+  },
+  {
+   "w": "Number",
+   "s": 18.043,
+   "e": 18.474
+  },
+  {
+   "w": "42.",
+   "s": 18.474,
+   "e": 18.744
+  },
+  {
+   "w": "shrpubw",
+   "s": 18.744,
+   "e": 19.229
+  },
+  {
+   "w": "opens",
+   "s": 19.229,
+   "e": 19.606
+  },
+  {
+   "w": "the",
+   "s": 19.606,
+   "e": 19.876
+  },
+  {
+   "w": "Shared",
+   "s": 19.876,
+   "e": 20.307
+  },
+  {
+   "w": "Folder",
+   "s": 20.307,
+   "e": 20.739
+  },
+  {
+   "w": "Wizard,",
+   "s": 20.739,
+   "e": 21.224
+  },
+  {
+   "w": "helping",
+   "s": 21.224,
+   "e": 21.709
+  },
+  {
+   "w": "you",
+   "s": 21.709,
+   "e": 21.978
+  },
+  {
+   "w": "configure",
+   "s": 21.978,
+   "e": 22.571
+  },
+  {
+   "w": "network",
+   "s": 22.571,
+   "e": 23.057
+  },
+  {
+   "w": "folder",
+   "s": 23.057,
+   "e": 23.488
+  },
+  {
+   "w": "sharing",
+   "s": 23.488,
+   "e": 23.973
+  },
+  {
+   "w": "and",
+   "s": 23.973,
+   "e": 24.243
+  },
+  {
+   "w": "control",
+   "s": 24.243,
+   "e": 24.728
+  },
+  {
+   "w": "who",
+   "s": 24.728,
+   "e": 24.997
+  },
+  {
+   "w": "can",
+   "s": 24.997,
+   "e": 25.267
+  },
+  {
+   "w": "access",
+   "s": 25.267,
+   "e": 25.698
+  },
+  {
+   "w": "your",
+   "s": 25.698,
+   "e": 26.022
+  },
+  {
+   "w": "files.",
+   "s": 26.022,
+   "e": 26.453
+  },
+  {
+   "w": "Number",
+   "s": 28.073,
+   "e": 28.483
+  },
+  {
+   "w": "43.",
+   "s": 28.483,
+   "e": 28.739
+  },
+  {
+   "w": "SystemPropertiesRemote",
+   "s": 28.739,
+   "e": 29.969
+  },
+  {
+   "w": "opens",
+   "s": 29.969,
+   "e": 30.328
+  },
+  {
+   "w": "remote",
+   "s": 30.328,
+   "e": 30.737
+  },
+  {
+   "w": "access",
+   "s": 30.737,
+   "e": 31.147
+  },
+  {
+   "w": "settings.",
+   "s": 31.147,
+   "e": 31.711
+  },
+  {
+   "w": "Review",
+   "s": 31.711,
+   "e": 32.121
+  },
+  {
+   "w": "Remote",
+   "s": 32.121,
+   "e": 32.531
+  },
+  {
+   "w": "Assistance",
+   "s": 32.531,
+   "e": 33.146
+  },
+  {
+   "w": "and,",
+   "s": 33.146,
+   "e": 33.453
+  },
+  {
+   "w": "on",
+   "s": 33.453,
+   "e": 33.658
+  },
+  {
+   "w": "supported",
+   "s": 33.658,
+   "e": 34.222
+  },
+  {
+   "w": "editions,",
+   "s": 34.222,
+   "e": 34.785
+  },
+  {
+   "w": "Remote",
+   "s": 34.785,
+   "e": 35.195
+  },
+  {
+   "w": "Desktop",
+   "s": 35.195,
+   "e": 35.656
+  },
+  {
+   "w": "options,",
+   "s": 35.656,
+   "e": 36.169
+  },
+  {
+   "w": "without",
+   "s": 36.169,
+   "e": 36.63
+  },
+  {
+   "w": "changing",
+   "s": 36.63,
+   "e": 37.142
+  },
+  {
+   "w": "your",
+   "s": 37.142,
+   "e": 37.45
+  },
+  {
+   "w": "security",
+   "s": 37.45,
+   "e": 37.962
+  },
+  {
+   "w": "configuration.",
+   "s": 37.962,
+   "e": 38.782
+  },
+  {
+   "w": "Number",
+   "s": 40.401,
+   "e": 40.801
+  },
+  {
+   "w": "44.",
+   "s": 40.801,
+   "e": 41.052
+  },
+  {
+   "w": "This",
+   "s": 41.052,
+   "e": 41.352
+  },
+  {
+   "w": "command",
+   "s": 41.352,
+   "e": 41.802
+  },
+  {
+   "w": "opens",
+   "s": 41.802,
+   "e": 42.152
+  },
+  {
+   "w": "Sign-in",
+   "s": 42.152,
+   "e": 42.603
+  },
+  {
+   "w": "options.",
+   "s": 42.603,
+   "e": 43.103
+  },
+  {
+   "w": "Review",
+   "s": 43.103,
+   "e": 43.504
+  },
+  {
+   "w": "your",
+   "s": 43.504,
+   "e": 43.804
+  },
+  {
+   "w": "PIN,",
+   "s": 43.804,
+   "e": 44.104
+  },
+  {
+   "w": "Windows",
+   "s": 44.104,
+   "e": 44.554
+  },
+  {
+   "w": "Hello,",
+   "s": 44.554,
+   "e": 44.955
+  },
+  {
+   "w": "fingerprint",
+   "s": 44.955,
+   "e": 45.605
+  },
+  {
+   "w": "and",
+   "s": 45.605,
+   "e": 45.855
+  },
+  {
+   "w": "facial",
+   "s": 45.855,
+   "e": 46.256
+  },
+  {
+   "w": "recognition",
+   "s": 46.256,
+   "e": 46.906
+  },
+  {
+   "w": "settings,",
+   "s": 46.906,
+   "e": 47.457
+  },
+  {
+   "w": "depending",
+   "s": 47.457,
+   "e": 48.007
+  },
+  {
+   "w": "on",
+   "s": 48.007,
+   "e": 48.207
+  },
+  {
+   "w": "your",
+   "s": 48.207,
+   "e": 48.508
+  },
+  {
+   "w": "device.",
+   "s": 48.508,
+   "e": 48.958
+  },
+  {
+   "w": "Number",
+   "s": 50.578,
+   "e": 50.967
+  },
+  {
+   "w": "45.",
+   "s": 50.967,
+   "e": 51.209
+  },
+  {
+   "w": "This",
+   "s": 51.209,
+   "e": 51.501
+  },
+  {
+   "w": "command",
+   "s": 51.501,
+   "e": 51.938
+  },
+  {
+   "w": "opens",
+   "s": 51.938,
+   "e": 52.278
+  },
+  {
+   "w": "Windows",
+   "s": 52.278,
+   "e": 52.715
+  },
+  {
+   "w": "Update",
+   "s": 52.715,
+   "e": 53.104
+  },
+  {
+   "w": "History.",
+   "s": 53.104,
+   "e": 53.589
+  },
+  {
+   "w": "Check",
+   "s": 53.589,
+   "e": 53.929
+  },
+  {
+   "w": "installed",
+   "s": 53.929,
+   "e": 54.464
+  },
+  {
+   "w": "security",
+   "s": 54.464,
+   "e": 54.949
+  },
+  {
+   "w": "patches,",
+   "s": 54.949,
+   "e": 55.435
+  },
+  {
+   "w": "update",
+   "s": 55.435,
+   "e": 55.823
+  },
+  {
+   "w": "names",
+   "s": 55.823,
+   "e": 56.163
+  },
+  {
+   "w": "and",
+   "s": 56.163,
+   "e": 56.406
+  },
+  {
+   "w": "installation",
+   "s": 56.406,
+   "e": 57.086
+  },
+  {
+   "w": "dates",
+   "s": 57.086,
+   "e": 57.426
+  },
+  {
+   "w": "when",
+   "s": 57.426,
+   "e": 57.718
+  },
+  {
+   "w": "troubleshooting",
+   "s": 57.718,
+   "e": 58.543
+  },
+  {
+   "w": "your",
+   "s": 58.543,
+   "e": 58.835
+  },
+  {
+   "w": "computer.",
+   "s": 58.835,
+   "e": 59.369
+  },
+  {
+   "w": "Five",
+   "s": 60.989,
+   "e": 61.312
+  },
+  {
+   "w": "powerful",
+   "s": 61.312,
+   "e": 61.851
+  },
+  {
+   "w": "tools.",
+   "s": 61.851,
+   "e": 62.282
+  },
+  {
+   "w": "One",
+   "s": 62.282,
+   "e": 62.552
+  },
+  {
+   "w": "keyboard",
+   "s": 62.552,
+   "e": 63.09
+  },
+  {
+   "w": "shortcut.",
+   "s": 63.09,
+   "e": 63.683
+  },
+  {
+   "w": "Save",
+   "s": 63.683,
+   "e": 64.006
+  },
+  {
+   "w": "these",
+   "s": 64.006,
+   "e": 64.383
+  },
+  {
+   "w": "commands",
+   "s": 64.383,
+   "e": 64.922
+  },
+  {
+   "w": "and",
+   "s": 64.922,
+   "e": 65.192
+  },
+  {
+   "w": "follow",
+   "s": 65.192,
+   "e": 65.623
+  },
+  {
+   "w": "Agentoon.ai",
+   "s": 65.623,
+   "e": 66.323
+  },
+  {
+   "w": "for",
+   "s": 66.323,
+   "e": 66.593
+  },
+  {
+   "w": "more",
+   "s": 66.593,
+   "e": 66.916
+  },
+  {
+   "w": "Windows",
+   "s": 66.916,
+   "e": 67.401
+  },
+  {
+   "w": "tips.",
+   "s": 67.401,
+   "e": 67.778
+  }
+ ]
+}

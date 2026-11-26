@@ -1,0 +1,47 @@
+{
+ "voice": "am_adam",
+ "speed": 1.0,
+ "phrases": [
+  {
+   "id": "hook",
+   "speak": "Unlock five powerful Windows tools with one shortcut. Hold the Windows key, and press R.",
+   "show": "Unlock five powerful Windows tools with one shortcut. Hold the Windows key and press R.",
+   "pad": 1.5
+  },
+  {
+   "id": "c41",
+   "speak": "Number forty-one. Task Schedule dot M S C opens Task Scheduler. See which automated tasks run, when they start, and what actions they perform. Great for spotting what launches at startup.",
+   "show": "Number 41. taskschd.msc opens Task Scheduler. See which automated tasks run, when they start, and what actions they perform. Great for spotting what launches at startup.",
+   "pad": 1.5
+  },
+  {
+   "id": "c42",
+   "speak": "Number forty-two. S H R P U W opens the Shared Folder Wizard, helping you configure network folder sharing and control who can access your files.",
+   "show": "Number 42. shrpubw opens the Shared Folder Wizard, helping you configure network folder sharing and control who can access your files.",
+   "pad": 1.5
+  },
+  {
+   "id": "c43",
+   "speak": "Number forty-three. System Properties Remote opens remote access settings. Review Remote Assistance and, on supported editions, Remote Desktop options, without changing your security configuration.",
+   "show": "Number 43. SystemPropertiesRemote opens remote access settings. Review Remote Assistance and, on supported editions, Remote Desktop options, without changing your security configuration.",
+   "pad": 1.5
+  },
+  {
+   "id": "c44",
+   "speak": "Number forty-four. This command opens Sign-in options. Review your PIN, Windows Hello, fingerprint and facial recognition settings, depending on your device.",
+   "show": "Number 44. This command opens Sign-in options. Review your PIN, Windows Hello, fingerprint and facial recognition settings, depending on your device.",
+   "pad": 1.5
+  },
+  {
+   "id": "c45",
+   "speak": "Number forty-five. This command opens Windows Update History. Check installed security patches, update names and installation dates when troubleshooting your computer.",
+   "show": "Number 45. This command opens Windows Update History. Check installed security patches, update names and installation dates when troubleshooting your computer.",
+   "pad": 1.5
+  },
+  {
+   "id": "close",
+   "speak": "Five powerful tools. One keyboard shortcut. Save these commands, and follow Agentoon dot A I for more Windows tips.",
+   "show": "Five powerful tools. One keyboard shortcut. Save these commands and follow Agentoon.ai for more Windows tips."
+  }
+ ]
+}
