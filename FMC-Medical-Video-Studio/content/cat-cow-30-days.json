@@ -1,0 +1,236 @@
+{
+  "slug": "cat-cow-30-days",
+  "topic": {
+    "ar": "تمرين القطة والبقرة لمدة ٣٠ يومًا",
+    "en": "Cat-Cow exercise 30 days"
+  },
+  "services": [
+    "العلاج الطبيعي",
+    "طب العظام"
+  ],
+  "scenes": [
+    {
+      "id": "cc_hook",
+      "sceneType": "A",
+      "plannedSec": 6,
+      "narration": "ماذا يمكن أن يحدث لظهرك إذا خصصت دقيقة يوميا لتمرين القطة والبقرة لمدة ثلاثين يوما؟",
+      "ttsText": "ماذا يمكن أن يحدث لظهرك إذا خصصت دقيقة يوميا لتمرين القطة والبقرة لمدة ثلاثين يوما؟",
+      "onScreen": {
+        "title": "ماذا يحدث لظهرك إذا مارست تمرين القطة والبقرة لمدة ٣٠ يوما؟"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "none",
+        "camera": "",
+        "description": "3D character on mat starts Cat-Cow immediately, three-quarter side camera"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_stat",
+      "sceneType": "C",
+      "plannedSec": 8,
+      "narration": "آلام أسفل الظهر من المشكلات الشائعة. وتشير تقديرات العبء العالمي للأمراض إلى أن معدل انتشارها النقطي، المعياري حسب العمر، في الإمارات بلغ نحو سبعة فاصل أربعة في المئة عام ألفين وثلاثة وعشرين.",
+      "ttsText": "آلام أسفل الظهر من المشكلات الشائعة. وتشير تقديرات العبء العالمي للأمراض إلى أن معدل انتشارها النقطي، المعياري حسب العمر، في الإمارات بلغ نحو سبعة فاصل أربعة في المئة عام ألفين وثلاثة وعشرين.",
+      "onScreen": {
+        "title": "آلام أسفل الظهر في الإمارات",
+        "subtitle": "معدل الانتشار النقطي المعياري حسب العمر — تقديرات ٢٠٢٣"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "none",
+        "camera": "",
+        "description": "Animated statistic above character (value pending verification)"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_disc",
+      "sceneType": "D",
+      "plannedSec": 8,
+      "narration": "بين فقرات العمود الفقري توجد أقراص غضروفية تساعد على توزيع الأحمال وتسمح بالحركة.",
+      "ttsText": "بين فقرات العمود الفقري توجد أقراص غضروفية تساعد على توزيع الأحمال وتسمح بالحركة.",
+      "onScreen": {
+        "title": "القرص بين الفقرات"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "regions",
+        "camera": "",
+        "description": "FMC Power Touch -> disc cross-section: annulus fibrosus, nucleus pulposus"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_science",
+      "sceneType": "D",
+      "plannedSec": 9,
+      "narration": "وتستجيب هذه الأقراص للحمل وللوضعية وللنشاط اليومي.",
+      "ttsText": "وتستجيب هذه الأقراص للحمل وللوضعية وللنشاط اليومي.",
+      "onScreen": {
+        "title": "الأقراص تستجيب للحمل والوضعية"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "regions",
+        "camera": "",
+        "description": "Detailed lumbar spine; discs respond to loading, posture and daily activity (no exercise-volume claim)"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_w1",
+      "sceneType": "B",
+      "plannedSec": 9,
+      "narration": "في تمرين القطة والبقرة، نبدأ بالارتكاز على اليدين والركبتين، ثم نقوس الظهر بلطف نحو الأعلى مع الزفير، ونعيده تدريجيا نحو الأسفل مع الشهيق، ضمن المدى المريح. خلال الأسبوع الأول، ركز على الوضعية الصحيحة والحركة الهادئة.",
+      "ttsText": "في تمرين القطة والبقرة، نبدأ بالارتكاز على اليدين والركبتين، ثم نقوس الظهر بلطف نحو الأعلى مع الزفير، ونعيده تدريجيا نحو الأسفل مع الشهيق، ضمن المدى المريح. خلال الأسبوع الأول، ركز على الوضعية الصحيحة والحركة الهادئة.",
+      "onScreen": {
+        "title": "الأسبوع الأول"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Learning the movement, flexion/extension arrows"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_w2",
+      "sceneType": "B",
+      "plannedSec": 8,
+      "narration": "ومع الاستمرار خلال الأسابيع التالية، قد تصبح الحركة أسهل لدى بعض الأشخاص.",
+      "ttsText": "ومع الاستمرار خلال الأسابيع التالية، قد تصبح الحركة أسهل لدى بعض الأشخاص.",
+      "onScreen": {
+        "title": "الأسبوع الثاني"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Circular anatomy inset: vertebrae and discs in changing position"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_w3",
+      "sceneType": "B",
+      "plannedSec": 8,
+      "narration": "وقد تساعد التمارين اللطيفة على تقليل التيبس وتحسين التحكم بحركة الظهر.",
+      "ttsText": "وقد تساعد التمارين اللطيفة على تقليل التيبس وتحسين التحكم بحركة الظهر.",
+      "onScreen": {
+        "title": "الأسبوع الثالث"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Closer camera, pelvis and lumbar movement, flexion vs extension comparison"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_w4",
+      "sceneType": "B",
+      "plannedSec": 9,
+      "narration": "لكن النتائج تختلف من شخص لآخر، ولا يعني ذلك أن الأقراص الغضروفية تتجدد أو أن الألم سيختفي خلال ثلاثين يوما.",
+      "ttsText": "لكن النتائج تختلف من شخص لآخر، ولا يعني ذلك أن الأقراص الغضروفية تتجدد أو أن الألم سيختفي خلال ثلاثين يوما.",
+      "onScreen": {
+        "title": "الأسبوع الرابع"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Smooth repetitions, side camera, subtle spine tracking overlay"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_safe",
+      "sceneType": "E",
+      "plannedSec": 7,
+      "narration": "إذا زادت الأعراض، توقف عن التمرين واطلب التقييم المناسب. وملاءمة التمرين تعتمد على حالة كل شخص.",
+      "ttsText": "إذا زادت الأعراض، توقف عن التمرين واطلب التقييم المناسب. وملاءمة التمرين تعتمد على حالة كل شخص.",
+      "onScreen": {
+        "title": "تحرك بلطف وضمن المدى المريح",
+        "subtitle": "أوقف التمرين إذا زادت الأعراض"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "none",
+        "camera": "",
+        "description": "Return to neutral; safety text"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "closing",
+      "sceneType": "F",
+      "plannedSec": 7,
+      "narration": "في مركز الفيصل الطبي، نهتم بمساعدتك على اختيار التمارين التي تناسب حالتك.",
+      "ttsText": "فِي مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ، نَهْتَمُّ بِمُسَاعَدَتِكَ عَلَى اخْتِيَارِ التَّمَارِينِ الَّتِي تُنَاسِبُ حَالَتَكَ.",
+      "onScreen": {
+        "title": "مركز الفيصل الطبي",
+        "subtitle": "الرعاية المثالية"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "none",
+        "camera": "",
+        "description": "Character looks to camera, original logo closing"
+      },
+      "footageQueries": [],
+      "sfx": []
+    }
+  ],
+  "instagramCaption": "تمرين القطة والبقرة: حركة لطيفة وضمن المدى المريح، والنتائج تختلف من شخص لآخر. محتوى توعوي وليس تشخيصا ولا خطة علاج.\n\nمركز الفيصل الطبي — الرعاية المثالية",
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العين",
+    "#الإمارات",
+    "#آلام_أسفل_الظهر",
+    "#العلاج_الطبيعي",
+    "#الرعاية_المثالية",
+    "#FMC",
+    "#AlAin",
+    "#UAE",
+    "#CatCow",
+    "#IdealCare"
+  ],
+  "sources": [
+    {
+      "title": "Low Back Pain in Saudi Arabia Did Not Follow the Global Decline in Age-Standardized Prevalence: GBD 2023 Trends and Physiotherapy Workforce Needs to 2030 (J Clin Med 2026;15(23):9193) — UAE 7.36% / 850,443 NOT YET VERIFIED (mdpi.com returned 403)",
+      "url": "https://www.mdpi.com/2077-0383/15/23/9193"
+    },
+    {
+      "title": "Prevalence and determinants of musculoskeletal disease in Emiratis, Dubai primary care (PRO Dubai; data 2009), Oman Med J 2016 — LBP 32.9% of 3,985 participants",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4861389"
+    },
+    {
+      "title": "Hutton WC, Malko JA, Fajman WA. Lumbar disc volume measured by MRI: effects of bed rest, horizontal exercise, and vertical loading. Aviat Space Environ Med 2003;74(1):73-8 (5 subjects; +10.6% after overnight bed rest; NOT about Cat-Cow)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12546302/"
+    }
+  ],
+  "timing": {
+    "lead": 6,
+    "tail": 8
+  },
+  "approvals": {
+    "grammarReview": null,
+    "medicalTerminologyReview": null,
+    "medicalAccuracyReview": null,
+    "scriptApproved": null,
+    "pronunciationApproved": null,
+    "approvedHash": null
+  }
+}
