@@ -153,8 +153,20 @@ for s, y in (('L', -0.19), ('R', 0.19)):
     cap((0, hy, HIP.z - 0.02), (0, hy, 0.085), 0.075, 0.058, PANTS, f'thigh.{s}'); cap((0, hy, 0.075), (-0.44, hy, 0.062), 0.056, 0.045, PANTS, f'shin.{s}')
     sph((-0.5, hy, 0.05), (0.095, 0.05, 0.036), SHOE, f'foot.{s}')
 # ---------------- Cat-Cow animation (multi-joint spine) ----------------
+def pitch_axis(bname):
+    M = arm.data.bones[bname].matrix_local.to_3x3()
+    best = None
+    for idx in (0, 2):
+        d = M.col[idx].dot(Vector((0, 1, 0)))
+        if best is None or abs(d) > abs(best[1]): best = (idx, d)
+    return best[0], (1.0 if best[1] > 0 else -1.0)
+AX = {}
+
 bpy.context.view_layer.objects.active = arm; bpy.ops.object.mode_set(mode='POSE')
 pb = arm.pose.bones
+for _b in ['pelvis','chest','neck','head'] + [f'spine{i+1}' for i in range(SP)] + ['shoulder.L','shoulder.R']: AX[_b] = pitch_axis(_b)
+def pitch(bname, ang):
+    idx, sg = AX[bname]; e = [0.0, 0.0, 0.0]; e[idx] = -sg * ang; pb[bname].rotation_euler = tuple(e)
 for b in pb: b.rotation_mode = 'XYZ'
 def phase(fr):  # 0..1 loop, starts neutral -> cat -> neutral -> cow -> neutral
     return (fr - 1) / N
@@ -166,15 +178,15 @@ for fr in range(1, N + 1):
     w = [0.9, 1.0, 1.0, 0.9, 0.7]
     for i in range(SP):
         ang = (-cat * 0.30 * w[i] + cow * 0.20 * w[i]) * (1.0 if i < 3 else -0.35 if cat > 0 else 0.6)
-        pb[f'spine{i+1}'].rotation_euler = (0, ang, 0)
-    pb['pelvis'].rotation_euler = (0, cat * 0.34 - cow * 0.24, 0)                                   # posterior / anterior pelvic tilt
-    pb['chest'].rotation_euler = (0, -cat * 0.05 + cow * 0.06, 0)
-    pb['neck'].rotation_euler = (0, cat * 0.35 - cow * 0.30, 0); pb['head'].rotation_euler = (0, cat * 0.25 - cow * 0.20, 0)   # head follows: down in cat, up in cow
+        pitch(f'spine{i+1}', ang)
+    pitch('pelvis', cat * 0.34 - cow * 0.24)                                   # posterior / anterior pelvic tilt
+    pitch('chest', -cat * 0.05 + cow * 0.06)
+    pitch('neck', cat * 0.35 - cow * 0.30); pitch('head', cat * 0.25 - cow * 0.20)   # head follows: down in cat, up in cow
     for b in ('pelvis', 'chest', 'neck', 'head') + tuple(f'spine{i+1}' for i in range(SP)):
         pb[b].keyframe_insert('rotation_euler', frame=fr)
     for s in ('L', 'R'):
         pb[f'shoulder.{s}'].location = (0, 0, 0)
-        pb[f'shoulder.{s}'].rotation_euler = (0, -cat * 0.05 + cow * 0.04, 0); pb[f'shoulder.{s}'].keyframe_insert('rotation_euler', frame=fr)
+        pitch(f'shoulder.{s}', -cat * 0.05 + cow * 0.04); pb[f'shoulder.{s}'].keyframe_insert('rotation_euler', frame=fr)
 bpy.ops.object.mode_set(mode='OBJECT')
 # ---------------- cameras ----------------
 CAMS = {'hero': ((1.55, -2.35, 1.0), (0.28, 0.0, 0.34), 38), 'side': ((0.3, -2.7, 0.56), (0.3, 0.0, 0.34), 40), 'close': ((0.3, -1.25, 0.62), (0.28, 0.0, 0.42), 38)}
