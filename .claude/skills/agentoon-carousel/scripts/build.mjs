@@ -39,7 +39,7 @@ if (fs.existsSync(extrasPath)) {
 if (extraCss) fs.writeFileSync(path.join(src, "assets", "extra.css"), extraCss);
 
 const total = cfg.slides.length;
-if (total < 7 || total > 9) console.warn(`! carousel has ${total} slides (target 7–9)`);
+if (total < 7 || total > 11) console.warn(`! carousel has ${total} slides (target 7–9; up to 11 only when the brief asks)`);
 const body = cfg.slides
   .map((s, i) => {
     const fn = layouts[s.layout];

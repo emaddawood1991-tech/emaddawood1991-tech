@@ -52,6 +52,10 @@ Instagram's editor and grid can cover or crop the edges of a 4:5 image. Every sl
 - Label conceptual mock-ups "Concept mock-up"; never present them as real. Tools still alpha/beta must be called that, with the project's own status wording. Don't call early software a full replacement.
 - Per-app slide pattern (see `carousels/artcraft-adobe-alternatives/extras.mjs`: `collage`, `appShot`, `moreTools`, `toolkit`): compare row (old tool → alternative), window + zoom inset, 3 check bullets, status chip + short URL. Pills/chips need ≥30px and `white-space:nowrap`; window-bar labels use class `src` (26px).
 
+- **Windows clip silently.** Window frames use `overflow:hidden`, so the QA gate cannot see content cut off inside them. After every render, open each slide PNG and confirm every row/line inside a window is fully visible; fix by raising the window height or cutting rows. Put README/excerpt text in `.src`-class containers (26px minimum) and keep names, explanations, examples and takeaways at ≥30px.
+- **When the source site/repo cannot be opened** (proxy/permission), use only verifiable raw README/LICENSE files, label re-typeset text "Excerpt" and conceptual drawings "Concept diagram", omit star counts and prices you cannot verify, and say so in `sources.md` and the hand-off. If a permission request (e.g. `add_repo`) is denied, do not work around it: finish what is possible, then tell the user what is blocked and what to grant.
+- Repo-roundup pattern: `carousels/github-goldmine-10-repos/extras.mjs` (`commandCenter` cover, `repo` layout with `stack`/`cards`/`hero` variants, visual builders). Up to 11 slides are allowed when the brief asks.
+
 ## Variation rules (same brand, different look every time)
 
 Brand stays fixed: palette, Fraunces/Inter/JetBrains Mono, footer, mascot, 72px grid, badges, type scale, QA thresholds. What must change per topic:
