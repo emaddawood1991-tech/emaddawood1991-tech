@@ -43,5 +43,165 @@
    "speak": "Five powerful tools. One keyboard shortcut. Save these commands, and follow Agentoon dot A I for more Windows tips.",
    "show": "Five powerful tools. One keyboard shortcut. Save these commands and follow Agentoon.ai for more Windows tips."
   }
+ ],
+ "total": 71.1,
+ "music": [
+  {
+   "t0": 0,
+   "t1": 6.4,
+   "mood": "hook"
+  },
+  {
+   "t0": 6.4,
+   "t1": 28,
+   "mood": "disc"
+  },
+  {
+   "t0": 28,
+   "t1": 50.5,
+   "mood": "demo"
+  },
+  {
+   "t0": 50.5,
+   "t1": 71.1,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "tick",
+   "t": 2.9,
+   "gain": 0.7
+  },
+  {
+   "name": "tick",
+   "t": 3.0,
+   "gain": 0.5
+  },
+  {
+   "name": "tick",
+   "t": 3.55,
+   "gain": 0.7
+  },
+  {
+   "name": "tick",
+   "t": 3.65,
+   "gain": 0.5
+  },
+  {
+   "name": "pop",
+   "t": 4.89,
+   "gain": 0.35
+  },
+  {
+   "name": "type",
+   "t": 5.14,
+   "gain": 0.25,
+   "dur": 0.9,
+   "cps": 24
+  },
+  {
+   "name": "tick",
+   "t": 6.19,
+   "gain": 0.6
+  },
+  {
+   "name": "ding",
+   "t": 6.54,
+   "gain": 0.25
+  },
+  {
+   "name": "pop",
+   "t": 16.49,
+   "gain": 0.35
+  },
+  {
+   "name": "type",
+   "t": 16.74,
+   "gain": 0.25,
+   "dur": 0.9,
+   "cps": 24
+  },
+  {
+   "name": "tick",
+   "t": 17.79,
+   "gain": 0.6
+  },
+  {
+   "name": "ding",
+   "t": 18.14,
+   "gain": 0.25
+  },
+  {
+   "name": "pop",
+   "t": 26.52,
+   "gain": 0.35
+  },
+  {
+   "name": "type",
+   "t": 26.77,
+   "gain": 0.25,
+   "dur": 0.9,
+   "cps": 24
+  },
+  {
+   "name": "tick",
+   "t": 27.82,
+   "gain": 0.6
+  },
+  {
+   "name": "ding",
+   "t": 28.17,
+   "gain": 0.25
+  },
+  {
+   "name": "pop",
+   "t": 38.85,
+   "gain": 0.35
+  },
+  {
+   "name": "type",
+   "t": 39.1,
+   "gain": 0.25,
+   "dur": 0.9,
+   "cps": 24
+  },
+  {
+   "name": "tick",
+   "t": 40.15,
+   "gain": 0.6
+  },
+  {
+   "name": "ding",
+   "t": 40.5,
+   "gain": 0.25
+  },
+  {
+   "name": "pop",
+   "t": 49.03,
+   "gain": 0.35
+  },
+  {
+   "name": "type",
+   "t": 49.28,
+   "gain": 0.25,
+   "dur": 0.9,
+   "cps": 24
+  },
+  {
+   "name": "tick",
+   "t": 50.33,
+   "gain": 0.6
+  },
+  {
+   "name": "ding",
+   "t": 50.68,
+   "gain": 0.25
+  },
+  {
+   "name": "sparkle",
+   "t": 63.49,
+   "gain": 0.25
+  }
  ]
 }
