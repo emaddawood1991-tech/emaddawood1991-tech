@@ -229,8 +229,11 @@
     "grammarReview": null,
     "medicalTerminologyReview": null,
     "medicalAccuracyReview": null,
-    "scriptApproved": null,
+    "scriptApproved": {
+      "by": "Emad (chat 2026-11-26: replied 'i approve' to the request to approve the Cat-Cow script; grammar, medical and pronunciation reviews still pending)",
+      "date": "2026-11-26T14:36:12.709Z"
+    },
     "pronunciationApproved": null,
-    "approvedHash": null
+    "approvedHash": "c0e460b91aae4ec05651f82c8fa18d160be667216fdf82090f796f45694541b6"
   }
 }
