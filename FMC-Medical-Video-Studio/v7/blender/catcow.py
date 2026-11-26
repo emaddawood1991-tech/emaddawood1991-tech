@@ -193,6 +193,8 @@ for fr in frames:
         p = arm.matrix_world @ arm.pose.bones[name].head; q = world_to_camera_view(sc, cam, p); pts[name] = [round(q.x, 4), round(1 - q.y, 4)]
     p = arm.matrix_world @ arm.pose.bones['spine5'].tail; q = world_to_camera_view(sc, cam, p); pts['spine5_tail'] = [round(q.x, 4), round(1 - q.y, 4)]
     marks['frames'].append(pts)
-    sc.render.filepath = os.path.join(out, f'f_{fr:04d}.png'); bpy.ops.render.render(write_still=True)
+    png = os.path.join(out, f'f_{fr:04d}.png')
+    if os.path.exists(png) and os.path.getsize(png) > 1000: continue   # resume support
+    sc.render.filepath = png; bpy.ops.render.render(write_still=True)
 json.dump(marks, open(os.path.join(out, f'landmarks_{cam_name}.json'), 'w'))
 print('RENDERED', cam_name, len(frames))
