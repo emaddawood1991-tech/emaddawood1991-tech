@@ -151,3 +151,48 @@ const FigmaInset: React.FC<{from: number; to: number; name: 'ankle' | 'hamstring
 export const AnkleInset: React.FC<{from: number; to: number}> = (p) => <FigmaInset {...p} name="ankle" />;
 export const HamstringInset: React.FC<{from: number; to: number}> = (p) => <FigmaInset {...p} name="hamstring" />;
 export const KneeInset: React.FC<{from: number; to: number}> = (p) => <FigmaInset {...p} name="knee" />;
+
+/** Stage title pill (style designed in Figma): glass bar, turquoise outline, stage number badge. Real Arabic text layers. */
+export const StageTitle: React.FC<{badge: string; label: string; title: string; from: number; to: number; top: number}> = ({badge, label, title, from, to, top}) => {
+  const f = useCurrentFrame();
+  const o = win(f, from, to, 14, 14);
+  if (o <= 0.001) return null;
+  const k = ss(clamp((f - from) / 20));
+  return (
+    <div dir="rtl" style={{position: 'absolute', left: 0, right: 0, top: top + (1 - k) * 22, display: 'flex', justifyContent: 'center', opacity: o}}>
+      <div style={{display: 'flex', alignItems: 'center', gap: 22, padding: '16px 34px 16px 22px', borderRadius: 28, background: 'rgba(8,24,42,0.82)', border: '2px solid rgba(79,230,218,0.85)', boxShadow: '0 14px 36px rgba(0,0,0,0.35)'}}>
+        <div style={{width: 66, height: 66, borderRadius: 33, background: '#4FE6DA', color: '#08182A', fontFamily: FONT_AR, fontWeight: 800, fontSize: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 auto'}}>{badge}</div>
+        <div>
+          <div style={{fontFamily: FONT_AR, fontSize: 28, fontWeight: 500, color: '#BFF0F0', lineHeight: 1.2}}>{label}</div>
+          <div style={{fontFamily: FONT_AR, fontSize: 48, fontWeight: 800, color: '#fff', lineHeight: 1.25}}>{title}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/** Closing: Figma-designed background (art only) + the ORIGINAL logo + real Arabic text. */
+export const SportsClosing: React.FC<{from: number; dur: number}> = ({from, dur}) => {
+  const f = useCurrentFrame();
+  const t = f - from;
+  if (f < from - 1 || f > from + dur + 40) return null;
+  const bgIn = ss(clamp(t / 16));
+  const logoIn = ss(clamp((t - 8) / 26));
+  const nameIn = ss(clamp((t - 30) / 22));
+  const sloganIn = ss(clamp((t - 48) / 22));
+  const depth = 1 + 0.035 * clamp(t / dur);
+  return (
+    <AbsoluteFill style={{opacity: bgIn}}>
+      <Img src={staticFile('overlays/figma/closing_bg.png')} style={{position: 'absolute', inset: 0, width: '100%', height: '100%'}} />
+      <AbsoluteFill style={{alignItems: 'center'}}>
+        <div style={{position: 'absolute', top: 480, width: 560, height: 560, transform: `scale(${(0.9 + 0.1 * logoIn) * depth})`, opacity: logoIn}}>
+          <div style={{position: 'absolute', inset: -60, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.94) 0%, rgba(240,248,252,0.82) 48%, rgba(240,248,252,0) 70%)'}} />
+          <Img src={staticFile('logo/fmc-original-logo.png')} style={{position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain'}} />
+        </div>
+        <div dir="rtl" style={{position: 'absolute', top: 1086, opacity: nameIn, transform: `translateY(${(1 - nameIn) * 26}px)`, fontFamily: FONT_DISPLAY, fontSize: 92, fontWeight: 800, color: '#fff', textShadow: '0 4px 24px rgba(0,0,0,0.45)'}}>مركز الفيصل الطبي</div>
+        <div dir="rtl" style={{position: 'absolute', top: 1248, opacity: sloganIn, transform: `translateY(${(1 - sloganIn) * 20}px)`, fontFamily: FONT_AR, fontSize: 52, fontWeight: 600, color: '#7DF3EA'}}>الرعاية المثالية</div>
+        <div style={{position: 'absolute', top: 1328, opacity: sloganIn * 0.9, fontFamily: FONT_AR, fontSize: 34, fontWeight: 500, color: '#D6E4EE', letterSpacing: 2}}>Ideal Care</div>
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};

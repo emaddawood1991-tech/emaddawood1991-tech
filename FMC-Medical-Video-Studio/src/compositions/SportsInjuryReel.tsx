@@ -7,10 +7,9 @@ import {NarrationAudio} from '../lib/audioPolicy';
 import {loadFonts} from '../styles/fonts';
 import {FMCMedicalTimeline, type Chapter} from '../components/FMCMedicalTimeline';
 import {FMCLogoOverlay} from '../components/FMCLogoOverlay';
-import {FMCClosingScene} from '../components/FMCClosingScene';
 import {FMCArabicTitle} from '../components/FMCArabicTitle';
 import {InfoChip} from '../components/FMCMedicalHighlight';
-import {AnkleInset, ClipSeg, HamstringInset, KneeInset, MoveArrow, PainSpot, Progression, type Seg} from '../scenes/sports/SportsParts';
+import {AnkleInset, ClipSeg, HamstringInset, KneeInset, MoveArrow, PainSpot, Progression, SportsClosing, StageTitle, type Seg} from '../scenes/sports/SportsParts';
 
 export const durationForSports = (p: VideoProps) => totalFrames(computeTimeline(p.content, p.manifest));
 
@@ -77,25 +76,25 @@ export const SportsInjuryReel: React.FC<VideoProps> = (props) => {
       <InfoChip text="إصابات الركبة" from={ex.from + sec(8.0)} to={as.from} x={540} y={1010} accent="#F28C28" />
 
       {/* 3 assessment */}
-      {title('المرحلة الأولى: تقييم الإصابة', 'تقييم', as.from + 6, mo.from)}
+      <StageTitle badge="١" label="المرحلة الأولى" title="تقييم الإصابة" from={as.from + 6} to={mo.from} top={tTop - 10} />
       <InfoChip text="ألم شديد أو عدم القدرة على تحميل الوزن: راجع الطبيب" from={as.from + sec(4.7)} to={mo.from - 4} x={540} y={1010} accent="#F2A33A" />
 
       {/* 4 motion */}
-      {title('المرحلة الثانية: استعادة الحركة', 'استعادة', mo.from + 6, st.from)}
+      <StageTitle badge="٢" label="المرحلة الثانية" title="استعادة الحركة" from={mo.from + 6} to={st.from} top={tTop - 10} />
       <AnkleInset from={mo.from + 14} to={st.from - 4} />
       <MoveArrow x={620} y={1230} rot={-12} from={mo.from + sec(1.2)} to={mo.from + sec(4.4)} />
       <MoveArrow x={620} y={1230} rot={-12} from={mo.from + sec(5.2)} to={st.from - 4} />
 
       {/* 5 strength */}
-      {title('المرحلة الثالثة: القوة والتوازن', 'القوة', st.from + 6, re.from)}
+      <StageTitle badge="٣" label="المرحلة الثالثة" title="القوة والتوازن" from={st.from + 6} to={re.from} top={tTop - 10} />
       <MoveArrow x={560} y={1180} rot={8} from={st.from + sec(1.2)} to={st.from + sec(4.4)} />
       <InfoChip text="تقوية بإشراف أخصائي" from={st.from + sec(5.0)} to={re.from - 4} x={540} y={1010} />
 
       {/* 6 return */}
-      {title('العودة التدريجية للرياضة', 'التدريجية', re.from + 6, closeFrom)}
+      <StageTitle badge="٤" label="المرحلة الرابعة" title="العودة التدريجية للرياضة" from={re.from + 6} to={closeFrom} top={tTop - 10} />
       <Progression from={re.from + sec(1.0)} to={closeFrom - 4} y={1060} />
 
-      <FMCClosingScene from={closeFrom} dur={cl.from + cl.duration - closeFrom} bgFile="footage/sports-injury-rehab/raw/8313525.mp4" />
+      <SportsClosing from={closeFrom} dur={cl.from + cl.duration - closeFrom} />
       <FMCMedicalTimeline chapters={chapters} top={1405} left={layout.safe.left} right={layout.safe.right} showFrom={sec(0.8)} showTo={closeFrom + 6} size={21} activeSize={24} />
       <FMCLogoOverlay size={140} top={58} right={58} opacity={frame < closeFrom ? 1 : Math.max(0, 1 - (frame - closeFrom) / 10)} />
       {tl.map((item) => (item.audioFile ? <NarrationAudio key={`a-${item.id}`} file={item.audioFile} from={item.from + item.audioFrom} frames={item.audioFrames} /> : null))}
