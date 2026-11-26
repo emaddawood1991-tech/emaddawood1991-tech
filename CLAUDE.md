@@ -48,3 +48,7 @@ Registry with sources, locations, licences, dependencies and test results: `agen
 - `/agentoon-director` auto-selects them: `python3 .claude/skills/agentoon-director/scripts/select-skills.py "<brief>"` now prints "Real effect skills" from `reference/fx-registry.json` (max 1 hero + 2 supporting; component files must exist). Never apply all effects to every video.
 - The "no moving light sweeps" rule above is relaxed by the user's 2026-11-15 instruction: `LightSweep` is allowed as ONE subtle sweep per reveal; looping scan beams stay retired.
 - Registry, sources, licences, limitations: `agentoon-video/docs/SKILL-REGISTRY.md`; components: `agentoon-video/remotion-fx/README.md`.
+
+## Permanent Claude character (approved 2026-11-26)
+For any Claude / Claude Code video use ONLY the Claude Code mascot in `agentoon-video/assets/claude-mascot/` (README there): small blocky terracotta (#D97757) body, two black square eyes, two short side arms, four short legs; 3D Blender rig with 11 actions (IDLE, BOUNCE, WAVE, LOOK, WALK, RUN, TALK, THINK, POINT, CELEBRATE, LISTEN) and removable accessories. It replaces the older star-shaped Claude (Episode 24; do not reuse). Always label it "Agentoon.ai animated interpretation of the Claude Code mascot, not an official Anthropic production". Never add humanoid limbs, big eyes, gloves or a separate head.
+Character registry: Agentoon robot (original, approved, 2D rig `remotion-fx/src/fx/RobotRig2.tsx`) and Claude mascot (above).
