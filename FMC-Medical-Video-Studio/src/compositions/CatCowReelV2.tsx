@@ -40,7 +40,7 @@ export const CatCowReelV2: React.FC<VideoProps> = (props) => {
       <Clip2 clip="hero_normal" from={hk.from} to={end(hk)} />
       <FMCArabicTitle text="تمرين تقويس الظهر ومدّه" highlight="تقويس الظهر" from={hk.from + 8} dur={hk.duration - 6} top={top} left={layout.safe.left} right={layout.safe.right} />
       {/* 2 statistic: compact card, character stays visible below */}
-      <Clip2 clip="hero_normal" from={st.from} to={end(st)} scale={0.9} ty={120} />
+      <Clip2 clip="hero_normal" from={st.from} to={end(st)} />
       <StatMini from={st.from + 12} to={end(st) - 6} value={32.9} top={top + 40} />
       {/* 3 anatomy: body -> translucent layer -> vertebrae aligned (side x-ray) then disc cross-section orbit */}
       <Clip2 clip="side_xray" from={dc.from} to={dcMid + 8} />
@@ -50,7 +50,7 @@ export const CatCowReelV2: React.FC<VideoProps> = (props) => {
       <AnatLabel text="الحلقة الليفية" ax={640} ay={900} tx={180} ty={1360} from={dcMid + sec(1.2)} to={end(dc) - 4} color="#F6D9A8" />
       <AnatLabel text="النواة الهلامية" ax={560} ay={960} tx={180} ty={1470} from={dcMid + sec(2.4)} to={end(dc) - 4} color="#8FC5FF" />
       {/* 4 science: lumbar flexion/extension stack + close x-ray; load shown qualitatively */}
-      <Clip2 clip="anat_flex" from={sc.from} to={end(sc)} rate={0.5} />
+      <Clip2 clip="anat_flex" from={sc.from} to={end(sc)}  rate={0.5} />
       <FMCArabicTitle text="تتغير وضعية الفقرات والأحمال على الأقراص" highlight="الأحمال" from={sc.from + 6} dur={sc.duration - 4} top={top} left={layout.safe.left} right={layout.safe.right} />
       {/* 5 exercise how-to (demo): side view with phase chip and soft lumbar highlight */}
       <Clip2 clip="side_normal" from={w1.from} to={end(w1)} />

@@ -80,13 +80,13 @@ export const StatMini: React.FC<{from: number; to: number; value: number; top: n
   if (o <= 0.001) return null;
   const k = ss(clamp((f - from - 6) / 50));
   return (
-    <div dir="rtl" style={{position: 'absolute', left: 120, right: 120, top, opacity: o, transform: `translateY(${(1 - ss(clamp((f - from) / 20))) * 18}px)`}}>
+    <div dir="rtl" style={{position: 'absolute', left: 56, right: 56, top, opacity: o, transform: `translateY(${(1 - ss(clamp((f - from) / 20))) * 18}px)`}}>
       <div style={{borderRadius: 26, padding: '16px 26px', background: 'rgba(8,24,42,0.82)', border: '2px solid rgba(79,230,218,0.75)', boxShadow: '0 12px 34px rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', gap: 22}}>
         <div dir="ltr" style={{fontFamily: FONT_DISPLAY, fontSize: 84, fontWeight: 800, color: '#7DF3EA', lineHeight: 1}}>{(value * k).toFixed(1)}%</div>
         <div style={{flex: 1}}>
-          <div style={{fontFamily: FONT_AR, fontSize: 32, fontWeight: 800, color: '#fff', lineHeight: 1.25}}>آلام أسفل الظهر لدى مشاركين في دراسة بدبي</div>
+          <div style={{fontFamily: FONT_AR, fontSize: 34, fontWeight: 800, color: '#fff', lineHeight: 1.25}}>آلام أسفل الظهر لدى مشاركين في دراسة بدبي</div>
           <div style={{fontFamily: FONT_AR, fontSize: 24, fontWeight: 600, color: '#D6E4EE', lineHeight: 1.3, marginTop: 4}}>٣٢٫٩٪ من المشاركين · بيانات ٢٠٠٩</div>
-          <div style={{fontFamily: FONT_AR, fontSize: 19, fontWeight: 500, color: '#9FB8CC', lineHeight: 1.3, marginTop: 4}}>Oman Medical Journal، ٢٠١٦ — دراسة PRO Dubai · ليست نسبة لكل سكان الإمارات</div>
+          <div style={{fontFamily: FONT_AR, fontSize: 23, fontWeight: 500, color: '#9FB8CC', lineHeight: 1.3, marginTop: 4}}>Oman Medical Journal، ٢٠١٦ — دراسة PRO Dubai · ليست نسبة لكل سكان الإمارات</div>
         </div>
       </div>
     </div>
