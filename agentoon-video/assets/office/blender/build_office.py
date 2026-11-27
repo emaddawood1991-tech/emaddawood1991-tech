@@ -2,7 +2,7 @@
 Renders plates: A_wide, B_medium (opaque) and A_fg, B_fg (desk-front + laptop + items, transparent) so 2D characters can sit between plate and fg."""
 import bpy, math, os, random, sys
 from mathutils import Vector
-out = sys.argv[sys.argv.index("--") + 1]; quick = "--quick" in sys.argv; os.makedirs(out, exist_ok=True)
+out = sys.argv[sys.argv.index("--") + 1]; quick = "--quick" in sys.argv; EV = "--evening" in sys.argv; os.makedirs(out, exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True); sc = bpy.context.scene
 def srgb(c): return tuple(((x + 0.055) / 1.055) ** 2.4 if x > 0.04045 else x / 12.92 for x in c)
 def mat(n, col, r=0.5, m=0.0, emit=0.0, ecol=None):
@@ -29,7 +29,7 @@ bpy.data.objects["wall_back"].location = (0, 3.3, -10)  # hide solid wall, rebui
 for n, s, l in (("wb_bot", (8, 0.2, 0.9), (0, 3.3, 0.45)), ("wb_top", (8, 0.2, 0.5), (0, 3.3, 3.35)), ("wb_l", (1.4, 0.2, 2.2), (-3.3, 3.3, 2.0)), ("wb_r", (1.4, 0.2, 2.2), (3.3, 3.3, 2.0))): box(n, s, l, M["wall"], 0)
 for n, s, l in (("mull1", (0.06, 0.12, 2.2), (-1.0, 3.3, 2.0)), ("mull2", (0.06, 0.12, 2.2), (1.0, 3.3, 2.0)), ("mullH", (4.2, 0.12, 0.06), (0, 3.3, 2.4))): box(n, s, l, M["darkwood"], 0)
 # sky + skyline
-sky = mat("sky", (0.9, 0.7, 0.5), 1, 0, 1.6, (1.0, 0.72, 0.45)); box("sky", (400, 0.1, 160), (0, 160, 40), sky, 0)
+sky = mat("sky", (0.9, 0.7, 0.5), 1, 0, 0.8 if EV else 1.6, (0.85, 0.42, 0.3) if EV else (1.0, 0.72, 0.45)); box("sky", (400, 0.1, 160), (0, 160, 40), sky, 0)
 random.seed(4)
 for i in range(26):
     x = random.uniform(-60, 60); w = random.uniform(5, 9); h = random.uniform(14, 34); y = random.uniform(50, 100)
@@ -55,9 +55,11 @@ for i in range(3): box(f"book{i}", (0.2, 0.15, 0.03), (0.95, -0.15, 0.80 + i * 0
 def area(n, loc, tgt, e, col, size):
     L = bpy.data.lights.new(n, "AREA"); L.energy = e; L.color = col; L.size = size; o = bpy.data.objects.new(n, L); o.location = loc; sc.collection.objects.link(o)
     o.rotation_euler = (Vector(tgt) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
-area("window_key", (0, 3.0, 2.2), (0, 0, 1.0), 500, (1.0, 0.82, 0.62), 4.0); area("fill", (0, -3, 2.5), (0, 0.5, 1), 220, (0.8, 0.88, 1.0), 4.0)
-sp = bpy.data.lights.new("lamp", "SPOT"); sp.energy = 300; sp.color = (1, 0.7, 0.4); sp.spot_size = math.radians(70); o = bpy.data.objects.new("lamp", sp); o.location = (-1.04, -0.14, 1.25); sc.collection.objects.link(o); o.rotation_euler = (math.radians(120), 0, 0)
-w = bpy.data.worlds.new("W"); w.use_nodes = True; w.node_tree.nodes["Background"].inputs[1].default_value = 0.25; w.node_tree.nodes["Background"].inputs[0].default_value = (0.2, 0.22, 0.3, 1); sc.world = w
+area("window_key", (0, 3.0, 2.2), (0, 0, 1.0), 120 if EV else 500, (0.55, 0.62, 0.95) if EV else (1.0, 0.82, 0.62), 4.0); area("fill", (0, -3, 2.5), (0, 0.5, 1), 50 if EV else 220, (0.8, 0.88, 1.0), 4.0)
+sp = bpy.data.lights.new("lamp", "SPOT"); sp.energy = 2500 if EV else 300; sp.color = (1, 0.7, 0.4); sp.spot_size = math.radians(70); o = bpy.data.objects.new("lamp", sp); o.location = (-1.04, -0.14, 1.25); sc.collection.objects.link(o); o.rotation_euler = (math.radians(120), 0, 0)
+if EV:
+    pl = bpy.data.lights.new("deskwarm", "POINT"); pl.energy = 220; pl.color = (1, 0.7, 0.4); pl.shadow_soft_size = 0.3; po = bpy.data.objects.new("deskwarm", pl); po.location = (-0.35, -0.2, 1.45); sc.collection.objects.link(po)
+w = bpy.data.worlds.new("W"); w.use_nodes = True; w.node_tree.nodes["Background"].inputs[1].default_value = 0.05 if EV else 0.25; w.node_tree.nodes["Background"].inputs[0].default_value = (0.2, 0.22, 0.3, 1); sc.world = w
 sc.render.engine = "CYCLES"; sc.cycles.device = "CPU"; sc.cycles.samples = 24 if quick else 64; sc.view_settings.view_transform = "Standard"
 W, H = (360, 640) if quick else (1350, 2400); sc.render.resolution_x = W; sc.render.resolution_y = H
 cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam")); sc.collection.objects.link(cam); sc.camera = cam
@@ -72,7 +74,14 @@ def shot(name, loc, tgt, lens, fstop=None):
     for o in col_main.objects: o.is_holdout = True
     sc.render.filepath = os.path.join(out, f"{name}_fg.png"); bpy.ops.render.render(write_still=True)
     for o in col_main.objects: o.is_holdout = False
-if "--door" in sys.argv:
+if EV:
+    shot("E_A_wide", (0, -3.4, 1.0), (0, 0.4, 1.8), 24)
+    shot("E_B_medium", (0.1, -2.4, 1.0), (0.15, 0.2, 1.55), 30, 2.8)
+    hinge = Vector((-3.1, 1.75, 0))
+    box("door_fL", (0.12, 0.08, 2.2), (-3.1, 0.65, 1.1), M["darkwood"], 0.005); box("door_fR", (0.12, 0.08, 2.2), (-3.1, 1.85, 1.1), M["darkwood"], 0.005); box("door_fT", (0.12, 1.28, 0.08), (-3.1, 1.25, 2.2), M["darkwood"], 0.005)
+    box("door_panel", (0.05, 1.1, 2.1), (-3.1, 1.2, 1.05), mat("door", (0.55, 0.22, 0.08), 0.5), 0.005); box("door_knob", (0.1, 0.06, 0.06), (-3.05, 0.78, 1.05), M["metal"], 0.01)
+    shot("E_C_door", (2.2, -3.0, 1.15), (-1.4, 1.2, 1.0), 24)
+elif "--door" in sys.argv:
     # Episode 28: door on the left wall (hinge at y=1.75), two shots: closed and ajar. Same office, same lights.
     hinge = Vector((-3.1, 1.75, 0))
     def door(angle):

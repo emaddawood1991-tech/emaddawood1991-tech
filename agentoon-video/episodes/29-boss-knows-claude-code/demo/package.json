@@ -1,0 +1,9 @@
+{
+  "name": "agentoon-login-demo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Isolated Agentoon.ai teaching demo: a login button with an INTENTIONALLY buggy version (two clicks) and a fixed version. Simulated authentication only. Not production code.",
+  "scripts": { "test": "vitest run", "build": "node build.mjs" },
+  "dependencies": { "react": "^18.3.1", "react-dom": "^18.3.1" },
+  "devDependencies": { "@testing-library/react": "^16.0.0", "@testing-library/dom": "^10.0.0", "@types/react": "^18.3.0", "@types/react-dom": "^18.3.0", "esbuild": "^0.24.0", "jsdom": "^25.0.0", "typescript": "^5.6.0", "vitest": "^2.1.0" }
+}

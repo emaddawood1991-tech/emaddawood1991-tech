@@ -9,13 +9,14 @@ ACC = {}
 for o in bpy.data.objects:
     for k in ("headphones", "detective", "lightbulb", "laptop", "clipboard", "documents", "calendar"): pass
 names = {"headphones": ["hp_band", "hp_cupL", "hp_cupR"], "detective": ["hat_brim", "hat_crown", "hat_band", "mag_ring", "mag_glass", "mag_handle"], "lightbulb": ["bulb", "bulb_base"], "clipboard": ["clip_board", "clip_paper", "clip_clip"], "documents": ["doc0", "doc1", "doc2"], "calendar": ["cal_page", "cal_head"], "laptop": ["lap_base", "lap_screen"]}
-CLIPS = [("IDLE", "none"), ("LISTEN", "none"), ("TALK", "none"), ("TALK", "lightbulb"), ("TALK", "detective"), ("TALK", "calendar"), ("TALK", "documents"), ("BOUNCE", "none"), ("WAVE", "none"), ("CELEBRATE", "none"), ("POINT", "none"), ("LOOK", "none"), ("IDLE", "headphones"), ("TALK", "headphones"), ("TALK", "clipboard"), ("LISTEN", "detective")]
+CLIPS = [("IDLE", "none"), ("LISTEN", "none"), ("TALK", "none"), ("TALK", "lightbulb"), ("TALK", "detective"), ("TALK", "calendar"), ("TALK", "documents"), ("BOUNCE", "none"), ("WAVE", "none"), ("CELEBRATE", "none"), ("POINT", "none"), ("LOOK", "none"), ("IDLE", "headphones"), ("TALK", "headphones"), ("TALK", "clipboard"), ("LISTEN", "detective"), ("LAUGH", "none"), ("CONFUSED", "none"), ("THINK", "none"), ("CODE", "headphones+laptop"), ("TALK", "headphones+laptop"), ("IDLE", "headphones+laptop")]
 sel = os.environ.get("ONLY")
 for st, ac in CLIPS:
     tag = f"{st}_{ac}"
     if sel and tag not in sel.split(","): continue
+    acs = ac.split("+")
     for k, ns in names.items():
-        for n in ns: bpy.data.objects[n].hide_render = (k != ac)
+        for n in ns: bpy.data.objects[n].hide_render = (k not in acs)
     act = bpy.data.actions[st]; arm.animation_data.action = act; n = int(act.frame_range[1] - act.frame_range[0])
     d = os.path.join(out, tag); os.makedirs(d, exist_ok=True)
     for f in range(n):

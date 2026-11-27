@@ -1,0 +1,175 @@
+{
+ "voices": {
+  "A": {
+   "name": "Agentoon",
+   "voice": "am_adam",
+   "speed": 1.02
+  },
+  "C": {
+   "name": "Claude",
+   "voice": "am_michael",
+   "speed": 0.9
+  }
+ },
+ "gap": 0.3,
+ "lines": [
+  {
+   "id": "l01",
+   "who": "A",
+   "scene": "hook",
+   "speak": "Claude! My boss thinks I didn't write my own code!",
+   "show": "Claude! My boss thinks I didn't write my own code!",
+   "speed": 1.05
+  },
+  {
+   "id": "l02",
+   "who": "C",
+   "scene": "hook",
+   "speak": "Oh? Did something break?",
+   "show": "Oh? Did something break?",
+   "pad": 0.35
+  },
+  {
+   "id": "l03",
+   "who": "A",
+   "scene": "suspicious",
+   "speak": "No! That's the problem. Everything works!",
+   "show": "No! That's the problem. Everything works!",
+   "speed": 1.05
+  },
+  {
+   "id": "l04",
+   "who": "C",
+   "scene": "suspicious",
+   "speak": "That's a pretty serious accusation.",
+   "show": "That's a pretty serious accusation.",
+   "pad": 0.2
+  },
+  {
+   "id": "l05",
+   "who": "A",
+   "scene": "style",
+   "speak": "Can you make it look a little more like my usual code?",
+   "show": "Can you make it look a little more like my usual code?",
+   "speed": 1.0,
+   "pad": 0.35
+  },
+  {
+   "id": "l06",
+   "who": "C",
+   "scene": "style",
+   "speak": "Your usual code?",
+   "show": "Your usual code?"
+  },
+  {
+   "id": "l07",
+   "who": "A",
+   "scene": "style",
+   "speak": "Yeah. You know... my personal coding style.",
+   "show": "Yeah. You know... my personal coding style.",
+   "speed": 0.98
+  },
+  {
+   "id": "l08",
+   "who": "C",
+   "scene": "style",
+   "speak": "I've seen your code.",
+   "show": "I've seen your code.",
+   "pad": 1.6
+  },
+  {
+   "id": "l09",
+   "who": "C",
+   "scene": "bug",
+   "speak": "Well, your old login button needed two clicks before it actually worked.",
+   "show": "Well, your old login button needed two clicks before it actually worked.",
+   "pad": 0.3
+  },
+  {
+   "id": "l10",
+   "who": "A",
+   "scene": "bug",
+   "speak": "Wait. It already did that!",
+   "show": "Wait. It already did that!",
+   "speed": 1.05,
+   "pad": 0.1
+  },
+  {
+   "id": "l11",
+   "who": "C",
+   "scene": "bug",
+   "speak": "I know. I fixed it earlier.",
+   "show": "I know. I fixed it earlier.",
+   "pad": 1.8
+  },
+  {
+   "id": "l12",
+   "who": "A",
+   "scene": "idea",
+   "speak": "So technically, you could bring the old bug back?",
+   "show": "So technically, you could bring the old bug back?",
+   "speed": 1.0,
+   "pad": 0.5
+  },
+  {
+   "id": "l13",
+   "who": "C",
+   "scene": "idea",
+   "speak": "Technically, yes. Professionally, that's a terrible idea.",
+   "show": "Technically, yes. Professionally, that's a terrible idea.",
+   "pad": 3.6
+  },
+  {
+   "id": "l14",
+   "who": "A",
+   "scene": "manager",
+   "speak": "Claude... we have another problem.",
+   "show": "Claude... we have another problem.",
+   "speed": 0.96,
+   "pad": 0.9
+  },
+  {
+   "id": "l15",
+   "who": "C",
+   "scene": "manager",
+   "speak": "Don't worry. I'll explain the code. But you're going to learn it this time.",
+   "show": "Don't worry. I'll explain the code. But you're going to learn it this time.",
+   "pad": 3.2
+  },
+  {
+   "id": "l16",
+   "who": "C",
+   "scene": "joke",
+   "speak": "So... should I bring back the old bug?",
+   "show": "So... should I bring back the old bug?",
+   "pad": 0.7
+  },
+  {
+   "id": "l17",
+   "who": "A",
+   "scene": "joke",
+   "speak": "Don't touch it!",
+   "show": "Don't touch it!",
+   "speed": 1.05,
+   "pad": 0.1
+  },
+  {
+   "id": "l18",
+   "who": "A",
+   "scene": "closing",
+   "speak": "Use A I to improve your code, not hide your mistakes.",
+   "show": "Use AI to improve your code, not hide your mistakes.",
+   "speed": 1.0,
+   "pad": 0.8
+  },
+  {
+   "id": "l19",
+   "who": "A",
+   "scene": "closing",
+   "speak": "Send this to a developer who uses Claude Code.",
+   "show": "Send this to a developer who uses Claude Code.",
+   "speed": 1.0,
+   "pad": 0.3
+  }
+ ]
+}

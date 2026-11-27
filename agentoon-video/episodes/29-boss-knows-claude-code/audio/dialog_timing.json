@@ -1,0 +1,1132 @@
+{
+ "total": 67.074,
+ "lines": [
+  {
+   "id": "l01",
+   "who": "A",
+   "scene": "hook",
+   "show": "Claude! My boss thinks I didn't write my own code!",
+   "start": 1.95,
+   "end": 4.354
+  },
+  {
+   "id": "l02",
+   "who": "C",
+   "scene": "hook",
+   "show": "Oh? Did something break?",
+   "start": 4.654,
+   "end": 6.189
+  },
+  {
+   "id": "l03",
+   "who": "A",
+   "scene": "suspicious",
+   "show": "No! That's the problem. Everything works!",
+   "start": 6.839,
+   "end": 8.831
+  },
+  {
+   "id": "l04",
+   "who": "C",
+   "scene": "suspicious",
+   "show": "That's a pretty serious accusation.",
+   "start": 9.131,
+   "end": 11.215
+  },
+  {
+   "id": "l05",
+   "who": "A",
+   "scene": "style",
+   "show": "Can you make it look a little more like my usual code?",
+   "start": 11.715,
+   "end": 14.291
+  },
+  {
+   "id": "l06",
+   "who": "C",
+   "scene": "style",
+   "show": "Your usual code?",
+   "start": 14.941,
+   "end": 16.209
+  },
+  {
+   "id": "l07",
+   "who": "A",
+   "scene": "style",
+   "show": "Yeah. You know... my personal coding style.",
+   "start": 16.509,
+   "end": 18.968
+  },
+  {
+   "id": "l08",
+   "who": "C",
+   "scene": "style",
+   "show": "I've seen your code.",
+   "start": 19.268,
+   "end": 20.465
+  },
+  {
+   "id": "l09",
+   "who": "C",
+   "scene": "bug",
+   "show": "Well, your old login button needed two clicks before it actually worked.",
+   "start": 22.365,
+   "end": 26.881
+  },
+  {
+   "id": "l10",
+   "who": "A",
+   "scene": "bug",
+   "show": "Wait. It already did that!",
+   "start": 27.481,
+   "end": 28.769
+  },
+  {
+   "id": "l11",
+   "who": "C",
+   "scene": "bug",
+   "show": "I know. I fixed it earlier.",
+   "start": 29.169,
+   "end": 30.827
+  },
+  {
+   "id": "l12",
+   "who": "A",
+   "scene": "idea",
+   "show": "So technically, you could bring the old bug back?",
+   "start": 32.927,
+   "end": 35.366
+  },
+  {
+   "id": "l13",
+   "who": "C",
+   "scene": "idea",
+   "show": "Technically, yes. Professionally, that's a terrible idea.",
+   "start": 36.166,
+   "end": 39.939
+  },
+  {
+   "id": "l14",
+   "who": "A",
+   "scene": "manager",
+   "show": "Claude... we have another problem.",
+   "start": 43.839,
+   "end": 45.568
+  },
+  {
+   "id": "l15",
+   "who": "C",
+   "scene": "manager",
+   "show": "Don't worry. I'll explain the code. But you're going to learn it this time.",
+   "start": 46.768,
+   "end": 51.314
+  },
+  {
+   "id": "l16",
+   "who": "C",
+   "scene": "joke",
+   "show": "So... should I bring back the old bug?",
+   "start": 54.814,
+   "end": 57.053
+  },
+  {
+   "id": "l17",
+   "who": "A",
+   "scene": "joke",
+   "show": "Don't touch it!",
+   "start": 58.053,
+   "end": 58.869
+  },
+  {
+   "id": "l18",
+   "who": "A",
+   "scene": "closing",
+   "show": "Use AI to improve your code, not hide your mistakes.",
+   "start": 59.27,
+   "end": 62.356
+  },
+  {
+   "id": "l19",
+   "who": "A",
+   "scene": "closing",
+   "show": "Send this to a developer who uses Claude Code.",
+   "start": 63.456,
+   "end": 65.974
+  }
+ ],
+ "words": [
+  {
+   "w": "Claude!",
+   "who": "A",
+   "line": "l01",
+   "s": 1.95,
+   "e": 2.305
+  },
+  {
+   "w": "My",
+   "who": "A",
+   "line": "l01",
+   "s": 2.305,
+   "e": 2.462
+  },
+  {
+   "w": "boss",
+   "who": "A",
+   "line": "l01",
+   "s": 2.462,
+   "e": 2.699
+  },
+  {
+   "w": "thinks",
+   "who": "A",
+   "line": "l01",
+   "s": 2.699,
+   "e": 3.014
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l01",
+   "s": 3.014,
+   "e": 3.132
+  },
+  {
+   "w": "didn't",
+   "who": "A",
+   "line": "l01",
+   "s": 3.132,
+   "e": 3.448
+  },
+  {
+   "w": "write",
+   "who": "A",
+   "line": "l01",
+   "s": 3.448,
+   "e": 3.723
+  },
+  {
+   "w": "my",
+   "who": "A",
+   "line": "l01",
+   "s": 3.723,
+   "e": 3.881
+  },
+  {
+   "w": "own",
+   "who": "A",
+   "line": "l01",
+   "s": 3.881,
+   "e": 4.078
+  },
+  {
+   "w": "code!",
+   "who": "A",
+   "line": "l01",
+   "s": 4.078,
+   "e": 4.354
+  },
+  {
+   "w": "Oh?",
+   "who": "C",
+   "line": "l02",
+   "s": 4.654,
+   "e": 4.919
+  },
+  {
+   "w": "Did",
+   "who": "C",
+   "line": "l02",
+   "s": 4.919,
+   "e": 5.183
+  },
+  {
+   "w": "something",
+   "who": "C",
+   "line": "l02",
+   "s": 5.183,
+   "e": 5.766
+  },
+  {
+   "w": "break?",
+   "who": "C",
+   "line": "l02",
+   "s": 5.766,
+   "e": 6.189
+  },
+  {
+   "w": "No!",
+   "who": "A",
+   "line": "l03",
+   "s": 6.839,
+   "e": 7.046
+  },
+  {
+   "w": "That's",
+   "who": "A",
+   "line": "l03",
+   "s": 7.046,
+   "e": 7.378
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l03",
+   "s": 7.378,
+   "e": 7.586
+  },
+  {
+   "w": "problem.",
+   "who": "A",
+   "line": "l03",
+   "s": 7.586,
+   "e": 8.001
+  },
+  {
+   "w": "Everything",
+   "who": "A",
+   "line": "l03",
+   "s": 8.001,
+   "e": 8.499
+  },
+  {
+   "w": "works!",
+   "who": "A",
+   "line": "l03",
+   "s": 8.499,
+   "e": 8.831
+  },
+  {
+   "w": "That's",
+   "who": "C",
+   "line": "l04",
+   "s": 9.131,
+   "e": 9.538
+  },
+  {
+   "w": "a",
+   "who": "C",
+   "line": "l04",
+   "s": 9.538,
+   "e": 9.69
+  },
+  {
+   "w": "pretty",
+   "who": "C",
+   "line": "l04",
+   "s": 9.69,
+   "e": 10.097
+  },
+  {
+   "w": "serious",
+   "who": "C",
+   "line": "l04",
+   "s": 10.097,
+   "e": 10.554
+  },
+  {
+   "w": "accusation.",
+   "who": "C",
+   "line": "l04",
+   "s": 10.554,
+   "e": 11.215
+  },
+  {
+   "w": "Can",
+   "who": "A",
+   "line": "l05",
+   "s": 11.715,
+   "e": 11.907
+  },
+  {
+   "w": "you",
+   "who": "A",
+   "line": "l05",
+   "s": 11.907,
+   "e": 12.099
+  },
+  {
+   "w": "make",
+   "who": "A",
+   "line": "l05",
+   "s": 12.099,
+   "e": 12.33
+  },
+  {
+   "w": "it",
+   "who": "A",
+   "line": "l05",
+   "s": 12.33,
+   "e": 12.484
+  },
+  {
+   "w": "look",
+   "who": "A",
+   "line": "l05",
+   "s": 12.484,
+   "e": 12.715
+  },
+  {
+   "w": "a",
+   "who": "A",
+   "line": "l05",
+   "s": 12.715,
+   "e": 12.83
+  },
+  {
+   "w": "little",
+   "who": "A",
+   "line": "l05",
+   "s": 12.83,
+   "e": 13.138
+  },
+  {
+   "w": "more",
+   "who": "A",
+   "line": "l05",
+   "s": 13.138,
+   "e": 13.368
+  },
+  {
+   "w": "like",
+   "who": "A",
+   "line": "l05",
+   "s": 13.368,
+   "e": 13.599
+  },
+  {
+   "w": "my",
+   "who": "A",
+   "line": "l05",
+   "s": 13.599,
+   "e": 13.753
+  },
+  {
+   "w": "usual",
+   "who": "A",
+   "line": "l05",
+   "s": 13.753,
+   "e": 14.022
+  },
+  {
+   "w": "code?",
+   "who": "A",
+   "line": "l05",
+   "s": 14.022,
+   "e": 14.291
+  },
+  {
+   "w": "Your",
+   "who": "C",
+   "line": "l06",
+   "s": 14.941,
+   "e": 15.321
+  },
+  {
+   "w": "usual",
+   "who": "C",
+   "line": "l06",
+   "s": 15.321,
+   "e": 15.765
+  },
+  {
+   "w": "code?",
+   "who": "C",
+   "line": "l06",
+   "s": 15.765,
+   "e": 16.209
+  },
+  {
+   "w": "Yeah.",
+   "who": "A",
+   "line": "l07",
+   "s": 16.509,
+   "e": 16.847
+  },
+  {
+   "w": "You",
+   "who": "A",
+   "line": "l07",
+   "s": 16.847,
+   "e": 17.088
+  },
+  {
+   "w": "know...",
+   "who": "A",
+   "line": "l07",
+   "s": 17.088,
+   "e": 17.522
+  },
+  {
+   "w": "my",
+   "who": "A",
+   "line": "l07",
+   "s": 17.522,
+   "e": 17.714
+  },
+  {
+   "w": "personal",
+   "who": "A",
+   "line": "l07",
+   "s": 17.714,
+   "e": 18.197
+  },
+  {
+   "w": "coding",
+   "who": "A",
+   "line": "l07",
+   "s": 18.197,
+   "e": 18.582
+  },
+  {
+   "w": "style.",
+   "who": "A",
+   "line": "l07",
+   "s": 18.582,
+   "e": 18.968
+  },
+  {
+   "w": "I've",
+   "who": "C",
+   "line": "l08",
+   "s": 19.268,
+   "e": 19.555
+  },
+  {
+   "w": "seen",
+   "who": "C",
+   "line": "l08",
+   "s": 19.555,
+   "e": 19.843
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l08",
+   "s": 19.843,
+   "e": 20.13
+  },
+  {
+   "w": "code.",
+   "who": "C",
+   "line": "l08",
+   "s": 20.13,
+   "e": 20.465
+  },
+  {
+   "w": "Well,",
+   "who": "C",
+   "line": "l09",
+   "s": 22.365,
+   "e": 22.737
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l09",
+   "s": 22.737,
+   "e": 23.056
+  },
+  {
+   "w": "old",
+   "who": "C",
+   "line": "l09",
+   "s": 23.056,
+   "e": 23.321
+  },
+  {
+   "w": "login",
+   "who": "C",
+   "line": "l09",
+   "s": 23.321,
+   "e": 23.693
+  },
+  {
+   "w": "button",
+   "who": "C",
+   "line": "l09",
+   "s": 23.693,
+   "e": 24.118
+  },
+  {
+   "w": "needed",
+   "who": "C",
+   "line": "l09",
+   "s": 24.118,
+   "e": 24.543
+  },
+  {
+   "w": "two",
+   "who": "C",
+   "line": "l09",
+   "s": 24.543,
+   "e": 24.809
+  },
+  {
+   "w": "clicks",
+   "who": "C",
+   "line": "l09",
+   "s": 24.809,
+   "e": 25.234
+  },
+  {
+   "w": "before",
+   "who": "C",
+   "line": "l09",
+   "s": 25.234,
+   "e": 25.659
+  },
+  {
+   "w": "it",
+   "who": "C",
+   "line": "l09",
+   "s": 25.659,
+   "e": 25.872
+  },
+  {
+   "w": "actually",
+   "who": "C",
+   "line": "l09",
+   "s": 25.872,
+   "e": 26.403
+  },
+  {
+   "w": "worked.",
+   "who": "C",
+   "line": "l09",
+   "s": 26.403,
+   "e": 26.881
+  },
+  {
+   "w": "Wait.",
+   "who": "A",
+   "line": "l10",
+   "s": 27.481,
+   "e": 27.763
+  },
+  {
+   "w": "It",
+   "who": "A",
+   "line": "l10",
+   "s": 27.763,
+   "e": 27.924
+  },
+  {
+   "w": "already",
+   "who": "A",
+   "line": "l10",
+   "s": 27.924,
+   "e": 28.286
+  },
+  {
+   "w": "did",
+   "who": "A",
+   "line": "l10",
+   "s": 28.286,
+   "e": 28.487
+  },
+  {
+   "w": "that!",
+   "who": "A",
+   "line": "l10",
+   "s": 28.487,
+   "e": 28.769
+  },
+  {
+   "w": "I",
+   "who": "C",
+   "line": "l11",
+   "s": 29.169,
+   "e": 29.315
+  },
+  {
+   "w": "know.",
+   "who": "C",
+   "line": "l11",
+   "s": 29.315,
+   "e": 29.657
+  },
+  {
+   "w": "I",
+   "who": "C",
+   "line": "l11",
+   "s": 29.657,
+   "e": 29.803
+  },
+  {
+   "w": "fixed",
+   "who": "C",
+   "line": "l11",
+   "s": 29.803,
+   "e": 30.144
+  },
+  {
+   "w": "it",
+   "who": "C",
+   "line": "l11",
+   "s": 30.144,
+   "e": 30.339
+  },
+  {
+   "w": "earlier.",
+   "who": "C",
+   "line": "l11",
+   "s": 30.339,
+   "e": 30.827
+  },
+  {
+   "w": "So",
+   "who": "A",
+   "line": "l12",
+   "s": 32.927,
+   "e": 33.092
+  },
+  {
+   "w": "technically,",
+   "who": "A",
+   "line": "l12",
+   "s": 33.092,
+   "e": 33.671
+  },
+  {
+   "w": "you",
+   "who": "A",
+   "line": "l12",
+   "s": 33.671,
+   "e": 33.878
+  },
+  {
+   "w": "could",
+   "who": "A",
+   "line": "l12",
+   "s": 33.878,
+   "e": 34.167
+  },
+  {
+   "w": "bring",
+   "who": "A",
+   "line": "l12",
+   "s": 34.167,
+   "e": 34.457
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l12",
+   "s": 34.457,
+   "e": 34.663
+  },
+  {
+   "w": "old",
+   "who": "A",
+   "line": "l12",
+   "s": 34.663,
+   "e": 34.87
+  },
+  {
+   "w": "bug",
+   "who": "A",
+   "line": "l12",
+   "s": 34.87,
+   "e": 35.077
+  },
+  {
+   "w": "back?",
+   "who": "A",
+   "line": "l12",
+   "s": 35.077,
+   "e": 35.366
+  },
+  {
+   "w": "Technically,",
+   "who": "C",
+   "line": "l13",
+   "s": 36.166,
+   "e": 36.979
+  },
+  {
+   "w": "yes.",
+   "who": "C",
+   "line": "l13",
+   "s": 36.979,
+   "e": 37.327
+  },
+  {
+   "w": "Professionally,",
+   "who": "C",
+   "line": "l13",
+   "s": 37.327,
+   "e": 38.314
+  },
+  {
+   "w": "that's",
+   "who": "C",
+   "line": "l13",
+   "s": 38.314,
+   "e": 38.778
+  },
+  {
+   "w": "a",
+   "who": "C",
+   "line": "l13",
+   "s": 38.778,
+   "e": 38.952
+  },
+  {
+   "w": "terrible",
+   "who": "C",
+   "line": "l13",
+   "s": 38.952,
+   "e": 39.533
+  },
+  {
+   "w": "idea.",
+   "who": "C",
+   "line": "l13",
+   "s": 39.533,
+   "e": 39.939
+  },
+  {
+   "w": "Claude...",
+   "who": "A",
+   "line": "l14",
+   "s": 43.839,
+   "e": 44.314
+  },
+  {
+   "w": "we",
+   "who": "A",
+   "line": "l14",
+   "s": 44.314,
+   "e": 44.487
+  },
+  {
+   "w": "have",
+   "who": "A",
+   "line": "l14",
+   "s": 44.487,
+   "e": 44.747
+  },
+  {
+   "w": "another",
+   "who": "A",
+   "line": "l14",
+   "s": 44.747,
+   "e": 45.136
+  },
+  {
+   "w": "problem.",
+   "who": "A",
+   "line": "l14",
+   "s": 45.136,
+   "e": 45.568
+  },
+  {
+   "w": "Don't",
+   "who": "C",
+   "line": "l15",
+   "s": 46.768,
+   "e": 47.122
+  },
+  {
+   "w": "worry.",
+   "who": "C",
+   "line": "l15",
+   "s": 47.122,
+   "e": 47.526
+  },
+  {
+   "w": "I'll",
+   "who": "C",
+   "line": "l15",
+   "s": 47.526,
+   "e": 47.829
+  },
+  {
+   "w": "explain",
+   "who": "C",
+   "line": "l15",
+   "s": 47.829,
+   "e": 48.283
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l15",
+   "s": 48.283,
+   "e": 48.536
+  },
+  {
+   "w": "code.",
+   "who": "C",
+   "line": "l15",
+   "s": 48.536,
+   "e": 48.889
+  },
+  {
+   "w": "But",
+   "who": "C",
+   "line": "l15",
+   "s": 48.889,
+   "e": 49.142
+  },
+  {
+   "w": "you're",
+   "who": "C",
+   "line": "l15",
+   "s": 49.142,
+   "e": 49.546
+  },
+  {
+   "w": "going",
+   "who": "C",
+   "line": "l15",
+   "s": 49.546,
+   "e": 49.9
+  },
+  {
+   "w": "to",
+   "who": "C",
+   "line": "l15",
+   "s": 49.9,
+   "e": 50.102
+  },
+  {
+   "w": "learn",
+   "who": "C",
+   "line": "l15",
+   "s": 50.102,
+   "e": 50.455
+  },
+  {
+   "w": "it",
+   "who": "C",
+   "line": "l15",
+   "s": 50.455,
+   "e": 50.657
+  },
+  {
+   "w": "this",
+   "who": "C",
+   "line": "l15",
+   "s": 50.657,
+   "e": 50.96
+  },
+  {
+   "w": "time.",
+   "who": "C",
+   "line": "l15",
+   "s": 50.96,
+   "e": 51.314
+  },
+  {
+   "w": "So...",
+   "who": "C",
+   "line": "l16",
+   "s": 54.814,
+   "e": 55.147
+  },
+  {
+   "w": "should",
+   "who": "C",
+   "line": "l16",
+   "s": 55.147,
+   "e": 55.529
+  },
+  {
+   "w": "I",
+   "who": "C",
+   "line": "l16",
+   "s": 55.529,
+   "e": 55.671
+  },
+  {
+   "w": "bring",
+   "who": "C",
+   "line": "l16",
+   "s": 55.671,
+   "e": 56.005
+  },
+  {
+   "w": "back",
+   "who": "C",
+   "line": "l16",
+   "s": 56.005,
+   "e": 56.291
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l16",
+   "s": 56.291,
+   "e": 56.529
+  },
+  {
+   "w": "old",
+   "who": "C",
+   "line": "l16",
+   "s": 56.529,
+   "e": 56.767
+  },
+  {
+   "w": "bug?",
+   "who": "C",
+   "line": "l16",
+   "s": 56.767,
+   "e": 57.053
+  },
+  {
+   "w": "Don't",
+   "who": "A",
+   "line": "l17",
+   "s": 58.053,
+   "e": 58.354
+  },
+  {
+   "w": "touch",
+   "who": "A",
+   "line": "l17",
+   "s": 58.354,
+   "e": 58.654
+  },
+  {
+   "w": "it!",
+   "who": "A",
+   "line": "l17",
+   "s": 58.654,
+   "e": 58.869
+  },
+  {
+   "w": "Use",
+   "who": "A",
+   "line": "l18",
+   "s": 59.27,
+   "e": 59.515
+  },
+  {
+   "w": "AI",
+   "who": "A",
+   "line": "l18",
+   "s": 59.515,
+   "e": 59.711
+  },
+  {
+   "w": "to",
+   "who": "A",
+   "line": "l18",
+   "s": 59.711,
+   "e": 59.907
+  },
+  {
+   "w": "improve",
+   "who": "A",
+   "line": "l18",
+   "s": 59.907,
+   "e": 60.348
+  },
+  {
+   "w": "your",
+   "who": "A",
+   "line": "l18",
+   "s": 60.348,
+   "e": 60.642
+  },
+  {
+   "w": "code,",
+   "who": "A",
+   "line": "l18",
+   "s": 60.642,
+   "e": 60.984
+  },
+  {
+   "w": "not",
+   "who": "A",
+   "line": "l18",
+   "s": 60.984,
+   "e": 61.229
+  },
+  {
+   "w": "hide",
+   "who": "A",
+   "line": "l18",
+   "s": 61.229,
+   "e": 61.523
+  },
+  {
+   "w": "your",
+   "who": "A",
+   "line": "l18",
+   "s": 61.523,
+   "e": 61.817
+  },
+  {
+   "w": "mistakes.",
+   "who": "A",
+   "line": "l18",
+   "s": 61.817,
+   "e": 62.356
+  },
+  {
+   "w": "Send",
+   "who": "A",
+   "line": "l19",
+   "s": 63.456,
+   "e": 63.726
+  },
+  {
+   "w": "this",
+   "who": "A",
+   "line": "l19",
+   "s": 63.726,
+   "e": 63.996
+  },
+  {
+   "w": "to",
+   "who": "A",
+   "line": "l19",
+   "s": 63.996,
+   "e": 64.175
+  },
+  {
+   "w": "a",
+   "who": "A",
+   "line": "l19",
+   "s": 64.175,
+   "e": 64.31
+  },
+  {
+   "w": "developer",
+   "who": "A",
+   "line": "l19",
+   "s": 64.31,
+   "e": 64.805
+  },
+  {
+   "w": "who",
+   "who": "A",
+   "line": "l19",
+   "s": 64.805,
+   "e": 65.03
+  },
+  {
+   "w": "uses",
+   "who": "A",
+   "line": "l19",
+   "s": 65.03,
+   "e": 65.3
+  },
+  {
+   "w": "Claude",
+   "who": "A",
+   "line": "l19",
+   "s": 65.3,
+   "e": 65.659
+  },
+  {
+   "w": "Code.",
+   "who": "A",
+   "line": "l19",
+   "s": 65.659,
+   "e": 65.974
+  }
+ ]
+}

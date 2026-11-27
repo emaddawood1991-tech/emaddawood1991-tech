@@ -105,7 +105,15 @@ def celebrate(f, n):
     t = f / n; h = abs(sin(t * 2 * pi)) * 0.5; pb["root"].location = (0, 0, h); pb["armL"].rotation_euler = (1.3, 0, 0); pb["armR"].rotation_euler = (-(-1.3), 0, 0); pb["armL"].scale = pb["armR"].scale = (1, 1.15, 1)
     for e in ("eyeL", "eyeR"): pb[e].scale = (1.25, 1, 0.3)
 def listen(f, n): t = f / n * 2 * pi; eyes(f, n, (0.3 * sin(t * 0.5), 0.1), True); pb["body"].rotation_euler = (0.05, 0.06, 0.05 * sin(t * 0.5)); pb["body"].location = (0, 0, 0.01 * sin(t))
-LIB = [("IDLE", 60, idle), ("BOUNCE", 24, bounce), ("WAVE", 48, wave), ("LOOK", 60, look), ("WALK", 36, walk), ("RUN", 18, run), ("TALK", 30, talk), ("THINK", 60, think), ("POINT", 36, point), ("CELEBRATE", 36, celebrate), ("LISTEN", 60, listen)]
+def laugh(f, n):
+    t = f / n * 2 * pi; h = abs(sin(t * 2)) * 0.18; pb["root"].location = (0, 0, h)
+    for e in ("eyeL", "eyeR"): pb[e].scale = (1.3, 1, 0.22)
+    pb["armL"].rotation_euler = (0.5 + 0.2 * sin(t * 4), 0, 0); pb["armR"].rotation_euler = (-(0.5 + 0.2 * sin(t * 4)), 0, 0); pb["body"].rotation_euler = (0, 0.05 * sin(t * 4), 0)
+def confused(f, n):
+    t = f / n * 2 * pi; pb["root"].rotation_euler = (0, 0, 0.16 * sin(t)); pb["body"].rotation_euler = (0, 0.08 * sin(t), 0); eyes(f, n, (0.5 * sin(t), 0.5), False); pb["armR"].rotation_euler = (-(0.3), 0, 0)
+def code(f, n):
+    t = f / n * 2 * pi; eyes(f, n, (0, -0.8), True); pb["armL"].rotation_euler = (0.15 + 0.15 * max(0, sin(t * 6)), 0, 0); pb["armR"].rotation_euler = (-(0.15 + 0.15 * max(0, sin(t * 6 + pi))), 0, 0); pb["body"].location = (0, 0, 0.012 * sin(t * 6)); pb["body"].rotation_euler = (0.06, 0, 0)
+LIB = [("LAUGH", 36, laugh), ("CONFUSED", 60, confused), ("CODE", 60, code), ("IDLE", 60, idle), ("BOUNCE", 24, bounce), ("WAVE", 48, wave), ("LOOK", 60, look), ("WALK", 36, walk), ("RUN", 18, run), ("TALK", 30, talk), ("THINK", 60, think), ("POINT", 36, point), ("CELEBRATE", 36, celebrate), ("LISTEN", 60, listen)]
 for n, fr, fn in LIB: S(n, fr, fn)
 arm.animation_data.action = bpy.data.actions["IDLE"]
 # ---- scene: camera + lights + transparent ----
