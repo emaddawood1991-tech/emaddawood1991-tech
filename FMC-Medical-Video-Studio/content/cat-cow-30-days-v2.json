@@ -1,0 +1,236 @@
+{
+  "slug": "cat-cow-30-days-v2",
+  "topic": {
+    "ar": "تمرين تقويس الظهر ومدّه",
+    "en": "Back flexion and extension exercise (Cat-Cow)"
+  },
+  "services": [
+    "العلاج الطبيعي",
+    "طب العظام"
+  ],
+  "scenes": [
+    {
+      "id": "cc_hook",
+      "sceneType": "A",
+      "plannedSec": 1,
+      "narration": "هل يمكن لحركة بسيطة أن تساعدك على تحسين مرونة ظهرك؟ هذا تمرين تقويس الظهر ومده، ويعرف أيضا بتمرين القطة والبقرة.",
+      "ttsText": "هل يمكن لحركة بسيطة أن تساعدك على تحسين مرونة ظهرك؟ هذا تمرين تقويس الظهر ومدّه، ويُعرف أيضًا بتمرين القطة والبقرة.",
+      "onScreen": {
+        "title": "تمرين تقويس الظهر ومده"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Opening + exercise name; characters on mat"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_stat",
+      "sceneType": "C",
+      "plannedSec": 1,
+      "narration": "وفي دراسة أجريت في دبي، ظهرت آلام أسفل الظهر لدى نحو ثلاثة وثلاثين في المئة من المشاركين.",
+      "ttsText": "وفي دراسة أُجريت في دبي، ظهرت آلام أسفل الظهر لدى نحو ثلاثة وثلاثين في المئة من المشاركين.",
+      "onScreen": {
+        "title": "آلام أسفل الظهر لدى مشاركين في دراسة بدبي",
+        "subtitle": "٣٢٫٩٪ من المشاركين"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Small statistic card"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_disc",
+      "sceneType": "D",
+      "plannedSec": 1,
+      "narration": "يتكون العمود الفقري من فقرات تفصل بينها أقراص غضروفية، تساعد على توزيع الأحمال وتسمح بالحركة.",
+      "ttsText": "يتكوّن العمود الفقري من فقرات تفصل بينها أقراص غضروفية، تساعد على توزيع الأحمال وتسمح بالحركة.",
+      "onScreen": {
+        "title": "الفقرات والأقراص بين الفقرات"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "regions",
+        "camera": "",
+        "description": "Body -> translucent anatomy -> disc cross-section (Sequences A,B)"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_science",
+      "sceneType": "D",
+      "plannedSec": 1,
+      "narration": "وعندما نحرك الظهر بلطف، تتغير وضعية الفقرات والأحمال الواقعة على الأقراص بين الفقرات.",
+      "ttsText": "وعندما نحرّك الظهر بلطف، تتغير وضعية الفقرات والأحمال الواقعة على الأقراص بين الفقرات.",
+      "onScreen": {
+        "title": "وضعية الفقرات والأحمال على الأقراص"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "regions",
+        "camera": "",
+        "description": "Flexion/extension of lumbar vertebrae and disc loading (Sequence C)"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_w1",
+      "sceneType": "B",
+      "plannedSec": 1,
+      "narration": "ابدأ بالارتكاز على اليدين والركبتين، مع وضع اليدين تحت الكتفين والركبتين تحت الوركين. مع الزفير، قوس ظهرك بلطف نحو الأعلى، ثم خفف التقوس تدريجيا مع الشهيق، واسمح لصدرك بالارتفاع قليلا دون مبالغة.",
+      "ttsText": "ابدأ بالارتكاز على اليدين والركبتين، مع وضع اليدين تحت الكتفين والركبتين تحت الوركين. مع الزفير، قوّس ظهرك بلطف نحو الأعلى، ثم خفّف التقوّس تدريجيًا مع الشهيق، واسمح لصدرك بالارتفاع قليلًا دون مبالغة.",
+      "onScreen": {
+        "title": "طريقة الأداء"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Correct movement demonstration, two phases, arrows"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_w2",
+      "sceneType": "B",
+      "plannedSec": 1,
+      "narration": "خلال الأسبوع الأول، ركز على فهم الحركة وأدائها بطريقة مريحة.",
+      "ttsText": "خلال الأسبوع الأول، ركّز على فهم الحركة وأدائها بطريقة مريحة.",
+      "onScreen": {
+        "title": "الأسبوع الأول"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Week 1 learn the movement"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_w3",
+      "sceneType": "B",
+      "plannedSec": 1,
+      "narration": "ومع الاستمرار خلال الأسابيع التالية، قد تساعد الحركة المنتظمة على تحسين مرونة الظهر وتقليل التيبس لدى بعض الأشخاص.",
+      "ttsText": "ومع الاستمرار خلال الأسابيع التالية، قد تساعد الحركة المنتظمة على تحسين مرونة الظهر وتقليل التيبّس لدى بعض الأشخاص.",
+      "onScreen": {
+        "title": "الأسبوعان الثاني والثالث"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Week 2 anatomy inset, week 3 controlled mobility"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_w4",
+      "sceneType": "B",
+      "plannedSec": 1,
+      "narration": "لكن النتائج تختلف بحسب الحالة، ولا يعني ذلك أن الأقراص الغضروفية تتجدد أو أن الألم سيختفي خلال ثلاثين يوما.",
+      "ttsText": "لكن النتائج تختلف بحسب الحالة، ولا يعني ذلك أن الأقراص الغضروفية تتجدد أو أن الألم سيختفي خلال ثلاثين يومًا.",
+      "onScreen": {
+        "title": "الأسبوع الرابع"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Week 4 consistent practice + qualification"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "cc_safe",
+      "sceneType": "E",
+      "plannedSec": 1,
+      "narration": "إذا سبب التمرين ألما متزايدا أو أعراضا تمتد إلى الساق، توقف واطلب التقييم المناسب.",
+      "ttsText": "إذا سبّب التمرين ألمًا متزايدًا أو أعراضًا تمتد إلى الساق، توقّف واطلب التقييم المناسب.",
+      "onScreen": {
+        "title": "تحرك بلطف وضمن المدى المريح",
+        "subtitle": "أوقف التمرين إذا زادت الأعراض"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Safety"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "closing",
+      "sceneType": "F",
+      "plannedSec": 1,
+      "narration": "في مركز الفيصل الطبي، نهتم بمساعدتك على اختيار التمارين المناسبة لحالتك.",
+      "ttsText": "في مَرْكَزِ الْفَيْصَلِ الطِّبِّيِّ، نهتم بمساعدتك على اختيار التمارين المناسبة لحالتك.",
+      "onScreen": {
+        "title": "مركز الفيصل الطبي",
+        "subtitle": "الرعاية المثالية"
+      },
+      "visual": {
+        "model": "lumbar-spine",
+        "highlight": "movement",
+        "camera": "",
+        "description": "Closing"
+      },
+      "footageQueries": [],
+      "sfx": []
+    }
+  ],
+  "instagramCaption": "تمرين تقويس الظهر ومدّه (القطة والبقرة): حركة لطيفة وضمن المدى المريح، والنتائج تختلف من شخص لآخر. محتوى توعوي وليس تشخيصا ولا خطة علاج.\n\nمركز الفيصل الطبي — الرعاية المثالية",
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العين",
+    "#الإمارات",
+    "#آلام_أسفل_الظهر",
+    "#العلاج_الطبيعي",
+    "#الرعاية_المثالية",
+    "#FMC",
+    "#AlAin",
+    "#UAE",
+    "#CatCow",
+    "#IdealCare"
+  ],
+  "sources": [
+    {
+      "title": "Low Back Pain in Saudi Arabia Did Not Follow the Global Decline in Age-Standardized Prevalence: GBD 2023 Trends and Physiotherapy Workforce Needs to 2030 (J Clin Med 2026;15(23):9193) — UAE 7.36% / 850,443 NOT YET VERIFIED (mdpi.com returned 403)",
+      "url": "https://www.mdpi.com/2077-0383/15/23/9193"
+    },
+    {
+      "title": "Prevalence and determinants of musculoskeletal disease in Emiratis, Dubai primary care (PRO Dubai; data 2009), Oman Med J 2016 — LBP 32.9% of 3,985 participants",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4861389"
+    },
+    {
+      "title": "Hutton WC, Malko JA, Fajman WA. Lumbar disc volume measured by MRI: effects of bed rest, horizontal exercise, and vertical loading. Aviat Space Environ Med 2003;74(1):73-8 (5 subjects; +10.6% after overnight bed rest; NOT about Cat-Cow)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12546302/"
+    }
+  ],
+  "timing": {
+    "lead": 4,
+    "tail": 4
+  },
+  "approvals": {
+    "grammarReview": null,
+    "medicalTerminologyReview": null,
+    "medicalAccuracyReview": null,
+    "scriptApproved": null,
+    "pronunciationApproved": null,
+    "approvedHash": null
+  }
+}
