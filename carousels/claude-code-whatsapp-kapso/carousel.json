@@ -1,0 +1,260 @@
+{
+  "slug": "claude-code-whatsapp-kapso",
+  "title": "Claude Code + WhatsApp AI Agent with Kapso",
+  "handle": "@agentoon.ai",
+  "recipe": "workflow",
+  "slides": [
+    {
+      "layout": "hookChat",
+      "theme": "dark",
+      "kicker": "AI agent tutorial",
+      "title": "Your WhatsApp Can Have Its *Own AI Agent.*",
+      "sub": "Claude Code + Kapso + WhatsApp",
+      "hook": "Build a booking assistant that replies, schedules, and follows up."
+    },
+    {
+      "layout": "sixJobs",
+      "theme": "paper",
+      "mood": "happy",
+      "kicker": "What it can do",
+      "title": "One Agent. *Six Jobs.*",
+      "lede": "Answer, check, book, remind and hand off.",
+      "cards": [
+        {
+          "t": "Answer common questions",
+          "icon": "file"
+        },
+        {
+          "t": "Respond to incoming messages",
+          "icon": "send"
+        },
+        {
+          "t": "Check appointment availability",
+          "icon": "clock",
+          "setup": 1
+        },
+        {
+          "t": "Create confirmed bookings",
+          "icon": "check",
+          "setup": 1
+        },
+        {
+          "t": "Send approved reminders",
+          "icon": "bookmark",
+          "setup": 1
+        },
+        {
+          "t": "Escalate to a human",
+          "icon": "shield",
+          "setup": 1
+        }
+      ],
+      "watch": "Calendar, reminders and human handoff need your own configuration."
+    },
+    {
+      "layout": "architecture",
+      "theme": "mint",
+      "mood": "think",
+      "kicker": "The architecture",
+      "title": "Here's How *It Works.*",
+      "lede": "Every message travels through Kapso to your workflow and back.",
+      "watch": "Claude Code builds and configures it. A deployed Kapso workflow or your own server runs it."
+    },
+    {
+      "layout": "connect",
+      "theme": "paper",
+      "mood": "focus",
+      "kicker": "Connect WhatsApp",
+      "title": "Step 1 \u2014 *Connect Your Number*",
+      "rows": [
+        {
+          "t": "Create a Kapso account",
+          "d": "Sign up in the Kapso web app."
+        },
+        {
+          "t": "Start onboarding",
+          "d": "Run `kapso setup` or use the dashboard."
+        },
+        {
+          "t": "Choose a number method",
+          "d": "Pick from the options offered to you."
+        },
+        {
+          "t": "Finish the WhatsApp connection",
+          "d": "Complete the hosted Meta signup."
+        },
+        {
+          "t": "Confirm your number",
+          "d": "`kapso whatsapp numbers list`"
+        }
+      ],
+      "watch": "Onboarding requirements depend on your number and account type."
+    },
+    {
+      "layout": "skills",
+      "theme": "dark",
+      "mood": "wink",
+      "kicker": "Install agent skills",
+      "title": "Step 2 \u2014 Give Claude Code *WhatsApp Skills*",
+      "code": [
+        "{{p:$}} {{c:npx}} skills add gokapso/agent-skills"
+      ],
+      "skills": [
+        {
+          "n": "integrate-whatsapp",
+          "d": "Connect numbers, set up webhooks, send messages and templates."
+        },
+        {
+          "n": "automate-whatsapp",
+          "d": "Build workflows, agents, functions and triggers."
+        },
+        {
+          "n": "observe-whatsapp",
+          "d": "Search logs, debug delivery, webhooks and errors."
+        }
+      ],
+      "watch": "Skills teach Claude Code how to use Kapso. They don't run a bot by themselves."
+    },
+    {
+      "layout": "configure",
+      "theme": "mint",
+      "mood": "focus",
+      "kicker": "Configure the connection",
+      "title": "Step 3 \u2014 *Connect the API*",
+      "code": [
+        "{{p:$}} {{c:kapso}} login",
+        "{{p:$}} {{c:kapso}} status",
+        "{{p:$}} {{c:kapso}} whatsapp messages send \\",
+        "    --phone-number-id <ID> --to <wa-id> \\",
+        "    --text {{s:\"Hello from Kapso\"}}"
+      ],
+      "cards": [
+        {
+          "l": "Credentials",
+          "t": "Keep `KAPSO_API_KEY` in env vars. Never in code or chat."
+        },
+        {
+          "l": "Phone number ID",
+          "t": "Find it with `kapso whatsapp numbers list`."
+        },
+        {
+          "l": "Webhook + signature",
+          "t": "Receive `whatsapp.message.received`. Verify `X-Webhook-Signature`."
+        }
+      ],
+      "watch": "Never post a real key. Test incoming and outgoing messages first."
+    },
+    {
+      "layout": "flow",
+      "theme": "paper",
+      "mood": "think",
+      "kicker": "Build the workflow",
+      "title": "Step 4 \u2014 *Make It Intelligent*",
+      "watch": "Nodes: `agent`, `decide`, `function`, `webhook`, `handoff`."
+    },
+    {
+      "layout": "chatCal",
+      "theme": "dark",
+      "mood": "cheer",
+      "kicker": "Realistic example",
+      "title": "Watch the Agent *Book an Appointment*",
+      "watch": "Not a completed live transaction. Demo data."
+    },
+    {
+      "layout": "pricing",
+      "theme": "coral",
+      "mood": "wink",
+      "kicker": "Pricing + rules",
+      "title": "Start Small. *Scale Later.*",
+      "cards": [
+        {
+          "t": "Kapso subscription",
+          "d": "Plans and message limits are on the official pricing page."
+        },
+        {
+          "t": "Meta WhatsApp fees",
+          "d": "Meta bills messaging separately, by message type."
+        },
+        {
+          "t": "AI model usage",
+          "d": "Your model provider bills the tokens your agent uses."
+        },
+        {
+          "t": "Hosting + integrations",
+          "d": "Your server, calendar and database may cost extra."
+        }
+      ],
+      "rules": "Replies need an active 24-hour customer-service window. Outside it, send an approved template.",
+      "watch": "Not everything is free. Check the live Kapso pricing page."
+    },
+    {
+      "layout": "setup",
+      "theme": "dark",
+      "mood": "cheer",
+      "kicker": "Save this setup",
+      "title": "Build Your First *WhatsApp AI Agent.*",
+      "items": [
+        "Kapso account",
+        "WhatsApp connection",
+        "Claude Code",
+        "Kapso Agent Skills",
+        "Workflow or server",
+        "AI model",
+        "Calendar integration",
+        "Testing: replies, bookings, errors"
+      ],
+      "cta": [
+        "Save this guide.",
+        "Follow @agentoon.ai for more AI Agent tutorials."
+      ]
+    }
+  ],
+  "spellAllow": [
+    "kapso",
+    "gokapso",
+    "whatsapp",
+    "webhook",
+    "webhooks",
+    "api",
+    "cli",
+    "npx",
+    "ai",
+    "hmac",
+    "sha",
+    "json",
+    "claude",
+    "meta",
+    "agentoon",
+    "kmark",
+    "env",
+    "pm",
+    "wa",
+    "faq",
+    "dedicated",
+    "onboarding",
+    "cdp",
+    "oauth",
+    "uv",
+    "dashboard",
+    "tokens",
+    "token",
+    "hosted",
+    "signup",
+    "setup",
+    "templates",
+    "template",
+    "workflow",
+    "workflows",
+    "agents",
+    "agent",
+    "integrate",
+    "automate",
+    "observe",
+    "gokapso",
+    "unsure",
+    "app",
+    "readme",
+    "bot",
+    "apis"
+  ]
+}

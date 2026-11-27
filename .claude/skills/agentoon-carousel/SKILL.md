@@ -56,6 +56,9 @@ Instagram's editor and grid can cover or crop the edges of a 4:5 image. Every sl
 - **When the source site/repo cannot be opened** (proxy/permission), use only verifiable raw README/LICENSE files, label re-typeset text "Excerpt" and conceptual drawings "Concept diagram", omit star counts and prices you cannot verify, and say so in `sources.md` and the hand-off. If a permission request (e.g. `add_repo`) is denied, do not work around it: finish what is possible, then tell the user what is blocked and what to grant.
 - Repo-roundup pattern: `carousels/github-goldmine-10-repos/extras.mjs` (`commandCenter` cover, `repo` layout with `stack`/`cards`/`hero` variants, visual builders). Up to 11 slides are allowed when the brief asks.
 
+- **Custom CSS class names must not collide with base.css** (e.g. `.pg` is the footer page counter and silently broke the safe-area check). Prefix bespoke classes and grep `assets/base.css` first.
+- **Unverifiable prices/plans:** if the vendor's pricing page cannot be opened, show no tiers or numbers; show the cost layers and send readers to the live page, and ask the user for the current table. Brand logos: use simplified glyphs unless official files are in `assets/brand-*.svg` (see `carousels/claude-code-whatsapp-kapso/extras.mjs`).
+
 ## Variation rules (same brand, different look every time)
 
 Brand stays fixed: palette, Fraunces/Inter/JetBrains Mono, footer, mascot, 72px grid, badges, type scale, QA thresholds. What must change per topic:

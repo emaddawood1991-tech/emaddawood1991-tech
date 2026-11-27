@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>Claude Code + WhatsApp AI Agent with Kapso — Agentoon.ai carousel</title>
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/extra.css">
+</head><body>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0" aria-hidden="true">
+  <!-- Agentoon robot mascot. Colours come from CSS vars: --m-head --m-screen --m-eye --m-body --m-ear --accent
+       Moods: happy · wow · think · wink · focus · cheer · dizzy · oops · proud  (use mascot(width, mood)) -->
+  <defs>
+    <g id="m-base">
+      <line x1="100" y1="22" x2="100" y2="50" stroke="var(--m-head)" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="100" cy="16" r="10" fill="var(--accent)"/>
+      <rect x="14" y="88" width="20" height="40" rx="10" fill="var(--m-ear)"/>
+      <rect x="166" y="88" width="20" height="40" rx="10" fill="var(--m-ear)"/>
+      <rect x="28" y="48" width="144" height="116" rx="38" fill="var(--m-head)"/>
+      <rect x="46" y="68" width="108" height="76" rx="26" fill="var(--m-screen)"/>
+      <rect x="58" y="170" width="84" height="50" rx="20" fill="var(--m-body)"/>
+      <rect x="86" y="184" width="28" height="22" rx="8" fill="var(--accent)"/>
+    </g>
+    <g id="m-eyes-happy"><rect x="70" y="88" width="16" height="26" rx="8" fill="var(--m-eye)"/><rect x="114" y="88" width="16" height="26" rx="8" fill="var(--m-eye)"/></g>
+    <g id="m-eyes-arc" fill="none" stroke="var(--m-eye)" stroke-width="7" stroke-linecap="round"><path d="M66 108 Q78 90 90 108"/><path d="M110 108 Q122 90 134 108"/></g>
+  </defs>
+
+  <symbol id="mascot-happy" viewBox="0 0 200 230"><use href="#m-base"/><use href="#m-eyes-happy"/>
+    <path d="M82 126 Q100 140 118 126" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+  <symbol id="mascot" viewBox="0 0 200 230"><use href="#mascot-happy"/></symbol>
+
+  <symbol id="mascot-wow" viewBox="0 0 200 230"><use href="#m-base"/>
+    <ellipse cx="78" cy="98" rx="12" ry="19" fill="var(--m-eye)"/><ellipse cx="122" cy="98" rx="12" ry="19" fill="var(--m-eye)"/>
+    <circle cx="82" cy="91" r="4.5" fill="var(--m-screen)"/><circle cx="126" cy="91" r="4.5" fill="var(--m-screen)"/>
+    <ellipse cx="100" cy="130" rx="13" ry="10" fill="var(--m-eye)"/>
+    <g stroke="var(--accent)" stroke-width="5" stroke-linecap="round"><path d="M178 28v18M169 37h18"/><path d="M22 36v14M15 43h14"/><path d="M164 6v10M159 11h10"/></g></symbol>
+
+  <symbol id="mascot-think" viewBox="0 0 200 230"><use href="#m-base"/>
+    <circle cx="82" cy="96" r="12" fill="var(--m-eye)"/><circle cx="126" cy="96" r="12" fill="var(--m-eye)"/>
+    <circle cx="86" cy="92" r="5" fill="var(--m-screen)"/><circle cx="130" cy="92" r="5" fill="var(--m-screen)"/>
+    <path d="M112 78 L140 72" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M84 130 H112" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="176" cy="30" r="6" fill="var(--accent)"/><circle cx="190" cy="12" r="4" fill="var(--accent)"/></symbol>
+
+  <symbol id="mascot-wink" viewBox="0 0 200 230"><use href="#m-base"/>
+    <rect x="70" y="88" width="16" height="26" rx="8" fill="var(--m-eye)"/>
+    <path d="M110 102 H134" stroke="var(--m-eye)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M78 122 Q100 148 122 122 Z" fill="var(--m-eye)"/>
+    <g stroke="var(--accent)" stroke-width="5" stroke-linecap="round"><path d="M178 30v16M170 38h16"/></g></symbol>
+
+  <symbol id="mascot-focus" viewBox="0 0 200 230"><use href="#m-base"/>
+    <rect x="68" y="96" width="20" height="10" rx="5" fill="var(--m-eye)"/>
+    <circle cx="124" cy="100" r="16" fill="none" stroke="var(--m-eye)" stroke-width="6"/><circle cx="124" cy="100" r="6" fill="var(--m-eye)"/>
+    <path d="M136 112 L150 126" stroke="var(--m-eye)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M86 130 H110" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+
+  <symbol id="mascot-cheer" viewBox="0 0 200 230"><use href="#m-base"/>
+    <g stroke="var(--m-ear)" stroke-width="16" stroke-linecap="round" fill="none"><path d="M62 186 L22 142"/><path d="M138 186 L178 142"/></g>
+    <circle cx="20" cy="138" r="11" fill="var(--m-ear)"/><circle cx="180" cy="138" r="11" fill="var(--m-ear)"/>
+    <use href="#m-eyes-arc"/>
+    <path d="M78 120 Q100 150 122 120 Z" fill="var(--m-eye)"/>
+    <circle cx="62" cy="124" r="6" fill="var(--accent)" opacity=".7"/><circle cx="138" cy="124" r="6" fill="var(--accent)" opacity=".7"/></symbol>
+
+  <symbol id="mascot-dizzy" viewBox="0 0 200 230"><use href="#m-base"/>
+    <g fill="none" stroke="var(--m-eye)" stroke-width="5" stroke-linecap="round"><circle cx="78" cy="100" r="15"/><circle cx="78" cy="100" r="6"/><circle cx="122" cy="100" r="15"/><circle cx="122" cy="100" r="6"/></g>
+    <path d="M84 130 Q92 122 100 130 T116 130" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+
+  <symbol id="mascot-oops" viewBox="0 0 200 230"><use href="#m-base"/>
+    <circle cx="78" cy="98" r="10" fill="var(--m-eye)"/><circle cx="122" cy="98" r="10" fill="var(--m-eye)"/>
+    <path d="M66 80 L88 86 M134 80 L112 86" stroke="var(--m-eye)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M82 134 Q100 122 118 134" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M168 56 q8 14 0 22 q-8 -8 0 -22z" fill="var(--accent)"/></symbol>
+
+  <symbol id="mascot-proud" viewBox="0 0 200 230"><use href="#m-base"/>
+    <path d="M138 186 L176 150" stroke="var(--m-ear)" stroke-width="16" stroke-linecap="round" fill="none"/><circle cx="178" cy="146" r="12" fill="var(--m-ear)"/>
+    <use href="#m-eyes-arc"/>
+    <path d="M82 126 Q100 142 118 126" fill="none" stroke="var(--m-eye)" stroke-width="6" stroke-linecap="round"/></symbol>
+
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="8" r="2.2"/><path d="M6 7.2v9.6M18 10.2c0 4-6 3-11 7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-4M4 4v4h4M4 13a8 8 0 0 0 14 4M20 20v-4h-4"/></symbol>
+  <symbol id="i-bug" viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="12" rx="4"/><path d="M9 8a3 3 0 0 1 6 0M3 12h5M16 12h5M4 19l4-2M20 19l-4-2M4 5l4 3M20 5l-4 3"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5zM3 13l9 5 9-5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></symbol>
+  <symbol id="i-follow" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5S14.900 16.400 15.500 20M19 8v6M16 11h6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.200 9.500l6.100-.9z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v4h4"/></symbol>
+</svg>
+
+<main class="deck">
+<section class="slide dark" id="slide-01" data-slide="1">
+        <div class="kicker"><span class="bar"></span>AI agent tutorial</div>
+        <h1 class="h1" style="margin-top:12px;font-size:78px;line-height:1.02">Your WhatsApp Can Have Its <em>Own AI Agent.</em></h1>
+        <p class="lede" style="margin-top:12px;font-size:34px;font-weight:700;font-family:var(--mono);color:var(--accent-t)">Claude Code + Kapso + WhatsApp</p>
+        <p class="lede" style="margin-top:8px;font-size:32px;color:var(--muted);text-wrap:balance">Build a booking assistant that replies, schedules, and follows up.</p>
+        <div style="margin-top:12px"><div style="position:relative;height:410px">
+        <div class="hglow"></div>
+        <svg viewBox="0 0 940 392" width="940" height="392" style="position:absolute;left:0;top:0"><defs><linearGradient id="hg" x1="0" x2="1"><stop offset="0" stop-color="#25D366"/><stop offset=".5" stop-color="#FF7A52"/><stop offset="1" stop-color="#2FE3B2"/></linearGradient><filter id="hf"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <path d="M470 150 C530 110 560 110 600 150" fill="none" stroke="url(#hg)" stroke-width="4" stroke-dasharray="3 12" stroke-linecap="round" filter="url(#hf)"/>
+          <path d="M470 250 C530 292 560 292 600 252" fill="none" stroke="url(#hg)" stroke-width="4" stroke-dasharray="3 12" stroke-linecap="round" filter="url(#hf)"/>
+          <circle cx="470" cy="150" r="7" fill="#25D366"/><circle cx="470" cy="250" r="7" fill="#25D366"/><circle cx="600" cy="150" r="7" fill="#2FE3B2"/><circle cx="600" cy="252" r="7" fill="#2FE3B2"/></svg>
+        <div class="wa" style="position:absolute;left:0;top:4px;width:500px;transform:rotate(-1.5deg)"><div class="wah"><span class="wav"><svg width="34" height="34" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#25D366"/><path d="M24 11a13 13 0 0 0-11 19.7L11 37l6.5-1.7A13 13 0 1 0 24 11z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M19.5 18.5c.5-1 1.200-1 1.700-.9l1 2.300c.1.500-.8 1.300-.8 1.300s.9 2 3 3 2.200-.1 2.200-.1.900-.9 1.300-.8l2.100 1c.3.600-.3 2-1.400 2.600-1.600.9-4.200-.2-6.500-2.500s-3.200-5-2.600-6.900z" fill="#fff"/></svg></span><div><div class="wan">Your Business</div><div class="wao src">Illustrative chat</div></div></div><div class="wbody"><div class="wb in"><div class="wt">Can I book Saturday at 3:30?</div><div class="wm src">10:41</div></div><div class="wb out"><div class="wt">3:30 PM is available. Want me to confirm it?</div><div class="wm src">10:41 ✓✓</div></div><div class="wb in"><div class="wt">Yes please</div><div class="wm src">10:42</div></div></div></div>
+        <div style="position:absolute;left:650px;top:70px;filter:drop-shadow(0 0 30px rgba(255,122,82,.55))"><svg class="mascot" viewBox="0 0 200 230" width="250" height="288" style="" data-decor data-mascot><use href="#mascot-wow"/></svg></div>
+      </div></div>
+        <div class="grow"></div>
+        <div class="row center" style="gap:10px;flex-wrap:nowrap"><span class="bp"><svg width="34" height="34" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#25D366"/><path d="M24 11a13 13 0 0 0-11 19.7L11 37l6.5-1.7A13 13 0 1 0 24 11z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M19.5 18.5c.5-1 1.200-1 1.700-.9l1 2.300c.1.500-.8 1.300-.8 1.300s.9 2 3 3 2.200-.1 2.200-.1.900-.9 1.300-.8l2.100 1c.3.600-.3 2-1.400 2.600-1.600.9-4.200-.2-6.500-2.500s-3.200-5-2.600-6.900z" fill="#fff"/></svg><span>WhatsApp</span></span><span class="bp"><span class="kmark">kapso</span><span></span></span><span class="bp"><svg width="34" height="34" viewBox="0 0 48 48"><g stroke="#D97757" stroke-width="5" stroke-linecap="round"><path d="M24 5v38M5 24h38M10.500 10.500l27 27M37.500 10.500l-27 27"/></g><circle cx="24" cy="24" r="4" fill="#D97757"/></svg><span>Claude Code</span></span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>01</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide paper" id="slide-02" data-slide="2"><svg class="mascot" viewBox="0 0 200 230" width="104" height="120" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-happy"/></svg><div class="kicker"><span class="bar"></span>What it can do</div>
+    <h2 class="h2" style="margin-top:12px;font-size:62px;max-width:790px">One Agent. <em>Six Jobs.</em></h2>
+        <p class="body" style="margin-top:8px;font-size:32px;color:var(--muted)">Answer, check, book, remind and hand off.</p>
+        <div class="jg"><div class="jc "><span class="jci"><svg class="ic" style="width:44px;height:44px"><use href="#i-file"/></svg></span><div class="jct">Answer common questions</div><span class="jcs ok src">Core</span></div><div class="jc "><span class="jci"><svg class="ic" style="width:44px;height:44px"><use href="#i-send"/></svg></span><div class="jct">Respond to incoming messages</div><span class="jcs ok src">Core</span></div><div class="jc su"><span class="jci"><svg class="ic" style="width:44px;height:44px"><use href="#i-clock"/></svg></span><div class="jct">Check appointment availability</div><span class="jcs src">Needs setup</span></div><div class="jc su"><span class="jci"><svg class="ic" style="width:44px;height:44px"><use href="#i-check"/></svg></span><div class="jct">Create confirmed bookings</div><span class="jcs src">Needs setup</span></div><div class="jc su"><span class="jci"><svg class="ic" style="width:44px;height:44px"><use href="#i-bookmark"/></svg></span><div class="jct">Send approved reminders</div><span class="jcs src">Needs setup</span></div><div class="jc su"><span class="jci"><svg class="ic" style="width:44px;height:44px"><use href="#i-shield"/></svg></span><div class="jct">Escalate to a human</div><span class="jcs src">Needs setup</span></div></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px;"><span class="tag">Heads up</span><span>Calendar, reminders and human handoff need your own configuration.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>02</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide mint" id="slide-03" data-slide="3"><svg class="mascot" viewBox="0 0 200 230" width="104" height="120" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-think"/></svg><div class="kicker"><span class="bar"></span>The architecture</div>
+    <h2 class="h2" style="margin-top:12px;font-size:62px;max-width:790px">Here's How <em>It Works.</em></h2>
+        <p class="body" style="margin-top:8px;font-size:32px;color:var(--muted);max-width:790px">Every message travels through Kapso to your workflow and back.</p>
+        <div style="margin-top:44px"><svg viewBox="0 0 936 416" width="936" height="416"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><rect x="0" y="300" width="218" height="110" rx="22" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="9 9"/><text x="109" y="365" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">Calendar</text><rect x="239" y="300" width="218" height="110" rx="22" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="9 9"/><text x="348" y="365" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">Business FAQ</text><rect x="478" y="300" width="218" height="110" rx="22" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="9 9"/><text x="587" y="349" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">Booking</text><text x="587" y="381" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">database</text><rect x="717" y="300" width="218" height="110" rx="22" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="9 9"/><text x="826" y="349" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">Human</text><text x="826" y="381" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">support</text><path d="M109 300 L109 252 L662 252 L662 118" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 8"/><path d="M348 300 L348 252 L662 252 L662 118" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 8"/><path d="M587 300 L587 252 L662 252 L662 118" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 8"/><path d="M826 300 L826 252 L662 252 L662 118" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 8"/><rect x="0" y="0" width="160" height="110" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" /><text x="80" y="65" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">Customer</text><rect x="194" y="0" width="160" height="110" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" /><text x="274" y="65" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">WhatsApp</text><rect x="388" y="0" width="160" height="110" rx="22" fill="#FF7A52" stroke="none" stroke-width="2" /><text x="468" y="65" font-family="var(--sans)" font-size="28" font-weight="800" fill="#0C1020" text-anchor="middle">Kapso</text><rect x="582" y="0" width="160" height="110" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" /><text x="662" y="65" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">Workflow</text><rect x="776" y="0" width="160" height="110" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" /><text x="856" y="65" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">AI model</text><path d="M166 55 L188 55" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M360 55 L382 55" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M554 55 L576 55" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M748 55 L770 55" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M856 118 L856 176 L80 176 L80 124" fill="none" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 10" marker-end="url(#ah)"/><text x="112" y="160" font-family="var(--sans)" font-size="28" font-weight="700" fill="var(--fg)" text-anchor="start">Reply goes back the same way</text></svg></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px;"><span class="tag">Who does what</span><span>Claude Code builds and configures it. A deployed Kapso workflow or your own server runs it.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>03</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide paper" id="slide-04" data-slide="4"><svg class="mascot" viewBox="0 0 200 230" width="104" height="120" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-focus"/></svg><div class="kicker"><span class="bar"></span>Connect WhatsApp</div>
+    <h2 class="h2" style="margin-top:12px;font-size:56px;max-width:790px">Step 1 — <em>Connect Your Number</em></h2>
+        <div style="margin-top:12px"><div class="sr"><span class="sn">1</span><div><div class="st">Create a Kapso account</div><div class="sd">Sign up in the Kapso web app.</div></div></div><div class="sr"><span class="sn">2</span><div><div class="st">Start onboarding</div><div class="sd">Run <code class="mono">kapso setup</code> or use the dashboard.</div></div></div><div class="sr"><span class="sn">3</span><div><div class="st">Choose a number method</div><div class="sd">Pick from the options offered to you.</div></div></div><div class="sr"><span class="sn">4</span><div><div class="st">Finish the WhatsApp connection</div><div class="sd">Complete the hosted Meta signup.</div></div></div><div class="sr"><span class="sn">5</span><div><div class="st">Confirm your number</div><div class="sd"><code class="mono">kapso whatsapp numbers list</code></div></div></div></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px;"><span class="tag">Depends on</span><span>Onboarding requirements depend on your number and account type.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>04</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide dark" id="slide-05" data-slide="5"><svg class="mascot" viewBox="0 0 200 230" width="104" height="120" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-wink"/></svg><div class="kicker"><span class="bar"></span>Install agent skills</div>
+    <h2 class="h2" style="margin-top:12px;font-size:56px;max-width:790px">Step 2 — Give Claude Code <em>WhatsApp Skills</em></h2>
+        <div class="code" style="margin-top:14px;padding:18px 24px;flex:none;font-size:34px"><div class="dots"><i></i><i></i><i></i></div><span class="p">$</span> <span class="c">npx</span> skills add gokapso/agent-skills</div>
+        <div class="src" style="margin-top:8px">Verified in the official README · alpha, changes quickly</div>
+        <div style="margin-top:12px"><div class="kc"><div class="kcn">integrate-whatsapp</div><div class="kcd">Connect numbers, set up webhooks, send messages and templates.</div></div><div class="kc"><div class="kcn">automate-whatsapp</div><div class="kcd">Build workflows, agents, functions and triggers.</div></div><div class="kc"><div class="kcn">observe-whatsapp</div><div class="kcd">Search logs, debug delivery, webhooks and errors.</div></div></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px;"><span class="tag">Not a bot yet</span><span>Skills teach Claude Code how to use Kapso. They don't run a bot by themselves.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>05</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide mint" id="slide-06" data-slide="6"><svg class="mascot" viewBox="0 0 200 230" width="104" height="120" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-focus"/></svg><div class="kicker"><span class="bar"></span>Configure the connection</div>
+    <h2 class="h2" style="margin-top:12px;font-size:56px;max-width:790px">Step 3 — <em>Connect the API</em></h2>
+        <div class="code" style="margin-top:44px;padding:16px 22px;flex:none;font-size:32px"><div class="dots"><i></i><i></i><i></i></div><span class="p">$</span> <span class="c">kapso</span> login
+<span class="p">$</span> <span class="c">kapso</span> status
+<span class="p">$</span> <span class="c">kapso</span> whatsapp messages send \
+    --phone-number-id &lt;ID&gt; --to &lt;wa-id&gt; \
+    --text <span class="s">"Hello from Kapso"</span></div>
+        <div style="margin-top:12px"><div class="cf"><div class="cfl label">Credentials</div><div class="cft">Keep <code class="mono">KAPSO_API_KEY</code> in env vars. Never in code or chat.</div></div><div class="cf"><div class="cfl label">Phone number ID</div><div class="cft">Find it with <code class="mono">kapso whatsapp numbers list</code>.</div></div><div class="cf"><div class="cfl label">Webhook + signature</div><div class="cft">Receive <code class="mono">whatsapp.message.received</code>. Verify <code class="mono">X-Webhook-Signature</code>.</div></div></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px;"><span class="tag">Never</span><span>Never post a real key. Test incoming and outgoing messages first.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>06</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide paper" id="slide-07" data-slide="7"><svg class="mascot" viewBox="0 0 200 230" width="104" height="120" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-think"/></svg><div class="kicker"><span class="bar"></span>Build the workflow</div>
+    <h2 class="h2" style="margin-top:12px;font-size:62px;max-width:790px">Step 4 — <em>Make It Intelligent</em></h2>
+        <div style="margin-top:60px"><svg viewBox="0 0 936 524" width="936" height="524"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--accent-t)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><path d="M274 56 L329 56" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M607 56 L662 56" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M801 116 L801 202" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M662 262 L607 262" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M329 262 L274 262" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><path d="M135 322 L135 408" stroke="var(--accent-t)" stroke-width="4" stroke-linecap="round" fill="none" marker-end="url(#ah)"/><rect x="0" y="0" width="270" height="112" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" /><text x="135" y="50" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">1  Incoming</text><text x="135" y="82" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">message</text><rect x="333" y="0" width="270" height="112" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" /><text x="468" y="50" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">2  Identify</text><text x="468" y="82" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">the request</text><rect x="666" y="0" width="270" height="112" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" /><text x="801" y="50" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">3  Retrieve</text><text x="801" y="82" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">business info</text><rect x="666" y="206" width="270" height="112" rx="22" fill="#FF7A52" stroke="none" stroke-width="2" /><text x="801" y="256" font-family="var(--sans)" font-size="28" font-weight="800" fill="#0C1020" text-anchor="middle">4  Check calendar</text><text x="801" y="288" font-family="var(--sans)" font-size="28" font-weight="800" fill="#0C1020" text-anchor="middle">(if booking)</text><rect x="333" y="206" width="270" height="112" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" /><text x="468" y="256" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">5  Generate</text><text x="468" y="288" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">the response</text><rect x="0" y="206" width="270" height="112" rx="22" fill="var(--card)" stroke="var(--line)" stroke-width="2" /><text x="135" y="256" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">6  Confirm booking</text><text x="135" y="288" font-family="var(--sans)" font-size="28" font-weight="800" fill="var(--fg)" text-anchor="middle">(if authorized)</text><rect x="0" y="412" width="270" height="112" rx="22" fill="#FF7A52" stroke="none" stroke-width="2" /><text x="135" y="462" font-family="var(--sans)" font-size="28" font-weight="800" fill="#0C1020" text-anchor="middle">7  Send WhatsApp</text><text x="135" y="494" font-family="var(--sans)" font-size="28" font-weight="800" fill="#0C1020" text-anchor="middle">reply</text><rect x="333" y="412" width="603" height="112" rx="22" fill="none" stroke="var(--accent-t)" stroke-width="3" stroke-dasharray="9 9"/><text x="634.5" y="462" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--fg)" text-anchor="middle">Unsure or sensitive?</text><text x="634.5" y="504" font-family="var(--sans)" font-size="30" font-weight="800" fill="var(--accent-t)" text-anchor="middle">→ Human handoff</text><path d="M468 318 L468 408" fill="none" stroke="var(--accent-t)" stroke-width="4" stroke-dasharray="2 10" stroke-linecap="round" marker-end="url(#ah)"/></svg></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px;"><span class="tag">In Kapso</span><span>Nodes: <code class="mono">agent</code>, <code class="mono">decide</code>, <code class="mono">function</code>, <code class="mono">webhook</code>, <code class="mono">handoff</code>.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>07</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide dark" id="slide-08" data-slide="8"><svg class="mascot" viewBox="0 0 200 230" width="104" height="120" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-cheer"/></svg><div class="kicker"><span class="bar"></span>Realistic example</div>
+    <h2 class="h2" style="margin-top:12px;font-size:56px;max-width:790px">Watch the Agent <em>Book an Appointment</em></h2>
+        <div class="row" style="gap:16px;align-items:flex-start;flex-wrap:nowrap;margin-top:26px"><div class="wa" style="width:560px;flex:none"><div class="wah"><span class="wav"><svg width="34" height="34" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#25D366"/><path d="M24 11a13 13 0 0 0-11 19.7L11 37l6.5-1.7A13 13 0 1 0 24 11z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M19.5 18.5c.5-1 1.200-1 1.700-.9l1 2.300c.1.500-.8 1.300-.8 1.300s.9 2 3 3 2.200-.1 2.200-.1.900-.9 1.300-.8l2.100 1c.3.600-.3 2-1.400 2.600-1.600.9-4.200-.2-6.500-2.500s-3.200-5-2.600-6.900z" fill="#fff"/></svg></span><div><div class="wan">Your Business</div><div class="wao src">Illustrative chat</div></div></div><div class="wbody"><div class="wb in"><div class="wt">Can I book Saturday at 3:30?</div><div class="wm src">10:41</div></div><div class="wb out"><div class="wt">Let me check availability.</div><div class="wm src">10:41 ✓✓</div></div><div class="wb out"><div class="wt">3:30 PM is available. Would you like to confirm?</div><div class="wm src">10:41 ✓✓</div></div><div class="wb in"><div class="wt">Yes.</div><div class="wm src">10:42</div></div><div class="wb out"><div class="wt">Your appointment is confirmed!</div><div class="wm src">10:42 ✓✓</div></div></div></div><div style="flex:1;min-width:0"><div class="cal"><div class="calh src">Calendar · illustrative</div><div class="cald">Saturday</div><div class="calt">3:30 PM</div><div class="cale"><span class="cdot"></span><div><div class="cn">Appointment</div><div class="cm src">Booked via WhatsApp agent</div></div></div><div class="calc">Confirmed</div></div></div></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px;"><span class="tag">Illustrative</span><span>Not a completed live transaction. Demo data.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>08</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide coral" id="slide-09" data-slide="9"><svg class="mascot" viewBox="0 0 200 230" width="104" height="120" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-wink"/></svg><div class="kicker"><span class="bar"></span>Pricing + rules</div>
+    <h2 class="h2" style="margin-top:12px;font-size:60px;max-width:790px">Start Small. <em>Scale Later.</em></h2>
+        <div class="pgx"><div class="pc"><div class="pct">Kapso subscription</div><div class="pcd">Plans and message limits are on the official pricing page.</div></div><div class="pc"><div class="pct">Meta WhatsApp fees</div><div class="pcd">Meta bills messaging separately, by message type.</div></div><div class="pc"><div class="pct">AI model usage</div><div class="pcd">Your model provider bills the tokens your agent uses.</div></div><div class="pc"><div class="pct">Hosting + integrations</div><div class="pcd">Your server, calendar and database may cost extra.</div></div></div>
+        <div class="rule2" style="margin-top:16px"><div class="label" style="color:inherit">WhatsApp rules</div><div style="margin-top:6px;font:600 30px/1.28 var(--sans)">Replies need an active 24-hour customer-service window. Outside it, send an approved template.</div></div>
+        <div class="grow"></div><div class="watch" style="padding:14px 22px;font-size:30px;"><span class="tag">Pricing</span><span>Not everything is free. Check the live Kapso pricing page.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>09</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+<section class="slide dark" id="slide-10" data-slide="10"><svg class="mascot" viewBox="0 0 200 230" width="104" height="120" style="position:absolute;right:var(--safe-x);top:var(--mascot-top)" data-decor data-mascot><use href="#mascot-cheer"/></svg><div class="kicker"><span class="bar"></span>Save this setup</div>
+    <h2 class="h2" style="margin-top:12px;font-size:58px;max-width:790px">Build Your First <em>WhatsApp AI Agent.</em></h2>
+        <div class="ckg"><div class="ck"><span class="ckb"><svg class="ic" style="width:30px;height:30px"><use href="#i-check"/></svg></span><span class="ckt">Kapso account</span></div><div class="ck"><span class="ckb"><svg class="ic" style="width:30px;height:30px"><use href="#i-check"/></svg></span><span class="ckt">WhatsApp connection</span></div><div class="ck"><span class="ckb"><svg class="ic" style="width:30px;height:30px"><use href="#i-check"/></svg></span><span class="ckt">Claude Code</span></div><div class="ck"><span class="ckb"><svg class="ic" style="width:30px;height:30px"><use href="#i-check"/></svg></span><span class="ckt">Kapso Agent Skills</span></div><div class="ck"><span class="ckb"><svg class="ic" style="width:30px;height:30px"><use href="#i-check"/></svg></span><span class="ckt">Workflow or server</span></div><div class="ck"><span class="ckb"><svg class="ic" style="width:30px;height:30px"><use href="#i-check"/></svg></span><span class="ckt">AI model</span></div><div class="ck"><span class="ckb"><svg class="ic" style="width:30px;height:30px"><use href="#i-check"/></svg></span><span class="ckt">Calendar integration</span></div><div class="ck"><span class="ckb"><svg class="ic" style="width:30px;height:30px"><use href="#i-check"/></svg></span><span class="ckt">Testing: replies, bookings, errors</span></div></div>
+        <div class="grow"></div>
+        <div class="row center" style="gap:12px;flex-wrap:nowrap"><span class="pill solid" style="font-size:30px;padding:14px 24px;white-space:nowrap">Save this guide.</span></div>
+        <div class="row center" style="gap:12px;flex-wrap:nowrap;margin-top:10px"><span class="pill" style="font-size:30px;padding:12px 22px;white-space:nowrap">Follow @agentoon.ai for more AI Agent tutorials.</span></div><div class="footer">
+    <div class="brand"><svg class="mascot" viewBox="0 0 200 230" width="38" height="44" style="" data-decor data-mascot><use href="#mascot-happy"/></svg><span>agentoon<b>.ai</b></span></div>
+    <div class="pg"><i>10</i> / 10</div>
+    <div>@agentoon.ai</div>
+  </div></section>
+</main></body></html>
