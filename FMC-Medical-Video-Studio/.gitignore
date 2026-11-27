@@ -16,3 +16,6 @@ v7/hyperframes-adapter/.hyperframes/
 
 # generated Blender render sequences (reproducible: v7/blender/catcow.py)
 assets/catcow/*/*.png
+
+assets/catcow2/*/*.png
+.tmp/
