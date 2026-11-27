@@ -17,7 +17,7 @@ const LN = (id: string) => LINES.find((l) => l.id === id)!;
 const cue = (id: string, word: string, nth = 0) => { const ws = WORDS.filter((w) => w.line === id); const m = ws.filter((w) => w.w.toLowerCase().replace(/[^a-z0-9@-]/g, "").includes(word.toLowerCase())); return (m[nth] ?? m[0] ?? { s: LN(id).sf }).s; };
 const SCENES = ["hook", "suspicious", "style", "bug", "idea", "manager", "joke", "closing"] as const; type Sc = (typeof SCENES)[number];
 const S0 = (s: Sc) => (s === "hook" ? 0 : LINES.find((l) => l.scene === s)!.sf - 5);
-const S1 = (s: Sc) => { const i = SCENES.indexOf(s); return i === SCENES.length - 1 ? CA_FRAMES : S0(SCENES[i + 1]); };
+const S1 = (s: Sc) => { const i = SCENES.indexOf(s); return i === SCENES.length - 1 ? EP29_FRAMES : S0(SCENES[i + 1]); };
 const sceneAt = (f: number): Sc => { let r: Sc = "hook"; for (const s of SCENES) if (f >= S0(s)) r = s; return r; };
 const K = { bg: "#05080E", panel: "rgba(13,20,33,.92)", line: "rgba(255,255,255,.16)", green: "#3DDC97", cyan: "#38D6F5", orange: "#D97757", amber: "#FFB454", white: "#F4F7FB", dim: "#9AA7BD", red: "#FF5D6C" };
 const sans = '"Inter","DejaVu Sans",Arial,sans-serif'; const mono = '"DejaVu Sans Mono",ui-monospace,Menlo,monospace';
@@ -154,7 +154,7 @@ const Ov: Record<Sc, React.FC<{ a: number }>> = {
   manager: ({ a }) => { void a; const f = useCurrentFrame(); const t14 = LN("l14").sf - S0("manager"); const t15e = LN("l15").ef - S0("manager"); const code = CODE as any;
     return (<><div style={{ opacity: 1 - pr(f, t15e - 20, t15e - 8) }}><Chat x={40} y={470} w={1000} a={4} lines={["Great improvement. Can you explain how the login works during our next code review?"]} /></div>
       {f > t15e - 14 ? null : null}
-      <Panel x={40} y={780} w={1000} h={200} a={LN("l15").sf - S0("manager") - 4} acc={K.cyan} pad={14} z={64}><div style={{ fontFamily: sans, fontWeight: 900, fontSize: 22, color: K.cyan, letterSpacing: 2 }}>CODE EXPLANATION · LoginButton (real code)</div><div style={{ fontFamily: mono, fontSize: 26, color: "#c9d1d9", whiteSpace: "pre", marginTop: 6 }}>{(code.fixed as string[]).slice(0, 5).join("\n")}</div></Panel>
+      <Panel x={40} y={780} w={1000} h={200} a={LN("l15").sf - S0("manager") - 4} acc={K.cyan} pad={14} z={64}><div style={{ fontFamily: sans, fontWeight: 900, fontSize: 22, color: K.cyan, letterSpacing: 2 }}>CODE EXPLANATION · LoginButton (real code)</div><div style={{ fontFamily: mono, fontSize: 20, color: "#c9d1d9", whiteSpace: "pre", marginTop: 6 }}>{(code.fixed as string[]).slice(0, 5).join("\n")}</div></Panel>
       {["USER CLICK", "VALIDATION", "LOGIN RESULT"].map((s, i) => <Node key={s} x={40 + i * 350} y={560} w={300} h={100} a={LN("l15").sf - S0("manager") + 20 + i * 24} label={s} c={[K.amber, K.cyan, K.green][i]} />)}
       <Arrow x1={340} y1={610} x2={390} y2={610} a={LN("l15").sf - S0("manager") + 40} c={K.amber} /><Arrow x1={690} y1={610} x2={740} y2={610} a={LN("l15").sf - S0("manager") + 64} c={K.cyan} />
       <Label text="the fictional manager message is part of the story · explanation uses the real demo code" a={LN("l15").sf - S0("manager")} /></>); },
