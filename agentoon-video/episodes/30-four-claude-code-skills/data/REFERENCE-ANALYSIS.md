@@ -1,0 +1,3 @@
+# Reference analysis (zaki.explains reel, 720x1280, 59.6 s)
+Structure: dark purple tech environment + yellow-green highlights; a "machine" with the Claude mascot on top and four module slots (Karpathy / Octopus / Super / ADHD); a presenter at the bottom; a 12-AI network; code-line counters; checklist/step cards; cuts every 2-4 s.
+Agentoon take (original, not copied): same office world + the approved robot and Blender Claude mascot; dark-purple grid "stage" panels (lime/violet/cyan/amber accents) that rise over the office for each skill; Claude's accessory changes per skill (headphones+documents, none, red cape, clipboard); all numbers come from real runs in data/cc/; captions at the top safe zone with speaker colours.

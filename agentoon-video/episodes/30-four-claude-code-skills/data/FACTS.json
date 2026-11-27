@@ -1,0 +1,193 @@
+{
+ "karpathy": {
+  "repo": "multica-ai/andrej-karpathy-skills",
+  "latest_tag": null,
+  "license_line": null,
+  "ab": {
+   "base": {
+    "files": [
+     "src/TextInput.tsx",
+     "test/app.test.tsx"
+    ],
+    "added": 14,
+    "deleted": 4,
+    "tests": "4 passed"
+   },
+   "karpathy": {
+    "files": [
+     "src/TextInput.tsx"
+    ],
+    "added": 10,
+    "deleted": 4,
+    "tests": "3 passed"
+   }
+  },
+  "diff_base": [
+   "@@ -5,9 +5,15 @@ type Props = { label: string; value: string; onChange: (v: string) => void };",
+   " // TODO: the styles below are repeated in other components, someone should refactor them",
+   " export function TextInput({ label, value, onChange }: Props) {",
+   "   return (",
+   "-    <label style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }}>",
+   "-      {label}",
+   "-      <input style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }} value={value} onChange={(e) => onChange(e.target.value)} />",
+   "-    </label>",
+   "+    <div>",
+   "+      <label style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }}>",
+   "+        {label}",
+   "+        <input style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }} value={value} onChange={(e) => onChange(e.target.value)} />",
+   "+      </label>",
+   "+      {/* Live character count of the current value */}",
+   "+      <div data-testid=\"char-count\" style={{ padding: \"0 8px 8px\", fontFamily: \"sans-serif\", fontSize: 12, color: \"#666\" }}>",
+   "+        {value.length} {value.length === 1 ? \"character\" : \"characters\"}",
+   "+      </div>",
+   "+    </div>",
+   "   );",
+   " }",
+   ""
+  ],
+  "diff_karp": [
+   "@@ -5,9 +5,15 @@ type Props = { label: string; value: string; onChange: (v: string) => void };",
+   " // TODO: the styles below are repeated in other components, someone should refactor them",
+   " export function TextInput({ label, value, onChange }: Props) {",
+   "   return (",
+   "-    <label style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }}>",
+   "-      {label}",
+   "-      <input style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }} value={value} onChange={(e) => onChange(e.target.value)} />",
+   "-    </label>",
+   "+    <>",
+   "+      <label style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }}>",
+   "+        {label}",
+   "+        <input style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }} value={value} onChange={(e) => onChange(e.target.value)} />",
+   "+      </label>",
+   "+      {/* Character counter: shows how many characters are currently in the input */}",
+   "+      <div style={{ padding: \"0 8px 8px\", fontFamily: \"sans-serif\", fontSize: 12, color: \"#666\" }}>",
+   "+        {value.length} {value.length === 1 ? \"character\" : \"characters\"}",
+   "+      </div>",
+   "+    </>",
+   "   );",
+   " }",
+   ""
+  ]
+ },
+ "octopus": {
+  "repo": "nyldn/claude-octopus",
+  "latest_tag": "v11.30.3",
+  "license_line": "MIT License",
+  "commands_in_repo": 56,
+  "skills_dirs_in_repo": 62
+ },
+ "superpowers": {
+  "repo": "obra/superpowers",
+  "latest_tag": "v7.0.2",
+  "license_line": "MIT License",
+  "skills": [
+   "brainstorming",
+   "diagnosing-superpowers",
+   "dispatching-parallel-agents",
+   "executing-plans",
+   "finishing-a-development-branch",
+   "receiving-code-review",
+   "requesting-code-review",
+   "subagent-driven-development",
+   "systematic-debugging",
+   "test-driven-development",
+   "using-git-worktrees",
+   "using-superpowers",
+   "verification-before-completion",
+   "writing-plans",
+   "writing-skills"
+  ],
+  "run": {
+   "skill": "superpowers:writing-plans",
+   "fail": null,
+   "pass": null,
+   "turns": 21,
+   "cost": 0.07412297,
+   "final": "The dark-mode toggle is in place: `src/ThemeToggle.tsx` is a single button that flips between light and dark, and it writes the current theme to its own `data-theme` attribute and to `<html data-theme>`. `npm test` failed first with the expected missing-module error, then passed with 5 of 5 tests (3 existing, 2 new).\n\nThe type-check (`tsc --noEmit`) was blocked by the sandbox pending approval, so it has not been run.",
+   "test_runs": [
+    [
+     "Tests  3 passed (3)"
+    ],
+    [
+     "Tests  5 passed (5)"
+    ]
+   ]
+  },
+  "plan_head": [
+   "# Dark-Mode Toggle Implementation Plan",
+   "",
+   "> **For agentic workers:** Steps use checkbox (`- [ ]`) syntax for tracking.",
+   "",
+   "**Goal:** Add a `ThemeToggle` component with one button that switches the page between light and dark, exposing the current theme as a `data-theme` attribute.",
+   "",
+   "**Architecture:** `ThemeToggle` holds the theme in React state (default `\"light\"`). Each render it writes the theme to `document.documentElement.dataset.theme` so page CSS can react, and sets the same `data-theme` attribute on its own button so the state is visible in the DOM. No persistence and no props (YAGNI).",
+   "",
+   "**Tech Stack:** React 18, TypeScript, Vitest 2 with jsdom, @testing-library/react.",
+   "",
+   "**Spec:** None beyond the request. The request is the spec: one button, toggles light/dark, `data-theme` attribute.",
+   "",
+   "## Global Constraints",
+   ""
+  ],
+  "test_file": [
+   "import React from \"react\";",
+   "import { describe, it, expect, afterEach } from \"vitest\";",
+   "import { render, screen, fireEvent } from \"@testing-library/react\";",
+   "import { ThemeToggle } from \"../src/ThemeToggle\";",
+   "",
+   "afterEach(() => {",
+   "  delete document.documentElement.dataset.theme;",
+   "});",
+   "",
+   "describe(\"ThemeToggle\", () => {",
+   "  it(\"starts in light theme and exposes it as data-theme on the button\", () => {",
+   "    render(<ThemeToggle />);",
+   "    const button = screen.getByRole(\"button\");",
+   "    expect(button.getAttribute(\"data-theme\")).toBe(\"light\");",
+   "    expect(document.documentElement.dataset.theme).toBe(\"light\");",
+   "    expect(button.textContent).toBe(\"Switch to dark mode\");",
+   "  });",
+   "",
+   "  it(\"toggles light -> dark -> light on each click\", () => {",
+   "    render(<ThemeToggle />);",
+   "    const button = screen.getByRole(\"button\");",
+   ""
+  ]
+ },
+ "adhd": {
+  "repo": "ayghri/i-have-adhd",
+  "latest_tag": "v0.4.1",
+  "license_line": "MIT License",
+  "ab": {
+   "base": {
+    "words": 668,
+    "lines": 114,
+    "head": [
+     "Session-based login is the practical choice for a small Express app. Users log in once, the server stores their identity in a session, and a signed cookie carries the session ID. Passwords are stored only as bcrypt hashes, and a middleware function guards the protected routes.",
+     "## Steps",
+     "1. Install the packages:",
+     "   ```bash",
+     "   npm install express express-session bcrypt",
+     "   ```",
+     "2. Replace the in-memory `users` array below with a database table (`id`, `username` unique, `password_hash`) when you're ready."
+    ],
+    "out_tokens": 3843
+   },
+   "skill": {
+    "words": 621,
+    "lines": 105,
+    "head": [
+     "Install the packages, then run one file: `npm install express express-session bcryptjs`. `bcryptjs` is pure JavaScript, so it needs no native build step.",
+     "**What this does:** It adds a login page, a logout button, and a `/dashboard` page that only logged-in users can see. Passwords are stored as bcrypt hashes, never as plain text. The login state lives in a server-side session tied to a cookie. This demo keeps users in memory, so the demo user is lost on restart. Nothing here modifies a database or other files.",
+     "### How to use it",
+     "1. In your project folder, run `npm install express express-session bcryptjs`.",
+     "2. Save the code below as `app.js` in that folder.",
+     "3. Start the app with a session secret: `SESSION_SECRET=$(openssl rand -hex 32) node app.js` (on Windows PowerShell, set `$env:SESSION_SECRET` first, then run `node app.js`).",
+     "4. Open `http://localhost:3000`, then log in with `alice` / `secret123`."
+    ],
+    "out_tokens": 3716
+   }
+  },
+  "rules_in_skill": 19
+ }
+}

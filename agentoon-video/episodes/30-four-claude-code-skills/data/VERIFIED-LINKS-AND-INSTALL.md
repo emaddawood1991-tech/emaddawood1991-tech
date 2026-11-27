@@ -1,0 +1,12 @@
+# Episode 30 — Verified links & install guide (viewer reference sheet)
+Verified from raw READMEs / git clones (github.com HTML was unreachable from the build sandbox, so no github.com page is shown as a recording). Community tools: none is an official Anthropic or Andrej Karpathy release. Inspect any plugin before installing; nothing here was piped from an unknown script.
+
+| # | Tool | Repo | Developer | Licence | Install (from the repo README) |
+|---|------|------|-----------|---------|--------------------------------|
+| 1 | Karpathy Skills | https://github.com/multica-ai/andrej-karpathy-skills (README install lines use `forrestchang/andrej-karpathy-skills`, the original author's namespace) | forrestchang (now under multica-ai) | MIT | `/plugin marketplace add forrestchang/andrej-karpathy-skills` then `/plugin install andrej-karpathy-skills@karpathy-skills` — or per project: `curl -o CLAUDE.md https://raw.githubusercontent.com/forrestchang/andrej-karpathy-skills/main/CLAUDE.md` (read it first; append with `>>` if you already have a CLAUDE.md) |
+| 2 | Claude Octopus | https://github.com/nyldn/claude-octopus | nyldn | MIT | `claude plugin marketplace add https://github.com/nyldn/plugins.git`, `claude plugin install octo@nyldn-plugins`, then `/octo:setup`. Needs Claude Code 2.1.14+. Works with Claude alone; external providers (README lists up to 12, e.g. Codex, Grok, Antigravity CLI, Ollama) are optional and may need their own subscription/API key |
+| 3 | Superpowers | https://github.com/obra/superpowers | obra (Jesse Vincent) | MIT | `/plugin install superpowers@claude-plugins-official` or `/plugin marketplace add obra/superpowers-marketplace` then `/plugin install superpowers@superpowers-marketplace` |
+| 4 | I Have ADHD | https://github.com/ayghri/i-have-adhd | ayghri | MIT | `claude plugin marketplace add ayghri/i-have-adhd` then `claude plugin install i-have-adhd@i-have-adhd`, then `/i-have-adhd` |
+
+Latest tags seen via `git ls-remote`: Octopus v11.30.3, Superpowers v7.0.2, I Have ADHD v0.4.1 (Karpathy Skills: no tag). Costs: the plugins are free; Claude Code usage and any optional Octopus providers follow your own plans.
+Existing-skills audit: this workspace already ships `superpowers:*` skills (same Superpowers family); Ep30 therefore ran Superpowers from the cloned repo with `--plugin-dir` in an isolated project rather than installing a second copy. No project CLAUDE.md was overwritten (the Karpathy CLAUDE.md was placed only inside the isolated demo copy).

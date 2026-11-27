@@ -1,0 +1,100 @@
+{
+ "karp": {
+  "repo": "multica-ai/andrej-karpathy-skills",
+  "diff": [
+   "@@ -5,9 +5,15 @@ type Props = { label: string; value: string; onChange: (v: string) => void };",
+   " // TODO: the styles below are repeated in other components, someone should refactor them",
+   " export function TextInput({ label, value, onChange }: Props) {",
+   "   return (",
+   "-    <label style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }}>",
+   "-      {label}",
+   "-      <input style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }} value={value} onChange={(e) => onChange(e.target.value)} />",
+   "-    </label>",
+   "+    <>",
+   "+      <label style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }}>",
+   "+        {label}",
+   "+        <input style={{ display: \"block\", padding: 8, fontFamily: \"sans-serif\", fontSize: 14 }} value={value} onChange={(e) => onChange(e.target.value)} />",
+   "+      </label>",
+   "+      {/* Character counter: shows how many characters are currently in the input */}"
+  ],
+  "base": {
+   "files": 2,
+   "add": 14,
+   "del": 4,
+   "tests": "4 passed"
+  },
+  "with": {
+   "files": 1,
+   "add": 10,
+   "del": 4,
+   "tests": "3 passed"
+  },
+  "install": [
+   "/plugin marketplace add forrestchang/andrej-karpathy-skills",
+   "/plugin install andrej-karpathy-skills@karpathy-skills"
+  ]
+ },
+ "octo": {
+  "repo": "nyldn/claude-octopus",
+  "install": [
+   "claude plugin marketplace add https://github.com/nyldn/plugins.git",
+   "claude plugin install octo@nyldn-plugins",
+   "/octo:setup"
+  ],
+  "providers": [
+   "Codex",
+   "Grok",
+   "Antigravity CLI",
+   "Ollama",
+   "OpenRouter",
+   "Perplexity"
+  ],
+  "commands": 56
+ },
+ "sp": {
+  "repo": "obra/superpowers",
+  "skill": "superpowers:writing-plans",
+  "plan": "docs/plan.md",
+  "fail": "Failed to resolve import \"../src/ThemeToggle\"",
+  "pass": "Tests  5 passed (5)",
+  "install": [
+   "/plugin install superpowers@claude-plugins-official"
+  ],
+  "turns": 21
+ },
+ "adhd": {
+  "repo": "ayghri/i-have-adhd",
+  "install": [
+   "claude plugin marketplace add ayghri/i-have-adhd",
+   "claude plugin install i-have-adhd@i-have-adhd"
+  ],
+  "base": {
+   "words": 668,
+   "lines": 114,
+   "head": [
+    "Session-based login is the practical choice for a small Express app. Users log in once, the server stores their identity in a session, and a signed cookie carries the session ID. Passwords are stored only as bcrypt hashes, and a middleware function guards the protected routes.",
+    "## Steps",
+    "1. Install the packages:",
+    "   ```bash",
+    "   npm install express express-session bcrypt",
+    "   ```",
+    "2. Replace the in-memory `users` array below with a database table (`id`, `username` unique, `password_hash`) when you're ready."
+   ],
+   "out_tokens": 3843
+  },
+  "skill": {
+   "words": 621,
+   "lines": 105,
+   "head": [
+    "Install the packages, then run one file: `npm install express express-session bcryptjs`. `bcryptjs` is pure JavaScript, so it needs no native build step.",
+    "**What this does:** It adds a login page, a logout button, and a `/dashboard` page that only logged-in users can see. Passwords are stored as bcrypt hashes, never as plain text. The login state lives in a server-side session tied to a cookie. This demo keeps users in memory, so the demo user is lost on restart. Nothing here modifies a database or other files.",
+    "### How to use it",
+    "1. In your project folder, run `npm install express express-session bcryptjs`.",
+    "2. Save the code below as `app.js` in that folder.",
+    "3. Start the app with a session secret: `SESSION_SECRET=$(openssl rand -hex 32) node app.js` (on Windows PowerShell, set `$env:SESSION_SECRET` first, then run `node app.js`).",
+    "4. Open `http://localhost:3000`, then log in with `alice` / `secret123`."
+   ],
+   "out_tokens": 3716
+  }
+ }
+}

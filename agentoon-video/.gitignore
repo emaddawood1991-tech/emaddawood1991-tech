@@ -5,3 +5,10 @@ node_modules/
 __pycache__/
 *.pyc
 .env
+
+remotion-fx/public/ep27/claude/*cape*/
+episodes/30-four-claude-code-skills/demo-base/node_modules/
+episodes/30-four-claude-code-skills/data/src/*-repo/
+episodes/30-four-claude-code-skills/data/src/superpowers/
+episodes/30-four-claude-code-skills/data/src/i-have-adhd/
+episodes/30-four-claude-code-skills/data/src/andrej-karpathy-skills/

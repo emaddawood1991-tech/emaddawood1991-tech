@@ -1,0 +1,152 @@
+{
+ "voices": {
+  "A": {
+   "name": "Agentoon",
+   "voice": "am_adam",
+   "speed": 1.0
+  },
+  "C": {
+   "name": "Claude",
+   "voice": "am_michael",
+   "speed": 1.0
+  }
+ },
+ "gap": 0.3,
+ "lines": [
+  {
+   "id": "l01",
+   "who": "A",
+   "scene": "hook",
+   "speak": "Claude! I asked for one simple feature. Why did you rewrite half my project?",
+   "show": "Claude! I asked for one simple feature. Why did you rewrite half my project?",
+   "speed": 1.1
+  },
+  {
+   "id": "l02",
+   "who": "C",
+   "scene": "hook",
+   "speak": "Maybe your coding workflow needs an upgrade.",
+   "show": "Maybe your coding workflow needs an upgrade.",
+   "pad": 0.3
+  },
+  {
+   "id": "l03",
+   "who": "C",
+   "scene": "karpathy",
+   "speak": "First, Karpathy Skills. These guidelines help me think before coding, keep solutions simple, avoid unnecessary changes and verify the results.",
+   "show": "First, Karpathy Skills. These guidelines help me think before coding, keep solutions simple, avoid unnecessary changes and verify the results.",
+   "pad": 0.4
+  },
+  {
+   "id": "l04",
+   "who": "A",
+   "scene": "karpathy",
+   "speak": "So no more rewriting things I didn't ask you to touch?",
+   "show": "So no more rewriting things I didn't ask you to touch?",
+   "speed": 1.0,
+   "pad": 0.2
+  },
+  {
+   "id": "l05",
+   "who": "C",
+   "scene": "karpathy",
+   "speak": "That's the idea!",
+   "show": "That's the idea!",
+   "pad": 3.0
+  },
+  {
+   "id": "l06",
+   "who": "A",
+   "scene": "octopus",
+   "speak": "But what if you're not sure your solution is the best one?",
+   "show": "But what if you're not sure your solution is the best one?",
+   "speed": 1.0,
+   "pad": 0.2
+  },
+  {
+   "id": "l07",
+   "who": "C",
+   "scene": "octopus",
+   "speak": "Claude Octopus can help bring multiple AI models into the workflow, compare their approaches and review the findings.",
+   "show": "Claude Octopus can help bring multiple AI models into the workflow, compare their approaches and review the findings.",
+   "pad": 2.6
+  },
+  {
+   "id": "l08",
+   "who": "A",
+   "scene": "superpowers",
+   "speak": "And how do we stop jumping straight into coding before understanding the project?",
+   "show": "And how do we stop jumping straight into coding before understanding the project?",
+   "speed": 1.0,
+   "pad": 0.2
+  },
+  {
+   "id": "l09",
+   "who": "C",
+   "scene": "superpowers",
+   "speak": "Superpowers gives us a structured engineering workflow: brainstorm, plan, test, implement and review.",
+   "show": "Superpowers gives us a structured engineering workflow: brainstorm, plan, test, implement and review.",
+   "pad": 3.6
+  },
+  {
+   "id": "l10",
+   "who": "A",
+   "scene": "superpowers",
+   "speak": "Finally! A plan before the code.",
+   "show": "Finally! A plan before the code.",
+   "speed": 1.05,
+   "pad": 0.5
+  },
+  {
+   "id": "l11",
+   "who": "A",
+   "scene": "adhd",
+   "speak": "Claude, can you explain that without giving me an entire book?",
+   "show": "Claude, can you explain that without giving me an entire book?",
+   "speed": 1.0,
+   "pad": 0.2
+  },
+  {
+   "id": "l12",
+   "who": "C",
+   "scene": "adhd",
+   "speak": "Try I Have ADHD. It's designed to make responses more direct, structured and easier to follow.",
+   "show": "Try I Have ADHD. It's designed to make responses more direct, structured and easier to follow.",
+   "pad": 3.2
+  },
+  {
+   "id": "l13",
+   "who": "A",
+   "scene": "adhd",
+   "speak": "Now that's an answer I can actually use!",
+   "show": "Now that's an answer I can actually use!",
+   "speed": 1.05,
+   "pad": 0.3
+  },
+  {
+   "id": "l14",
+   "who": "A",
+   "scene": "recap",
+   "speak": "Better instructions, better planning, multiple perspectives and clearer answers.",
+   "show": "Better instructions, better planning, multiple perspectives and clearer answers.",
+   "speed": 1.0,
+   "pad": 0.3
+  },
+  {
+   "id": "l15",
+   "who": "C",
+   "scene": "recap",
+   "speak": "Exactly. Better workflows lead to better development.",
+   "show": "Exactly. Better workflows lead to better development.",
+   "pad": 0.3
+  },
+  {
+   "id": "l16",
+   "who": "A",
+   "scene": "closing",
+   "speak": "Save these four tools before starting your next Claude Code project.",
+   "show": "Save these four tools before starting your next Claude Code project.",
+   "speed": 1.0
+  }
+ ]
+}

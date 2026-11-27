@@ -1,0 +1,1388 @@
+{
+ "total": 89.465,
+ "lines": [
+  {
+   "id": "l01",
+   "who": "A",
+   "scene": "hook",
+   "show": "Claude! I asked for one simple feature. Why did you rewrite half my project?",
+   "start": 1.45,
+   "end": 5.491
+  },
+  {
+   "id": "l02",
+   "who": "C",
+   "scene": "hook",
+   "show": "Maybe your coding workflow needs an upgrade.",
+   "start": 5.791,
+   "end": 8.615
+  },
+  {
+   "id": "l03",
+   "who": "C",
+   "scene": "karpathy",
+   "show": "First, Karpathy Skills. These guidelines help me think before coding, keep solutions simple, avoid unnecessary changes and verify the results.",
+   "start": 9.215,
+   "end": 19.382
+  },
+  {
+   "id": "l04",
+   "who": "A",
+   "scene": "karpathy",
+   "show": "So no more rewriting things I didn't ask you to touch?",
+   "start": 20.082,
+   "end": 22.814
+  },
+  {
+   "id": "l05",
+   "who": "C",
+   "scene": "karpathy",
+   "show": "That's the idea!",
+   "start": 23.314,
+   "end": 24.382
+  },
+  {
+   "id": "l06",
+   "who": "A",
+   "scene": "octopus",
+   "show": "But what if you're not sure your solution is the best one?",
+   "start": 27.682,
+   "end": 30.187
+  },
+  {
+   "id": "l07",
+   "who": "C",
+   "scene": "octopus",
+   "show": "Claude Octopus can help bring multiple AI models into the workflow, compare their approaches and review the findings.",
+   "start": 30.687,
+   "end": 38.397
+  },
+  {
+   "id": "l08",
+   "who": "A",
+   "scene": "superpowers",
+   "show": "And how do we stop jumping straight into coding before understanding the project?",
+   "start": 41.297,
+   "end": 45.341
+  },
+  {
+   "id": "l09",
+   "who": "C",
+   "scene": "superpowers",
+   "show": "Superpowers gives us a structured engineering workflow: brainstorm, plan, test, implement and review.",
+   "start": 45.841,
+   "end": 52.817
+  },
+  {
+   "id": "l10",
+   "who": "A",
+   "scene": "superpowers",
+   "show": "Finally! A plan before the code.",
+   "start": 56.717,
+   "end": 58.489
+  },
+  {
+   "id": "l11",
+   "who": "A",
+   "scene": "adhd",
+   "show": "Claude, can you explain that without giving me an entire book?",
+   "start": 59.289,
+   "end": 62.401
+  },
+  {
+   "id": "l12",
+   "who": "C",
+   "scene": "adhd",
+   "show": "Try I Have ADHD. It's designed to make responses more direct, structured and easier to follow.",
+   "start": 62.901,
+   "end": 70.006
+  },
+  {
+   "id": "l13",
+   "who": "A",
+   "scene": "adhd",
+   "show": "Now that's an answer I can actually use!",
+   "start": 73.506,
+   "end": 75.672
+  },
+  {
+   "id": "l14",
+   "who": "A",
+   "scene": "recap",
+   "show": "Better instructions, better planning, multiple perspectives and clearer answers.",
+   "start": 76.272,
+   "end": 80.507
+  },
+  {
+   "id": "l15",
+   "who": "C",
+   "scene": "recap",
+   "show": "Exactly. Better workflows lead to better development.",
+   "start": 81.107,
+   "end": 84.52
+  },
+  {
+   "id": "l16",
+   "who": "A",
+   "scene": "closing",
+   "show": "Save these four tools before starting your next Claude Code project.",
+   "start": 85.12,
+   "end": 88.665
+  }
+ ],
+ "words": [
+  {
+   "w": "Claude!",
+   "who": "A",
+   "line": "l01",
+   "s": 1.45,
+   "e": 1.85
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l01",
+   "s": 1.85,
+   "e": 1.983
+  },
+  {
+   "w": "asked",
+   "who": "A",
+   "line": "l01",
+   "s": 1.983,
+   "e": 2.294
+  },
+  {
+   "w": "for",
+   "who": "A",
+   "line": "l01",
+   "s": 2.294,
+   "e": 2.516
+  },
+  {
+   "w": "one",
+   "who": "A",
+   "line": "l01",
+   "s": 2.516,
+   "e": 2.738
+  },
+  {
+   "w": "simple",
+   "who": "A",
+   "line": "l01",
+   "s": 2.738,
+   "e": 3.093
+  },
+  {
+   "w": "feature.",
+   "who": "A",
+   "line": "l01",
+   "s": 3.093,
+   "e": 3.537
+  },
+  {
+   "w": "Why",
+   "who": "A",
+   "line": "l01",
+   "s": 3.537,
+   "e": 3.759
+  },
+  {
+   "w": "did",
+   "who": "A",
+   "line": "l01",
+   "s": 3.759,
+   "e": 3.981
+  },
+  {
+   "w": "you",
+   "who": "A",
+   "line": "l01",
+   "s": 3.981,
+   "e": 4.203
+  },
+  {
+   "w": "rewrite",
+   "who": "A",
+   "line": "l01",
+   "s": 4.203,
+   "e": 4.603
+  },
+  {
+   "w": "half",
+   "who": "A",
+   "line": "l01",
+   "s": 4.603,
+   "e": 4.869
+  },
+  {
+   "w": "my",
+   "who": "A",
+   "line": "l01",
+   "s": 4.869,
+   "e": 5.047
+  },
+  {
+   "w": "project?",
+   "who": "A",
+   "line": "l01",
+   "s": 5.047,
+   "e": 5.491
+  },
+  {
+   "w": "Maybe",
+   "who": "C",
+   "line": "l02",
+   "s": 5.791,
+   "e": 6.171
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l02",
+   "s": 6.171,
+   "e": 6.497
+  },
+  {
+   "w": "coding",
+   "who": "C",
+   "line": "l02",
+   "s": 6.497,
+   "e": 6.931
+  },
+  {
+   "w": "workflow",
+   "who": "C",
+   "line": "l02",
+   "s": 6.931,
+   "e": 7.475
+  },
+  {
+   "w": "needs",
+   "who": "C",
+   "line": "l02",
+   "s": 7.475,
+   "e": 7.855
+  },
+  {
+   "w": "an",
+   "who": "C",
+   "line": "l02",
+   "s": 7.855,
+   "e": 8.072
+  },
+  {
+   "w": "upgrade.",
+   "who": "C",
+   "line": "l02",
+   "s": 8.072,
+   "e": 8.615
+  },
+  {
+   "w": "First,",
+   "who": "C",
+   "line": "l03",
+   "s": 9.215,
+   "e": 9.714
+  },
+  {
+   "w": "Karpathy",
+   "who": "C",
+   "line": "l03",
+   "s": 9.714,
+   "e": 10.338
+  },
+  {
+   "w": "Skills.",
+   "who": "C",
+   "line": "l03",
+   "s": 10.338,
+   "e": 10.899
+  },
+  {
+   "w": "These",
+   "who": "C",
+   "line": "l03",
+   "s": 10.899,
+   "e": 11.336
+  },
+  {
+   "w": "guidelines",
+   "who": "C",
+   "line": "l03",
+   "s": 11.336,
+   "e": 12.084
+  },
+  {
+   "w": "help",
+   "who": "C",
+   "line": "l03",
+   "s": 12.084,
+   "e": 12.458
+  },
+  {
+   "w": "me",
+   "who": "C",
+   "line": "l03",
+   "s": 12.458,
+   "e": 12.708
+  },
+  {
+   "w": "think",
+   "who": "C",
+   "line": "l03",
+   "s": 12.708,
+   "e": 13.145
+  },
+  {
+   "w": "before",
+   "who": "C",
+   "line": "l03",
+   "s": 13.145,
+   "e": 13.644
+  },
+  {
+   "w": "coding,",
+   "who": "C",
+   "line": "l03",
+   "s": 13.644,
+   "e": 14.205
+  },
+  {
+   "w": "keep",
+   "who": "C",
+   "line": "l03",
+   "s": 14.205,
+   "e": 14.579
+  },
+  {
+   "w": "solutions",
+   "who": "C",
+   "line": "l03",
+   "s": 14.579,
+   "e": 15.265
+  },
+  {
+   "w": "simple,",
+   "who": "C",
+   "line": "l03",
+   "s": 15.265,
+   "e": 15.827
+  },
+  {
+   "w": "avoid",
+   "who": "C",
+   "line": "l03",
+   "s": 15.827,
+   "e": 16.263
+  },
+  {
+   "w": "unnecessary",
+   "who": "C",
+   "line": "l03",
+   "s": 16.263,
+   "e": 17.074
+  },
+  {
+   "w": "changes",
+   "who": "C",
+   "line": "l03",
+   "s": 17.074,
+   "e": 17.636
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l03",
+   "s": 17.636,
+   "e": 17.947
+  },
+  {
+   "w": "verify",
+   "who": "C",
+   "line": "l03",
+   "s": 17.947,
+   "e": 18.446
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l03",
+   "s": 18.446,
+   "e": 18.758
+  },
+  {
+   "w": "results.",
+   "who": "C",
+   "line": "l03",
+   "s": 18.758,
+   "e": 19.382
+  },
+  {
+   "w": "So",
+   "who": "A",
+   "line": "l04",
+   "s": 20.082,
+   "e": 20.248
+  },
+  {
+   "w": "no",
+   "who": "A",
+   "line": "l04",
+   "s": 20.248,
+   "e": 20.413
+  },
+  {
+   "w": "more",
+   "who": "A",
+   "line": "l04",
+   "s": 20.413,
+   "e": 20.662
+  },
+  {
+   "w": "rewriting",
+   "who": "A",
+   "line": "l04",
+   "s": 20.662,
+   "e": 21.117
+  },
+  {
+   "w": "things",
+   "who": "A",
+   "line": "l04",
+   "s": 21.117,
+   "e": 21.448
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l04",
+   "s": 21.448,
+   "e": 21.572
+  },
+  {
+   "w": "didn't",
+   "who": "A",
+   "line": "l04",
+   "s": 21.572,
+   "e": 21.903
+  },
+  {
+   "w": "ask",
+   "who": "A",
+   "line": "l04",
+   "s": 21.903,
+   "e": 22.11
+  },
+  {
+   "w": "you",
+   "who": "A",
+   "line": "l04",
+   "s": 22.11,
+   "e": 22.317
+  },
+  {
+   "w": "to",
+   "who": "A",
+   "line": "l04",
+   "s": 22.317,
+   "e": 22.483
+  },
+  {
+   "w": "touch?",
+   "who": "A",
+   "line": "l04",
+   "s": 22.483,
+   "e": 22.814
+  },
+  {
+   "w": "That's",
+   "who": "C",
+   "line": "l05",
+   "s": 23.314,
+   "e": 23.741
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l05",
+   "s": 23.741,
+   "e": 24.008
+  },
+  {
+   "w": "idea!",
+   "who": "C",
+   "line": "l05",
+   "s": 24.008,
+   "e": 24.382
+  },
+  {
+   "w": "But",
+   "who": "A",
+   "line": "l06",
+   "s": 27.682,
+   "e": 27.858
+  },
+  {
+   "w": "what",
+   "who": "A",
+   "line": "l06",
+   "s": 27.858,
+   "e": 28.07
+  },
+  {
+   "w": "if",
+   "who": "A",
+   "line": "l06",
+   "s": 28.07,
+   "e": 28.211
+  },
+  {
+   "w": "you're",
+   "who": "A",
+   "line": "l06",
+   "s": 28.211,
+   "e": 28.493
+  },
+  {
+   "w": "not",
+   "who": "A",
+   "line": "l06",
+   "s": 28.493,
+   "e": 28.67
+  },
+  {
+   "w": "sure",
+   "who": "A",
+   "line": "l06",
+   "s": 28.67,
+   "e": 28.882
+  },
+  {
+   "w": "your",
+   "who": "A",
+   "line": "l06",
+   "s": 28.882,
+   "e": 29.093
+  },
+  {
+   "w": "solution",
+   "who": "A",
+   "line": "l06",
+   "s": 29.093,
+   "e": 29.446
+  },
+  {
+   "w": "is",
+   "who": "A",
+   "line": "l06",
+   "s": 29.446,
+   "e": 29.587
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l06",
+   "s": 29.587,
+   "e": 29.764
+  },
+  {
+   "w": "best",
+   "who": "A",
+   "line": "l06",
+   "s": 29.764,
+   "e": 29.975
+  },
+  {
+   "w": "one?",
+   "who": "A",
+   "line": "l06",
+   "s": 29.975,
+   "e": 30.187
+  },
+  {
+   "w": "Claude",
+   "who": "C",
+   "line": "l07",
+   "s": 30.687,
+   "e": 31.141
+  },
+  {
+   "w": "Octopus",
+   "who": "C",
+   "line": "l07",
+   "s": 31.141,
+   "e": 31.651
+  },
+  {
+   "w": "can",
+   "who": "C",
+   "line": "l07",
+   "s": 31.651,
+   "e": 31.934
+  },
+  {
+   "w": "help",
+   "who": "C",
+   "line": "l07",
+   "s": 31.934,
+   "e": 32.274
+  },
+  {
+   "w": "bring",
+   "who": "C",
+   "line": "l07",
+   "s": 32.274,
+   "e": 32.671
+  },
+  {
+   "w": "multiple",
+   "who": "C",
+   "line": "l07",
+   "s": 32.671,
+   "e": 33.238
+  },
+  {
+   "w": "AI",
+   "who": "C",
+   "line": "l07",
+   "s": 33.238,
+   "e": 33.465
+  },
+  {
+   "w": "models",
+   "who": "C",
+   "line": "l07",
+   "s": 33.465,
+   "e": 33.918
+  },
+  {
+   "w": "into",
+   "who": "C",
+   "line": "l07",
+   "s": 33.918,
+   "e": 34.259
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l07",
+   "s": 34.259,
+   "e": 34.542
+  },
+  {
+   "w": "workflow,",
+   "who": "C",
+   "line": "l07",
+   "s": 34.542,
+   "e": 35.166
+  },
+  {
+   "w": "compare",
+   "who": "C",
+   "line": "l07",
+   "s": 35.166,
+   "e": 35.676
+  },
+  {
+   "w": "their",
+   "who": "C",
+   "line": "l07",
+   "s": 35.676,
+   "e": 36.073
+  },
+  {
+   "w": "approaches",
+   "who": "C",
+   "line": "l07",
+   "s": 36.073,
+   "e": 36.753
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l07",
+   "s": 36.753,
+   "e": 37.036
+  },
+  {
+   "w": "review",
+   "who": "C",
+   "line": "l07",
+   "s": 37.036,
+   "e": 37.49
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l07",
+   "s": 37.49,
+   "e": 37.773
+  },
+  {
+   "w": "findings.",
+   "who": "C",
+   "line": "l07",
+   "s": 37.773,
+   "e": 38.397
+  },
+  {
+   "w": "And",
+   "who": "A",
+   "line": "l08",
+   "s": 41.297,
+   "e": 41.51
+  },
+  {
+   "w": "how",
+   "who": "A",
+   "line": "l08",
+   "s": 41.51,
+   "e": 41.723
+  },
+  {
+   "w": "do",
+   "who": "A",
+   "line": "l08",
+   "s": 41.723,
+   "e": 41.893
+  },
+  {
+   "w": "we",
+   "who": "A",
+   "line": "l08",
+   "s": 41.893,
+   "e": 42.063
+  },
+  {
+   "w": "stop",
+   "who": "A",
+   "line": "l08",
+   "s": 42.063,
+   "e": 42.319
+  },
+  {
+   "w": "jumping",
+   "who": "A",
+   "line": "l08",
+   "s": 42.319,
+   "e": 42.702
+  },
+  {
+   "w": "straight",
+   "who": "A",
+   "line": "l08",
+   "s": 42.702,
+   "e": 43.127
+  },
+  {
+   "w": "into",
+   "who": "A",
+   "line": "l08",
+   "s": 43.127,
+   "e": 43.383
+  },
+  {
+   "w": "coding",
+   "who": "A",
+   "line": "l08",
+   "s": 43.383,
+   "e": 43.723
+  },
+  {
+   "w": "before",
+   "who": "A",
+   "line": "l08",
+   "s": 43.723,
+   "e": 44.064
+  },
+  {
+   "w": "understanding",
+   "who": "A",
+   "line": "l08",
+   "s": 44.064,
+   "e": 44.702
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l08",
+   "s": 44.702,
+   "e": 44.915
+  },
+  {
+   "w": "project?",
+   "who": "A",
+   "line": "l08",
+   "s": 44.915,
+   "e": 45.341
+  },
+  {
+   "w": "Superpowers",
+   "who": "C",
+   "line": "l09",
+   "s": 45.841,
+   "e": 46.63
+  },
+  {
+   "w": "gives",
+   "who": "C",
+   "line": "l09",
+   "s": 46.63,
+   "e": 47.054
+  },
+  {
+   "w": "us",
+   "who": "C",
+   "line": "l09",
+   "s": 47.054,
+   "e": 47.297
+  },
+  {
+   "w": "a",
+   "who": "C",
+   "line": "l09",
+   "s": 47.297,
+   "e": 47.479
+  },
+  {
+   "w": "structured",
+   "who": "C",
+   "line": "l09",
+   "s": 47.479,
+   "e": 48.207
+  },
+  {
+   "w": "engineering",
+   "who": "C",
+   "line": "l09",
+   "s": 48.207,
+   "e": 48.995
+  },
+  {
+   "w": "workflow:",
+   "who": "C",
+   "line": "l09",
+   "s": 48.995,
+   "e": 49.663
+  },
+  {
+   "w": "brainstorm,",
+   "who": "C",
+   "line": "l09",
+   "s": 49.663,
+   "e": 50.451
+  },
+  {
+   "w": "plan,",
+   "who": "C",
+   "line": "l09",
+   "s": 50.451,
+   "e": 50.876
+  },
+  {
+   "w": "test,",
+   "who": "C",
+   "line": "l09",
+   "s": 50.876,
+   "e": 51.3
+  },
+  {
+   "w": "implement",
+   "who": "C",
+   "line": "l09",
+   "s": 51.3,
+   "e": 51.968
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l09",
+   "s": 51.968,
+   "e": 52.271
+  },
+  {
+   "w": "review.",
+   "who": "C",
+   "line": "l09",
+   "s": 52.271,
+   "e": 52.817
+  },
+  {
+   "w": "Finally!",
+   "who": "A",
+   "line": "l10",
+   "s": 56.717,
+   "e": 57.171
+  },
+  {
+   "w": "A",
+   "who": "A",
+   "line": "l10",
+   "s": 57.171,
+   "e": 57.308
+  },
+  {
+   "w": "plan",
+   "who": "A",
+   "line": "l10",
+   "s": 57.308,
+   "e": 57.58
+  },
+  {
+   "w": "before",
+   "who": "A",
+   "line": "l10",
+   "s": 57.58,
+   "e": 57.944
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l10",
+   "s": 57.944,
+   "e": 58.171
+  },
+  {
+   "w": "code.",
+   "who": "A",
+   "line": "l10",
+   "s": 58.171,
+   "e": 58.489
+  },
+  {
+   "w": "Claude,",
+   "who": "A",
+   "line": "l11",
+   "s": 59.289,
+   "e": 59.667
+  },
+  {
+   "w": "can",
+   "who": "A",
+   "line": "l11",
+   "s": 59.667,
+   "e": 59.878
+  },
+  {
+   "w": "you",
+   "who": "A",
+   "line": "l11",
+   "s": 59.878,
+   "e": 60.088
+  },
+  {
+   "w": "explain",
+   "who": "A",
+   "line": "l11",
+   "s": 60.088,
+   "e": 60.467
+  },
+  {
+   "w": "that",
+   "who": "A",
+   "line": "l11",
+   "s": 60.467,
+   "e": 60.719
+  },
+  {
+   "w": "without",
+   "who": "A",
+   "line": "l11",
+   "s": 60.719,
+   "e": 61.097
+  },
+  {
+   "w": "giving",
+   "who": "A",
+   "line": "l11",
+   "s": 61.097,
+   "e": 61.434
+  },
+  {
+   "w": "me",
+   "who": "A",
+   "line": "l11",
+   "s": 61.434,
+   "e": 61.602
+  },
+  {
+   "w": "an",
+   "who": "A",
+   "line": "l11",
+   "s": 61.602,
+   "e": 61.77
+  },
+  {
+   "w": "entire",
+   "who": "A",
+   "line": "l11",
+   "s": 61.77,
+   "e": 62.107
+  },
+  {
+   "w": "book?",
+   "who": "A",
+   "line": "l11",
+   "s": 62.107,
+   "e": 62.401
+  },
+  {
+   "w": "Try",
+   "who": "C",
+   "line": "l12",
+   "s": 62.901,
+   "e": 63.221
+  },
+  {
+   "w": "I",
+   "who": "C",
+   "line": "l12",
+   "s": 63.221,
+   "e": 63.413
+  },
+  {
+   "w": "Have",
+   "who": "C",
+   "line": "l12",
+   "s": 63.413,
+   "e": 63.797
+  },
+  {
+   "w": "ADHD.",
+   "who": "C",
+   "line": "l12",
+   "s": 63.797,
+   "e": 64.245
+  },
+  {
+   "w": "It's",
+   "who": "C",
+   "line": "l12",
+   "s": 64.245,
+   "e": 64.629
+  },
+  {
+   "w": "designed",
+   "who": "C",
+   "line": "l12",
+   "s": 64.629,
+   "e": 65.269
+  },
+  {
+   "w": "to",
+   "who": "C",
+   "line": "l12",
+   "s": 65.269,
+   "e": 65.525
+  },
+  {
+   "w": "make",
+   "who": "C",
+   "line": "l12",
+   "s": 65.525,
+   "e": 65.909
+  },
+  {
+   "w": "responses",
+   "who": "C",
+   "line": "l12",
+   "s": 65.909,
+   "e": 66.614
+  },
+  {
+   "w": "more",
+   "who": "C",
+   "line": "l12",
+   "s": 66.614,
+   "e": 66.998
+  },
+  {
+   "w": "direct,",
+   "who": "C",
+   "line": "l12",
+   "s": 66.998,
+   "e": 67.574
+  },
+  {
+   "w": "structured",
+   "who": "C",
+   "line": "l12",
+   "s": 67.574,
+   "e": 68.342
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l12",
+   "s": 68.342,
+   "e": 68.662
+  },
+  {
+   "w": "easier",
+   "who": "C",
+   "line": "l12",
+   "s": 68.662,
+   "e": 69.174
+  },
+  {
+   "w": "to",
+   "who": "C",
+   "line": "l12",
+   "s": 69.174,
+   "e": 69.43
+  },
+  {
+   "w": "follow.",
+   "who": "C",
+   "line": "l12",
+   "s": 69.43,
+   "e": 70.006
+  },
+  {
+   "w": "Now",
+   "who": "A",
+   "line": "l13",
+   "s": 73.506,
+   "e": 73.727
+  },
+  {
+   "w": "that's",
+   "who": "A",
+   "line": "l13",
+   "s": 73.727,
+   "e": 74.081
+  },
+  {
+   "w": "an",
+   "who": "A",
+   "line": "l13",
+   "s": 74.081,
+   "e": 74.257
+  },
+  {
+   "w": "answer",
+   "who": "A",
+   "line": "l13",
+   "s": 74.257,
+   "e": 74.611
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l13",
+   "s": 74.611,
+   "e": 74.744
+  },
+  {
+   "w": "can",
+   "who": "A",
+   "line": "l13",
+   "s": 74.744,
+   "e": 74.965
+  },
+  {
+   "w": "actually",
+   "who": "A",
+   "line": "l13",
+   "s": 74.965,
+   "e": 75.407
+  },
+  {
+   "w": "use!",
+   "who": "A",
+   "line": "l13",
+   "s": 75.407,
+   "e": 75.672
+  },
+  {
+   "w": "Better",
+   "who": "A",
+   "line": "l14",
+   "s": 76.272,
+   "e": 76.648
+  },
+  {
+   "w": "instructions,",
+   "who": "A",
+   "line": "l14",
+   "s": 76.648,
+   "e": 77.354
+  },
+  {
+   "w": "better",
+   "who": "A",
+   "line": "l14",
+   "s": 77.354,
+   "e": 77.731
+  },
+  {
+   "w": "planning,",
+   "who": "A",
+   "line": "l14",
+   "s": 77.731,
+   "e": 78.248
+  },
+  {
+   "w": "multiple",
+   "who": "A",
+   "line": "l14",
+   "s": 78.248,
+   "e": 78.719
+  },
+  {
+   "w": "perspectives",
+   "who": "A",
+   "line": "l14",
+   "s": 78.719,
+   "e": 79.378
+  },
+  {
+   "w": "and",
+   "who": "A",
+   "line": "l14",
+   "s": 79.378,
+   "e": 79.613
+  },
+  {
+   "w": "clearer",
+   "who": "A",
+   "line": "l14",
+   "s": 79.613,
+   "e": 80.036
+  },
+  {
+   "w": "answers.",
+   "who": "A",
+   "line": "l14",
+   "s": 80.036,
+   "e": 80.507
+  },
+  {
+   "w": "Exactly.",
+   "who": "C",
+   "line": "l15",
+   "s": 81.107,
+   "e": 81.667
+  },
+  {
+   "w": "Better",
+   "who": "C",
+   "line": "l15",
+   "s": 81.667,
+   "e": 82.114
+  },
+  {
+   "w": "workflows",
+   "who": "C",
+   "line": "l15",
+   "s": 82.114,
+   "e": 82.73
+  },
+  {
+   "w": "lead",
+   "who": "C",
+   "line": "l15",
+   "s": 82.73,
+   "e": 83.065
+  },
+  {
+   "w": "to",
+   "who": "C",
+   "line": "l15",
+   "s": 83.065,
+   "e": 83.289
+  },
+  {
+   "w": "better",
+   "who": "C",
+   "line": "l15",
+   "s": 83.289,
+   "e": 83.737
+  },
+  {
+   "w": "development.",
+   "who": "C",
+   "line": "l15",
+   "s": 83.737,
+   "e": 84.52
+  },
+  {
+   "w": "Save",
+   "who": "A",
+   "line": "l16",
+   "s": 85.12,
+   "e": 85.386
+  },
+  {
+   "w": "these",
+   "who": "A",
+   "line": "l16",
+   "s": 85.386,
+   "e": 85.696
+  },
+  {
+   "w": "four",
+   "who": "A",
+   "line": "l16",
+   "s": 85.696,
+   "e": 85.962
+  },
+  {
+   "w": "tools",
+   "who": "A",
+   "line": "l16",
+   "s": 85.962,
+   "e": 86.272
+  },
+  {
+   "w": "before",
+   "who": "A",
+   "line": "l16",
+   "s": 86.272,
+   "e": 86.627
+  },
+  {
+   "w": "starting",
+   "who": "A",
+   "line": "l16",
+   "s": 86.627,
+   "e": 87.07
+  },
+  {
+   "w": "your",
+   "who": "A",
+   "line": "l16",
+   "s": 87.07,
+   "e": 87.336
+  },
+  {
+   "w": "next",
+   "who": "A",
+   "line": "l16",
+   "s": 87.336,
+   "e": 87.601
+  },
+  {
+   "w": "Claude",
+   "who": "A",
+   "line": "l16",
+   "s": 87.601,
+   "e": 87.956
+  },
+  {
+   "w": "Code",
+   "who": "A",
+   "line": "l16",
+   "s": 87.956,
+   "e": 88.222
+  },
+  {
+   "w": "project.",
+   "who": "A",
+   "line": "l16",
+   "s": 88.222,
+   "e": 88.665
+  }
+ ]
+}

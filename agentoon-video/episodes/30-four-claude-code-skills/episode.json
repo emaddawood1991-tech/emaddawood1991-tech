@@ -1,0 +1,129 @@
+{
+ "total": 92.27,
+ "music": [
+  {
+   "t0": 0,
+   "t1": 9,
+   "mood": "hook"
+  },
+  {
+   "t0": 9,
+   "t1": 38,
+   "mood": "disc"
+  },
+  {
+   "t0": 38,
+   "t1": 65,
+   "mood": "demo"
+  },
+  {
+   "t0": 65,
+   "t1": 92.27,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "type",
+   "t": 0.1,
+   "gain": 0.14,
+   "dur": 1.1,
+   "cps": 14
+  },
+  {
+   "name": "tick",
+   "t": 1.0,
+   "gain": 0.4
+  },
+  {
+   "name": "pop",
+   "t": 9.1,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 27.56,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 41.18,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 59.17,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 76.15,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 85.0,
+   "gain": 0.22
+  },
+  {
+   "name": "ding",
+   "t": 19.88,
+   "gain": 0.22
+  },
+  {
+   "name": "ding",
+   "t": 38.9,
+   "gain": 0.22
+  },
+  {
+   "name": "ding",
+   "t": 53.32,
+   "gain": 0.22
+  },
+  {
+   "name": "ding",
+   "t": 70.51,
+   "gain": 0.22
+  },
+  {
+   "name": "tick",
+   "t": 25.68,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "t": 26.58,
+   "gain": 0.4
+  },
+  {
+   "name": "tick",
+   "t": 54.62,
+   "gain": 0.45
+  },
+  {
+   "name": "tick",
+   "t": 55.42,
+   "gain": 0.45
+  },
+  {
+   "name": "ding",
+   "t": 56.02,
+   "gain": 0.3
+  },
+  {
+   "name": "sparkle",
+   "t": 39.8,
+   "gain": 0.22
+  },
+  {
+   "name": "sparkle",
+   "t": 72.21,
+   "gain": 0.22
+  },
+  {
+   "name": "sparkle",
+   "t": 88.77,
+   "gain": 0.3
+  }
+ ]
+}

@@ -62,6 +62,7 @@ acc("lightbulb", [sph("bulb", 0.2, (0, 0, 1.95), M["yellow"]), cyl("bulb_base", 
 acc("laptop", [box("lap_base", (1.0, 0.7, 0.06), (0, -1.1, 0.04), M["metal"], 0.02), box("lap_screen", (1.0, 0.05, 0.65), (0, -0.78, 0.38), M["dark"], 0.02)])
 acc("clipboard", [box("clip_board", (0.6, 0.06, 0.8), (0.9, -0.7, 1.0), M["brown"], 0.02), box("clip_paper", (0.5, 0.02, 0.7), (0.9, -0.74, 1.0), M["paper"], 0.01), box("clip_clip", (0.2, 0.05, 0.08), (0.9, -0.76, 1.42), M["metal"], 0.01)])
 acc("documents", [box(f"doc{i}", (0.55, 0.02, 0.7), (-0.9 + i * 0.06, -0.7 - i * 0.03, 1.0), M["paper"], 0.005) for i in range(3)])
+acc("cape", [box("cape_back", (2.5, 0.08, 1.5), (0, 0.62, 0.8), M["red"], 0.03), box("cape_collar", (2.2, 0.22, 0.2), (0, -0.5, 1.6), M["red"], 0.04), box("cape_flapL", (0.12, 0.7, 1.2), (-1.28, 0.3, 0.85), M["red"], 0.02), box("cape_flapR", (0.12, 0.7, 1.2), (1.28, 0.3, 0.85), M["red"], 0.02)])
 acc("calendar", [box("cal_page", (0.7, 0.05, 0.8), (0.9, -0.7, 1.0), M["paper"], 0.01), box("cal_head", (0.7, 0.06, 0.2), (0.9, -0.72, 1.3), M["red"], 0.01)])
 # ---- animation library ----
 pb = arm.pose.bones
