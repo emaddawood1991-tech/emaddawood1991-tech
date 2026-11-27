@@ -229,8 +229,11 @@
     "grammarReview": null,
     "medicalTerminologyReview": null,
     "medicalAccuracyReview": null,
-    "scriptApproved": null,
+    "scriptApproved": {
+      "by": "Emad (user, chat: Approve)",
+      "date": "2026-11-27T10:04:00.348Z"
+    },
     "pronunciationApproved": null,
-    "approvedHash": null
+    "approvedHash": "c916683bf4807f8d339a7c6c2d6c4eac149039c20f3c3d2321c34d7766adb86f"
   }
 }
