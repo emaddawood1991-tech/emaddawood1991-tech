@@ -1,0 +1,161 @@
+{
+ "total": 85.14,
+ "music": [
+  {
+   "t0": 0,
+   "t1": 8,
+   "mood": "hook"
+  },
+  {
+   "t0": 8,
+   "t1": 38,
+   "mood": "disc"
+  },
+  {
+   "t0": 38,
+   "t1": 66,
+   "mood": "demo"
+  },
+  {
+   "t0": 66,
+   "t1": 85.14,
+   "mood": "result"
+  }
+ ],
+ "sfx": [
+  {
+   "name": "pop",
+   "t": 0.35,
+   "gain": 0.35
+  },
+  {
+   "name": "step",
+   "t": 0.9,
+   "gain": 0.45
+  },
+  {
+   "name": "step",
+   "t": 1.32,
+   "gain": 0.45
+  },
+  {
+   "name": "step",
+   "t": 1.74,
+   "gain": 0.45
+  },
+  {
+   "name": "step",
+   "t": 2.16,
+   "gain": 0.45
+  },
+  {
+   "name": "step",
+   "t": 2.58,
+   "gain": 0.45
+  },
+  {
+   "name": "step",
+   "t": 3.0,
+   "gain": 0.45
+  },
+  {
+   "name": "pop",
+   "t": 3.3,
+   "gain": 0.3
+  },
+  {
+   "name": "tick",
+   "t": 0.1,
+   "gain": 0.4
+  },
+  {
+   "name": "type",
+   "t": 0.2,
+   "gain": 0.12,
+   "dur": 1.0,
+   "cps": 12
+  },
+  {
+   "name": "step",
+   "t": 4.1,
+   "gain": 0.3
+  },
+  {
+   "name": "pop",
+   "t": 7.91,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 13.66,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 35.93,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 47.83,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 59.22,
+   "gain": 0.22
+  },
+  {
+   "name": "pop",
+   "t": 69.4,
+   "gain": 0.22
+  },
+  {
+   "name": "sparkle",
+   "t": 7.33,
+   "gain": 0.25
+  },
+  {
+   "name": "ding",
+   "t": 21.03,
+   "gain": 0.22
+  },
+  {
+   "name": "ding",
+   "t": 31.76,
+   "gain": 0.22
+  },
+  {
+   "name": "type",
+   "t": 40.81,
+   "gain": 0.2,
+   "dur": 3.0,
+   "cps": 12
+  },
+  {
+   "name": "tick",
+   "t": 44.81,
+   "gain": 0.4
+  },
+  {
+   "name": "ding",
+   "t": 55.87,
+   "gain": 0.25
+  },
+  {
+   "name": "ding",
+   "t": 65.89,
+   "gain": 0.22
+  },
+  {
+   "name": "ding",
+   "t": 67.29,
+   "gain": 0.22
+  },
+  {
+   "name": "sparkle",
+   "t": 79.46,
+   "gain": 0.3
+  }
+ ]
+}

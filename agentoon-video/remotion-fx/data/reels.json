@@ -1,0 +1,5 @@
+[
+ {"topic":"WHAT IS AN API?","hook":"Apps talk through APIs","points":["Request","Service","Response"],"accent":"#38D6F5","caption":"An API lets software ask for something and get an answer"},
+ {"topic":"WHAT ARE TOKENS?","hook":"AI reads text in pieces","points":["Split","Count","Limit"],"accent":"#3DDC97","caption":"Tokens are the pieces of text a model processes"},
+ {"topic":"WHAT IS RAG?","hook":"Look it up, then answer","points":["Ask","Retrieve","Generate"],"accent":"#FF9A3C","caption":"RAG retrieves relevant information before the model answers"}
+]

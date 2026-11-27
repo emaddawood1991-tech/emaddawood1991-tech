@@ -9,7 +9,7 @@ ACC = {}
 for o in bpy.data.objects:
     for k in ("headphones", "detective", "lightbulb", "laptop", "clipboard", "documents", "calendar"): pass
 names = {"headphones": ["hp_band", "hp_cupL", "hp_cupR"], "detective": ["hat_brim", "hat_crown", "hat_band", "mag_ring", "mag_glass", "mag_handle"], "lightbulb": ["bulb", "bulb_base"], "clipboard": ["clip_board", "clip_paper", "clip_clip"], "documents": ["doc0", "doc1", "doc2"], "calendar": ["cal_page", "cal_head"], "laptop": ["lap_base", "lap_screen"]}
-CLIPS = [("IDLE", "none"), ("LISTEN", "none"), ("TALK", "none"), ("TALK", "lightbulb"), ("TALK", "detective"), ("TALK", "calendar"), ("TALK", "documents"), ("BOUNCE", "none"), ("WAVE", "none"), ("CELEBRATE", "none"), ("POINT", "none"), ("LOOK", "none")]
+CLIPS = [("IDLE", "none"), ("LISTEN", "none"), ("TALK", "none"), ("TALK", "lightbulb"), ("TALK", "detective"), ("TALK", "calendar"), ("TALK", "documents"), ("BOUNCE", "none"), ("WAVE", "none"), ("CELEBRATE", "none"), ("POINT", "none"), ("LOOK", "none"), ("IDLE", "headphones"), ("TALK", "headphones"), ("TALK", "clipboard"), ("LISTEN", "detective")]
 sel = os.environ.get("ONLY")
 for st, ac in CLIPS:
     tag = f"{st}_{ac}"

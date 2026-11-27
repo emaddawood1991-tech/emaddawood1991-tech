@@ -7,6 +7,8 @@ import { RobotMeetsClaude, RMC_FRAMES } from "./nine/RobotMeetsClaude";
 import { AiConcepts, AC_FRAMES } from "./nine/AiConcepts";
 import { WinRun, WIN_FRAMES } from "./nine/WinRun";
 import { ClaudeAssistant, CA_FRAMES } from "./nine/ClaudeAssistant";
+import { ReelTemplate, REEL_FRAMES, reelDefaults } from "./ep28/ReelTemplate";
+import { Ep28, EP28_FRAMES } from "./ep28/Ep28";
 import { Gta6Parents, GTA_FRAMES, Gta6RobotTest, ROBOT_TEST_FRAMES } from "./nine/Gta6Parents";
 import { FounderSkill, FSK_FRAMES } from "./nine/FounderSkill";
 import { FindSkills, FS_FRAMES } from "./nine/FindSkills";
@@ -32,6 +34,8 @@ export const Root: React.FC = () => (
     <Composition id="AiConcepts" component={AiConcepts} durationInFrames={AC_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="WinRun" component={WinRun} durationInFrames={WIN_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="ClaudeAssistant" component={ClaudeAssistant} durationInFrames={CA_FRAMES} fps={FPS} width={W} height={H} />
+    <Composition id="ReelTemplate" component={ReelTemplate} durationInFrames={REEL_FRAMES} fps={FPS} width={W} height={H} defaultProps={reelDefaults} />
+    <Composition id="Ep28" component={Ep28} durationInFrames={EP28_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="Gta6Parents" component={Gta6Parents} durationInFrames={GTA_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="Gta6RobotTest" component={Gta6RobotTest} durationInFrames={ROBOT_TEST_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="RobotWalkTest" component={RobotWalkTest} durationInFrames={WALK_FRAMES} fps={FPS} width={W} height={H} />

@@ -72,6 +72,20 @@ def shot(name, loc, tgt, lens, fstop=None):
     for o in col_main.objects: o.is_holdout = True
     sc.render.filepath = os.path.join(out, f"{name}_fg.png"); bpy.ops.render.render(write_still=True)
     for o in col_main.objects: o.is_holdout = False
-shot("A_wide", (0, -3.4, 1.0), (0, 0.4, 1.8), 24)
-shot("B_medium", (0.1, -2.4, 1.0), (0.15, 0.2, 1.55), 30, 2.8)
+if "--door" in sys.argv:
+    # Episode 28: door on the left wall (hinge at y=1.75), two shots: closed and ajar. Same office, same lights.
+    hinge = Vector((-3.1, 1.75, 0))
+    def door(angle):
+        for o in [o for o in bpy.data.objects if o.name.startswith("door_")]: bpy.data.objects.remove(o, do_unlink=True)
+        frame_m = M["darkwood"]; dm = mat("door", (0.85, 0.35, 0.12), 0.5)
+        box("door_fL", (0.12, 0.08, 2.2), (-3.1, 0.65, 1.1), frame_m, 0.005); box("door_fR", (0.12, 0.08, 2.2), (-3.1, 1.85, 1.1), frame_m, 0.005); box("door_fT", (0.12, 1.28, 0.08), (-3.1, 1.25, 2.2), frame_m, 0.005)
+        ar = math.radians(angle); E_ = Vector((hinge.x + 1.1 * math.sin(ar), hinge.y - 1.1 * math.cos(ar), 0)); Mid = (Vector((hinge.x, hinge.y, 0)) + E_) / 2
+        box("door_panel", (0.05, 1.1, 2.1), (Mid.x, Mid.y, 1.05), dm, 0.005, rot=(0, 0, ar))
+        box("door_knob", (0.1, 0.06, 0.06), (-3.05, 0.78, 1.05), M["metal"], 0.01)
+        if angle != 0: box("door_dark", (0.02, 1.1, 2.1), (-3.085, 1.2, 1.05), mat("doordark", (0.02, 0.02, 0.03), 0.9), 0)  # dark hallway visible through the open door
+    door(0); shot("C_door_closed", (2.2, -3.0, 1.15), (-1.4, 1.2, 1.0), 24)
+    door(75); shot("C_door_open", (2.2, -3.0, 1.15), (-1.4, 1.2, 1.0), 24)
+else:
+    shot("A_wide", (0, -3.4, 1.0), (0, 0.4, 1.8), 24)
+    shot("B_medium", (0.1, -2.4, 1.0), (0.15, 0.2, 1.55), 30, 2.8)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "office.blend"))

@@ -1,0 +1,1522 @@
+{
+ "total": 80.144,
+ "lines": [
+  {
+   "id": "l01",
+   "who": "A",
+   "scene": "hook",
+   "show": "Hey, Claude! What have you been doing while I was at the gym?",
+   "start": 1.45,
+   "end": 4.288
+  },
+  {
+   "id": "l02",
+   "who": "C",
+   "scene": "hook",
+   "show": "Working on your next 50 Instagram Reels.",
+   "start": 4.568,
+   "end": 7.229
+  },
+  {
+   "id": "l03",
+   "who": "A",
+   "scene": "surprise",
+   "show": "Fifty?! I haven't even finished editing yesterday's video!",
+   "start": 8.009,
+   "end": 10.946
+  },
+  {
+   "id": "l04",
+   "who": "C",
+   "scene": "surprise",
+   "show": "That's why we're building a better workflow.",
+   "start": 11.226,
+   "end": 13.477
+  },
+  {
+   "id": "l05",
+   "who": "A",
+   "scene": "audience",
+   "show": "But how do you know what people actually want to watch?",
+   "start": 13.757,
+   "end": 16.247
+  },
+  {
+   "id": "l06",
+   "who": "C",
+   "scene": "audience",
+   "show": "Before creating anything, I research your audience, study successful content, and identify the problems your viewers want solved.",
+   "start": 16.527,
+   "end": 25.663
+  },
+  {
+   "id": "l07",
+   "who": "A",
+   "scene": "content",
+   "show": "So you're not just generating random videos?",
+   "start": 26.193,
+   "end": 28.483
+  },
+  {
+   "id": "l08",
+   "who": "C",
+   "scene": "content",
+   "show": "Exactly! I turn the research into hooks, scripts, visual concepts and captions that match your audience.",
+   "start": 28.763,
+   "end": 35.752
+  },
+  {
+   "id": "l09",
+   "who": "A",
+   "scene": "code",
+   "show": "But how do you create the videos?",
+   "start": 36.032,
+   "end": 37.529
+  },
+  {
+   "id": "l10",
+   "who": "C",
+   "scene": "code",
+   "show": "With Claude Code, reusable components and tools like Remotion, we can create video layouts, animations and captions programmatically.",
+   "start": 37.809,
+   "end": 47.398
+  },
+  {
+   "id": "l11",
+   "who": "A",
+   "scene": "batch",
+   "show": "And we can use that workflow for 50 different videos?",
+   "start": 47.928,
+   "end": 50.588
+  },
+  {
+   "id": "l12",
+   "who": "C",
+   "scene": "batch",
+   "show": "Yes, with reusable templates and the right production tools. Each video can have its own subject, visuals and script.",
+   "start": 50.868,
+   "end": 58.793
+  },
+  {
+   "id": "l13",
+   "who": "A",
+   "scene": "approval",
+   "show": "So everything gets posted automatically?",
+   "start": 59.323,
+   "end": 61.414
+  },
+  {
+   "id": "l14",
+   "who": "C",
+   "scene": "approval",
+   "show": "Not without your approval! We review the videos, check the facts and make sure every post represents your brand.",
+   "start": 62.094,
+   "end": 68.967
+  },
+  {
+   "id": "l15",
+   "who": "A",
+   "scene": "closing",
+   "show": "50 Reels? Maybe I should go to the gym more often!",
+   "start": 69.497,
+   "end": 72.524
+  },
+  {
+   "id": "l16",
+   "who": "C",
+   "scene": "closing",
+   "show": "Only after you approve the first one!",
+   "start": 72.804,
+   "end": 74.971
+  },
+  {
+   "id": "l17",
+   "who": "A",
+   "scene": "closing",
+   "show": "Save this video if you want to build your own AI content production system.",
+   "start": 75.251,
+   "end": 79.364
+  }
+ ],
+ "words": [
+  {
+   "w": "Hey,",
+   "who": "A",
+   "line": "l01",
+   "s": 1.45,
+   "e": 1.677
+  },
+  {
+   "w": "Claude!",
+   "who": "A",
+   "line": "l01",
+   "s": 1.677,
+   "e": 2.018
+  },
+  {
+   "w": "What",
+   "who": "A",
+   "line": "l01",
+   "s": 2.018,
+   "e": 2.245
+  },
+  {
+   "w": "have",
+   "who": "A",
+   "line": "l01",
+   "s": 2.245,
+   "e": 2.472
+  },
+  {
+   "w": "you",
+   "who": "A",
+   "line": "l01",
+   "s": 2.472,
+   "e": 2.661
+  },
+  {
+   "w": "been",
+   "who": "A",
+   "line": "l01",
+   "s": 2.661,
+   "e": 2.888
+  },
+  {
+   "w": "doing",
+   "who": "A",
+   "line": "l01",
+   "s": 2.888,
+   "e": 3.153
+  },
+  {
+   "w": "while",
+   "who": "A",
+   "line": "l01",
+   "s": 3.153,
+   "e": 3.418
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l01",
+   "s": 3.418,
+   "e": 3.531
+  },
+  {
+   "w": "was",
+   "who": "A",
+   "line": "l01",
+   "s": 3.531,
+   "e": 3.72
+  },
+  {
+   "w": "at",
+   "who": "A",
+   "line": "l01",
+   "s": 3.72,
+   "e": 3.872
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l01",
+   "s": 3.872,
+   "e": 4.061
+  },
+  {
+   "w": "gym?",
+   "who": "A",
+   "line": "l01",
+   "s": 4.061,
+   "e": 4.288
+  },
+  {
+   "w": "Working",
+   "who": "C",
+   "line": "l02",
+   "s": 4.568,
+   "e": 5.067
+  },
+  {
+   "w": "on",
+   "who": "C",
+   "line": "l02",
+   "s": 5.067,
+   "e": 5.289
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l02",
+   "s": 5.289,
+   "e": 5.621
+  },
+  {
+   "w": "next",
+   "who": "C",
+   "line": "l02",
+   "s": 5.621,
+   "e": 5.954
+  },
+  {
+   "w": "50",
+   "who": "C",
+   "line": "l02",
+   "s": 5.954,
+   "e": 6.176
+  },
+  {
+   "w": "Instagram",
+   "who": "C",
+   "line": "l02",
+   "s": 6.176,
+   "e": 6.786
+  },
+  {
+   "w": "Reels.",
+   "who": "C",
+   "line": "l02",
+   "s": 6.786,
+   "e": 7.229
+  },
+  {
+   "w": "Fifty?!",
+   "who": "A",
+   "line": "l03",
+   "s": 8.009,
+   "e": 8.404
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l03",
+   "s": 8.404,
+   "e": 8.535
+  },
+  {
+   "w": "haven't",
+   "who": "A",
+   "line": "l03",
+   "s": 8.535,
+   "e": 8.93
+  },
+  {
+   "w": "even",
+   "who": "A",
+   "line": "l03",
+   "s": 8.93,
+   "e": 9.193
+  },
+  {
+   "w": "finished",
+   "who": "A",
+   "line": "l03",
+   "s": 9.193,
+   "e": 9.631
+  },
+  {
+   "w": "editing",
+   "who": "A",
+   "line": "l03",
+   "s": 9.631,
+   "e": 10.025
+  },
+  {
+   "w": "yesterday's",
+   "who": "A",
+   "line": "l03",
+   "s": 10.025,
+   "e": 10.595
+  },
+  {
+   "w": "video!",
+   "who": "A",
+   "line": "l03",
+   "s": 10.595,
+   "e": 10.946
+  },
+  {
+   "w": "That's",
+   "who": "C",
+   "line": "l04",
+   "s": 11.226,
+   "e": 11.572
+  },
+  {
+   "w": "why",
+   "who": "C",
+   "line": "l04",
+   "s": 11.572,
+   "e": 11.789
+  },
+  {
+   "w": "we're",
+   "who": "C",
+   "line": "l04",
+   "s": 11.789,
+   "e": 12.092
+  },
+  {
+   "w": "building",
+   "who": "C",
+   "line": "l04",
+   "s": 12.092,
+   "e": 12.525
+  },
+  {
+   "w": "a",
+   "who": "C",
+   "line": "l04",
+   "s": 12.525,
+   "e": 12.655
+  },
+  {
+   "w": "better",
+   "who": "C",
+   "line": "l04",
+   "s": 12.655,
+   "e": 13.001
+  },
+  {
+   "w": "workflow.",
+   "who": "C",
+   "line": "l04",
+   "s": 13.001,
+   "e": 13.477
+  },
+  {
+   "w": "But",
+   "who": "A",
+   "line": "l05",
+   "s": 13.757,
+   "e": 13.943
+  },
+  {
+   "w": "how",
+   "who": "A",
+   "line": "l05",
+   "s": 13.943,
+   "e": 14.129
+  },
+  {
+   "w": "do",
+   "who": "A",
+   "line": "l05",
+   "s": 14.129,
+   "e": 14.277
+  },
+  {
+   "w": "you",
+   "who": "A",
+   "line": "l05",
+   "s": 14.277,
+   "e": 14.463
+  },
+  {
+   "w": "know",
+   "who": "A",
+   "line": "l05",
+   "s": 14.463,
+   "e": 14.686
+  },
+  {
+   "w": "what",
+   "who": "A",
+   "line": "l05",
+   "s": 14.686,
+   "e": 14.909
+  },
+  {
+   "w": "people",
+   "who": "A",
+   "line": "l05",
+   "s": 14.909,
+   "e": 15.206
+  },
+  {
+   "w": "actually",
+   "who": "A",
+   "line": "l05",
+   "s": 15.206,
+   "e": 15.578
+  },
+  {
+   "w": "want",
+   "who": "A",
+   "line": "l05",
+   "s": 15.578,
+   "e": 15.801
+  },
+  {
+   "w": "to",
+   "who": "A",
+   "line": "l05",
+   "s": 15.801,
+   "e": 15.95
+  },
+  {
+   "w": "watch?",
+   "who": "A",
+   "line": "l05",
+   "s": 15.95,
+   "e": 16.247
+  },
+  {
+   "w": "Before",
+   "who": "C",
+   "line": "l06",
+   "s": 16.527,
+   "e": 17.021
+  },
+  {
+   "w": "creating",
+   "who": "C",
+   "line": "l06",
+   "s": 17.021,
+   "e": 17.638
+  },
+  {
+   "w": "anything,",
+   "who": "C",
+   "line": "l06",
+   "s": 17.638,
+   "e": 18.317
+  },
+  {
+   "w": "I",
+   "who": "C",
+   "line": "l06",
+   "s": 18.317,
+   "e": 18.502
+  },
+  {
+   "w": "research",
+   "who": "C",
+   "line": "l06",
+   "s": 18.502,
+   "e": 19.12
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l06",
+   "s": 19.12,
+   "e": 19.49
+  },
+  {
+   "w": "audience,",
+   "who": "C",
+   "line": "l06",
+   "s": 19.49,
+   "e": 20.169
+  },
+  {
+   "w": "study",
+   "who": "C",
+   "line": "l06",
+   "s": 20.169,
+   "e": 20.601
+  },
+  {
+   "w": "successful",
+   "who": "C",
+   "line": "l06",
+   "s": 20.601,
+   "e": 21.342
+  },
+  {
+   "w": "content,",
+   "who": "C",
+   "line": "l06",
+   "s": 21.342,
+   "e": 21.959
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l06",
+   "s": 21.959,
+   "e": 22.268
+  },
+  {
+   "w": "identify",
+   "who": "C",
+   "line": "l06",
+   "s": 22.268,
+   "e": 22.885
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l06",
+   "s": 22.885,
+   "e": 23.194
+  },
+  {
+   "w": "problems",
+   "who": "C",
+   "line": "l06",
+   "s": 23.194,
+   "e": 23.811
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l06",
+   "s": 23.811,
+   "e": 24.181
+  },
+  {
+   "w": "viewers",
+   "who": "C",
+   "line": "l06",
+   "s": 24.181,
+   "e": 24.737
+  },
+  {
+   "w": "want",
+   "who": "C",
+   "line": "l06",
+   "s": 24.737,
+   "e": 25.107
+  },
+  {
+   "w": "solved.",
+   "who": "C",
+   "line": "l06",
+   "s": 25.107,
+   "e": 25.663
+  },
+  {
+   "w": "So",
+   "who": "A",
+   "line": "l07",
+   "s": 26.193,
+   "e": 26.369
+  },
+  {
+   "w": "you're",
+   "who": "A",
+   "line": "l07",
+   "s": 26.369,
+   "e": 26.721
+  },
+  {
+   "w": "not",
+   "who": "A",
+   "line": "l07",
+   "s": 26.721,
+   "e": 26.942
+  },
+  {
+   "w": "just",
+   "who": "A",
+   "line": "l07",
+   "s": 26.942,
+   "e": 27.206
+  },
+  {
+   "w": "generating",
+   "who": "A",
+   "line": "l07",
+   "s": 27.206,
+   "e": 27.734
+  },
+  {
+   "w": "random",
+   "who": "A",
+   "line": "l07",
+   "s": 27.734,
+   "e": 28.087
+  },
+  {
+   "w": "videos?",
+   "who": "A",
+   "line": "l07",
+   "s": 28.087,
+   "e": 28.483
+  },
+  {
+   "w": "Exactly!",
+   "who": "C",
+   "line": "l08",
+   "s": 28.763,
+   "e": 29.341
+  },
+  {
+   "w": "I",
+   "who": "C",
+   "line": "l08",
+   "s": 29.341,
+   "e": 29.514
+  },
+  {
+   "w": "turn",
+   "who": "C",
+   "line": "l08",
+   "s": 29.514,
+   "e": 29.86
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l08",
+   "s": 29.86,
+   "e": 30.149
+  },
+  {
+   "w": "research",
+   "who": "C",
+   "line": "l08",
+   "s": 30.149,
+   "e": 30.727
+  },
+  {
+   "w": "into",
+   "who": "C",
+   "line": "l08",
+   "s": 30.727,
+   "e": 31.073
+  },
+  {
+   "w": "hooks,",
+   "who": "C",
+   "line": "l08",
+   "s": 31.073,
+   "e": 31.535
+  },
+  {
+   "w": "scripts,",
+   "who": "C",
+   "line": "l08",
+   "s": 31.535,
+   "e": 32.113
+  },
+  {
+   "w": "visual",
+   "who": "C",
+   "line": "l08",
+   "s": 32.113,
+   "e": 32.575
+  },
+  {
+   "w": "concepts",
+   "who": "C",
+   "line": "l08",
+   "s": 32.575,
+   "e": 33.153
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l08",
+   "s": 33.153,
+   "e": 33.442
+  },
+  {
+   "w": "captions",
+   "who": "C",
+   "line": "l08",
+   "s": 33.442,
+   "e": 34.019
+  },
+  {
+   "w": "that",
+   "who": "C",
+   "line": "l08",
+   "s": 34.019,
+   "e": 34.366
+  },
+  {
+   "w": "match",
+   "who": "C",
+   "line": "l08",
+   "s": 34.366,
+   "e": 34.77
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l08",
+   "s": 34.77,
+   "e": 35.117
+  },
+  {
+   "w": "audience.",
+   "who": "C",
+   "line": "l08",
+   "s": 35.117,
+   "e": 35.752
+  },
+  {
+   "w": "But",
+   "who": "A",
+   "line": "l09",
+   "s": 36.032,
+   "e": 36.215
+  },
+  {
+   "w": "how",
+   "who": "A",
+   "line": "l09",
+   "s": 36.215,
+   "e": 36.397
+  },
+  {
+   "w": "do",
+   "who": "A",
+   "line": "l09",
+   "s": 36.397,
+   "e": 36.543
+  },
+  {
+   "w": "you",
+   "who": "A",
+   "line": "l09",
+   "s": 36.543,
+   "e": 36.726
+  },
+  {
+   "w": "create",
+   "who": "A",
+   "line": "l09",
+   "s": 36.726,
+   "e": 37.018
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l09",
+   "s": 37.018,
+   "e": 37.2
+  },
+  {
+   "w": "videos?",
+   "who": "A",
+   "line": "l09",
+   "s": 37.2,
+   "e": 37.529
+  },
+  {
+   "w": "With",
+   "who": "C",
+   "line": "l10",
+   "s": 37.809,
+   "e": 38.188
+  },
+  {
+   "w": "Claude",
+   "who": "C",
+   "line": "l10",
+   "s": 38.188,
+   "e": 38.692
+  },
+  {
+   "w": "Code,",
+   "who": "C",
+   "line": "l10",
+   "s": 38.692,
+   "e": 39.134
+  },
+  {
+   "w": "reusable",
+   "who": "C",
+   "line": "l10",
+   "s": 39.134,
+   "e": 39.765
+  },
+  {
+   "w": "components",
+   "who": "C",
+   "line": "l10",
+   "s": 39.765,
+   "e": 40.522
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l10",
+   "s": 40.522,
+   "e": 40.837
+  },
+  {
+   "w": "tools",
+   "who": "C",
+   "line": "l10",
+   "s": 40.837,
+   "e": 41.279
+  },
+  {
+   "w": "like",
+   "who": "C",
+   "line": "l10",
+   "s": 41.279,
+   "e": 41.657
+  },
+  {
+   "w": "Remotion,",
+   "who": "C",
+   "line": "l10",
+   "s": 41.657,
+   "e": 42.351
+  },
+  {
+   "w": "we",
+   "who": "C",
+   "line": "l10",
+   "s": 42.351,
+   "e": 42.604
+  },
+  {
+   "w": "can",
+   "who": "C",
+   "line": "l10",
+   "s": 42.604,
+   "e": 42.919
+  },
+  {
+   "w": "create",
+   "who": "C",
+   "line": "l10",
+   "s": 42.919,
+   "e": 43.424
+  },
+  {
+   "w": "video",
+   "who": "C",
+   "line": "l10",
+   "s": 43.424,
+   "e": 43.865
+  },
+  {
+   "w": "layouts,",
+   "who": "C",
+   "line": "l10",
+   "s": 43.865,
+   "e": 44.496
+  },
+  {
+   "w": "animations",
+   "who": "C",
+   "line": "l10",
+   "s": 44.496,
+   "e": 45.253
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l10",
+   "s": 45.253,
+   "e": 45.569
+  },
+  {
+   "w": "captions",
+   "who": "C",
+   "line": "l10",
+   "s": 45.569,
+   "e": 46.199
+  },
+  {
+   "w": "programmatically.",
+   "who": "C",
+   "line": "l10",
+   "s": 46.199,
+   "e": 47.398
+  },
+  {
+   "w": "And",
+   "who": "A",
+   "line": "l11",
+   "s": 47.928,
+   "e": 48.136
+  },
+  {
+   "w": "we",
+   "who": "A",
+   "line": "l11",
+   "s": 48.136,
+   "e": 48.302
+  },
+  {
+   "w": "can",
+   "who": "A",
+   "line": "l11",
+   "s": 48.302,
+   "e": 48.51
+  },
+  {
+   "w": "use",
+   "who": "A",
+   "line": "l11",
+   "s": 48.51,
+   "e": 48.718
+  },
+  {
+   "w": "that",
+   "who": "A",
+   "line": "l11",
+   "s": 48.718,
+   "e": 48.967
+  },
+  {
+   "w": "workflow",
+   "who": "A",
+   "line": "l11",
+   "s": 48.967,
+   "e": 49.383
+  },
+  {
+   "w": "for",
+   "who": "A",
+   "line": "l11",
+   "s": 49.383,
+   "e": 49.591
+  },
+  {
+   "w": "50",
+   "who": "A",
+   "line": "l11",
+   "s": 49.591,
+   "e": 49.757
+  },
+  {
+   "w": "different",
+   "who": "A",
+   "line": "l11",
+   "s": 49.757,
+   "e": 50.214
+  },
+  {
+   "w": "videos?",
+   "who": "A",
+   "line": "l11",
+   "s": 50.214,
+   "e": 50.588
+  },
+  {
+   "w": "Yes,",
+   "who": "C",
+   "line": "l12",
+   "s": 50.868,
+   "e": 51.215
+  },
+  {
+   "w": "with",
+   "who": "C",
+   "line": "l12",
+   "s": 51.215,
+   "e": 51.562
+  },
+  {
+   "w": "reusable",
+   "who": "C",
+   "line": "l12",
+   "s": 51.562,
+   "e": 52.141
+  },
+  {
+   "w": "templates",
+   "who": "C",
+   "line": "l12",
+   "s": 52.141,
+   "e": 52.777
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l12",
+   "s": 52.777,
+   "e": 53.066
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l12",
+   "s": 53.066,
+   "e": 53.355
+  },
+  {
+   "w": "right",
+   "who": "C",
+   "line": "l12",
+   "s": 53.355,
+   "e": 53.76
+  },
+  {
+   "w": "production",
+   "who": "C",
+   "line": "l12",
+   "s": 53.76,
+   "e": 54.454
+  },
+  {
+   "w": "tools.",
+   "who": "C",
+   "line": "l12",
+   "s": 54.454,
+   "e": 54.917
+  },
+  {
+   "w": "Each",
+   "who": "C",
+   "line": "l12",
+   "s": 54.917,
+   "e": 55.264
+  },
+  {
+   "w": "video",
+   "who": "C",
+   "line": "l12",
+   "s": 55.264,
+   "e": 55.669
+  },
+  {
+   "w": "can",
+   "who": "C",
+   "line": "l12",
+   "s": 55.669,
+   "e": 55.959
+  },
+  {
+   "w": "have",
+   "who": "C",
+   "line": "l12",
+   "s": 55.959,
+   "e": 56.306
+  },
+  {
+   "w": "its",
+   "who": "C",
+   "line": "l12",
+   "s": 56.306,
+   "e": 56.595
+  },
+  {
+   "w": "own",
+   "who": "C",
+   "line": "l12",
+   "s": 56.595,
+   "e": 56.884
+  },
+  {
+   "w": "subject,",
+   "who": "C",
+   "line": "l12",
+   "s": 56.884,
+   "e": 57.463
+  },
+  {
+   "w": "visuals",
+   "who": "C",
+   "line": "l12",
+   "s": 57.463,
+   "e": 57.983
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l12",
+   "s": 57.983,
+   "e": 58.272
+  },
+  {
+   "w": "script.",
+   "who": "C",
+   "line": "l12",
+   "s": 58.272,
+   "e": 58.793
+  },
+  {
+   "w": "So",
+   "who": "A",
+   "line": "l13",
+   "s": 59.323,
+   "e": 59.505
+  },
+  {
+   "w": "everything",
+   "who": "A",
+   "line": "l13",
+   "s": 59.505,
+   "e": 60.05
+  },
+  {
+   "w": "gets",
+   "who": "A",
+   "line": "l13",
+   "s": 60.05,
+   "e": 60.323
+  },
+  {
+   "w": "posted",
+   "who": "A",
+   "line": "l13",
+   "s": 60.323,
+   "e": 60.687
+  },
+  {
+   "w": "automatically?",
+   "who": "A",
+   "line": "l13",
+   "s": 60.687,
+   "e": 61.414
+  },
+  {
+   "w": "Not",
+   "who": "C",
+   "line": "l14",
+   "s": 62.094,
+   "e": 62.354
+  },
+  {
+   "w": "without",
+   "who": "C",
+   "line": "l14",
+   "s": 62.354,
+   "e": 62.823
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l14",
+   "s": 62.823,
+   "e": 63.135
+  },
+  {
+   "w": "approval!",
+   "who": "C",
+   "line": "l14",
+   "s": 63.135,
+   "e": 63.708
+  },
+  {
+   "w": "We",
+   "who": "C",
+   "line": "l14",
+   "s": 63.708,
+   "e": 63.916
+  },
+  {
+   "w": "review",
+   "who": "C",
+   "line": "l14",
+   "s": 63.916,
+   "e": 64.333
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l14",
+   "s": 64.333,
+   "e": 64.593
+  },
+  {
+   "w": "videos,",
+   "who": "C",
+   "line": "l14",
+   "s": 64.593,
+   "e": 65.062
+  },
+  {
+   "w": "check",
+   "who": "C",
+   "line": "l14",
+   "s": 65.062,
+   "e": 65.426
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l14",
+   "s": 65.426,
+   "e": 65.687
+  },
+  {
+   "w": "facts",
+   "who": "C",
+   "line": "l14",
+   "s": 65.687,
+   "e": 66.051
+  },
+  {
+   "w": "and",
+   "who": "C",
+   "line": "l14",
+   "s": 66.051,
+   "e": 66.312
+  },
+  {
+   "w": "make",
+   "who": "C",
+   "line": "l14",
+   "s": 66.312,
+   "e": 66.624
+  },
+  {
+   "w": "sure",
+   "who": "C",
+   "line": "l14",
+   "s": 66.624,
+   "e": 66.936
+  },
+  {
+   "w": "every",
+   "who": "C",
+   "line": "l14",
+   "s": 66.936,
+   "e": 67.301
+  },
+  {
+   "w": "post",
+   "who": "C",
+   "line": "l14",
+   "s": 67.301,
+   "e": 67.613
+  },
+  {
+   "w": "represents",
+   "who": "C",
+   "line": "l14",
+   "s": 67.613,
+   "e": 68.238
+  },
+  {
+   "w": "your",
+   "who": "C",
+   "line": "l14",
+   "s": 68.238,
+   "e": 68.55
+  },
+  {
+   "w": "brand.",
+   "who": "C",
+   "line": "l14",
+   "s": 68.55,
+   "e": 68.967
+  },
+  {
+   "w": "50",
+   "who": "A",
+   "line": "l15",
+   "s": 69.497,
+   "e": 69.692
+  },
+  {
+   "w": "Reels?",
+   "who": "A",
+   "line": "l15",
+   "s": 69.692,
+   "e": 70.083
+  },
+  {
+   "w": "Maybe",
+   "who": "A",
+   "line": "l15",
+   "s": 70.083,
+   "e": 70.425
+  },
+  {
+   "w": "I",
+   "who": "A",
+   "line": "l15",
+   "s": 70.425,
+   "e": 70.571
+  },
+  {
+   "w": "should",
+   "who": "A",
+   "line": "l15",
+   "s": 70.571,
+   "e": 70.962
+  },
+  {
+   "w": "go",
+   "who": "A",
+   "line": "l15",
+   "s": 70.962,
+   "e": 71.157
+  },
+  {
+   "w": "to",
+   "who": "A",
+   "line": "l15",
+   "s": 71.157,
+   "e": 71.352
+  },
+  {
+   "w": "the",
+   "who": "A",
+   "line": "l15",
+   "s": 71.352,
+   "e": 71.596
+  },
+  {
+   "w": "gym",
+   "who": "A",
+   "line": "l15",
+   "s": 71.596,
+   "e": 71.84
+  },
+  {
+   "w": "more",
+   "who": "A",
+   "line": "l15",
+   "s": 71.84,
+   "e": 72.133
+  },
+  {
+   "w": "often!",
+   "who": "A",
+   "line": "l15",
+   "s": 72.133,
+   "e": 72.524
+  },
+  {
+   "w": "Only",
+   "who": "C",
+   "line": "l16",
+   "s": 72.804,
+   "e": 73.093
+  },
+  {
+   "w": "after",
+   "who": "C",
+   "line": "l16",
+   "s": 73.093,
+   "e": 73.43
+  },
+  {
+   "w": "you",
+   "who": "C",
+   "line": "l16",
+   "s": 73.43,
+   "e": 73.671
+  },
+  {
+   "w": "approve",
+   "who": "C",
+   "line": "l16",
+   "s": 73.671,
+   "e": 74.104
+  },
+  {
+   "w": "the",
+   "who": "C",
+   "line": "l16",
+   "s": 74.104,
+   "e": 74.345
+  },
+  {
+   "w": "first",
+   "who": "C",
+   "line": "l16",
+   "s": 74.345,
+   "e": 74.682
+  },
+  {
+   "w": "one!",
+   "who": "C",
+   "line": "l16",
+   "s": 74.682,
+   "e": 74.971
+  },
+  {
+   "w": "Save",
+   "who": "A",
+   "line": "l17",
+   "s": 75.251,
+   "e": 75.525
+  },
+  {
+   "w": "this",
+   "who": "A",
+   "line": "l17",
+   "s": 75.525,
+   "e": 75.799
+  },
+  {
+   "w": "video",
+   "who": "A",
+   "line": "l17",
+   "s": 75.799,
+   "e": 76.119
+  },
+  {
+   "w": "if",
+   "who": "A",
+   "line": "l17",
+   "s": 76.119,
+   "e": 76.302
+  },
+  {
+   "w": "you",
+   "who": "A",
+   "line": "l17",
+   "s": 76.302,
+   "e": 76.531
+  },
+  {
+   "w": "want",
+   "who": "A",
+   "line": "l17",
+   "s": 76.531,
+   "e": 76.805
+  },
+  {
+   "w": "to",
+   "who": "A",
+   "line": "l17",
+   "s": 76.805,
+   "e": 76.988
+  },
+  {
+   "w": "build",
+   "who": "A",
+   "line": "l17",
+   "s": 76.988,
+   "e": 77.307
+  },
+  {
+   "w": "your",
+   "who": "A",
+   "line": "l17",
+   "s": 77.307,
+   "e": 77.582
+  },
+  {
+   "w": "own",
+   "who": "A",
+   "line": "l17",
+   "s": 77.582,
+   "e": 77.81
+  },
+  {
+   "w": "AI",
+   "who": "A",
+   "line": "l17",
+   "s": 77.81,
+   "e": 77.993
+  },
+  {
+   "w": "content",
+   "who": "A",
+   "line": "l17",
+   "s": 77.993,
+   "e": 78.404
+  },
+  {
+   "w": "production",
+   "who": "A",
+   "line": "l17",
+   "s": 78.404,
+   "e": 78.953
+  },
+  {
+   "w": "system.",
+   "who": "A",
+   "line": "l17",
+   "s": 78.953,
+   "e": 79.364
+  }
+ ]
+}

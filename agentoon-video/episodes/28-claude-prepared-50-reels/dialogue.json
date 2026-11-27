@@ -1,0 +1,151 @@
+{
+ "voices": {
+  "A": {
+   "name": "Agentoon",
+   "voice": "am_adam",
+   "speed": 1.02
+  },
+  "C": {
+   "name": "Claude",
+   "voice": "am_michael",
+   "speed": 0.94
+  }
+ },
+ "gap": 0.28,
+ "lines": [
+  {
+   "id": "l01",
+   "who": "A",
+   "scene": "hook",
+   "speak": "Hey, Claude! What have you been doing while I was at the gym?",
+   "show": "Hey, Claude! What have you been doing while I was at the gym?",
+   "speed": 1.02
+  },
+  {
+   "id": "l02",
+   "who": "C",
+   "scene": "hook",
+   "speak": "Working on your next fifty Instagram Reels.",
+   "show": "Working on your next 50 Instagram Reels.",
+   "pad": 0.5
+  },
+  {
+   "id": "l03",
+   "who": "A",
+   "scene": "surprise",
+   "speak": "Fifty?! I haven't even finished editing yesterday's video!",
+   "show": "Fifty?! I haven't even finished editing yesterday's video!",
+   "speed": 1.02
+  },
+  {
+   "id": "l04",
+   "who": "C",
+   "scene": "surprise",
+   "speak": "That's why we're building a better workflow.",
+   "show": "That's why we're building a better workflow."
+  },
+  {
+   "id": "l05",
+   "who": "A",
+   "scene": "audience",
+   "speak": "But how do you know what people actually want to watch?",
+   "show": "But how do you know what people actually want to watch?",
+   "speed": 1.02
+  },
+  {
+   "id": "l06",
+   "who": "C",
+   "scene": "audience",
+   "speak": "Before creating anything, I research your audience, study successful content, and identify the problems your viewers want solved.",
+   "show": "Before creating anything, I research your audience, study successful content, and identify the problems your viewers want solved.",
+   "pad": 0.25
+  },
+  {
+   "id": "l07",
+   "who": "A",
+   "scene": "content",
+   "speak": "So you're not just generating random videos?",
+   "show": "So you're not just generating random videos?",
+   "speed": 1.02
+  },
+  {
+   "id": "l08",
+   "who": "C",
+   "scene": "content",
+   "speak": "Exactly! I turn the research into hooks, scripts, visual concepts and captions that match your audience.",
+   "show": "Exactly! I turn the research into hooks, scripts, visual concepts and captions that match your audience."
+  },
+  {
+   "id": "l09",
+   "who": "A",
+   "scene": "code",
+   "speak": "But how do you create the videos?",
+   "show": "But how do you create the videos?",
+   "speed": 1.02
+  },
+  {
+   "id": "l10",
+   "who": "C",
+   "scene": "code",
+   "speak": "With Claude Code, reusable components and tools like Remotion, we can create video layouts, animations and captions programmatically.",
+   "show": "With Claude Code, reusable components and tools like Remotion, we can create video layouts, animations and captions programmatically.",
+   "pad": 0.25
+  },
+  {
+   "id": "l11",
+   "who": "A",
+   "scene": "batch",
+   "speak": "And we can use that workflow for fifty different videos?",
+   "show": "And we can use that workflow for 50 different videos?",
+   "speed": 1.02
+  },
+  {
+   "id": "l12",
+   "who": "C",
+   "scene": "batch",
+   "speak": "Yes, with reusable templates and the right production tools. Each video can have its own subject, visuals and script.",
+   "show": "Yes, with reusable templates and the right production tools. Each video can have its own subject, visuals and script.",
+   "pad": 0.25
+  },
+  {
+   "id": "l13",
+   "who": "A",
+   "scene": "approval",
+   "speak": "So everything gets posted automatically?",
+   "show": "So everything gets posted automatically?",
+   "pad": 0.4,
+   "speed": 1.02
+  },
+  {
+   "id": "l14",
+   "who": "C",
+   "scene": "approval",
+   "speak": "Not without your approval! We review the videos, check the facts and make sure every post represents your brand.",
+   "show": "Not without your approval! We review the videos, check the facts and make sure every post represents your brand.",
+   "pad": 0.25
+  },
+  {
+   "id": "l15",
+   "who": "A",
+   "scene": "closing",
+   "speak": "Fifty Reels? Maybe I should go to the gym more often!",
+   "show": "50 Reels? Maybe I should go to the gym more often!",
+   "speed": 1.02
+  },
+  {
+   "id": "l16",
+   "who": "C",
+   "scene": "closing",
+   "speak": "Only after you approve the first one!",
+   "show": "Only after you approve the first one!"
+  },
+  {
+   "id": "l17",
+   "who": "A",
+   "scene": "closing",
+   "speak": "Save this video if you want to build your own A I content production system.",
+   "show": "Save this video if you want to build your own AI content production system.",
+   "speed": 1.02
+  }
+ ]
+}
