@@ -18,7 +18,7 @@ const LN = (id: string) => LINES.find((l) => l.id === id)!;
 const cue = (id: string, word: string, nth = 0) => { const ws = WORDS.filter((w) => w.line === id); const m = ws.filter((w) => w.w.toLowerCase().replace(/[^a-z0-9@-]/g, "").includes(word.toLowerCase())); return (m[nth] ?? m[0] ?? { s: LN(id).sf }).s; };
 const SCENES = ["hook", "surprise", "audience", "content", "code", "batch", "approval", "closing"] as const; type Sc = (typeof SCENES)[number];
 const S0 = (s: Sc) => (s === "hook" ? 0 : LINES.find((l) => l.scene === s)!.sf - 5);
-const S1 = (s: Sc) => { const i = SCENES.indexOf(s); return i === SCENES.length - 1 ? CA_FRAMES : S0(SCENES[i + 1]); };
+const S1 = (s: Sc) => { const i = SCENES.indexOf(s); return i === SCENES.length - 1 ? EP28_FRAMES : S0(SCENES[i + 1]); };
 const sceneAt = (f: number): Sc => { let r: Sc = "hook"; for (const s of SCENES) if (f >= S0(s)) r = s; return r; };
 const K = { bg: "#05080E", panel: "rgba(13,20,33,.92)", line: "rgba(255,255,255,.16)", green: "#3DDC97", cyan: "#38D6F5", orange: "#D97757", amber: "#FFB454", white: "#F4F7FB", dim: "#9AA7BD", red: "#FF5D6C" };
 const sans = '"Inter","DejaVu Sans",Arial,sans-serif'; const mono = '"DejaVu Sans Mono",ui-monospace,Menlo,monospace';
@@ -59,7 +59,7 @@ const camAt = (sc: Sc, f: number) => { const c0 = camAt0(camKeys(sc, f), f); ret
 
 /* ============ robot: entrance in plate C (full body), then seated (2D rig) ============ */
 const ENTER: Walk = { from: F_DOOR + 6, to: F_ARRIVE, ramp: 10, amp: 28, stepsPerSec: 2.4 };
-const P0 = { x: 335, y: 1125 }, P1 = { x: 600, y: 1345 }; const rwAt = (y: number) => 125 * (y - 900) / 225;
+const P0 = { x: 335, y: 1125 }, PM = { x: 235, y: 1330 }, P1 = { x: 380, y: 1560 }; const rwAt = (y: number) => 125 * (y - 900) / 225;
 const RGEST: Gest2[] = (() => {
   const g: Gest2[] = []; let alt = 0;
   LINES.filter((l) => l.who === "A").forEach((l) => { let t = Math.max(l.sf + 3, F_LAST_CLOSE); while (t < l.ef - 6) { const len = Math.min(l.ef - t, 38 + (alt % 3) * 10); const type = alt % 3 === 0 ? "explain" : alt % 3 === 1 ? "both" : "present"; g.push({ type, from: t, to: t + len, hand: alt % 2 ? "R" : "L" }); t += len + 3; alt++; } });
@@ -71,7 +71,7 @@ const RobotEnter: React.FC = () => {
   const f = useCurrentFrame(); if (f < F_DOOR + 2 || f >= LN("l02").sf - 4) return null;
   const speaking: [number, number][] = LINES.filter((l) => l.who === "A").map((l) => [l.sf, l.ef + 4]);
   const p = pose2(f, { lip: LA, speaking, gestures: RGEST, walks: [ENTER], seed: 11 }); const t = clamp((f - ENTER.from) / (ENTER.to - ENTER.from)); const d = clamp(walkDistance(Math.min(f, ENTER.to), ENTER) / walkDistance(ENTER.to, ENTER));
-  const x = P0.x + (P1.x - P0.x) * d, y = P0.y + (P1.y - P0.y) * d; const rw = rwAt(y); const appear = pr(f, F_DOOR + 2, F_DOOR + 12); const drop = pr(f, F_ARRIVE - 30, F_ARRIVE - 6);
+  const q = d < 0.5 ? d * 2 : (d - 0.5) * 2; const A0 = d < 0.5 ? P0 : PM, A1 = d < 0.5 ? PM : P1; const x = A0.x + (A1.x - A0.x) * q, y = A0.y + (A1.y - A0.y) * q; const rw = rwAt(y); const appear = pr(f, F_DOOR + 2, F_DOOR + 12); const drop = pr(f, F_ARRIVE - 30, F_ARRIVE - 6);
   const rk = rw / 200; void t;
   return (<>
     <div style={{ position: "absolute", left: x - rw * 0.6, top: y - 14 * rk, width: rw * 1.2, height: 26 * rk, borderRadius: "50%", background: "rgba(0,0,0,.4)", filter: "blur(5px)", opacity: appear }} />
@@ -131,7 +131,7 @@ const Ov: Record<Sc, React.FC<{ a: number }>> = {
       <Kin text="50 REELS?!" a={tt - S0("hook") + 6} y={470} size={120} c={K.white} out={S1("hook") - 4} /></>); },
   surprise: ({ a }) => { void a; const f = useCurrentFrame(); const t4 = LN("l04").sf - S0("surprise"); const th = ["reel-01", "reel-02", "reel-03"];
     return (<><Kin text="50" a={4} y={430} size={190} c={K.orange} />
-      <div style={{ position: "absolute", left: 40, top: 640, width: 1000, display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 10, perspective: 1400, zIndex: 60 }}>{Array.from({ length: 15 }, (_, i) => { const p = pr(f, 14 + i * 3, 30 + i * 3); const real = i < 3; return <div key={i} style={{ height: 148, borderRadius: 12, overflow: "hidden", border: `2px solid ${real ? K.green : K.line}`, background: "rgba(13,20,33,.9)", opacity: p, transform: `rotateX(${(1 - p) * 70}deg) translateY(${(1 - p) * 40}px)`, position: "relative" }}>{real ? <Img src={staticFile(`ep28/thumbs/${th[i]}.png`)} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ fontFamily: sans, fontWeight: 800, fontSize: 14, color: K.dim, padding: "60px 4px", textAlign: "center" }}>PLANNED #{i + 1}</div>}</div>; })}</div>
+      <div style={{ position: "absolute", left: 40, top: 630, width: 1000, display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 10, perspective: 1400, zIndex: 60 }}>{Array.from({ length: 10 }, (_, i) => { const p = pr(f, 14 + i * 3, 30 + i * 3); const real = i < 3; return <div key={i} style={{ height: 150, borderRadius: 12, overflow: "hidden", border: `2px solid ${real ? K.green : K.line}`, background: "rgba(13,20,33,.9)", opacity: p, transform: `rotateX(${(1 - p) * 70}deg) translateY(${(1 - p) * 40}px)`, position: "relative" }}>{real ? <Img src={staticFile(`ep28/thumbs/${th[i]}.png`)} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ fontFamily: sans, fontWeight: 800, fontSize: 14, color: K.dim, padding: "60px 4px", textAlign: "center" }}>PLANNED #{i + 1}</div>}</div>; })}</div>
       <Label text="3 REAL RENDERS (green) · the rest are planned placeholders" a={24} />
       {f > t4 ? <Kin text="BETTER WORKFLOW" a={t4 + 8} y={600} size={60} c={K.green} /> : null}</>); },
   audience: ({ a }) => { void a; const f = useCurrentFrame(); const t6 = LN("l06").sf - S0("audience"); const cards = [["LOOKS THAT WORK", K.cyan, "▦▦▦"], ["WHAT CUSTOMERS WANT", K.amber, "★"], ["DESIRED OUTCOMES", K.green, "✓"], ["AUDIENCE NEEDS", K.orange, "?"]] as const;
@@ -182,7 +182,7 @@ const Ov: Record<Sc, React.FC<{ a: number }>> = {
 
 /* ============ captions ============ */
 const Caps: React.FC = () => {
-  const f = useCurrentFrame(); const idx = WORDS.findIndex((w) => f < w.e); const i = idx < 0 ? WORDS.length - 1 : Math.max(0, idx); const w0 = WORDS[i]; if (f < 3 || f > LN("l18").ef + 10) return null;
+  const f = useCurrentFrame(); const idx = WORDS.findIndex((w) => f < w.e); const i = idx < 0 ? WORDS.length - 1 : Math.max(0, idx); const w0 = WORDS[i]; if (f < 3 || f > LN("l17").ef + 10) return null;
   const line = WORDS.filter((w) => w.line === w0.line); const lw = line.indexOf(w0); const chunk = Math.floor(lw / 5) * 5; const shown = line.slice(chunk, chunk + 5); const col = w0.who === "C" ? K.orange : K.cyan;
   return (<div style={{ position: "absolute", left: 30, right: 30, top: 205, height: 190, borderRadius: 28, background: "rgba(5,8,14,.86)", border: `1.5px solid ${K.line}`, zIndex: 95, padding: "16px 26px", boxShadow: "0 16px 40px rgba(0,0,0,.45)" }}>
     <div style={{ display: "inline-block", background: col, color: w0.who === "C" ? "#fff" : "#04202a", fontFamily: sans, fontWeight: 900, fontSize: 24, padding: "2px 16px", borderRadius: 10, letterSpacing: 2 }}>{w0.who === "C" ? "CLAUDE" : "AGENTOON"}</div>
@@ -204,8 +204,8 @@ const World: React.FC = () => {
     {pk === "C" ? (<>
       <Img src={staticFile("ep28/plates/C_door_closed.png")} style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 1920 }} />
       <Img src={staticFile("ep28/plates/C_door_open.png")} style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 1920, opacity: door }} />
-      <RobotEnter />
       <Img src={staticFile("ep28/plates/C_door_open_fg.png")} style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 1920, zIndex: 20 }} />
+      <div style={{ position: "absolute", inset: 0, zIndex: 25 }}><RobotEnter /></div>
     </>) : planA(pk as PK)}
   </div>);
 };
