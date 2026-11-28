@@ -1,6 +1,6 @@
 import {z} from 'zod';
 
-export const SCENE_IDS = ['opening', 'anatomy', 'symptoms', 'treatment', 'fmc', 'closing', 'move1', 'move2', 'move3', 'safety', 'sx_examples', 'sx_assess', 'sx_motion', 'sx_strength', 'sx_return', 'cc_hook', 'cc_stat', 'cc_disc', 'cc_science', 'cc_w1', 'cc_w2', 'cc_w3', 'cc_w4', 'cc_safe', 'cc_close'] as const;
+export const SCENE_IDS = ['opening', 'anatomy', 'symptoms', 'treatment', 'fmc', 'closing', 'move1', 'move2', 'move3', 'safety', 'sx_examples', 'sx_assess', 'sx_motion', 'sx_strength', 'sx_return', 'cc_hook', 'cc_stat', 'cc_disc', 'cc_science', 'cc_w1', 'cc_w2', 'cc_w3', 'cc_w4', 'cc_safe', 'cc_close', 'nk_hook', 'nk_anatomy', 'nk_assess', 'nk_m1', 'nk_m2', 'nk_m3', 'nk_treat'] as const;
 export type SceneId = (typeof SCENE_IDS)[number];
 
 export const SceneSchema = z.object({

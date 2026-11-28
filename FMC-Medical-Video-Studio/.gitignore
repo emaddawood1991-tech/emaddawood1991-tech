@@ -19,3 +19,6 @@ assets/catcow/*/*.png
 
 assets/catcow2/*/*.png
 .tmp/
+assets/neck/*/*.png
+assets/neck/cuts/
+assets/footage/neck-pain/raw/

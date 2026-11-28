@@ -2,6 +2,7 @@
  * Generates per-scene narration with the APPROVED provider from the approved ttsText.
  * Refuses to run if the Arabic QC fails, the script hash isn't locked, or no voice provider is approved.
  */
+import {existsSync} from 'node:fs';
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {arg, ffprobeDuration, flag, loadContent, p, scriptHash} from '../lib/common';
 import {runArabicQC} from '../lib/arabic-qc';
@@ -27,7 +28,8 @@ const scenes: VoiceManifest['scenes'] = [];
 let model = '', voice = '';
 for (const s of c.scenes) {
   const file = `${dir}/${s.id}.${ext}`;
-  const r = await gen(s.ttsText, file); // exact approved text, never rewritten
+  const resumed = process.env.RESUME === '1' && existsSync(file); // RESUME=1: keep already generated scene audio (free-tier daily quota)
+  const r = resumed ? {model: process.env.GEMINI_TTS_MODEL ?? 'gemini-3.1-flash-tts-preview', voice: process.env.GEMINI_TTS_VOICE ?? 'Charon'} : await gen(s.ttsText, file); // exact approved text, never rewritten
   model = r.model; voice = r.voice;
   const durationSec = ffprobeDuration(file);
   if (!(durationSec > 0.5)) throw new Error(`Scene ${s.id}: audio is empty or too short.`);

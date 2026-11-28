@@ -1,0 +1,198 @@
+{
+  "slug": "neck-pain-headache",
+  "topic": {
+    "ar": "آلام الرقبة والصداع المرتبط بها",
+    "en": "Neck pain and cervicogenic headache"
+  },
+  "services": [
+    "العلاج الطبيعي",
+    "طب العظام"
+  ],
+  "instagramCaption": "آلام الرقبة والصداع: التقييم أولًا، ثم تمارين لطيفة بإشراف مختص. مركز الفيصل الطبي — الرعاية المثالية",
+  "hashtags": [
+    "#مركز_الفيصل_الطبي",
+    "#العلاج_الطبيعي",
+    "#آلام_الرقبة"
+  ],
+  "sources": [
+    {
+      "title": "Neck Pain Clinical Practice Guidelines (JOSPT 2017)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28666405/"
+    },
+    {
+      "title": "Physiotherapy interventions review (2022)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35596553/"
+    },
+    {
+      "title": "American Migraine Foundation — Cervicogenic headache",
+      "url": "https://americanmigrainefoundation.org/resource-library/cervicogenic-headache/"
+    },
+    {
+      "title": "Berkshire Healthcare NHS — Cervicogenic headaches",
+      "url": "https://www.berkshirehealthcare.nhs.uk/advice/cervicogenic-headaches"
+    }
+  ],
+  "timing": {
+    "lead": 4,
+    "tail": 4
+  },
+  "approvals": {
+    "grammarReview": null,
+    "medicalTerminologyReview": null,
+    "medicalAccuracyReview": null,
+    "scriptApproved": {
+      "by": "Emad (user, chat: Approve as written)",
+      "date": "2026-11-28T05:23:55.755Z"
+    },
+    "pronunciationApproved": null,
+    "approvedHash": "d49dd0d2db744a555aab5a333f9497b475db37425917e329a16b266457c94c5e"
+  },
+  "scenes": [
+    {
+      "id": "nk_hook",
+      "sceneType": "A",
+      "plannedSec": 6.5,
+      "narration": "هل تشعر بألم في الرقبة يمتد إلى مؤخرة الرأس؟",
+      "ttsText": "هل تشعر بألم في الرقبة يمتد إلى مؤخرة الرأس؟",
+      "onScreen": {
+        "title": "ألم الرقبة يرافقه صداع؟"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "",
+        "description": "nk_hook"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "nk_anatomy",
+      "sceneType": "B",
+      "plannedSec": 9.5,
+      "narration": "أحيانا قد يرتبط الصداع بمشكلات في عضلات الرقبة أو مفاصلها، لكن ليس كل صداع سببه الرقبة.",
+      "ttsText": "أحيانًا قد يرتبط الصداع بمشكلاتٍ في عضلات الرقبة أو مفاصلها، لكن ليس كل صداعٍ سببه الرقبة.",
+      "onScreen": {
+        "title": "الصداع المرتبط بالرقبة",
+        "subtitle": "العضلات والمفاصل العنقية"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "",
+        "description": "nk_anatomy"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "nk_assess",
+      "sceneType": "C",
+      "plannedSec": 8.5,
+      "narration": "يبدأ التعامل الصحيح بتقييم حركة الرقبة والعضلات وطبيعة الأعراض، لتحديد خطة التأهيل المناسبة.",
+      "ttsText": "يبدأ التعامل الصحيح بتقييم حركة الرقبة والعضلات وطبيعة الأعراض، لتحديد خطة التأهيل المناسبة.",
+      "onScreen": {
+        "title": "التقييم أول خطوة للعلاج"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "",
+        "description": "nk_assess"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "nk_m1",
+      "sceneType": "D",
+      "plannedSec": 8,
+      "narration": "وقد يشمل العلاج الطبيعي تمارين لطيفة لتحسين الحركة، وتقوية العضلات، مثل سحب الذقن للخلف،",
+      "ttsText": "وقد يشمل العلاج الطبيعي تمارين لطيفة لتحسين الحركة، وتقوية العضلات، مثل سحب الذقن للخلف،",
+      "onScreen": {
+        "title": "سحب الذقن للخلف"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "",
+        "description": "nk_m1"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "nk_m2",
+      "sceneType": "D",
+      "plannedSec": 7,
+      "narration": "وتقريب لوحي الكتف،",
+      "ttsText": "وتقريب لوحَي الكتف،",
+      "onScreen": {
+        "title": "تقريب لوحي الكتف"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "",
+        "description": "nk_m2"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "nk_m3",
+      "sceneType": "D",
+      "plannedSec": 7.5,
+      "narration": "وتحريك الرقبة ضمن المدى المريح.",
+      "ttsText": "وتحريك الرقبة ضمن المدى المريح.",
+      "onScreen": {
+        "title": "تحريك الرقبة بلطف"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "",
+        "description": "nk_m3"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "nk_treat",
+      "sceneType": "E",
+      "plannedSec": 6.5,
+      "narration": "تختلف التمارين والأساليب العلاجية بحسب الحالة، ولا ينبغي الاستمرار في حركة تزيد الأعراض.",
+      "ttsText": "تختلف التمارين والأساليب العلاجية بحسب الحالة، ولا ينبغي الاستمرار في حركةٍ تزيد الأعراض.",
+      "onScreen": {
+        "title": "علاج طبيعي يناسب حالتك"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "",
+        "description": "nk_treat"
+      },
+      "footageQueries": [],
+      "sfx": []
+    },
+    {
+      "id": "closing",
+      "sceneType": "F",
+      "plannedSec": 4.5,
+      "narration": "مركز الفيصل الطبي، الرعاية المثالية.",
+      "ttsText": "مَرْكَزُ الْفَيْصَلِ الطِّبِّيِّ، الرِّعَايَةُ الْمِثَالِيَّةُ.",
+      "onScreen": {
+        "title": "مركز الفيصل الطبي",
+        "subtitle": "الرعاية المثالية"
+      },
+      "visual": {
+        "model": "none",
+        "highlight": "regions",
+        "camera": "",
+        "description": "closing"
+      },
+      "footageQueries": [],
+      "sfx": []
+    }
+  ]
+}
