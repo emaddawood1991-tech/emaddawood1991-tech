@@ -55,7 +55,7 @@ export const NeckPainReel: React.FC<VideoProps> = (props) => {
       <Cut c={{name: 'neck_front', len: 2.5, zoom: [1.0, 1.08], origin: '50% 40%'}} from={anS}>
         <PainGlow x={540} y={700} r={170} from={anS + 10} to={anS + sec(2.2)} />
       </Cut>
-      <Cut c={{name: 'prof_w', len: (orbitAt - profAt) / 30 + 0.5, speed: 0.45, zoom: [1.0, 1.06], origin: '52% 45%'}} from={profAt}>
+      <Cut c={{name: 'prof_w', len: (orbitAt - profAt) / 30 + 0.5, speed: 0.34, zoom: [1.0, 1.06], origin: '52% 45%'}} from={profAt}>
         <AnatOverlay src="neck/side/f_0001.png" x={OV.x} y={OV.y} scale={OV.scale} flip from={profAt + 14} to={orbitAt + 6} />
         <Referral pts={[[560, 790], [520, 690], [470, 600], [430, 560]]} from={profAt + sec(1.6)} to={orbitAt + 4} />
       </Cut>
@@ -67,7 +67,7 @@ export const NeckPainReel: React.FC<VideoProps> = (props) => {
 
       {/* 3 */}
       <Cut c={{name: 'assess1', len: 5.2, zoom: [1.0, 1.12], origin: '55% 40%'}} from={as.from} />
-      <Cut c={{name: 'assess2', len: 4.6, zoom: [1.02, 1.1], origin: '50% 35%'}} from={as.from + sec(4.6)} />
+      <Cut c={{name: 'assess2', len: 4.6, speed: 0.85, zoom: [1.02, 1.1], origin: '50% 35%'}} from={as.from + sec(4.6)} />
       {title('التقييم أول خطوة للعلاج', 'التقييم', as.from + 6, m1.from)}
       <ClinLabel text="فحص حركة الرقبة" at={[690, 880]} label={[560, 1330]} from={as.from + sec(1.2)} to={as.from + sec(4.6)} />
       <ClinLabel text="وضعية الكتف والظهر" at={[520, 1210]} label={[1010, 1480]} from={as.from + sec(2.4)} to={as.from + sec(4.6)} />
@@ -80,7 +80,7 @@ export const NeckPainReel: React.FC<VideoProps> = (props) => {
       {title('سحب الذقن للخلف', 'الذقن', m1.from + 6, m2.from)}
       <AnatInset dir="tuck" from={m1.from + sec(0.8)} to={m2.from} x={40} y={1030} w={300} label="سحب الذقن" ping={false} />
 
-      <Cut c={{name: 'm2', len: m2.duration / 30 + 0.2, zoom: [1.0, 1.08], origin: '50% 40%'}} from={m2.from}>
+      <Cut c={{name: 'm2', len: m2.duration / 30 + 0.2, speed: 0.8, zoom: [1.0, 1.08], origin: '50% 40%'}} from={m2.from}>
         <MuscleGlow x={400} y={1250} rx={150} ry={220} rot={-12} from={m2.from + sec(0.6)} to={m3.from} />
         <MuscleGlow x={720} y={1250} rx={150} ry={220} rot={12} from={m2.from + sec(0.6)} to={m3.from} />
         <MoveArrowH x0={300} y0={1180} x1={470} y1={1180} from={m2.from + sec(1.0)} to={m3.from} />
@@ -89,14 +89,14 @@ export const NeckPainReel: React.FC<VideoProps> = (props) => {
       {title('تقريب لوحي الكتف', 'لوحي', m2.from + 6, m3.from)}
       <AnatInset dir="back" from={m2.from + sec(0.8)} to={m3.from} x={40} y={1030} w={300} label="لوحا الكتف" />
 
-      <Cut c={{name: 'm3', len: m3.duration / 30 + 0.2, speed: 0.7, zoom: [1.0, 1.06], origin: '50% 38%'}} from={m3.from}>
+      <Cut c={{name: 'm3', len: m3.duration / 30 + 0.2, speed: 0.58, zoom: [1.0, 1.06], origin: '50% 38%'}} from={m3.from}>
         <RotArrow cx={560} cy={460} r={230} from={m3.from + sec(0.6)} to={tr.from} />
       </Cut>
       {title('تحريك الرقبة بلطف', 'بلطف', m3.from + 6, tr.from)}
       <AnatInset dir="rot" from={m3.from + sec(0.8)} to={tr.from} x={40} y={1030} w={300} label="دوران الرقبة" />
 
       {/* treatment */}
-      <Cut c={{name: 'treat', len: tr.duration / 30 + 0.2, zoom: [1.0, 1.1], origin: '40% 45%'}} from={tr.from} />
+      <Cut c={{name: 'treat', len: tr.duration / 30 + 0.2, speed: 0.72, zoom: [1.0, 1.04], origin: '40% 45%'}} from={tr.from} />
       {title('علاج طبيعي يناسب حالتك', 'يناسب', tr.from + 6, closeFrom)}
       <InfoChip text="تختلف بحسب الحالة" from={tr.from + sec(1.5)} to={closeFrom - 20} x={540} y={1010} />
 

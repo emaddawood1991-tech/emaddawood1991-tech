@@ -1,0 +1,3 @@
+# Skills actually used
+- fmc-video-producer (rules, gates, QC) · Remotion 4 (timeline, overlays, titles, chapter indicator, render) · Pexels API (licensed footage search/download) · Blender/bpy (original cervical-spine + muscle models, transparent renders) · FFmpeg (cropping, cuts, silence trim, loudness) · Gemini TTS Charon (approved FMC voice) · Arabic QC + project audio policy/mix scripts · OpenCV (tried for face tracking; replaced by hand-keyed keyframes).
+- Not used: HyperFrames CLI, Lemo Opuscar plugin (camera/lighting principles applied from `docs/v7/FMC_DIRECTING_SYSTEM.md`), Veo/Higgsfield (no authorised credits), Figma.

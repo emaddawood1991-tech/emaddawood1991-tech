@@ -159,7 +159,7 @@ export const AnatFull: React.FC<{dir: string; n?: number; from: number; to: numb
   const idx = (Math.floor((f - from) * speed) % n) + 1;
   return (
     <AbsoluteFill style={{opacity: o, background: 'radial-gradient(ellipse at 50% 42%, #17476b 0%, #0d2740 60%, #08182a 100%)'}}>
-      <Img src={staticFile(`neck/${dir}/f_${String(idx).padStart(4, '0')}.png`)} style={{position: 'absolute', left: 0, top: 260 + ty, width: 1080, height: 1440, transform: `scale(${scale})`}} />
+      <Img src={staticFile(`neck/${dir}/f_${String(idx).padStart(4, '0')}.png`)} style={{position: 'absolute', left: 0, top: 150 + ty, width: 1080, height: 1440, transform: `scale(${scale * 1.3})`, transformOrigin: '50% 0%'}} />
     </AbsoluteFill>
   );
 };
